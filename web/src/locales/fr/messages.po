@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2025-03-31 21:50+0800\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: fr\n"
+
+#: src/layouts/base.tsx:33
+msgid "Languages"
+msgstr ""
+
+#: src/components/LoginForm/form.tsx:37
+msgid "Remember me"
+msgstr ""
+
+#: src/components/LoginForm/form.tsx:40
+msgid "Sign In"
+msgstr ""

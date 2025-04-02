@@ -1,0 +1,18 @@
+# .air.toml
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o ./tmp/main ./cmd/server"  # 编译命令
+  bin = "tmp/main"                             # 生成的二进制路径
+  exclude_dir = ["assets", "vendor", "docs", "web"]   # 忽略的目录
+  exclude_file = []                            # 忽略的文件
+  delay = 1000                                 # 文件变更后延迟毫秒数
+  log = "build-errors.log"                     # 错误日志路径
+
+[color]
+  main = "magenta"
+  watcher = "cyan"
+
+[misc]
+  clean_on_exit = true                         # 退出时清理临时文件
