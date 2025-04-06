@@ -6,7 +6,7 @@ import { i18n } from '@lingui/core';
 import { loadCatalog } from "@/i18n";
 const languages = [
   { value: 'en', label: 'English' },
-  { value: 'zh_CN', label: '简体中文' },
+  { value: 'zh_cn', label: '简体中文' },
 ];
 
 async function changeLanguage(locale: "all" | Set<React.Key> & {anchorKey?: string; currentKey?: string}) {

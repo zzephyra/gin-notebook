@@ -1,27 +1,18 @@
 package model
 
 import (
+	"gin-notebook/pkg/utils/algorithm"
 	"time"
-
-	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type BaseModel struct {
-	ID        uint       `gorm:"primaryKey" json:"id"`
-	CreatedAt time.Time  `json:"created_at" gorm:"not null;autoCreateTime"`
-	UpdatedAt time.Time  `json:"updated_at" gorm:"autoUpdateTime"`
-	DeletedAt *time.Time `json:"deleted_at"`
+	ID        int64      `json:"id" gorm:"primaryKey"`
+	CreatedAt time.Time  `json:"created_at" gorm:"not null;autoCreateTime" time_format:"2006-01-02"`
+	UpdatedAt time.Time  `json:"updated_at" gorm:"autoUpdateTime" time_format:"2006-01-02"`
+	DeletedAt *time.Time `json:"deleted_at" time_format:"2006-01-02"`
 }
 
-type BaseModelWithUUID struct {
-	BaseModel
-	UUID string `json:"uuid" gorm:"type:uuid;"`
-}
-
-func (b *BaseModelWithUUID) BeforeCreate(tx *gorm.DB) (err error) {
-	if b.UUID == "" {
-		b.UUID = uuid.New().String()
-	}
+func (b *BaseModel) GenerateID() (err error) {
+	b.ID = algorithm.Snow.GenerateIDInt64()
 	return nil
 }

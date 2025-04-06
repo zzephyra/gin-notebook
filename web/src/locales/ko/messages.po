@@ -6,15 +6,99 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: ko\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
-#: src/layouts/base.tsx:33
+#: src/components/form/register/form.tsx:97
+msgid "Already have an account?"
+msgstr ""
+
+#: src/pages/auth/login.tsx:44
+msgid "Don't have an account yet?"
+msgstr ""
+
+#: src/layouts/base.tsx:29
 msgid "Languages"
 msgstr "bbb"
 
-#: src/components/LoginForm/form.tsx:37
+#: src/pages/auth/login.tsx:27
+#: src/pages/auth/login.tsx:33
+msgid "Login failed"
+msgstr ""
+
+#: src/pages/auth/login.tsx:34
+msgid "Login failed, please check your email and password"
+msgstr ""
+
+#: src/pages/auth/login.tsx:45
+msgid "Or"
+msgstr ""
+
+#: src/components/form/register/form.tsx:69
+msgid "Please check your email."
+msgstr ""
+
+#: src/components/form/register/form.tsx:40
+msgid "Please enter the verification code."
+msgstr ""
+
+#: src/components/form/register/form.tsx:35
+msgid "Please enter your email address."
+msgstr ""
+
+#: src/components/form/register/form.tsx:45
+msgid "Please enter your password."
+msgstr ""
+
+#: src/routes/index.tsx:12
+msgid "Please login first!"
+msgstr ""
+
+#: src/pages/auth/register.tsx:26
+#: src/pages/auth/register.tsx:35
+msgid "Register failed"
+msgstr ""
+
+#: src/pages/auth/register.tsx:36
+msgid "Register failed, please check your email and password"
+msgstr ""
+
+#: src/pages/auth/register.tsx:18
+msgid "Register success"
+msgstr ""
+
+#: src/pages/auth/register.tsx:19
+msgid "Register success, please check your email"
+msgstr ""
+
+#: src/components/form/login/form.tsx:37
 msgid "Remember me"
 msgstr ""
 
-#: src/components/LoginForm/form.tsx:40
+#: src/components/form/register/form.tsx:89
+msgid "Send Code"
+msgstr ""
+
+#: src/components/form/register/form.tsx:89
+msgid "Sent"
+msgstr ""
+
+#: src/components/form/login/form.tsx:40
 msgid "Sign In"
+msgstr ""
+
+#: src/components/form/register/form.tsx:94
+msgid "Sign Up"
+msgstr ""
+
+#: src/components/form/register/form.tsx:74
+msgid "Verification code failed to send."
+msgstr ""
+
+#: src/components/form/register/form.tsx:68
+msgid "Verification code has been sent."
 msgstr ""

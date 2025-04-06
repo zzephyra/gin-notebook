@@ -20,8 +20,6 @@ func Migrate(db *gorm.DB) {
 	fmt.Println("开始迁移数据库")
 	db.AutoMigrate(
 		&model.User{},
-		&model.Role{},
-		&model.RoleRelateUser{},
 	)
 }
 

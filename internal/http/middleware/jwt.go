@@ -1,38 +1,31 @@
 package middleware
 
 import (
-	"fmt"
+	"gin-notebook/internal/http/message"
+	"gin-notebook/internal/http/response"
+	"gin-notebook/pkg/utils/token"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 )
 
-func JWTAuth(secret string) gin.HandlerFunc {
+func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenString := c.GetHeader("Authorization")
-		if tokenString == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "未提供认证凭证"})
+		tokenString, err := c.Cookie("access_token")
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, response.Response(message.ERROR_TOKEN_EXIST, nil))
+			c.Abort()
 			return
 		}
 
-		token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("非预期的签名方法: %v", t.Header["alg"])
-			}
-			return []byte(secret), nil
-		})
-
-		if err != nil || !token.Valid {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "无效的访问令牌"})
+		userClaim, err := token.ParseToken(tokenString)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, response.Response(message.ERROR_USER_NOT_EXIST, nil))
+			c.Abort()
 			return
 		}
-
-		// 将声明存入上下文（可选）
-		if claims, ok := token.Claims.(jwt.MapClaims); ok {
-			c.Set("userID", claims["sub"])
-		}
-
+		c.Set("userID", userClaim.UserID)
+		c.Set("role", userClaim.Role)
 		c.Next()
 	}
 }

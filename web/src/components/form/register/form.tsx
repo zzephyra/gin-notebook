@@ -47,8 +47,8 @@ export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
         }
         onSubmit(
             data.email as string,
+            data.code as string,
             data.password as string,
-            data.code as string
         );
     };
 

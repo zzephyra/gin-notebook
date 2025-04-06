@@ -14,11 +14,11 @@ export var registerApi: string = "/auth/register";
 export var verificationCodeApi: string = "/auth/captchas";
 
 export async function registerUser(data: RegisterParams) {
-    let rsp = await axiosClient.post(registerApi, {data : data});
+    let rsp = await axiosClient.post(registerApi, data);
     return rsp.data;
 }
 
 export async function sendCode(data: CaptchasParams) {
-    let rsp = await axiosClient.post(verificationCodeApi, {data : data});
+    let rsp = await axiosClient.post(verificationCodeApi, data);
     return rsp.data;
 }

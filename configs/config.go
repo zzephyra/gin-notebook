@@ -17,12 +17,20 @@ type Config struct {
 	} `toml:"db"`
 	Server struct {
 		Debug bool `toml:"debug"`
+		Https bool `toml:"https"`
 	} `toml:"server"`
 	Cache struct {
 		Host string `toml:"host"`
 		Port string `toml:"port"`
 		DB   int    `toml:"db"`
-	}
+	} `toml:"cache"`
+	Email struct {
+		Host     string `toml:"host"`
+		Port     int    `toml:"port"`
+		User     string `toml:"user"`
+		Password string `toml:"password"`
+		Ssl      bool   `toml:"ssl"`
+	} `toml:"email"`
 }
 
 var Configs *Config

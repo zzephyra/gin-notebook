@@ -9,11 +9,8 @@ import (
 func RegisterAuthRoutes(r *gin.RouterGroup) {
 	authGroup := r.Group("/auth")
 	{
-		authGroup.POST("/login", func(ctx *gin.Context) {
-			ctx.JSON(200, gin.H{
-				"message": "login",
-			})
-		})
+		authGroup.POST("/login", auth.UserLogin)
 		authGroup.POST("/captchas", auth.SendRegisterCaptcha)
+		authGroup.POST("/register", auth.UserRegister)
 	}
 }

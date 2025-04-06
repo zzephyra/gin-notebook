@@ -1,0 +1,27 @@
+# 数据库配置
+[db]
+host = ""
+user = "postgres"
+port = ""
+password = ""
+database = "gnote"
+engine = "postgres"
+
+# 服务器配置
+[server]
+debug = true
+https = true # 需打开
+
+# 缓存配置
+[cache]
+host = "localhost"
+port = "6380"
+db = 0
+
+# 邮件配置
+[email]
+host = "smtp.qq.com"
+port = 465
+user = ''
+password = ''
+ssl = true

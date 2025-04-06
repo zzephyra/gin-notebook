@@ -5,25 +5,42 @@ import (
 	"gin-notebook/internal/api"
 	"gin-notebook/internal/pkg/cache"
 	"gin-notebook/internal/pkg/database"
+	"gin-notebook/internal/pkg/rbac"
 	"gin-notebook/pkg/logger"
+	"gin-notebook/pkg/utils/algorithm"
 )
 
 func Stop() {
+	logger.LogInfo("开始执行结束函数", nil)
 	// 关闭redis连接
-	cache.CloseRedisClient()
+	cache.RedisInstance.Close()
 }
 
 func main() {
+	var err error
 	config := configs.Load()
 	defer Stop()
 	// 初始化日志
 	logger.InitLogger(*config)
+	logger.LogInfo("logger init success", nil)
+
+	// 创建雪花算法实例
+	algorithm.NewSnowflake(1)
+	logger.LogInfo("Snowflake init success", nil)
+	logger.LogInfo("Start init casbin", nil)
+	// 创建casbin实例
+	err = rbac.NewEnforcer()
+	if err != nil {
+		logger.LogError(err, "casbin init error")
+		panic(err)
+	}
 
 	// 连接数据库
 	database.ConnectDB(config)
+	logger.LogInfo("Database connect success", nil)
 
 	// 连接redis
-	err := cache.InitRedisClinet(*config)
+	err = cache.InitRedisClinet(*config)
 	if err != nil {
 		panic(err)
 	}

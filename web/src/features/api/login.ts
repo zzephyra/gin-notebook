@@ -8,10 +8,11 @@ type LoginParams = {
 };
 
 type LoginResponse = {
-  token: string;
+    code: number;
+    error?: string;
 };
 
-export const loginUser = async (params: LoginParams): Promise<LoginResponse> => {
+export const loginUserApi = async (params: LoginParams): Promise<LoginResponse> => {
   const response = await axiosClient.post(loginApi, params);
   return response.data;
 };

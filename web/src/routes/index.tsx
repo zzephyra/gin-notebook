@@ -1,13 +1,24 @@
-import { createBrowserRouter, RouterProvider, BrowserRouter, Link, Routes, Route } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, redirect } from 'react-router-dom';
 import HomePage from '../pages/index';
 import LoginPage from '../pages/auth/login';
 import BaseLoginPage from '../layouts/base';
 import RegisterPage from '@/pages/auth/register';
-
+import RequireAuth from './RequireAuth';
 let router = createBrowserRouter([
     {
         path: "/",
-        Component: HomePage,
+        element: (
+            <RequireAuth>
+              <HomePage />
+            </RequireAuth>
+          ),
+        children: [
+            {   
+                path:"login",
+                index: true,
+                Component: LoginPage,
+            },
+        ]
     },
     {
         path: "/auth",
@@ -16,12 +27,10 @@ let router = createBrowserRouter([
             {   
                 path:"login",
                 index: true,
-                // loader: homeLoader,
                 Component: LoginPage,
             },
             {
                 path: "register",
-                // loader: homeLoader,
                 Component: RegisterPage,
             }
         ]
@@ -29,7 +38,7 @@ let router = createBrowserRouter([
   ]);
 
 function AppRouter() {
-  return <RouterProvider router={router} />
+  return <RouterProvider router={router}></RouterProvider>
 }
 
 export default AppRouter;

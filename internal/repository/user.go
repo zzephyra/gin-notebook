@@ -1,50 +1,54 @@
 package repository
 
 import (
+	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/model"
+	"gin-notebook/internal/pkg/database"
+	"gin-notebook/internal/pkg/rbac"
+	"gin-notebook/pkg/utils/algorithm"
 
 	"gorm.io/gorm"
 )
 
-type UserRepository struct {
-	model model.User
-	db    *gorm.DB
-}
+func CreateUser(data CreateUserValidation) error {
 
-func (r *UserRepository) CreateUser(user *model.User) (model.User, error) {
-	if err := r.db.Create(user).Error; err != nil {
-		return r.model, err
+	err := database.DB.Transaction(func(tx *gorm.DB) error {
+		user := &model.User{
+			Email:    data.Email,
+			Password: string(algorithm.HashPassword(data.Password)),
+		}
+
+		user.GenerateID()
+		rbac.SetUserRole(user.ID, rbac.USER)
+		if err := tx.Create(user).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		return err
 	}
-	return *user, nil
 
+	return nil
 }
 
-func (r *UserRepository) GetUserByID(id uint) (model.User, error) {
-	var user model.User
-	if err := r.db.First(&user, id).Error; err != nil {
-		return r.model, err
+func GetUserByEmail(email string) (*model.User, error) {
+	user := &model.User{}
+	if err := database.DB.Where("email = ?", email).First(user).Error; err != nil {
+		return nil, err
 	}
 	return user, nil
 }
 
-func (r *UserRepository) UpdateUser(user *model.User) (model.User, error) {
-	if err := r.db.Save(user).Error; err != nil {
-		return r.model, err
+func GetUserByID(id string) (*model.User, int) {
+	user := &model.User{}
+	if err := database.DB.Where("id = ?", id).First(user).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, message.ERROR_USER_NOT_EXIST
+		} else {
+			return nil, message.ERROR_DATABASE
+		}
 	}
-	return *user, nil
-}
-
-func (r *UserRepository) DeleteUser(id uint) error {
-	if err := r.db.Delete(&model.User{}, id).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *UserRepository) GetAllUsers() ([]model.User, error) {
-	var users []model.User
-	if err := r.db.Find(&users).Error; err != nil {
-		return nil, err
-	}
-	return users, nil
+	return user, 0
 }
