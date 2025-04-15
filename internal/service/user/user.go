@@ -5,8 +5,8 @@ import (
 	"gin-notebook/internal/repository"
 )
 
-func GetUserInfo(userID string) (responseCode int, data any) {
-	user, errCode := repository.GetUserByID(userID)
+func GetUserInfo(UserID int64) (responseCode int, data any) {
+	user, errCode := repository.GetUserByID(UserID)
 	if errCode != 0 {
 		return errCode, nil
 	}

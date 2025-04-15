@@ -5,6 +5,8 @@ export interface UserState {
     nickname: string,
     phone: string,
     roles: [], // e.g: ["admin", "user"]
+    avatar: string,
+    id: number,
 }
 
 export const userSlice = createSlice({
@@ -15,6 +17,8 @@ export const userSlice = createSlice({
         phone: "",
         roles: [], // e.g: ["admin", "user"]
         isAuth: false,
+        avatar: "",
+        id: 0,
     },
     reducers: {
         UpdateUserInfo: (state, action: PayloadAction<UserState>) => {
@@ -22,16 +26,26 @@ export const userSlice = createSlice({
             state.nickname = action.payload.nickname
             state.phone = action.payload.phone
             state.roles = action.payload.roles
+            state.avatar = action.payload.avatar
+            state.id = action.payload.id
             state.isAuth = true
-            console.log("UpdateUserInfo", state)
         },
         UpdateAuthState: (state, action: PayloadAction<{isAuth: boolean}>) => {
             state.isAuth = action.payload.isAuth
+        },
+        Logout: (state) => {
+            console.log("Logout")
+            state.email = ""
+            state.nickname = ""
+            state.phone = ""
+            state.roles = []
+            state.avatar = ""
+            state.isAuth = false
         }
     }
   })
   
-  export const { UpdateUserInfo, UpdateAuthState } = userSlice.actions
+  export const { UpdateUserInfo, UpdateAuthState, Logout } = userSlice.actions
   
   // Other code such as selectors can use the imported `RootState` type  
   export default userSlice.reducer

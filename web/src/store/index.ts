@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './features/user'
+import workspaceReducer from './features/workspace'
 
 export const store = configureStore({
   reducer: {
-    user: userReducer
+    user: userReducer,
+    workspace: workspaceReducer
   }
 })
 

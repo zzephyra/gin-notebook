@@ -1,4 +1,5 @@
 import axiosClient from "@/lib/api/client";
+import { registerApi, verificationCodeApi } from "./routes";
 
 interface RegisterParams {
     email: string;
@@ -9,9 +10,6 @@ interface RegisterParams {
 interface CaptchasParams {
     email: string;
 }
-
-export var registerApi: string = "/auth/register";
-export var verificationCodeApi: string = "/auth/captchas";
 
 export async function registerUser(data: RegisterParams) {
     let rsp = await axiosClient.post(registerApi, data);

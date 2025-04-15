@@ -1,0 +1,5 @@
+.reactjs-tiptap-editor {
+  div {
+    outline: none !important;
+  }
+}

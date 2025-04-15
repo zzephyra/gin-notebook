@@ -4,21 +4,19 @@ import (
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
+	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/pkg/rbac"
 	"gin-notebook/pkg/utils/algorithm"
 
 	"gorm.io/gorm"
 )
 
-func CreateUser(data CreateUserValidation) error {
-
+func CreateUser(data dto.CreateUserValidation) error {
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
 		user := &model.User{
 			Email:    data.Email,
 			Password: string(algorithm.HashPassword(data.Password)),
 		}
-
-		user.GenerateID()
 		rbac.SetUserRole(user.ID, rbac.USER)
 		if err := tx.Create(user).Error; err != nil {
 			return err
@@ -41,7 +39,7 @@ func GetUserByEmail(email string) (*model.User, error) {
 	return user, nil
 }
 
-func GetUserByID(id string) (*model.User, int) {
+func GetUserByID(id int64) (*model.User, int) {
 	user := &model.User{}
 	if err := database.DB.Where("id = ?", id).First(user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {

@@ -19,3 +19,16 @@ build:
 .PHONY: dev
 dev:
 	$(GO_PATH)/bin/air -c .air.toml
+
+.PHONY: customer
+customer:
+	go run cmd/customer/main.go
+
+.PHONY: worker
+worker:
+	go run cmd/worker/main.go
+
+.PHONY: frontend
+frontend:
+	@echo "Building frontend..."
+	cd web && npm run dev

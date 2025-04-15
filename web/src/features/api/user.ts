@@ -14,7 +14,7 @@ export async function getUserInfoApi(): Promise<UserInfoResponse> {
     try{
         let res = await axiosClient.get(userInfoApi, {});
         if (res.data.code === responseCode.SUCCESS) {
-            store.dispatch(UpdateUserInfo(res.data));
+            store.dispatch(UpdateUserInfo(res.data.data));
         }
         return res.data;
     }catch (err) {

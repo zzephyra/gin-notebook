@@ -5,6 +5,7 @@ import (
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/http/response"
 	"gin-notebook/internal/pkg/captcha"
+	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/pkg/rbac"
 	"gin-notebook/internal/repository"
 	"gin-notebook/pkg/logger"
@@ -12,7 +13,7 @@ import (
 	"strconv"
 )
 
-func ValidateNewUser(data repository.CreateUserValidation) (int, error) {
+func ValidateNewUser(data dto.CreateUserValidation) (int, error) {
 
 	if data.Email == "" || data.Password == "" {
 		return message.ERROR_EMAIL_OR_PASSWORD, fmt.Errorf("email or password is empty")
@@ -29,7 +30,7 @@ func ValidateNewUser(data repository.CreateUserValidation) (int, error) {
 	return 200, nil
 }
 
-func ValidateUserLogin(data repository.UserLoginValidation) (map[string]interface{}, error) {
+func ValidateUserLogin(data dto.UserLoginValidation) (map[string]interface{}, error) {
 	logger.LogInfo("ValidateNewUser", map[string]interface{}{
 		"email":    data.Email,
 		"password": data.Password,

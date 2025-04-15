@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react"
-import { I18nProvider } from "@lingui/react"
-import { i18n } from "@lingui/core"
-import { loadCatalog } from "./i18n"
+import { useEffect, useState } from "react";
+import { I18nProvider } from "@lingui/react";
+import { i18n } from "@lingui/core";
+import { loadCatalog } from "./i18n";
 import AppRouter from "./routes/index.tsx";
 import LoadingPage from "./pages/loading.tsx";
-import {Toaster} from 'react-hot-toast';
-import { store } from '@/store';
+import { Toaster } from "react-hot-toast";
 
 import { getSystemLang } from "./utils/tools.ts";
 import { getUserInfoApi } from "./features/api/user.ts";
@@ -15,7 +14,7 @@ function App() {
   useEffect(() => {
     const initI18n = async () => {
       await loadCatalog(getSystemLang()); // ✅ 等待语言包加载完成
-      await getUserInfoApi()
+      await getUserInfoApi();
       setIsLoaded(true); // 标记为已加载
     };
     initI18n();
@@ -27,10 +26,10 @@ function App() {
 
   return (
     <I18nProvider i18n={i18n}>
-        <Toaster></Toaster>
-        <AppRouter />
+      <Toaster></Toaster>
+      <AppRouter />
     </I18nProvider>
-  )
+  );
 }
 
-export default App
+export default App;

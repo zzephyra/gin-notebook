@@ -5,9 +5,11 @@ import (
 	"gin-notebook/internal/api"
 	"gin-notebook/internal/pkg/cache"
 	"gin-notebook/internal/pkg/database"
+	"gin-notebook/internal/pkg/queue"
 	"gin-notebook/internal/pkg/rbac"
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/algorithm"
+	validator "gin-notebook/pkg/utils/validatior"
 )
 
 func Stop() {
@@ -34,6 +36,12 @@ func main() {
 		logger.LogError(err, "casbin init error")
 		panic(err)
 	}
+
+	// 注册验证器
+	validator.RegisterValidator()
+
+	// 连接Kafka，创建provider
+	queue.NewProducerProvider()
 
 	// 连接数据库
 	database.ConnectDB(config)

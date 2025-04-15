@@ -9,7 +9,7 @@ import (
 )
 
 func UserInfoApi(c *gin.Context) {
-	userID := c.MustGet("userID").(string)
+	userID := c.MustGet("userID").(int64)
 	responseCode, data := user.GetUserInfo(userID)
 	if data != nil {
 		data = UserBriefSerializer(c, data.(*model.User))

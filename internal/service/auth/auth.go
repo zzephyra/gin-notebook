@@ -4,6 +4,7 @@ import (
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/http/response"
 	"gin-notebook/internal/pkg/captcha"
+	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/repository"
 	"gin-notebook/pkg/utils/token"
 	validator "gin-notebook/pkg/utils/validatior"
@@ -15,7 +16,7 @@ import (
 func UserLogin(c *gin.Context) {
 	// 获取请求参数
 
-	var u repository.UserLoginValidation
+	var u dto.UserLoginValidation
 	if err := c.ShouldBindJSON(&u); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return
@@ -31,13 +32,12 @@ func UserLogin(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_USER_NO_RIGHT, nil))
 		return
 	}
-	accessToken, refreshToken, err := token.GenerateTokens(data["UserId"].(int64), roles)
+	accessToken, err := token.GenerateTokens(data["UserId"].(int64), roles)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_GENERATE_TOKEN, nil))
 		return
 	}
-	token.StorageTokenInCookie(c, accessToken, "access_token", 3600, "/", "")
-	token.StorageTokenInCookie(c, refreshToken, "refresh_token", 3600*24*7, "/", "")
+	token.StorageTokenInCookie(c, accessToken, "access_token", 3600*24, "/", "")
 
 	// 返回响应
 	c.JSON(200, response.Response(message.SUCCESS, nil))
@@ -64,7 +64,7 @@ func SendRegisterCaptcha(c *gin.Context) {
 
 func UserRegister(c *gin.Context) {
 	// 这里是用户注册的逻辑
-	var user repository.CreateUserValidation
+	var user dto.CreateUserValidation
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return

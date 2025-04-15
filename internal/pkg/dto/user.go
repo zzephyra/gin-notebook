@@ -1,4 +1,4 @@
-package repository
+package dto
 
 type CreateUserValidation struct {
 	Code     string `validate:"required"`

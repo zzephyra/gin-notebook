@@ -27,6 +27,11 @@ const (
 	// 分类模块的错误
 	ERROR_CATENAME_USED  = 3001
 	ERROR_CATE_NOT_EXIST = 3002
+
+	// 工作区模块的错误
+	ERROR_WORKSPACE_NOT_EXIST = 4001
+	ERROR_WORKSPACE_VALIDATE  = 4002
+	ERROR_WORKSPACE_CREATE    = 4003
 )
 
 var CodeMsg = map[int]string{
@@ -50,5 +55,8 @@ var CodeMsg = map[int]string{
 	ERROR_CATENAME_USED:           "该分类已存在",
 	ERROR_CATE_NOT_EXIST:          "该分类不存在",
 	ERROR_SEND_CAPTCHA:            "发送验证码失败",
+	ERROR_DATABASE:                "数据库操作失败",
 	ERROR_PASSWORD_INVALID:        "密码错误",
+	ERROR_WORKSPACE_VALIDATE:      "创建工作区数据验证失败",
+	ERROR_WORKSPACE_CREATE:        "工作区创建失败",
 }

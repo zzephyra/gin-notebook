@@ -7,6 +7,5 @@ export const getScriptFromLang = (lang: string) => {
 export const getSystemLang = () => {
     const lang = navigator.language;
     const script = getScriptFromLang(lang);
-    console.log(script)
     return script || "en";
 }

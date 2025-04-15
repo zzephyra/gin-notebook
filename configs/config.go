@@ -31,6 +31,12 @@ type Config struct {
 		Password string `toml:"password"`
 		Ssl      bool   `toml:"ssl"`
 	} `toml:"email"`
+	Worker struct {
+		Brokers   string `toml:"brokers"`
+		Topic     string `toml:"topic"`
+		MaxWorker int    `toml:"max_worker"`
+		MaxReties int    `toml:"max_retries"`
+	}
 }
 
 var Configs *Config

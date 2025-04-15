@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"gin-notebook/configs"
+	"gin-notebook/internal/repository"
 	"gin-notebook/pkg/logger"
+	"strconv"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -12,11 +14,33 @@ import (
 
 // RedisClient 是 Redis 客户端的全局变量
 
+var (
+	GategoryMapKey = "note_category"
+)
+
 type RedisClient struct {
 	Client *redis.Client
 }
 
 var RedisInstance *RedisClient
+
+func StorageNoteCategory(rdb *redis.Client) error {
+	var err error
+	var ctx = context.Background()
+	data, err := repository.GetNoteCategoryMap()
+	if err != nil {
+		return err
+	}
+	logger.LogInfo("get note category", map[string]interface{}{
+		"data": data,
+	})
+	categories := make(map[int64]string)
+	for _, v := range *data {
+		categories[v.ID] = v.CategoryName
+	}
+	rdb.HSet(ctx, GategoryMapKey, categories)
+	return nil
+}
 
 func InitRedisClinet(c configs.Config) error {
 	// 连接 Redis
@@ -38,6 +62,10 @@ func InitRedisClinet(c configs.Config) error {
 	logger.LogDebug("redis connect success: ", msg)
 	RedisInstance = &RedisClient{
 		Client: rdb,
+	}
+	if err := StorageNoteCategory(rdb); err != nil {
+		logger.LogError(err, "failed to cache note category")
+		return err
 	}
 	return nil
 }
@@ -109,4 +137,14 @@ func (r *RedisClient) Close() error {
 	}
 	logger.LogDebug("redis connection closed", map[string]interface{}{})
 	return nil
+}
+
+func (r *RedisClient) GetNoteCategoryMap(CategoryID int64) (string, error) {
+	ctx := context.Background()
+	val, err := r.Client.HGet(ctx, GategoryMapKey, strconv.FormatInt(CategoryID, 10)).Result()
+	if err != nil {
+		logger.LogError(err, "failed to get redis key")
+		return "", err
+	}
+	return val, nil
 }

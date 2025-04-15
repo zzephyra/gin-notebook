@@ -1,4 +1,6 @@
+import { responseCode } from '@/features/constant/response';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 // 初始化拦截器
 
@@ -13,4 +15,23 @@ const axiosClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+axiosClient.interceptors.response.use(
+  (response) => {
+    if (response.data.code != responseCode.SUCCESS) {
+      // 如果接口报错，则默认提示错误信息
+      toast.error(response.data.error || 'Sorry, something went wrong');
+    }
+    return response;
+  },
+  (error) => {
+    // 统一处理错误，返回固定结构
+    return Promise.resolve({
+      data: {
+        error: 'Service Error',
+        code: 500,
+      },
+    });
+  }
+);
 export default axiosClient;
