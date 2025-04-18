@@ -2,9 +2,9 @@ import "./loading.css"
 import { LoadingProps } from "../type"
 
 
-export default function ChaseLoading({ color = "#5b5b5b", text = "" }: LoadingProps) {
+export default function ChaseLoading({ color = "#5b5b5b", text = "", className }: LoadingProps) {
     return (
-        <div className="flex flex-col items-center justify-center h-full">
+        <div className={`flex flex-col items-center justify-center h-full w-full ${className}`}>
             <div className="sk-chase" style={{ '--dot-color': color } as React.CSSProperties}>
                 <div className="sk-chase-dot"></div>
                 <div className="sk-chase-dot"></div>

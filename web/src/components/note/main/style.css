@@ -1,0 +1,9 @@
+.richtext-outline {
+    outline: none !important;
+    outline-offset: none !important;
+    box-shadow: none !important;
+}
+
+.share-modal {
+    height: calc(-100px + 100vh);
+}

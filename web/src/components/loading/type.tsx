@@ -1,4 +1,5 @@
 export interface LoadingProps {
-    color?: string;
-    text?: string;
-  } 
+  color?: string;
+  text?: string;
+  className?: string;
+} 

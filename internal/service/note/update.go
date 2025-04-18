@@ -1,29 +1,35 @@
 package note
 
-import "gin-notebook/internal/http/message"
+import (
+	"gin-notebook/internal/http/message"
+	"gin-notebook/internal/pkg/dto"
+	"gin-notebook/internal/repository"
+)
 
-type UpdateWorkspaceNoteParams struct {
-	WorkspaceID  int64   `json:"workspace_id" binding:"required"`
-	UserID       int64   `json:"user_id" binding:"required"`
-	NoteID       int64   `json:"note_id" binding:"required"`
-	Title        *string `json:"title"`
-	Content      *string `json:"content"`
-	CategoryID   *int64  `json:"category_id"`
-	Share        *bool   `json:"share"`
-	AllowEdit    *bool   `json:"allow_edit"`
-	AllowComment *bool   `json:"allow_comment"`
-	AllowShare   *bool   `json:"allow_share"`
-	Status       *string `json:"status"`
-	AllowJoin    *bool   `json:"allow_join"`
-	AllowInvite  *bool   `json:"allow_invite"`
-}
-
-func UpdateNote(params *UpdateWorkspaceNoteParams) (responseCode int, data any) {
+func UpdateNote(params *dto.UpdateWorkspaceNoteValidator) (responseCode int, data any) {
 	// Implement the logic to update the note in the database
 	// This typically involves querying the database for the note by ID,
 	// updating its fields with the provided values, and saving the changes.
 	// The actual implementation will depend on your database and ORM setup.
-	
+
+	err := repository.UpdateNote(params.NoteID, params.ToUpdate())
+	if err != nil {
+		return message.ERROR_DATABASE, nil
+	}
+
 	responseCode = message.SUCCESS
-	return 
+	return
+}
+
+func UpdateNoteCategory(params *dto.UpdateWorkspaceNoteCategoryDTO) (responseCode int, data any) {
+	// Implement the logic to update the note category in the database
+	// This typically involves querying the database for the category by ID,
+	// updating its fields with the provided values, and saving the changes.
+	// The actual implementation will depend on your database and ORM setup.
+	err := repository.UpdateNoteCategory(params.ID, params.ToMap())
+	if err != nil {
+		return message.ERROR_DATABASE, nil
+	}
+	responseCode = message.SUCCESS
+	return
 }

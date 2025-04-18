@@ -120,7 +120,7 @@ func GetWorkspaceNotesCategoryApi(c *gin.Context) {
 
 func UpdateWorkspaceNoteApi(c *gin.Context) {
 	userID := c.MustGet("userID").(int64)
-	params := &note.UpdateWorkspaceNoteParams{
+	params := &dto.UpdateWorkspaceNoteValidator{
 		UserID: userID,
 	}
 
@@ -130,6 +130,38 @@ func UpdateWorkspaceNoteApi(c *gin.Context) {
 		return
 	}
 
-	// responseCode, data := note.
-	c.JSON(http.StatusOK, response.Response(200, nil))
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusOK, response.Response(message.ERROR_WORKSPACE_NOTE_VALIDATE, nil))
+		return
+	}
+
+	responseCode, data := note.UpdateNote(params)
+	if responseCode != message.SUCCESS {
+		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
+		return
+	}
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func UpdateWorkspaceCategoryApi(c *gin.Context) {
+	userID := c.MustGet("userID").(int64)
+	params := &dto.UpdateWorkspaceNoteCategoryDTO{}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		log.Printf("params %s", err)
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+	params.OwnerID = &userID
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusOK, response.Response(message.ERROR_WORKSPACE_NOTE_VALIDATE, nil))
+		return
+	}
+
+	responseCode, data := note.UpdateNoteCategory(params)
+	if responseCode != message.SUCCESS {
+		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
+		return
+	}
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }

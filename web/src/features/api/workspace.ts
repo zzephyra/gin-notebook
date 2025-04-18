@@ -45,14 +45,3 @@ export async function GetWorkspace(params: SearchWorkspaceParams): Promise<ApiRe
     }
 }
 
-export async function AutoUpdateContent(data: { content: string, workspace_id: number }) {
-    try {
-        const res = await axiosClient.put(workspacesApi, data)
-        return res.data
-    } catch (err) {
-        return {
-            code: 500,
-            error: "Auto update content failed"
-        }
-    }
-}

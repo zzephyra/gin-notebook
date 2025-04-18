@@ -48,6 +48,20 @@ func CreateWorkspace(workspace *dto.WorkspaceValidation) (responseCode int, data
 			responseCode = message.ERROR_DATABASE
 			return err
 		}
+
+		// 创建默认的笔记分类
+		noteCategory := &model.NoteCategory{
+			WorkspaceID:  workspaceModel.ID,
+			CategoryName: "default",
+			OwnerID:      workspace.Owner,
+		}
+
+		_, err = repository.CreateNoteCategory(noteCategory)
+		if err != nil {
+			responseCode = message.ERROR_WORKSPACE_NOTE_CATEGORY_CREATE
+			return
+		}
+
 		logger.LogInfo("workspace UUID: ", map[string]interface{}{})
 		// 创建邀请链接
 		if workspace.UUID != "" {
@@ -77,7 +91,9 @@ func CreateWorkspace(workspace *dto.WorkspaceValidation) (responseCode int, data
 			}
 			err = repository.CreateWorkspaceInviteLink(tx, invite)
 			if err == nil {
-				return err
+				// 发送邀请邮件失败
+				responseCode = message.ERROR_WORKSPACE_INVITE_EMAIL
+				return
 			}
 		}
 

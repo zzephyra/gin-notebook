@@ -15,9 +15,9 @@ export default function BaseLayout() {
   let params = useParams();
   let state = store.getState();
   const { workspace } = state;
-  async function getWorkspaceData(){
+  async function getWorkspaceData() {
     const res = await GetWorkspace({ workspace_id: params.id });
-    if(res.data != undefined){
+    if (res.data != undefined) {
       store.dispatch(UpdateCurrentWorkspace({
         ...res.data
       }));
@@ -41,7 +41,6 @@ export default function BaseLayout() {
   ];
   return (
     <div className="flex h-full">
-      {workspace.currentWorkspace?.id}
       <SiderBar menuItems={menuItems}></SiderBar>
       <Outlet />
     </div>
