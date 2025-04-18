@@ -1,5 +1,5 @@
 # 定义常量
-BINARY_NAME=notebook
+BINARY_NAME=Mamoes
 GO_PATH=$(shell go env GOPATH)
 GO_FILES=$(shell find . -name '*.go' -not -path "./vendor/*")
 VERSION=$(shell git describe --tags --always)
@@ -19,6 +19,11 @@ build:
 .PHONY: dev
 dev:
 	$(GO_PATH)/bin/air -c .air.toml
+
+.PHONY: install
+install:
+	@echo "Installing $(BINARY_NAME)..."
+	go mod download
 
 .PHONY: customer
 customer:
