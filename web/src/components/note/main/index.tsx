@@ -1,6 +1,7 @@
 import { NoteProps } from "./script";
 import { useLingui } from "@lingui/react/macro";
 import Tiptap from "@/components/third-party/tiptap";
+import PlateEditor from "@/components/third-party/PlateEditor";
 import { useMemo, useState } from "react";
 import { debounce, List } from "lodash";
 import { AutoUpdateContent, UpdateNote } from "@/features/api/note";
@@ -108,9 +109,7 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                                                 <SettingsItem label={t`Category`} description={t`Categorize the note by selecting an existing note category.`}>
                                                     <Select size="sm" defaultSelectedKeys={[String(noteState.category_id)]} className="w-32" onSelectionChange={switchNoteCategory} >
                                                         {state.workspace.categoryList.map((category) => (
-                                                            <>
-                                                                <SelectItem key={`${category.id}`} className="text-slate-500">{category.category_name || t`No Category`}</SelectItem>
-                                                            </>
+                                                            <SelectItem key={category.id} className="text-slate-500">{category.category_name || t`No Category`}</SelectItem>
                                                         ))}
                                                     </Select>
                                                 </SettingsItem>
@@ -248,8 +247,8 @@ export default function NotePage(props: NoteProps) {
                     </div>
                 </div>
                 <div className="flex-1 overflow-auto p-4">
-
-                    <Tiptap content={content} onChangeContent={handleChangeContent}></Tiptap>
+                    <PlateEditor value={content} onValueChange={handleChangeContent}></PlateEditor>
+                    {/* <Tiptap content={content} onChangeContent={handleChangeContent}></Tiptap> */}
                 </div>
             </div>
         </>

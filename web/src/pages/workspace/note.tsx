@@ -197,7 +197,7 @@ export default function WorkspaceMain() {
           </button>
         </div>
         {!collapsed && <Divider orientation="vertical"></Divider>}
-        <div className="flex-1 flex flex-col ">
+        <div className="flex-1 flex flex-col w-0 ">
           {currentNote != null ? <NotePage note={currentNote} /> : <div ></div>}
         </div>
       </div>
