@@ -36,8 +36,8 @@ func GetNoteCategoryMap() (*[]model.NoteCategory, error) {
 	return &notesCategory, nil
 }
 
-func GetNoteCategory(workspaceID int64) (*[]dto.WorkspaceNoteCategoryDTO, error) {
-	var notesCategory []dto.WorkspaceNoteCategoryDTO
+func GetNoteCategory(workspaceID int64) (*[]dto.WorkspaceUpdateNoteCategoryDTO, error) {
+	var notesCategory []dto.WorkspaceUpdateNoteCategoryDTO
 	logger.LogDebug("获取工作区笔记分类:", map[string]interface{}{
 		"workspace_id": workspaceID,
 	})
@@ -58,6 +58,14 @@ func GetNoteCategory(workspaceID int64) (*[]dto.WorkspaceNoteCategoryDTO, error)
 func UpdateNote(NoteID int64, data map[string]interface{}) (err error) {
 	err = database.DB.Model(&model.Note{}).Where("id = ?", NoteID).Updates(data).Error
 	return
+}
+
+func CreateNote(note *model.Note) (int64, error) {
+	err := database.DB.Create(note).Error
+	if err != nil {
+		return 0, err
+	}
+	return note.ID, nil
 }
 
 func CreateNoteCategory(noteCategory *model.NoteCategory) (int64, error) {

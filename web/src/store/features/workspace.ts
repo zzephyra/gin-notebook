@@ -1,11 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, createEntityAdapter } from '@reduxjs/toolkit'
 import { Note } from '@/pages/workspace/type'
 
 export interface WorkspaceItem {
-    id: number,
+    id: string,
     name: string,
     description: string,
-    owner: number,
+    owner: string,
     created_at: string,
     owner_name: string,
     owner_avatar: string,
@@ -13,27 +13,32 @@ export interface WorkspaceItem {
     [key: string]: any
 }
 
+
 export interface CategoryItem {
-    id: number
+    id: string
     category_name: string
     total: number
 }
 
 
-
+export const notesAdapter = createEntityAdapter<Note>();
 
 export interface WorkspaceState {
     workspaceList: WorkspaceItem[],
     currentWorkspace: WorkspaceItem | null,
     categoryList: CategoryItem[],
-    noteList: Note[],
+    // noteList: Note[],
+    noteList: ReturnType<typeof notesAdapter.getInitialState>
+    selectedNoteId: string | null
 }
 
 const initialState: WorkspaceState = {
     workspaceList: [],
     currentWorkspace: null,
     categoryList: [],
-    noteList: [],
+    selectedNoteId: null,
+    // noteList: [],
+    noteList: notesAdapter.getInitialState(),
 };
 
 export const workspaceSlice = createSlice({
@@ -50,19 +55,16 @@ export const workspaceSlice = createSlice({
         UpdateNoteCategoryList: (state, action: PayloadAction<CategoryItem[]>) => {
             state.categoryList = action.payload
         },
+        setSelectedNoteId(state, { payload }) {
+            state.selectedNoteId = payload;
+        },
         UpdateNoteList: (state, action: PayloadAction<Note[]>) => {
-            state.noteList = action.payload
+            notesAdapter.addMany(state.noteList, action.payload);
         },
-        UpdateNoteByID: (state, action: PayloadAction<{ id: number, data: Object }>) => {
-            const index = state.noteList.findIndex(note => note.id === action.payload.id);
-            if (index !== -1) {
-                state.noteList[index] = {
-                    ...state.noteList[index],
-                    ...action.payload.data,
-                };
-            }
+        UpdateNoteByID: (state, action: PayloadAction<Note>) => {
+            notesAdapter.upsertOne(state.noteList, action.payload);
         },
-        UpdateCategoryByID: (state, action: PayloadAction<{ id: number, data: Object }>) => {
+        UpdateCategoryByID: (state, action: PayloadAction<{ id: string, data: Object }>) => {
             const index = state.categoryList.findIndex(c => c.id === action.payload.id);
             if (index !== -1) {
                 state.categoryList[index] = {
@@ -70,11 +72,21 @@ export const workspaceSlice = createSlice({
                     ...action.payload.data,
                 };
             }
+        }, InsertNewCategory: (state, action: PayloadAction<CategoryItem>) => {
+            const index = state.categoryList.findIndex(c => c.id === action.payload.id);
+            if (index === -1) {
+                state.categoryList.push(action.payload);
+            } else {
+                state.categoryList[index] = {
+                    ...state.categoryList[index],
+                    ...action.payload,
+                };
+            }
         }
     }
 })
 
-export const { UpdateWorkspaceList, UpdateCurrentWorkspace, UpdateNoteCategoryList, UpdateNoteList, UpdateNoteByID, UpdateCategoryByID } = workspaceSlice.actions
+export const { UpdateWorkspaceList, InsertNewCategory, UpdateCurrentWorkspace, setSelectedNoteId, UpdateNoteCategoryList, UpdateNoteList, UpdateNoteByID, UpdateCategoryByID } = workspaceSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type  
 export default workspaceSlice.reducer

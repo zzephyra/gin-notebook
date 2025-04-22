@@ -1,8 +1,8 @@
 export interface Note {
-    id: number
+    id: string
     title: string
-    category_id: number | null
-    workspace_id: number
+    category_id: string | null
+    workspace_id: string
     content: string
     share: boolean
     allow_edit: boolean
@@ -11,7 +11,7 @@ export interface Note {
     allow_invite: boolean
     allow_join: boolean
     status: string
-    owner_id: number
+    owner_id: string
     owner_name: string
     owner_avatar: string
     owner_email: string
@@ -19,7 +19,7 @@ export interface Note {
 }
 
 export interface NoteCategory {
-    id: number
+    id: string
     category_name: string
     total: number
 }

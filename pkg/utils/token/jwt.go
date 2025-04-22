@@ -10,18 +10,30 @@ import (
 var jwtKey = []byte("secret")
 
 type UserClaims struct {
-	UserID int64    `json:"user_id"`
-	Role   []string `json:"role"`
+	UserID   int64    `json:"user_id"`
+	Role     []string `json:"role"`
+	Avatar   string   `json:"avatar"`
+	Nickname *string  `json:"username"`
+	Email    string   `json:"email"`
 	jwt.RegisteredClaims
 }
 
 // 生成访问令牌和刷新令牌
-func GenerateTokens(userID int64, role []string) (accessToken string, err error) {
+func GenerateTokens(userID int64, role []string, Nickname *string, Email string, Avatar string) (accessToken string, err error) {
 	// 访问令牌 - 短期有效 (例如15分钟)
+
+	if Nickname == nil {
+		Nickname = new(string)
+		*Nickname = ""
+	}
+
 	accessExpiration := time.Now().Add(600 * time.Minute)
 	accessClaims := &UserClaims{
-		UserID: userID,
-		Role:   role,
+		UserID:   userID,
+		Role:     role,
+		Nickname: Nickname,
+		Email:    Email,
+		Avatar:   Avatar,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(accessExpiration),
 			Issuer:    "memoas",

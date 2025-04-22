@@ -67,3 +67,6 @@
    ```bash
    make install # go mod download
    ```
+
+### 已知问题
+- [ ] 原生drag与platejs存在冲突

@@ -10,15 +10,15 @@ import { useCreateEditor } from '@/components/editor/use-create-editor';
 import { SettingsDialog } from '@/components/editor/settings';
 import { Editor, EditorContainer } from '@/components/plate-ui/editor';
 
-export default function PlateEditor({ readOnly, value, onValueChange }: { readOnly?: boolean, value?: string, onValueChange?: (value: string) => void }) {
+export default function PlateEditor({ readOnly, value, onValueChange }: { readOnly?: boolean, value: string, onValueChange?: (value: string) => void }) {
     const editor = useCreateEditor({
         content: value,
-        readOnly
+        readOnly: !readOnly
     });
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <Plate editor={editor} onValueChange={({ editor }) => onValueChange && onValueChange(editor.api.markdown.serialize())}>
+            <Plate readOnly={!readOnly} editor={editor} onValueChange={({ editor }) => onValueChange && onValueChange(editor.api?.markdown.serialize())}>
                 <EditorContainer>
                     <Editor variant="demo" />
                 </EditorContainer>

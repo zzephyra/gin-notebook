@@ -27,7 +27,6 @@ import { Command, CommandList, InputCommand } from './command';
 import { Popover, PopoverAnchor, PopoverContent } from './popover';
 
 export function AIMenu() {
-  console.log(AIChatPlugin)
   const { api, editor } = useEditorPlugin(AIChatPlugin);
   const open = usePluginOption(AIChatPlugin, 'open');
   const mode = usePluginOption(AIChatPlugin, 'mode');

@@ -1,5 +1,5 @@
 import ChaseLoading from "@/components/loading/Chase/loading";
-import { GetNoteCategory, GetNoteList, UpdateCategory, UpdateNote } from "@/features/api/note";
+import { GetNoteCategory, GetNoteList, UpdateNote } from "@/features/api/note";
 import {
   Button,
   Divider, Input,
@@ -11,12 +11,11 @@ import {
   Checkbox,
   useDisclosure
 } from "@heroui/react";
-import { useEffect, useRef, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLingui } from "@lingui/react/macro";
 import { Note, NoteCategory } from "./type"
 import { Accordion, AccordionItem } from "@heroui/accordion";
-import PlusIcon from "@/components/icons/plus";
 import SearchIcon from "@/components/icons/search";
 import NotePage from "@/components/note/main";
 import { useSelector } from "react-redux";
@@ -24,97 +23,72 @@ import { RootState, store } from "@/store";
 import CategoryListBox from "@/components/note/categoryList";
 import FolderIcon from "@/components/icons/folder";
 import { responseCode } from "@/features/constant/response";
-import { UpdateCategoryByID, UpdateNoteByID } from "@/store/features/workspace";
+import { setSelectedNoteId, UpdateNoteByID } from "@/store/features/workspace";
 import { i18n } from "@lingui/core";
-import { DocumentIcon, DocumentTextIcon, FolderPlusIcon } from "@heroicons/react/24/outline";
 import NoteDropdown from "@/components/dropdown/note";
 import toast from "react-hot-toast";
+import { notesSelectors } from "@/store/selectors";
+import React from "react";
+import CategoryTitle from "@/components/category/title";
 
 
-function CategoryTitleProps({ title, workspaceID, categoryID }: { title: string, workspaceID: number, categoryID: number }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  function handleDoubleClick(e: React.MouseEvent<HTMLDivElement>) {
-    e.preventDefault();
-    setIsEditing(!isEditing)
-  }
-
-  useEffect(() => {
-    if (isEditing) {
-      // 等下一帧 DOM 更新完毕再 focus
-      requestAnimationFrame(() => inputRef.current?.focus());
-    }
-  }, [isEditing]);
-
-  async function handleChangeCategoryName() {
-    let newCategoryName = inputRef.current?.value;
-    setIsEditing(false);
-    let res = await UpdateCategory(workspaceID, categoryID, { category_name: newCategoryName })
-    if (res.code == responseCode.SUCCESS) {
-      store.dispatch(UpdateCategoryByID({ id: categoryID, data: { category_name: newCategoryName } }))
-    }
-  }
-
-
-  return (
-    <div onDoubleClick={handleDoubleClick} className="h-6">
-      {isEditing ? (
-        <Input ref={inputRef} defaultValue={title} onBlur={handleChangeCategoryName} classNames={{inputWrapper: "h-6 min-h-0"}}>
-          {title}
-        </Input>
-      ) : (
-        <span className="flex items-center gap-1 h-full">
-          {title}
-        </span>
-      )}
-    </div>
-  )
-}
 
 export default function WorkspaceMain() {
   const [collapsed, setCollapsed] = useState(false);
   var params = useParams();
   const { t } = useLingui();
   const [loading, setLoading] = useState(true);
-  const [currentNote, setCurrentNote] = useState<Note | null>(null)
   const { isOpen: isOpenIgnorePrompt, onOpen: onOpenPrompt, onOpenChange: onOpenPromptChange } = useDisclosure();
   const [promptText, setPromptTextName] = useState<string>("123");
-  const noteTransferRef = useRef({ noteID: 0, originalCategoryId: 0, targetCategoryId: 0 });
+  const noteTransferRef = useRef({ noteID: "", originalCategoryId: "", targetCategoryId: "" });
+  const categoryList = useSelector((state: RootState) => state.workspace.categoryList);
+  // 当前所选的笔记id
+  const selectedId = useSelector(
+    (state: RootState) => state.workspace.selectedNoteId
+  );
+  // 当前笔记
+  const note = useSelector(
+    (state: RootState) => notesSelectors.selectById(state, selectedId || "")  // adapter 字典
+  );
+
   useEffect(() => {
     Promise.all([GetNoteCategory(params.id), GetNoteList(params.id, 0, 50)]).then((res) => {
       setLoading(false);
     })
   }, [])
-  const categoryList = useSelector((state: RootState) => state.workspace.categoryList);
+
 
   if (loading) {
     return <ChaseLoading text={t`Loading notes...`} />;
   }
 
-  async function onDropNoteToCategory(noteId: number, targetCategoryId: number, originalCategoryId: number) {
+
+  async function onDropNoteToCategory(noteID: string, targetCategoryId: string, originalCategoryId: string) {
     // 在这里处理 drop 事件，例如更新状态或发送请求
-    if (params.id) {
-      const res = await UpdateNote(Number(params.id), noteId, { category_id: targetCategoryId });
+    let transformedNote = notesSelectors.selectById(store.getState(), noteID);
+    if (params.id && transformedNote) {
+      console.log("onDropNoteToCategory", noteID, targetCategoryId, originalCategoryId);
+      const res = await UpdateNote(params.id, noteID, { category_id: targetCategoryId });
       if (res.code != responseCode.SUCCESS) {
         toast.error(t`Move note failed`);
-        store.dispatch(UpdateNoteByID({ id: noteId, data: { category_id: originalCategoryId } }));
+        store.dispatch(UpdateNoteByID({ ...transformedNote, category_id: originalCategoryId }));
       }
     }
   }
 
-  const handleDrop = (e: React.DragEvent<HTMLElement>, categoryId: number, categoryName: string) => {
+
+
+  const handleDrop = (e: React.DragEvent<HTMLElement>, categoryId: string, categoryName: string) => {
     e.preventDefault();
     let ignorePrompt = sessionStorage.getItem("ignorePrompt") == "true";
     const noteIdStr = e.dataTransfer.getData("noteId");
     const originalCategoryIdStr = e.dataTransfer.getData("original_categoryId");
     if (noteIdStr && originalCategoryIdStr) {
-      const noteId = parseInt(noteIdStr, 10);
-      const originalCategoryId = parseInt(originalCategoryIdStr, 10);
-      if (noteId === 0 || originalCategoryId === 0 || categoryId === 0 || originalCategoryId == categoryId) {
+      const noteId = noteIdStr;
+      if (noteIdStr === undefined || originalCategoryIdStr === undefined || originalCategoryIdStr == categoryId) {
         return;
       }
-      noteTransferRef.current = { noteID: noteId, originalCategoryId: originalCategoryId, targetCategoryId: categoryId };
+      noteTransferRef.current = { noteID: noteId, originalCategoryId: originalCategoryIdStr, targetCategoryId: categoryId };
     } else {
       return;
     }
@@ -129,8 +103,8 @@ export default function WorkspaceMain() {
   function SwitchCategory() {
     // 在这里处理 drop 事件，例如更新状态或发送请求
     let { noteID, originalCategoryId, targetCategoryId } = noteTransferRef.current;
-
-    store.dispatch(UpdateNoteByID({ id: noteID, data: { category_id: targetCategoryId } }));
+    let transformedNote = notesSelectors.selectById(store.getState(), noteID);
+    store.dispatch(UpdateNoteByID({ ...transformedNote, category_id: targetCategoryId }));
     if (onDropNoteToCategory) {
       onDropNoteToCategory(noteID, targetCategoryId, originalCategoryId);
     }
@@ -139,6 +113,10 @@ export default function WorkspaceMain() {
   const handleDragOver = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault(); // 必须阻止默认行为，否则 drop 事件不会触发
   };
+
+  const setCurrentNote = (note: Note) => {
+    store.dispatch(setSelectedNoteId(note.id));
+  }
 
   return (
     <>
@@ -154,11 +132,32 @@ export default function WorkspaceMain() {
             </div>
             <Divider className="my-4"></Divider>
             <Accordion variant="splitted" isCompact selectionMode="multiple">
-              {categoryList.map((category: NoteCategory) => (
-                <AccordionItem onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, category.id, category.category_name)} className="flex-shrink-0 text-xl" key={category.id} aria-label={category.category_name} startContent={<FolderIcon />} title={<CategoryTitleProps workspaceID={Number(params.id)} categoryID={category.id} title={category.category_name} />}>
-                  <CategoryListBox key={category.id} category={category} onSelect={setCurrentNote} onDropNoteToCategory={onDropNoteToCategory} />
-                </AccordionItem>
-              ))}
+              {categoryList.map((category: NoteCategory) => {
+                return (
+                  <AccordionItem
+                    key={category.id}
+                    aria-label={category.category_name}
+                    className="flex-shrink-0 text-xl"
+                    startContent={<FolderIcon />}
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, category.id, category.category_name)}
+                    title={
+                      <CategoryTitle
+                        workspaceID={params.id || ""}
+                        categoryID={category.id}
+                        title={category.category_name}
+                      />
+                    }
+                  >
+                    <CategoryListBox
+                      category={category}
+                      onSelect={setCurrentNote}
+                      onDropNoteToCategory={onDropNoteToCategory}
+                    />
+                  </AccordionItem>
+                );
+              })}
+
             </Accordion>
             <Modal isOpen={isOpenIgnorePrompt} onOpenChange={onOpenPromptChange}>
               <ModalContent>
@@ -198,7 +197,7 @@ export default function WorkspaceMain() {
         </div>
         {!collapsed && <Divider orientation="vertical"></Divider>}
         <div className="flex-1 flex flex-col w-0 ">
-          {currentNote != null ? <NotePage note={currentNote} /> : <div ></div>}
+          {selectedId != null ? <NotePage note={note} /> : <div ></div>}
         </div>
       </div>
     </>

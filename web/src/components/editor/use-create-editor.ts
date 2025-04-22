@@ -223,10 +223,10 @@ Email example@example.com also converts automatically
 
 export const useCreateEditor = (
   {
+    content,
     components,
     override,
     readOnly,
-    content,
     ...options
   }: {
     content?: string;
@@ -252,7 +252,7 @@ export const useCreateEditor = (
         FloatingToolbarPlugin,
       ],
       value: (editor) =>
-        editor.getApi(MarkdownPlugin).markdown.deserialize(content, {
+        editor.getApi(MarkdownPlugin).markdown.deserialize(content || "", {
           remarkPlugins: [remarkMath, remarkGfm, remarkMdx, remarkEmoji as any],
         }),
       ...options,

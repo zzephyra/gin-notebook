@@ -15,7 +15,10 @@ func RegisterUserRoutes(r *gin.RouterGroup) {
 		authGroup.GET("", GetWorkspaceApi)
 		authGroup.GET("/notes/", GetWorkspaceNotesApi)
 		authGroup.PUT("/notes/", UpdateWorkspaceNoteApi)
+		authGroup.POST("/notes/", CreateWorkspaceNoteApi)
 		authGroup.GET("/notes/category/", GetWorkspaceNotesCategoryApi)
 		authGroup.PUT("/notes/category/", UpdateWorkspaceCategoryApi)
+		authGroup.POST("/notes/category/", CreateWorkspaceCategoryApi)
+		authGroup.GET("/notes/category/:id/", GetWorkspaceNotesCategoryApi)
 	}
 }

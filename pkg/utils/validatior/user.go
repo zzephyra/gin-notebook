@@ -8,7 +8,6 @@ import (
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/pkg/rbac"
 	"gin-notebook/internal/repository"
-	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/algorithm"
 	"strconv"
 )
@@ -31,10 +30,6 @@ func ValidateNewUser(data dto.CreateUserValidation) (int, error) {
 }
 
 func ValidateUserLogin(data dto.UserLoginValidation) (map[string]interface{}, error) {
-	logger.LogInfo("ValidateNewUser", map[string]interface{}{
-		"email":    data.Email,
-		"password": data.Password,
-	})
 	if data.Email == "" || data.Password == "" {
 		return response.Response(message.ERROR_EMAIL_OR_PASSWORD, nil), fmt.Errorf("email or password is empty")
 	}
@@ -51,7 +46,10 @@ func ValidateUserLogin(data dto.UserLoginValidation) (map[string]interface{}, er
 	}
 
 	return map[string]interface{}{
-		"UserId": user.ID,
-		"Role":   roles,
+		"UserId":   user.ID,
+		"Email":    user.Email,
+		"Nickname": user.Nickname,
+		"Avatar":   user.Avatar,
+		"Role":     roles,
 	}, nil
 }

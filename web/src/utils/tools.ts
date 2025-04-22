@@ -9,3 +9,11 @@ export const getSystemLang = () => {
     const script = getScriptFromLang(lang);
     return script || "en";
 }
+
+export function formDataToJSON(formData: FormData): Record<string, any> {
+    const data: Record<string, any> = {};
+    for (const [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    return data;
+}

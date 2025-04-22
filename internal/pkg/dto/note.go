@@ -6,45 +6,68 @@ import (
 )
 
 type WorkspaceNoteDTO struct {
-	ID           int64  `json:"id"`
-	Title        string `json:"title"`
+	ID           int64  `json:"id,string"`
+	Title        string `json:"title" validate:"required,min=1,max=100"`
 	Content      string `json:"content"`
-	WorkspaceID  int64  `json:"workspace_id"`
-	CategoryID   int64  `json:"category_id"`
-	Share        bool   `json:"share"`
+	WorkspaceID  int64  `json:"workspace_id,string" validate:"required"`
+	CategoryID   int64  `json:"category_id,string" validate:"required"`
 	AllowEdit    bool   `json:"allow_edit"`
 	AllowComment bool   `json:"allow_comment"`
 	AllowShare   bool   `json:"allow_share"`
-	Status       string `json:"status"`
+	Status       string `json:"status" validate:"omitempty, oneof=public private"`
 	AllowJoin    bool   `json:"allow_join"`
 	AllowInvite  bool   `json:"allow_invite"`
-	OwnerID      int64  `json:"owner_id"`
+	OwnerID      int64  `json:"owner_id,string"`
 	OwnerName    string `json:"owner_name"`
 	OwnerAvatar  string `json:"owner_avatar"`
 	OwnerEmail   string `json:"owner_email"`
-	OwnerPhone   string `json:"owner_phone"`
 }
 
-type WorkspaceNoteCategoryDTO struct {
-	ID           int64  `json:"id"`
+type WorkspaceUpdateNoteCategoryDTO struct {
+	ID           int64  `json:"id,string"`
 	CategoryName string `json:"category_name"`
 	Total        int64  `json:"total"`
 }
 
 type UpdateWorkspaceNoteValidator struct {
-	WorkspaceID  int64   `json:"workspace_id" binding:"required"`
-	UserID       int64   `json:"user_id" binding:"required"`
-	NoteID       int64   `json:"note_id" binding:"required"`
-	Title        *string `json:"title"`
+	WorkspaceID  int64   `json:"workspace_id,string" validate:"required,gt=0"`
+	OwnerID      int64   `json:"owner_id,string" validate:"required,gt=0"`
+	NoteID       int64   `json:"note_id,string" validate:"required"`
+	Title        *string `json:"title" validate:"omitempty,min=1,max=100"`
 	Content      *string `json:"content"`
-	CategoryID   *int64  `json:"category_id"`
-	Share        *bool   `json:"share"`
+	CategoryID   *int64  `json:"category_id,string"`
 	AllowEdit    *bool   `json:"allow_edit"`
 	AllowComment *bool   `json:"allow_comment"`
 	AllowShare   *bool   `json:"allow_share"`
 	Status       *string `json:"status"`
 	AllowJoin    *bool   `json:"allow_join"`
 	AllowInvite  *bool   `json:"allow_invite"`
+}
+
+type CreateWorkspaceNoteDTO struct {
+	BaseDto
+	WorkspaceID  int64             `json:"workspace_id,string" validate:"required,gt=0"`
+	OwnerID      int64             `json:"owner_id,string" validate:"required,gt=0"`
+	Title        string            `json:"title" validate:"min=1,max=100"`
+	Content      *string           `json:"content"`
+	CategoryID   int64             `json:"category_id,string" validate:"required,gt=0"`
+	AllowEdit    *bool             `json:"allow_edit"`
+	AllowComment *bool             `json:"allow_comment"`
+	AllowShare   *bool             `json:"allow_share"`
+	Status       *model.NoteStatus `json:"status" validate:"omitempty,oneof=private public group"` // 限制状态值范围
+	AllowJoin    *bool             `json:"allow_join"`
+	AllowInvite  *bool             `json:"allow_invite"`
+}
+
+func (dto *CreateWorkspaceNoteDTO) ToModel(ignoredFields []string) *model.Note {
+	note := &model.Note{}
+	// 使用通用函数复制字段
+	tools.CopyFields(dto, note, append(ignoredFields, "Status"))
+	// 单独处理枚举类型
+	if dto.Status != nil && !tools.Contains(ignoredFields, "Status") {
+		note.Status = model.NoteStatus(*dto.Status)
+	}
+	return note
 }
 
 func (v *UpdateWorkspaceNoteValidator) ToUpdate() map[string]interface{} {
@@ -57,13 +80,31 @@ func (v *UpdateWorkspaceNoteValidator) ToUpdate() map[string]interface{} {
 	return updates
 }
 
-type UpdateWorkspaceNoteCategoryDTO struct {
+type NoteCategoryBaseDTO struct {
 	BaseDto
-	WorkspaceID  int64   `json:"workspace_id" binding:"required"`
-	CategoryName *string `json:"category_name"`
+	WorkspaceID  *int64  `json:"workspace_id,string" validate:"omitempty,gt=0"`
+	CategoryName *string `json:"category_name" validate:"required,min=1,max=20"`
 }
 
-func (v *UpdateWorkspaceNoteCategoryDTO) ToMap() map[string]interface{} {
+func (v *NoteCategoryBaseDTO) ToMap() map[string]interface{} {
 	updates := tools.StructToUpdateMap(v, nil, []string{"ID", "WorkspaceID", "CreatedAt", "UpdatedAt"})
 	return updates
+}
+
+type UpdateNoteCategoryDTO struct {
+	NoteCategoryBaseDTO
+	ID int64 `json:"id,string" validate:"required,gt=0"`
+}
+
+type CreateNoteCategoryDTO struct {
+	BaseDto
+	CategoryName string `json:"category_name" validate:"required,min=1,max=20"`
+	WorkspaceID  int64  `json:"workspace_id,string" validate:"required"`
+}
+
+func (v *CreateNoteCategoryDTO) ToModel() *model.NoteCategory {
+	return &model.NoteCategory{
+		WorkspaceID:  v.WorkspaceID,
+		CategoryName: v.CategoryName,
+	}
 }

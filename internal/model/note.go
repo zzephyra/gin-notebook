@@ -16,13 +16,12 @@ type Note struct {
 	TagsID       int64      `json:"tags_id" gorm:"default:NULL; index:idx_tags_id"`
 	CategoryID   int64      `json:"category_id" gorm:"default:NULL; index:idx_category_id"`
 	OwnerID      int64      `json:"owner_id" gorm:"not null; index:idx_owner_id"`
-	Share        bool       `json:"share" gorm:"default:false"`
-	AllowEdit    bool       `json:"allow_edit" gorm:"default:true"`
-	AllowComment bool       `json:"allow_comment" gorm:"default:true"`
-	AllowShare   bool       `json:"allow_share" gorm:"default:true"`
+	AllowEdit    *bool      `json:"allow_edit" gorm:"default:true"`
+	AllowComment *bool      `json:"allow_comment" gorm:"default:true"`
+	AllowShare   *bool      `json:"allow_share" gorm:"default:true"`
 	Status       NoteStatus `json:"status" gorm:"default:'private'; index:idx_status"`
-	AllowJoin    bool       `json:"allow_join" gorm:"default:true"`
-	AllowInvite  bool       `json:"allow_invite" gorm:"default:true"`
+	AllowJoin    *bool      `json:"allow_join" gorm:"default:true"`
+	AllowInvite  *bool      `json:"allow_invite" gorm:"default:true"`
 }
 
 type NoteTag struct {

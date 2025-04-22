@@ -2,7 +2,7 @@ import { NoteProps } from "./script";
 import { useLingui } from "@lingui/react/macro";
 import Tiptap from "@/components/third-party/tiptap";
 import PlateEditor from "@/components/third-party/PlateEditor";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { debounce, List } from "lodash";
 import { AutoUpdateContent, UpdateNote } from "@/features/api/note";
 import { useParams } from "react-router-dom";
@@ -20,9 +20,11 @@ import {
     Switch,
     Select,
     SelectItem,
-    SharedSelection
+    SharedSelection,
+    Input
 } from "@heroui/react";
 import { motion } from "motion/react";
+import { Tooltip } from "@heroui/tooltip";
 import ShareIcon from "../../icons/share";
 import SettingIcon from "../../icons/setting";
 import "./style.css"
@@ -39,10 +41,9 @@ import { store } from "@/store";
 import { UpdateNoteByID } from "@/store/features/workspace";
 const iconSize = 14
 
-function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }: { isOpen: boolean, onOpenChange: (open: boolean) => void, activeKey?: string, note: Note, workspaceID: number }) {
+function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }: { isOpen: boolean, onOpenChange: (open: boolean) => void, activeKey?: string, note: Note, workspaceID: any }) {
     const { t } = useLingui();
     const [selectedKey, setSelectedKey] = useState([activeKey || "permission"]);
-    const [noteState, setNoteState] = useState(note);
     const state = store.getState()
     const handleSelectionChange = (keys: any) => {
         setSelectedKey([keys.currentKey]);
@@ -53,7 +54,7 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
         })
         if (res.code == responseCode.SUCCESS) {
             toast.success(t`Update successfully`);
-            setNoteState(prev => ({ ...prev, [key]: value }))
+            store.dispatch(UpdateNoteByID({ ...note, [key]: value }))
         } else {
             toast.error(res.error);
 
@@ -62,19 +63,33 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
 
     const disabledList = useMemo(() => {
         let list = [];
-        if (!noteState.allow_share) {
+        if (!note.allow_share) {
             list.push("link", "notion", "wechat");
         }
         return list;
-    }, [noteState.allow_share, noteState.allow_invite]);
+    }, [note.allow_share, note.allow_invite]);
 
+    /**
+     * Updates the category of a note in the workspace and reflects changes in the store.
+     * 
+     * @param key - The shared selection object containing the new category ID as currentKey
+     * @returns A Promise that resolves when the note category update operation completes
+     * 
+     * @remarks
+     * This function:
+     * 1. Extracts the category ID from the selection object
+     * 2. Makes an API call to update the note's category
+     * 3. Updates the Redux store with the new category on success
+     * 4. Shows a success or error toast notification based on the result
+     */
     const switchNoteCategory = async (key: SharedSelection) => {
-        let category_id = Number(key.currentKey);
+        let category_id = key.currentKey;
+        if (!category_id) return;
         let res = await UpdateNote(workspaceID, note.id, {
             category_id: category_id
         })
         if (res.code == responseCode.SUCCESS) {
-            store.dispatch(UpdateNoteByID({ id: note.id, data: { category_id: category_id } }))
+            store.dispatch(UpdateNoteByID({ ...note, category_id: category_id }))
             toast.success(t`Update successfully`);
         } else {
             toast.error(res.error);
@@ -104,10 +119,10 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                                         <>
                                             <SettingsWrapper title={t`Basic Information`}>
                                                 <SettingsItem label={t`Note ID`} description={t`The unique ID of the note.`}>
-                                                    <div className="text-slate-500">{noteState.id}</div>
+                                                    <div className="text-slate-500">{note.id}</div>
                                                 </SettingsItem>
                                                 <SettingsItem label={t`Category`} description={t`Categorize the note by selecting an existing note category.`}>
-                                                    <Select size="sm" defaultSelectedKeys={[String(noteState.category_id)]} className="w-32" onSelectionChange={switchNoteCategory} >
+                                                    <Select size="sm" defaultSelectedKeys={[String(note.category_id)]} className="w-32" onSelectionChange={switchNoteCategory} >
                                                         {state.workspace.categoryList.map((category) => (
                                                             <SelectItem key={category.id} className="text-slate-500">{category.category_name || t`No Category`}</SelectItem>
                                                         ))}
@@ -116,10 +131,10 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                                             </SettingsWrapper>
                                             <SettingsWrapper title={t`Note Settings`}>
                                                 <SettingsItem label={t`Enable Share`} description={t`Allow sharing this note with others or third-party applications.`} >
-                                                    <Switch defaultSelected={noteState.allow_share} onValueChange={(value) => updateNoteSetting("allow_share", value)} />
+                                                    <Switch defaultSelected={note.allow_share} onValueChange={(value) => updateNoteSetting("allow_share", value)} />
                                                 </SettingsItem>
-                                                <SettingsItem label={t`Enable Share`} description={t`Allow sharing this note with others or third-party applications.`} >
-                                                    <Switch defaultSelected={noteState.allow_share} onValueChange={(value) => updateNoteSetting("allow_share", value)} />
+                                                <SettingsItem label={t`Enable Edit`} description={t`Allow editing this note.`} >
+                                                    <Switch defaultSelected={note.allow_edit} onValueChange={(value) => updateNoteSetting("allow_edit", value)} />
                                                 </SettingsItem>
                                             </SettingsWrapper>
                                         </>
@@ -127,10 +142,13 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                                     {selectedKey[0] == "permission" && (
                                         <SettingsWrapper title={t`Permission`}>
                                             <SettingsItem label={t`Note Status`} description={t`Set the current note's status. When set to private, it will be invisible to others.`}>
-                                                <Select size="sm" defaultSelectedKeys={[noteState.status]} className="w-32" onSelectionChange={(key) => updateNoteSetting("status", key.currentKey)}>
+                                                <Select size="sm" defaultSelectedKeys={[note.status]} className="w-32" onSelectionChange={(key) => updateNoteSetting("status", key.currentKey)}>
                                                     <SelectItem key="public">{t`Public`}</SelectItem>
                                                     <SelectItem key="privite">{t`Privite`}</SelectItem>
                                                 </Select>
+                                            </SettingsItem>
+                                            <SettingsItem label={t`Note Status`} description={t`Set the current note's status. When set to private, it will be invisible to others.`}>
+                                                <Switch defaultSelected={note.allow_edit} onValueChange={(value) => updateNoteSetting("allow_edit", value)}></Switch>
                                             </SettingsItem>
                                         </SettingsWrapper>
                                     )}
@@ -170,15 +188,24 @@ export default function NotePage(props: NoteProps) {
     const [lastSaveTime, setLastSaveTime] = useState<string | null>(null);
     const [saving, setSaving] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
     const { isOpen: isOpenSetting, onOpen: onOpenSetting, onOpenChange: onOpenSettingChange } = useDisclosure();
-
+    const handleEditTitle = () => {
+        setIsEditingTitle(true);
+        if (inputRef) {
+            requestAnimationFrame(() => inputRef.current?.focus());
+        }
+    }
     const handleChangeContent = debounce((newContent: string) => {
+        if (params.id == undefined) return;
+
         setContent(newContent);
         if (content != newContent) {
             setSaving(true);
             AutoUpdateContent({
                 content: newContent,
-                workspace_id: Number(params.id),
+                workspace_id: params.id,
                 note_id: props.note.id
             }).then((res) => {
                 if (res.code == responseCode.SUCCESS) {
@@ -190,16 +217,18 @@ export default function NotePage(props: NoteProps) {
                 }
             })
         }
-
     }, 500)
 
+    const handleBlurTitle = () => {
+        setIsEditingTitle(false);
+        store.dispatch(UpdateNoteByID({ ...props.note, title: inputRef.current ? inputRef.current.value : props.note.title }))
+    }
 
     return (
         <>
             <div className="flex flex-col h-screen">
                 <div className="h-11 flex items-center justify-between px-4">
-
-                    <div>
+                    {/* <div>
                         {saving ?
                             <motion.div
                                 key="saving"
@@ -222,14 +251,19 @@ export default function NotePage(props: NoteProps) {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                             >
-                                <div className="">
-                                    {t`Last saved at ${lastSaveTime}`}
-                                </div>
+                                <Tooltip content={t`Last saved at ${lastSaveTime}`} showArrow={true}>
+                                    <div className="text-sm text-slate-400">
+                                        {t`Synchronized`}
+                                    </div>
+                                </Tooltip>
                             </motion.div>
                         }
-                    </div>
+                    </div> */}
                     <div>
-                        {props.note.title}
+                        {
+                            isEditingTitle ? <Input ref={inputRef} size="sm" defaultValue={props.note.title} onBlur={handleBlurTitle}></Input> : <span onClick={handleEditTitle} className="text-sm w-40 block hover:text-accent-foreground hover:bg-accent py-1 px-2 rounded-lg cursor-pointer" > {props.note.title}</span>
+                        }
+
                     </div>
                     <div className="flex items-center gap-2">
                         <Button variant="light" isIconOnly size="sm" className="px-2" onPress={onOpenSetting}>
@@ -238,7 +272,7 @@ export default function NotePage(props: NoteProps) {
                         <Button variant="light" isIconOnly size="sm" className="px-2" onPress={onOpenSetting}>
                             <SettingIcon></SettingIcon>
                         </Button>
-                        <NoteSettingModal isOpen={isOpenSetting} onOpenChange={onOpenSettingChange} note={props.note} workspaceID={Number(params.id)}></NoteSettingModal>
+                        <NoteSettingModal isOpen={isOpenSetting} onOpenChange={onOpenSettingChange} note={props.note} workspaceID={params.id}></NoteSettingModal>
                     </div>
                 </div>
                 <div>
@@ -247,8 +281,8 @@ export default function NotePage(props: NoteProps) {
                     </div>
                 </div>
                 <div className="flex-1 overflow-auto p-4">
-                    <PlateEditor value={content} onValueChange={handleChangeContent}></PlateEditor>
-                    {/* <Tiptap content={content} onChangeContent={handleChangeContent}></Tiptap> */}
+                    {/* 编辑器组件 */}
+                    <PlateEditor readOnly={props.note.allow_edit} value={props.note.content} onValueChange={handleChangeContent}></PlateEditor>
                 </div>
             </div>
         </>

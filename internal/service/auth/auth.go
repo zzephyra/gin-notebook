@@ -32,7 +32,7 @@ func UserLogin(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_USER_NO_RIGHT, nil))
 		return
 	}
-	accessToken, err := token.GenerateTokens(data["UserId"].(int64), roles)
+	accessToken, err := token.GenerateTokens(data["UserId"].(int64), roles, data["Nickname"].(*string), data["Email"].(string), data["Avatar"].(string))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_GENERATE_TOKEN, nil))
 		return

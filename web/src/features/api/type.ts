@@ -20,3 +20,18 @@ export type WorkspaceDataType = {
     allow_share: boolean;
     allow_comment: boolean;
 }
+
+export type WorkspaceNoteCreateParams = {
+    title: string,
+    workspace_id: string,
+    category_id: string,
+    tags_id?: string,
+    status?: string,
+    content?: string,
+    allow_edit?: boolean,
+    allow_invite?: boolean;
+    allow_join?: boolean;
+    allow_public?: boolean;
+    allow_share?: boolean;
+    allow_comment?: boolean;
+}

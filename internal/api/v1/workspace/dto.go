@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"fmt"
 	"gin-notebook/internal/pkg/dto"
 	"time"
 
@@ -59,5 +60,26 @@ func WorkspaceSerializer(c *gin.Context, workspace *dto.WorkspaceListDTO) Worksp
 		AllowPublic:   workspace.AllowPublic,
 		AllowShare:    workspace.AllowShare,
 		AllowComment:  workspace.AllowComment,
+	}
+}
+
+func WorkspaceNoteSerializer(c *gin.Context, note *dto.CreateWorkspaceNoteDTO) *dto.WorkspaceNoteDTO {
+	fmt.Println(note.Content)
+	return &dto.WorkspaceNoteDTO{
+		ID:           *note.ID,
+		Title:        note.Title,
+		Content:      *note.Content,
+		WorkspaceID:  note.WorkspaceID,
+		CategoryID:   note.CategoryID,
+		AllowEdit:    *note.AllowEdit,
+		AllowComment: *note.AllowComment,
+		AllowShare:   *note.AllowShare,
+		Status:       string(*note.Status),
+		AllowJoin:    *note.AllowJoin,
+		AllowInvite:  *note.AllowInvite,
+		OwnerID:      note.OwnerID,
+		OwnerName:    *c.MustGet("nickname").(*string),
+		OwnerAvatar:  c.MustGet("avatar").(string),
+		OwnerEmail:   c.MustGet("email").(string),
 	}
 }

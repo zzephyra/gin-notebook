@@ -3,7 +3,9 @@ import { workspaceNotesApi, workspaceNoteCategoryApi } from "./routes";
 import { i18n } from "@lingui/core";
 import { responseCode } from "../constant/response";
 import { store } from "@/store";
-import { UpdateNoteCategoryList, UpdateNoteList } from "@/store/features/workspace";
+import { InsertNewCategory, UpdateNoteByID, UpdateNoteCategoryList, UpdateNoteList } from "@/store/features/workspace";
+import toast from "react-hot-toast";
+import { WorkspaceNoteCreateParams } from "./type";
 
 export async function GetNoteList(workspaceId: any, offset: number, limit: number) {
     if (!workspaceId) {
@@ -20,8 +22,7 @@ export async function GetNoteList(workspaceId: any, offset: number, limit: numbe
 
     let res = await axiosClient.get(workspaceNotesApi, { params: { workspace_id: workspaceId, offset, limit } });
     if (res.data.code == responseCode.SUCCESS) {
-        console.log(res.data.data)
-        store.dispatch(UpdateNoteList(res.data.data.notes))
+        store.dispatch(UpdateNoteList(res.data.data.notes || []))
     }
     return res.data;
 }
@@ -38,7 +39,7 @@ export async function GetNoteCategory(workspaceId: any) {
     return res.data;
 }
 
-export async function AutoUpdateContent(data: { content: string, workspace_id: number, note_id: number }) {
+export async function AutoUpdateContent(data: { content: string, workspace_id: string, note_id: string }) {
     try {
         const res = await axiosClient.put(workspaceNotesApi, data)
         return res.data
@@ -50,7 +51,7 @@ export async function AutoUpdateContent(data: { content: string, workspace_id: n
     }
 }
 
-export async function UpdateNote(workspace_id: number, note_id: number, data: Object) {
+export async function UpdateNote(workspace_id: string, note_id: string, data: Object) {
     try {
         const res = await axiosClient.put(workspaceNotesApi, { workspace_id, note_id, ...data })
         return res.data
@@ -63,10 +64,43 @@ export async function UpdateNote(workspace_id: number, note_id: number, data: Ob
 
 }
 
-export async function UpdateCategory(workspace_id: number, category_id: number, data: Object) {
+export async function UpdateCategory(workspace_id: any, category_id: any, data: Object) {
     try {
         const res = await axiosClient.put(workspaceNoteCategoryApi, { workspace_id, id: category_id, ...data })
-        
+        return res.data
+    } catch (err) {
+        return {
+            code: 500,
+            error: "Update note failed"
+        }
+    }
+}
+
+export async function CreateCategory(data: { category_name: any, workspace_id: any }) {
+    try {
+        const res = await axiosClient.post(workspaceNoteCategoryApi, data)
+        if (res.data.code == responseCode.SUCCESS) {
+            store.dispatch(InsertNewCategory({ ...res.data.data, total: 0 }))
+        } else {
+            toast.error(i18n._("Add new note failed"))
+        }
+        return res.data
+    } catch (err) {
+        return {
+            code: 500,
+            error: "Update note failed"
+        }
+    }
+}
+
+export async function CreateNote(data: WorkspaceNoteCreateParams) {
+    try {
+        const res = await axiosClient.post(workspaceNotesApi, data)
+        if (res.data.code == responseCode.SUCCESS) {
+            store.dispatch(UpdateNoteByID(res.data.data))
+        } else {
+            toast.error(i18n._("Add new category failed"))
+        }
         return res.data
     } catch (err) {
         return {

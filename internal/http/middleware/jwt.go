@@ -24,8 +24,12 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		// 将用户信息存储到上下文中
 		c.Set("userID", userClaim.UserID)
 		c.Set("role", userClaim.Role)
+		c.Set("nickname", userClaim.Nickname)
+		c.Set("email", userClaim.Email)
+		c.Set("avatar", userClaim.Avatar)
 		c.Next()
 	}
 }
