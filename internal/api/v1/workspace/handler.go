@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/http/response"
 	"gin-notebook/internal/pkg/dto"
@@ -206,4 +207,27 @@ func CreateWorkspaceCategoryApi(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, response.Response(responseCode, data))
+}
+
+func DeleteWorkspaceNoteApi(c *gin.Context) {
+	userID := c.MustGet("userID").(int64)
+	params := &dto.DeleteNoteCategoryDTO{}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		log.Printf("params %s", err)
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+	params.OwnerID = &userID
+	fmt.Println("params", params)
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusOK, response.Response(message.ERROR_WORKSPACE_NOTE_VALIDATE, nil))
+		return
+	}
+	responseCode, data := note.DeleteNote(params)
+	if responseCode != message.SUCCESS {
+		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
+		return
+	}
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }

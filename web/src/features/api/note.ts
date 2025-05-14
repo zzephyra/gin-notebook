@@ -1,9 +1,9 @@
 import axiosClient from "@/lib/api/client";
-import { workspaceNotesApi, workspaceNoteCategoryApi } from "./routes";
+import { workspaceNotesApi, workspaceNoteCategoryApi, workspaceNoteDeleteApi } from "./routes";
 import { i18n } from "@lingui/core";
 import { responseCode } from "../constant/response";
 import { store } from "@/store";
-import { InsertNewCategory, UpdateNoteByID, UpdateNoteCategoryList, UpdateNoteList } from "@/store/features/workspace";
+import { InsertNewCategory, UpdateNoteByID, DeleteNoteByID, setSelectedNoteId, UpdateNoteCategoryList, UpdateNoteList } from "@/store/features/workspace";
 import toast from "react-hot-toast";
 import { WorkspaceNoteCreateParams } from "./type";
 
@@ -100,6 +100,27 @@ export async function CreateNote(data: WorkspaceNoteCreateParams) {
             store.dispatch(UpdateNoteByID(res.data.data))
         } else {
             toast.error(i18n._("Add new category failed"))
+        }
+        return res.data
+    } catch (err) {
+        return {
+            code: 500,
+            error: "Update note failed"
+        }
+    }
+}
+
+export async function DeleteNote(workspace_id: string, note_id: string) {
+    try {
+        const res = await axiosClient.post(workspaceNoteDeleteApi, { workspace_id, note_id })
+        if (res.data.code == responseCode.SUCCESS) {
+            var state = store.getState();
+            if (state.workspace.selectedNoteId == note_id) {
+                store.dispatch(setSelectedNoteId(null));
+            }
+            store.dispatch(DeleteNoteByID(note_id))
+        } else {
+            toast.error(i18n._("Delete note failed"))
         }
         return res.data
     } catch (err) {

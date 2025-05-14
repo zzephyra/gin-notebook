@@ -6,21 +6,22 @@ import (
 )
 
 type WorkspaceNoteDTO struct {
-	ID           int64  `json:"id,string"`
-	Title        string `json:"title" validate:"required,min=1,max=100"`
-	Content      string `json:"content"`
-	WorkspaceID  int64  `json:"workspace_id,string" validate:"required"`
-	CategoryID   int64  `json:"category_id,string" validate:"required"`
-	AllowEdit    bool   `json:"allow_edit"`
-	AllowComment bool   `json:"allow_comment"`
-	AllowShare   bool   `json:"allow_share"`
-	Status       string `json:"status" validate:"omitempty, oneof=public private"`
-	AllowJoin    bool   `json:"allow_join"`
-	AllowInvite  bool   `json:"allow_invite"`
-	OwnerID      int64  `json:"owner_id,string"`
-	OwnerName    string `json:"owner_name"`
-	OwnerAvatar  string `json:"owner_avatar"`
-	OwnerEmail   string `json:"owner_email"`
+	ID           int64   `json:"id,string"`
+	Title        string  `json:"title" validate:"required,min=1,max=100"`
+	Content      string  `json:"content"`
+	WorkspaceID  int64   `json:"workspace_id,string" validate:"required"`
+	CategoryID   int64   `json:"category_id,string" validate:"required"`
+	AllowEdit    bool    `json:"allow_edit"`
+	AllowComment bool    `json:"allow_comment"`
+	AllowShare   bool    `json:"allow_share"`
+	Status       string  `json:"status" validate:"omitempty, oneof=public private"`
+	AllowJoin    bool    `json:"allow_join"`
+	AllowInvite  bool    `json:"allow_invite"`
+	OwnerID      int64   `json:"owner_id,string"`
+	OwnerName    string  `json:"owner_name"`
+	OwnerAvatar  string  `json:"owner_avatar"`
+	OwnerEmail   string  `json:"owner_email"`
+	Deleted_at   *string `json:"deleted_at"`
 }
 
 type WorkspaceUpdateNoteCategoryDTO struct {
@@ -94,6 +95,12 @@ func (v *NoteCategoryBaseDTO) ToMap() map[string]interface{} {
 type UpdateNoteCategoryDTO struct {
 	NoteCategoryBaseDTO
 	ID int64 `json:"id,string" validate:"required,gt=0"`
+}
+
+type DeleteNoteCategoryDTO struct {
+	OwnerID     *int64 `json:"owner_id,string"`
+	ID          int64  `json:"note_id,string" validate:"required,gt=0"`
+	WorkspaceID int64  `json:"workspace_id,string" validate:"required,gt=0"`
 }
 
 type CreateNoteCategoryDTO struct {

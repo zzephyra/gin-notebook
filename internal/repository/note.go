@@ -15,7 +15,7 @@ func GetNotesList(workspaceID string, userID int64, limit int, offset int) (*[]d
 		Joins("LEFT JOIN users ON users.id = notes.owner_id").
 		Limit(limit).
 		Offset(offset).
-		Where("workspace_id = ? AND owner_id = ?", workspaceID, userID).
+		Where("workspace_id = ? AND owner_id = ? AND notes.deleted_at is NULL", workspaceID, userID).
 		Scan(&notes).Error
 	if err != nil {
 		return nil, err
@@ -82,4 +82,9 @@ func UpdateNoteCategory(noteCategoryID int64, data map[string]interface{}) error
 		return err
 	}
 	return nil
+}
+
+func DeleteNote(noteID int64) error {
+	err := database.DB.Delete(&model.Note{}, noteID).Error
+	return err
 }

@@ -181,7 +181,8 @@ export default function WorkspaceMain() {
                       <Button size="sm" color="primary" onPress={() => { SwitchCategory(); onClose(); }}>
                         {t`Move`}
                       </Button>
-                    </ModalFooter></>
+                    </ModalFooter>
+                  </>
                 )}
               </ModalContent>
             </Modal>

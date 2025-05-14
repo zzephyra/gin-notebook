@@ -1,16 +1,17 @@
 import { NoteProps } from "./script";
 import { useLingui } from "@lingui/react/macro";
-import Tiptap from "@/components/third-party/tiptap";
 import PlateEditor from "@/components/third-party/PlateEditor";
 import { useMemo, useRef, useState } from "react";
-import { debounce, List } from "lodash";
-import { AutoUpdateContent, UpdateNote } from "@/features/api/note";
+import { debounce } from "lodash";
+import { AutoUpdateContent, DeleteNote, UpdateNote } from "@/features/api/note";
 import { useParams } from "react-router-dom";
 import { responseCode } from "@/features/constant/response";
 import LoadingArrow from "../../icons/loading";
-import { Button } from "@heroui/button";
 import {
     Modal,
+    ModalFooter,
+    ModalHeader,
+    Button,
     ListboxSection,
     ModalContent,
     Listbox,
@@ -39,11 +40,53 @@ import toast from "react-hot-toast";
 import SquareIcon from "../../icons/square";
 import { store } from "@/store";
 import { UpdateNoteByID } from "@/store/features/workspace";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 const iconSize = 14
+
+function DeleteNoteModal({ isOpen, onOpenChange, note }: { isOpen: boolean, onOpenChange: (open: boolean) => void, note: Note }) {
+    const { t } = useLingui();
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const handleDeleteNote = async () => {
+        setDeleteLoading(true);
+        let res = await DeleteNote(note.workspace_id, note.id);
+        if (res.code == responseCode.SUCCESS) {
+            toast.success(t`Delete successfully`);
+            onOpenChange(false);
+        } else {
+            toast.error(res.error);
+        }
+        setDeleteLoading(false);
+    }
+    return (
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+            <ModalContent>
+                <ModalHeader>
+                    <div className="flex items-center gap-2">
+                        {t`Delete`}
+                        <span className="bg-gray-200 px-2 rounded-lg">{note.title}</span>
+                    </div>
+                </ModalHeader>
+                <ModalBody>
+                    <div className="flex items-center gap-2">
+                        <ExclamationTriangleIcon color="#FBBF24" className="w-10" />
+                        <span>
+                            {t`Are you sure you want to delete this note? This action cannot be undone.`}
+                        </span>
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant="light" onPress={() => onOpenChange(false)}>{t`Cancel`}</Button>
+                    <Button color="danger" isLoading={deleteLoading} onPress={handleDeleteNote}>{t`Delete`}</Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+    )
+}
 
 function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }: { isOpen: boolean, onOpenChange: (open: boolean) => void, activeKey?: string, note: Note, workspaceID: any }) {
     const { t } = useLingui();
     const [selectedKey, setSelectedKey] = useState([activeKey || "permission"]);
+    const { isOpen: isOpenDeleteModal, onOpen: onOpenDeleteModal, onOpenChange: onOpenDeleteModalChange } = useDisclosure();
     const state = store.getState()
     const handleSelectionChange = (keys: any) => {
         setSelectedKey([keys.currentKey]);
@@ -137,6 +180,14 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                                                     <Switch defaultSelected={note.allow_edit} onValueChange={(value) => updateNoteSetting("allow_edit", value)} />
                                                 </SettingsItem>
                                             </SettingsWrapper>
+                                            <SettingsWrapper title={t`Danger Zone`}>
+                                                <SettingsItem label={t`Delete Note`} description={t`Deleting this item is a permanent action and cannot be reversed. Proceed with caution.`} >
+                                                    <Button color="danger" size="sm" onPress={onOpenDeleteModal}>
+                                                        {t`Delete Note`}
+                                                    </Button>
+                                                </SettingsItem>
+                                            </SettingsWrapper>
+                                            <DeleteNoteModal isOpen={isOpenDeleteModal} onOpenChange={onOpenDeleteModalChange} note={note}></DeleteNoteModal>
                                         </>
                                     )}
                                     {selectedKey[0] == "permission" && (
@@ -200,7 +251,7 @@ export default function NotePage(props: NoteProps) {
     const handleChangeContent = debounce((newContent: string) => {
         if (params.id == undefined) return;
 
-        setContent(newContent);
+        store.dispatch(UpdateNoteByID({ ...props.note, content: newContent }))
         if (content != newContent) {
             setSaving(true);
             AutoUpdateContent({

@@ -3,7 +3,7 @@ import {
   RouterProvider,
   redirect,
 } from "react-router-dom";
-import HomePage from "../pages/index";
+// import HomePage from "../pages/index";
 import LoginPage from "../pages/auth/login";
 import BaseSimplePage from "../layouts/base";
 import RegisterPage from "@/pages/auth/register";

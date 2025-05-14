@@ -6,3 +6,4 @@ export const workspacesApi: string = "/workspace";
 export const workspacesListApi: string = "/workspace/list";
 export const workspaceNotesApi: string = "/workspace/notes/";
 export const workspaceNoteCategoryApi: string = "/workspace/notes/category/";
+export const workspaceNoteDeleteApi: string = "/workspace/note/delete/";

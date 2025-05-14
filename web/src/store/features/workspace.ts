@@ -64,6 +64,9 @@ export const workspaceSlice = createSlice({
         UpdateNoteByID: (state, action: PayloadAction<Note>) => {
             notesAdapter.upsertOne(state.noteList, action.payload);
         },
+        DeleteNoteByID: (state, action: PayloadAction<string>) => {
+            notesAdapter.removeOne(state.noteList, action.payload);
+        },
         UpdateCategoryByID: (state, action: PayloadAction<{ id: string, data: Object }>) => {
             const index = state.categoryList.findIndex(c => c.id === action.payload.id);
             if (index !== -1) {
@@ -72,7 +75,8 @@ export const workspaceSlice = createSlice({
                     ...action.payload.data,
                 };
             }
-        }, InsertNewCategory: (state, action: PayloadAction<CategoryItem>) => {
+        },
+        InsertNewCategory: (state, action: PayloadAction<CategoryItem>) => {
             const index = state.categoryList.findIndex(c => c.id === action.payload.id);
             if (index === -1) {
                 state.categoryList.push(action.payload);
@@ -86,7 +90,7 @@ export const workspaceSlice = createSlice({
     }
 })
 
-export const { UpdateWorkspaceList, InsertNewCategory, UpdateCurrentWorkspace, setSelectedNoteId, UpdateNoteCategoryList, UpdateNoteList, UpdateNoteByID, UpdateCategoryByID } = workspaceSlice.actions
+export const { UpdateWorkspaceList, DeleteNoteByID, InsertNewCategory, UpdateCurrentWorkspace, setSelectedNoteId, UpdateNoteCategoryList, UpdateNoteList, UpdateNoteByID, UpdateCategoryByID } = workspaceSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type  
 export default workspaceSlice.reducer
