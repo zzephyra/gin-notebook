@@ -16,7 +16,6 @@ export default function CategoryListBox({ category, onSelect, onDropNoteToCatego
     );
 
     const handleDragStart = (e: React.DragEvent<HTMLLIElement>, noteId: string) => {
-        console.log("handleDragStart", noteId);
         e.dataTransfer.setData("noteId", noteId);
         e.dataTransfer.setData("original_categoryId", category.id.toString());
     };

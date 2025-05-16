@@ -115,3 +115,17 @@ func (v *CreateNoteCategoryDTO) ToModel() *model.NoteCategory {
 		CategoryName: v.CategoryName,
 	}
 }
+
+type RecommendNoteCategoryQueryDTO struct {
+	WorkspaceID int64 `form:"workspace_id,string" validate:"required"`
+}
+
+type RecommendNoteCategoryDTO struct {
+	Hot    *[]model.NoteCategory `json:"hot"`
+	Recent *[]model.NoteCategory `json:"recent"`
+}
+
+type NoteCategoryQueryDTO struct {
+	WorkspaceID  int64  `form:"workspace_id,string" validate:"required"`
+	CategoryName string `form:"kw" validate:"omitempty,min=1,max=20"`
+}

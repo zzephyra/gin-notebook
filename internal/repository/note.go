@@ -1,10 +1,13 @@
 package repository
 
 import (
+	"fmt"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/pkg/logger"
+	"strings"
+	"time"
 )
 
 func GetNotesList(workspaceID string, userID int64, limit int, offset int) (*[]dto.WorkspaceNoteDTO, error) {
@@ -36,16 +39,23 @@ func GetNoteCategoryMap() (*[]model.NoteCategory, error) {
 	return &notesCategory, nil
 }
 
-func GetNoteCategory(workspaceID int64) (*[]dto.WorkspaceUpdateNoteCategoryDTO, error) {
+func GetNoteCategory(params *dto.NoteCategoryQueryDTO) (*[]dto.WorkspaceUpdateNoteCategoryDTO, error) {
 	var notesCategory []dto.WorkspaceUpdateNoteCategoryDTO
 	logger.LogDebug("获取工作区笔记分类:", map[string]interface{}{
-		"workspace_id": workspaceID,
+		"workspace_id": params.WorkspaceID,
 	})
-	err := database.DB.
+	query := database.DB.
 		Table("note_categories").
-		Select("note_categories.id, note_categories.category_name , COUNT(notes.id) as total").
-		Joins("LEFT JOIN notes ON notes.category_id = note_categories.id AND notes.workspace_id = ?", workspaceID).
-		Where("note_categories.workspace_id = ?", workspaceID).
+		Select("note_categories.id, note_categories.category_name , COUNT(notes.id) as total")
+
+	if params.CategoryName != "" {
+		name := strings.ReplaceAll(params.CategoryName, "%", "")
+		name = strings.ReplaceAll(name, "_", "")
+		query = query.Where("note_categories.category_name LIKE ?", "%"+name+"%")
+	}
+
+	err := query.Joins("LEFT JOIN notes ON notes.category_id = note_categories.id AND notes.workspace_id = ?", params.WorkspaceID).
+		Where("note_categories.workspace_id = ?", params.WorkspaceID).
 		Limit(-1).
 		Group("note_categories.id, note_categories.category_name").
 		Scan(&notesCategory).Error
@@ -87,4 +97,69 @@ func UpdateNoteCategory(noteCategoryID int64, data map[string]interface{}) error
 func DeleteNote(noteID int64) error {
 	err := database.DB.Delete(&model.Note{}, noteID).Error
 	return err
+}
+
+func GetCategories(workspaceID int64, orderBy string, limit int, conditions []QueryCondition) (*[]model.NoteCategory, error) {
+	var categories []model.NoteCategory
+	// 字段白名单（仅允许这些字段参与筛选）
+	validFields := map[string]bool{
+		"creator_id":  true,
+		"status":      true,
+		"created_at":  true,
+		"is_archived": true,
+	}
+
+	// 操作符白名单
+	validOps := map[string]bool{
+		"=": true, "<": true, "<=": true, ">": true, ">=": true,
+		"IN": true, "LIKE": true, "NOT IN": true, "NOT LIKE": true,
+	}
+
+	query := database.DB.Table("note_categories").Where("workspace_id = ?", workspaceID)
+
+	// 动态追加条件
+	for _, cond := range conditions {
+		if !validFields[cond.Field] || !validOps[strings.ToUpper(cond.Operator)] {
+			continue // 忽略非法条件
+		}
+
+		switch strings.ToUpper(cond.Operator) {
+		case "IN":
+			query = query.Where(fmt.Sprintf("%s IN ?", cond.Field), cond.Value)
+		case "LIKE":
+			query = query.Where(fmt.Sprintf("%s LIKE ?", cond.Field), cond.Value)
+		default:
+			query = query.Where(fmt.Sprintf("%s %s ?", cond.Field, cond.Operator), cond.Value)
+		}
+	}
+
+	if orderBy != "" && validFields[orderBy] {
+		query = query.Order(orderBy + " DESC")
+	}
+
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+
+	err := query.Scan(&categories).Error
+	if err != nil {
+		return nil, err
+	}
+	return &categories, nil
+}
+
+func GetRecentCreatedCategories(workspaceID int64, limit int) (*[]model.NoteCategory, error) {
+	filter := []QueryCondition{
+		{
+			Field:    "created_at",
+			Operator: ">=",
+			Value:    time.Now().AddDate(0, 0, -7), // 7天内创建的
+		},
+	}
+
+	return GetCategories(workspaceID, "created_at", limit, filter)
+}
+
+func GetFrequentUsedCategories(workspaceID int64, limit int) (*[]model.NoteCategory, error) {
+	return GetCategories(workspaceID, "updated_at", limit, nil)
 }

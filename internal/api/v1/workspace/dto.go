@@ -2,6 +2,7 @@ package workspace
 
 import (
 	"fmt"
+	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/dto"
 	"time"
 
@@ -22,6 +23,11 @@ type WorkspaceDTO struct {
 	AllowShare    bool      `json:"allow_share" gorm:"default:true"`
 	AllowComment  bool      `json:"allow_comment" gorm:"default:true"`
 	CreatedAt     time.Time `json:"created_at" gorm:"not null;autoCreateTime" time_format:"2006-01-02"`
+}
+
+type RecommendNoteCategoryDTO struct {
+	Hot    []model.NoteCategory `json:"hot"`
+	Recent []model.NoteCategory `json:"recent"`
 }
 
 func WorkspaceListSerializer(c *gin.Context, workspace *[]dto.WorkspaceListDTO) []WorkspaceDTO {
@@ -82,4 +88,26 @@ func WorkspaceNoteSerializer(c *gin.Context, note *dto.CreateWorkspaceNoteDTO) *
 		OwnerAvatar:  c.MustGet("avatar").(string),
 		OwnerEmail:   c.MustGet("email").(string),
 	}
+}
+
+func RecommendNoteCategorySerializer(c *gin.Context, noteCategory *dto.RecommendNoteCategoryDTO) {
+	var hotMap = make(map[int64]bool)
+	if noteCategory.Hot != nil {
+		for _, v := range *noteCategory.Hot {
+			hotMap[v.ID] = true
+		}
+	}
+
+	var recentSlice = *noteCategory.Recent
+	var index = 0
+
+	if noteCategory.Recent != nil {
+		for _, v := range *noteCategory.Recent {
+			if !hotMap[v.ID] {
+				recentSlice[index] = v
+				index++
+			}
+		}
+	}
+	*noteCategory.Recent = recentSlice[:index]
 }

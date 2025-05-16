@@ -1,9 +1,9 @@
 import axiosClient from "@/lib/api/client";
-import { workspaceNotesApi, workspaceNoteCategoryApi, workspaceNoteDeleteApi } from "./routes";
+import { workspaceNotesApi, workspaceNoteCategoryApi, workspaceNoteDeleteApi, workspaceCategoryRecommandApi } from "./routes";
 import { i18n } from "@lingui/core";
 import { responseCode } from "../constant/response";
 import { store } from "@/store";
-import { InsertNewCategory, UpdateNoteByID, DeleteNoteByID, setSelectedNoteId, UpdateNoteCategoryList, UpdateNoteList } from "@/store/features/workspace";
+import { InsertNewCategory, UpdateNoteByID, DeleteNoteByID, setSelectedNoteId, UpdateNoteList } from "@/store/features/workspace";
 import toast from "react-hot-toast";
 import { WorkspaceNoteCreateParams } from "./type";
 
@@ -28,15 +28,15 @@ export async function GetNoteList(workspaceId: any, offset: number, limit: numbe
 }
 
 
-export async function GetNoteCategory(workspaceId: any) {
+export async function GetNoteCategory(workspaceId: any, kw: string) {
     if (!workspaceId) {
         return { code: 500, error: i18n._("Missing valid value") };
     }
-    let res = await axiosClient.get(workspaceNoteCategoryApi, { params: { workspace_id: workspaceId } });
+    let res = await axiosClient.get(workspaceNoteCategoryApi, { params: { workspace_id: workspaceId, kw } });
     if (res.data.code == responseCode.SUCCESS) {
-        store.dispatch(UpdateNoteCategoryList(res.data.data))
+        return res.data.data || [];
     }
-    return res.data;
+    return [];
 }
 
 export async function AutoUpdateContent(data: { content: string, workspace_id: string, note_id: string }) {
@@ -128,5 +128,21 @@ export async function DeleteNote(workspace_id: string, note_id: string) {
             code: 500,
             error: "Update note failed"
         }
+    }
+}
+
+export async function GetRecommandCategories(workspace_id: string) {
+    var defaultResponse = {
+        hot: [],
+        recent: []
+    }
+    try {
+        const res = await axiosClient.get(workspaceCategoryRecommandApi, { params: { workspace_id } })
+        if (res.data.code != responseCode.SUCCESS) {
+            return defaultResponse
+        }
+        return res.data.data
+    } catch (err) {
+        return defaultResponse
     }
 }

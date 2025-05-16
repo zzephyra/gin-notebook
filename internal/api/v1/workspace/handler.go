@@ -97,19 +97,20 @@ func GetWorkspaceNotesApi(c *gin.Context) {
 }
 
 func GetWorkspaceNotesCategoryApi(c *gin.Context) {
-	wid := c.Query("workspace_id")
-	if wid == "" {
-		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+	params := &dto.NoteCategoryQueryDTO{}
+
+	if err := c.ShouldBindQuery(params); err != nil {
+		log.Printf("params %s", err)
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return
 	}
 
-	workspaceID, err := strconv.ParseInt(wid, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return
 	}
 
-	responseCode, data := note.GetWorkspaceNotesCategory(workspaceID)
+	responseCode, data := note.GetWorkspaceNotesCategory(params)
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 
 }
@@ -229,5 +230,31 @@ func DeleteWorkspaceNoteApi(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
 		return
 	}
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func GetRecommandNotesCategoryApi(c *gin.Context) {
+	// userID := c.MustGet("userID").(int64)
+	params := &dto.RecommendNoteCategoryQueryDTO{}
+
+	if err := c.ShouldBindQuery(params); err != nil {
+		log.Printf("params %s", err)
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+	fmt.Println("params", params)
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusOK, response.Response(message.ERROR_WORKSPACE_NOTE_VALIDATE, nil))
+		return
+	}
+
+	responseCode, data := note.GetRecommandNotesCategory(params)
+	if responseCode != message.SUCCESS {
+		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
+		return
+	}
+
+	RecommendNoteCategorySerializer(c, &data)
+
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }

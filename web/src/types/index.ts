@@ -6,10 +6,10 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 
 
 export interface IconType {
-  fill?: string, 
-  filled?: boolean, 
-  size?: number, 
-  height?: number, 
-  width?: number, 
+  fill?: string,
+  filled?: boolean,
+  size?: number,
+  height?: number,
+  width?: number,
   [key: string]: any
 } 

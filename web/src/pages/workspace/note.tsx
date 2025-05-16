@@ -23,7 +23,7 @@ import { RootState, store } from "@/store";
 import CategoryListBox from "@/components/note/categoryList";
 import FolderIcon from "@/components/icons/folder";
 import { responseCode } from "@/features/constant/response";
-import { setSelectedNoteId, UpdateNoteByID } from "@/store/features/workspace";
+import { setSelectedNoteId, UpdateNoteByID, UpdateNoteCategoryList } from "@/store/features/workspace";
 import { i18n } from "@lingui/core";
 import NoteDropdown from "@/components/dropdown/note";
 import toast from "react-hot-toast";
@@ -52,8 +52,10 @@ export default function WorkspaceMain() {
   );
 
   useEffect(() => {
-    Promise.all([GetNoteCategory(params.id), GetNoteList(params.id, 0, 50)]).then((res) => {
+    Promise.all([GetNoteCategory(params.id, ''), GetNoteList(params.id, 0, 50)]).then((res) => {
       setLoading(false);
+      store.dispatch(UpdateNoteCategoryList(res[0]))
+
     })
   }, [])
 
