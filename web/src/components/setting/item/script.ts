@@ -4,4 +4,5 @@ export interface SettingsItemsProps {
     description?: string;
     children: React.ReactNode;
     className?: string
+    custom?: boolean
 }

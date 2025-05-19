@@ -21,7 +21,7 @@ export const userSlice = createSlice({
         id: 0,
     },
     reducers: {
-        UpdateUserInfo: (state, action: PayloadAction<UserState>) => {
+        InitUserInfo: (state, action: PayloadAction<UserState>) => {
             state.email = action.payload.email
             state.nickname = action.payload.nickname
             state.phone = action.payload.phone
@@ -30,7 +30,7 @@ export const userSlice = createSlice({
             state.id = action.payload.id
             state.isAuth = true
         },
-        UpdateAuthState: (state, action: PayloadAction<{isAuth: boolean}>) => {
+        UpdateAuthState: (state, action: PayloadAction<{ isAuth: boolean }>) => {
             state.isAuth = action.payload.isAuth
         },
         Logout: (state) => {
@@ -41,11 +41,14 @@ export const userSlice = createSlice({
             state.roles = []
             state.avatar = ""
             state.isAuth = false
+        },
+        UpdateUserInfo: (state, action) => {
+            console.log(action)
         }
     }
-  })
-  
-  export const { UpdateUserInfo, UpdateAuthState, Logout } = userSlice.actions
-  
-  // Other code such as selectors can use the imported `RootState` type  
-  export default userSlice.reducer
+})
+
+export const { InitUserInfo, UpdateAuthState, Logout, UpdateUserInfo } = userSlice.actions
+
+// Other code such as selectors can use the imported `RootState` type  
+export default userSlice.reducer

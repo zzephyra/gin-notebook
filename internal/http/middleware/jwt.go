@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/http/response"
 	"gin-notebook/pkg/utils/token"
@@ -25,6 +26,7 @@ func JWTAuth() gin.HandlerFunc {
 			return
 		}
 		// 将用户信息存储到上下文中
+		fmt.Println("JWTAuth", "userID:", userClaim.UserID, "role:", userClaim.Role, "nickname:", userClaim.Nickname, "email:", userClaim.Email, "avatar:", userClaim.Avatar)
 		c.Set("userID", userClaim.UserID)
 		c.Set("role", userClaim.Role)
 		c.Set("nickname", userClaim.Nickname)

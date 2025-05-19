@@ -17,3 +17,8 @@ export function formDataToJSON(formData: FormData): Record<string, any> {
     }
     return data;
 }
+
+export function checkFileType(file: File, assertType: string) {
+    var type = file.type.split('/')[0]
+    return type == assertType
+}

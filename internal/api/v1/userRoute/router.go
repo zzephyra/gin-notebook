@@ -1,4 +1,4 @@
-package user
+package userRoute
 
 import (
 	"gin-notebook/internal/http/middleware"
@@ -9,7 +9,9 @@ import (
 func RegisterUserRoutes(r *gin.RouterGroup) {
 	authGroup := r.Group("/user")
 	authGroup.Use(middleware.JWTAuth())
+	authGroup.Use(middleware.RBACMiddleware())
 	{
 		authGroup.GET("/info", UserInfoApi)
+		authGroup.POST("/info/:id", UpdateUserInfoApi)
 	}
 }

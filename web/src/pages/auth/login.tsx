@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { loginUserApi } from "@/features/api/login";
-import { getUserInfoApi } from "@/features/api/user";
+import { getUserInfoRequest } from "@/features/api/user";
 import { addToast, Button, ToastProvider } from "@heroui/react";
 import { LoginForm } from "@/components/form/login/form";
 import "@/styles/login.css";
@@ -8,6 +8,7 @@ import { store } from "@/store";
 import { Trans as TransMacro, useLingui } from "@lingui/react/macro";
 import GoogleIcon from "@/components/icons/google";
 import { responseCode } from "@/features/constant/response";
+import { getSettingsRequest } from "@/features/api/settings";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -19,7 +20,8 @@ export default function LoginPage() {
       const { code, error } = await loginUserApi({ email, password });
 
       if (code == responseCode.SUCCESS) {
-        await getUserInfoApi();
+        await getUserInfoRequest();
+        await getSettingsRequest({})
         const state = store.getState();
         const isAuth = state.user.isAuth;
         if (isAuth) {

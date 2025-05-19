@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gin-notebook/cmd/startup"
 	"gin-notebook/configs"
 	"gin-notebook/internal/api"
 	"gin-notebook/internal/pkg/cache"
@@ -52,6 +53,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	startup.Init()
 
 	// 设置路由
 	var router = api.SetRouter()

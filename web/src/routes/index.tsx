@@ -11,6 +11,7 @@ import RequireAuth from "./RequireAuth";
 import BaseLayout from "@/layouts/backstage";
 import SelectWorkspace from "@/pages/workspace/select";
 import WorkspaceNote from "@/pages/workspace/note";
+import SettingsPage from "@/pages/settings/main";
 let router = createBrowserRouter([
   {
     path: "/",
@@ -30,6 +31,11 @@ let router = createBrowserRouter([
         index: true,
         Component: WorkspaceNote,
       },
+      {
+        path: "settings/:id",
+        index: true,
+        Component: SettingsPage,
+      }
     ],
   },
   {

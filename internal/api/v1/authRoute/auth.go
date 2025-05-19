@@ -1,4 +1,4 @@
-package auth
+package authRoute
 
 import (
 	"gin-notebook/internal/service/auth"

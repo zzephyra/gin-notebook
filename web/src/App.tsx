@@ -7,15 +7,22 @@ import LoadingPage from "./pages/loading.tsx";
 import { Toaster } from "react-hot-toast";
 
 import { getSystemLang } from "./utils/tools.ts";
-import { getUserInfoApi } from "./features/api/user.ts";
+import { getUserInfoRequest } from "./features/api/user.ts";
+import { getSettingsRequest } from "./features/api/settings.ts";
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
-
   useEffect(() => {
     const initI18n = async () => {
-      await loadCatalog(getSystemLang()); // ✅ 等待语言包加载完成
-      await getUserInfoApi();
-      setIsLoaded(true); // 标记为已加载
+      try {
+        await loadCatalog(getSystemLang()); // ✅ 等待语言包加载完成
+        await getUserInfoRequest();
+        await getSettingsRequest({});
+        setIsLoaded(true); // 标记为已加载
+
+      } catch (err) {
+        // navigate('/auth/login'); // 跳转到登录页面
+        setIsLoaded(true)
+      }
     };
     initI18n();
   }, []);

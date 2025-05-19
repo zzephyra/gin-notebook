@@ -2,19 +2,18 @@ import { Outlet } from "react-router-dom";
 import SiderBar from "@/components/menu/sidebar";
 import { useLingui } from "@lingui/react/macro";
 import SettingIcon from "@/components/icons/setting";
-import TagIcon from "@/components/icons/tag";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { GetWorkspace } from "@/features/api/workspace";
 import { useParams } from "react-router-dom";
-import { WorkspaceDataType } from "@/features/api/type";
 import { UpdateCurrentWorkspace } from "@/store/features/workspace";
 import { store } from "@/store";
+import { Newspaper } from "lucide-react";
+import { NewspaperIcon } from "@heroicons/react/24/solid";
 
 export default function BaseLayout() {
   const { t } = useLingui();
   let params = useParams();
   let state = store.getState();
-  const { workspace } = state;
   async function getWorkspaceData() {
     const res = await GetWorkspace({ workspace_id: params.id });
     if (res.data != undefined) {
@@ -29,14 +28,16 @@ export default function BaseLayout() {
   }, []);
   const menuItems = [
     {
-      label: t`Tag`,
-      icon: <TagIcon />,
-      key: "tag",
+      label: t`Notes`,
+      icon: <NewspaperIcon className="w-6" />,
+      key: "notes",
+      route: `workspace/${params.id}`,
     },
     {
       label: t`Settings`,
       icon: <SettingIcon />,
       key: "settings",
+      route: `settings/${params.id}`,
     },
   ];
   return (

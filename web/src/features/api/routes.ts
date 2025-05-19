@@ -8,3 +8,5 @@ export const workspaceNotesApi: string = "/workspace/notes/";
 export const workspaceNoteCategoryApi: string = "/workspace/notes/category/";
 export const workspaceNoteDeleteApi: string = "/workspace/note/delete/";
 export const workspaceCategoryRecommandApi: string = "/workspace/recommend/category/";
+export const settingsApi: string = "/settings"
+export const systemSettingsApi: string = "/settings/system"

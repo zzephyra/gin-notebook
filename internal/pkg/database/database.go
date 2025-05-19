@@ -26,6 +26,8 @@ func Migrate(db *gorm.DB) {
 		&model.Note{},
 		&model.NoteTag{},
 		&model.NoteCategory{},
+		&model.SystemSetting{},
+		&model.UserSetting{},
 	)
 }
 

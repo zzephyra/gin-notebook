@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"gin-notebook/configs"
-	"gin-notebook/internal/repository"
 	"gin-notebook/pkg/logger"
 	"strconv"
 	"time"
@@ -15,7 +14,8 @@ import (
 // RedisClient 是 Redis 客户端的全局变量
 
 var (
-	GategoryMapKey = "note_category"
+	GategoryMapKey    = "note_category"
+	SystemSettingsKey = "system_settings:global"
 )
 
 type RedisClient struct {
@@ -23,24 +23,6 @@ type RedisClient struct {
 }
 
 var RedisInstance *RedisClient
-
-func StorageNoteCategory(rdb *redis.Client) error {
-	var err error
-	var ctx = context.Background()
-	data, err := repository.GetNoteCategoryMap()
-	if err != nil {
-		return err
-	}
-	logger.LogInfo("get note category", map[string]interface{}{
-		"data": data,
-	})
-	categories := make(map[int64]string)
-	for _, v := range *data {
-		categories[v.ID] = v.CategoryName
-	}
-	rdb.HSet(ctx, GategoryMapKey, categories)
-	return nil
-}
 
 func InitRedisClinet(c configs.Config) error {
 	// 连接 Redis
@@ -62,10 +44,6 @@ func InitRedisClinet(c configs.Config) error {
 	logger.LogDebug("redis connect success: ", msg)
 	RedisInstance = &RedisClient{
 		Client: rdb,
-	}
-	if err := StorageNoteCategory(rdb); err != nil {
-		logger.LogError(err, "failed to cache note category")
-		return err
 	}
 	return nil
 }
@@ -145,6 +123,26 @@ func (r *RedisClient) GetNoteCategoryMap(CategoryID int64) (string, error) {
 	if err != nil {
 		logger.LogError(err, "failed to get redis key")
 		return "", err
+	}
+	return val, nil
+}
+
+func (r *RedisClient) SaveSystemSettings(key map[string]interface{}) error {
+	ctx := context.Background()
+	err := r.Client.HMSet(ctx, SystemSettingsKey, key).Err()
+	if err != nil {
+		logger.LogError(err, "failed to get redis key")
+		return err
+	}
+	return nil
+}
+
+func (r *RedisClient) GetCachedSystemSettings() (map[string]string, error) {
+	ctx := context.Background()
+	val, err := r.Client.HGetAll(ctx, SystemSettingsKey).Result()
+	if err != nil {
+		logger.LogError(err, "failed to get redis key")
+		return map[string]string{}, err
 	}
 	return val, nil
 }

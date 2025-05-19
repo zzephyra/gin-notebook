@@ -1,10 +1,13 @@
 package message
 
 const (
-	SUCCESS              = 200
-	ERROR                = 500
-	ERROR_INVALID_PARAMS = 501
-	ERROR_DATABASE       = 502
+	SUCCESS                  = 200
+	ERROR_FORBIDDEN          = 403
+	ERROR                    = 500
+	ERROR_INVALID_PARAMS     = 501
+	ERROR_DATABASE           = 502
+	ERROR_INTERNAL_SERVER    = 503
+	ERROR_ASSERT_TYPE_FAILED = 600
 
 	// 用户模块的错误
 	ERROR_USERNAME_USED           = 1001
@@ -50,14 +53,31 @@ const (
 	ERROR_WORKSPACE_NOTE_CATEGORY_CREATE    = 5007
 	ERROR_WORKSPACE_NOTE_CATEGORY_UPDATE    = 5008
 	ERROR_WORKSPACE_NOTE_CATEGORY_DELETE    = 5009
+
+	// 设置模块的错误
+	ERROR_USER_SETTING_NOT_EXIST    = 6001
+	ERROR_USER_SETTING_UPDATE       = 6002
+	ERROR_USER_SETTING_CREATE       = 6003
+	ERROR_SYSTEM_SETTINGS_NOT_EXIST = 6004
+	ERROR_SYSTEM_SETTINGS_UPDATE    = 6005
+	ERROR_SYSTEM_SETTINGS_CREATE    = 6006
+	ERROR_SYSTEM_SETTINGS_GET       = 6007
+
+	// 上传模块的错误
+	ERROR_STORAGE_DRIVER_NOT_SUPPORT = 7001
+
+	// 七牛云模块的错误
+	ERROR_QINIU_TOKEN = 8001
 )
 
 var CodeMsg = map[int]string{
 	SUCCESS:                                 "OK",
 	ERROR:                                   "FAIL",
 	ERROR_USERNAME_USED:                     "用户名已存在！",
+	ERROR_FORBIDDEN:                         "没有权限",
 	ERROR_PASSWORD_WRONG:                    "密码错误",
 	ERROR_USER_NOT_EXIST:                    "用户不存在",
+	ERROR_INTERNAL_SERVER:                   "服务器内部错误",
 	ERROR_TOKEN_EXIST:                       "TOKEN不存在,请重新登陆",
 	ERROR_TOKEN_RUNTIME:                     "TOKEN已过期,请重新登陆",
 	ERROR_TOKEN_WRONG:                       "TOKEN不正确,请重新登陆",
@@ -86,4 +106,6 @@ var CodeMsg = map[int]string{
 	ERROR_WORKSPACE_NOTE_CATEGORY_CREATE:    "工作区笔记分类创建失败",
 	ERROR_WORKSPACE_NOTE_CATEGORY_UPDATE:    "工作区笔记分类更新失败",
 	ERROR_WORKSPACE_NOTE_CATEGORY_DELETE:    "工作区笔记分类删除失败",
+	ERROR_STORAGE_DRIVER_NOT_SUPPORT:        "存储驱动不支持",
+	ERROR_QINIU_TOKEN:                       "获取七牛云token失败",
 }

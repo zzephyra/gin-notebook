@@ -1,11 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './features/user'
 import workspaceReducer from './features/workspace'
-
+import settingsReducer from './features/settings'
 export const store = configureStore({
   reducer: {
     user: userReducer,
-    workspace: workspaceReducer
+    workspace: workspaceReducer,
+    settings: settingsReducer
   }
 })
 

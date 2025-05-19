@@ -4,7 +4,7 @@ import { Button, PressEvent } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Trans as TransMacro, useLingui } from "@lingui/react/macro";
 import { Link } from "react-router-dom";
-import {addToast} from "@heroui/react";
+import { addToast } from "@heroui/react";
 import { sendCode } from "@/features/api/register";
 import { responseCode } from "@/features/constant/response";
 // 定义 props 类型
@@ -63,13 +63,13 @@ export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
         setActive(false);
         setSecond(60);
         const res = await sendCode({ email: emailValue });
-        if(res.code != responseCode.SUCCESS) {
+        if (res.code == responseCode.SUCCESS) {
             addToast({
                 title: t`Verification code has been sent.`,
                 description: t`Please check your email.`,
                 color: "success",
             });
-        }else{
+        } else {
             addToast({
                 title: t`Verification code failed to send.`,
                 description: "请查收邮件",
@@ -77,7 +77,7 @@ export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
             });
         }
     };
-    
+
     return (
         <Form onSubmit={handleSubmit} validationErrors={errors}>
             <Input className="py-2" label="Email" type="email" value={emailValue} id="email" name="email" onChange={(e) => setEmailValue(e.target.value)} />

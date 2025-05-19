@@ -16,7 +16,7 @@ import (
 func UserLogin(c *gin.Context) {
 	// 获取请求参数
 
-	var u dto.UserLoginValidation
+	var u dto.UserLoginDTO
 	if err := c.ShouldBindJSON(&u); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return
@@ -57,14 +57,12 @@ func SendRegisterCaptcha(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "验证码已发送",
-	})
+	c.JSON(http.StatusOK, response.Response(message.SUCCESS, nil))
 }
 
 func UserRegister(c *gin.Context) {
 	// 这里是用户注册的逻辑
-	var user dto.CreateUserValidation
+	var user dto.CreateUserDTO
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return

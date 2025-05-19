@@ -11,16 +11,20 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateUser(data dto.CreateUserValidation) error {
+func CreateUser(data dto.CreateUserDTO) error {
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
 		user := &model.User{
 			Email:    data.Email,
 			Password: string(algorithm.HashPassword(data.Password)),
 		}
-		rbac.SetUserRole(user.ID, rbac.USER)
 		if err := tx.Create(user).Error; err != nil {
 			return err
 		}
+		rbac.SetUserRole(user.ID, rbac.USER)
+
+		CreateUserSettings(user.ID, &model.UserSetting{
+			OwnerID: user.ID,
+		})
 		return nil
 	})
 
@@ -29,6 +33,11 @@ func CreateUser(data dto.CreateUserValidation) error {
 	}
 
 	return nil
+}
+
+func CreateUserSettings(userID int64, settings *model.UserSetting) error {
+	result := database.DB.Create(settings)
+	return result.Error
 }
 
 func GetUserByEmail(email string) (*model.User, error) {
@@ -49,4 +58,9 @@ func GetUserByID(id int64) (*model.User, int) {
 		}
 	}
 	return user, 0
+}
+
+func UpdateUser(UserID int64, data map[string]interface{}) (err error) {
+	err = database.DB.Model(&model.User{}).Where("id = ?", UserID).Updates(data).Error
+	return
 }

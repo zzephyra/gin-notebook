@@ -1,4 +1,4 @@
-package workspace
+package workspaceRoute
 
 import (
 	"gin-notebook/internal/http/middleware"
@@ -22,5 +22,6 @@ func RegisterUserRoutes(r *gin.RouterGroup) {
 		authGroup.POST("/notes/category/", CreateWorkspaceCategoryApi)
 		authGroup.GET("/notes/category/:id/", GetWorkspaceNotesCategoryApi)
 		authGroup.GET("/recommend/category/", GetRecommandNotesCategoryApi)
+		// authGroup.GET("/upload/generate/token", GetUploadTokenApi)
 	}
 }

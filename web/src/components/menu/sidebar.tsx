@@ -2,23 +2,27 @@ import { Tabs, Tab, Avatar, Popover, PopoverTrigger, PopoverContent } from "@her
 import { store } from "@/store";
 import { Key } from "react";
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 interface MenuItem {
     key: string;
     label: string;
     icon: React.ReactNode;
+    route: string;
 }
 
 export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
     const isVertical = true; // Set to true for vertical tabs
     const state = store.getState();
     const user = state.user;
+    const navigate = useNavigate();
+
     const [openTooltip, useOpenTooltip] = useState(false);
 
     function handleTabClick(key: Key) {
-        if (key === "user") {
-            // Handle user tab click
-            console.log("User tab clicked");
+        var selectedItem = menuItems.find((item) => item.key === key);
+        if (selectedItem) {
+            navigate(selectedItem.route)
         }
     }
 
@@ -27,7 +31,7 @@ export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
     }
 
     return (
-        <div className="flex h-full flex-col flex p-1 gap-2 items-center flex-nowrap overflow-x-scroll scrollbar-hide bg-transparent dark:bg-transparent border-medium border-default-200 shadow-sm rounded-medium flex-col h-full border-r-2 border-y-0 border-l-0 px-3">
+        <div className="flex h-full flex-col flex p-1 gap-2 items-center px-2">
             <div className="pt-1" >
                 <Popover content="right-end" placement="right-end" showArrow={true}>
                     <PopoverTrigger>
@@ -55,7 +59,9 @@ export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
                             <div className="flex items-center space-x-2">
                                 {item.icon}
                             </div>
-                        }>
+                        }
+                        onClick={() => handleTabClick(item.key)}
+                    >
                     </Tab>
                 ))}
             </Tabs>

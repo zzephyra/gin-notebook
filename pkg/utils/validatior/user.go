@@ -12,7 +12,7 @@ import (
 	"strconv"
 )
 
-func ValidateNewUser(data dto.CreateUserValidation) (int, error) {
+func ValidateNewUser(data dto.CreateUserDTO) (int, error) {
 
 	if data.Email == "" || data.Password == "" {
 		return message.ERROR_EMAIL_OR_PASSWORD, fmt.Errorf("email or password is empty")
@@ -29,7 +29,7 @@ func ValidateNewUser(data dto.CreateUserValidation) (int, error) {
 	return 200, nil
 }
 
-func ValidateUserLogin(data dto.UserLoginValidation) (map[string]interface{}, error) {
+func ValidateUserLogin(data dto.UserLoginDTO) (map[string]interface{}, error) {
 	if data.Email == "" || data.Password == "" {
 		return response.Response(message.ERROR_EMAIL_OR_PASSWORD, nil), fmt.Errorf("email or password is empty")
 	}
