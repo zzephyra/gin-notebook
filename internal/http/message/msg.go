@@ -25,6 +25,8 @@ const (
 	ERROR_GENERATE_TOKEN          = 1013
 	ERROR_SEND_CAPTCHA            = 1014
 	ERROR_PASSWORD_INVALID        = 1015
+	ERROR_USER_VALIDATE           = 1016
+	ERROR_USER_UPDATE             = 1017
 
 	// 文章模块的错误
 	ERROR_ART_NOT_EXIST           = 2001
@@ -108,4 +110,5 @@ var CodeMsg = map[int]string{
 	ERROR_WORKSPACE_NOTE_CATEGORY_DELETE:    "工作区笔记分类删除失败",
 	ERROR_STORAGE_DRIVER_NOT_SUPPORT:        "存储驱动不支持",
 	ERROR_QINIU_TOKEN:                       "获取七牛云token失败",
+	ERROR_USER_VALIDATE:                     "用户数据验证失败",
 }

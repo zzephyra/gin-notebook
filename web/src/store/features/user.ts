@@ -6,8 +6,13 @@ export interface UserState {
     phone: string,
     roles: [], // e.g: ["admin", "user"]
     avatar: string,
-    id: number,
+    id: string,
 }
+
+const updatableKeys = ['email', 'nickname', 'phone', 'roles', 'avatar'] as const
+type UpdatableKey = typeof updatableKeys[number]
+type UpdatePayload = Partial<Pick<UserState, UpdatableKey>>
+
 
 export const userSlice = createSlice({
     name: 'userInfo',
@@ -18,7 +23,7 @@ export const userSlice = createSlice({
         roles: [], // e.g: ["admin", "user"]
         isAuth: false,
         avatar: "",
-        id: 0,
+        id: "",
     },
     reducers: {
         InitUserInfo: (state, action: PayloadAction<UserState>) => {
@@ -42,8 +47,16 @@ export const userSlice = createSlice({
             state.avatar = ""
             state.isAuth = false
         },
-        UpdateUserInfo: (state, action) => {
-            console.log(action)
+        UpdateUserInfo: (
+            state,
+            action: PayloadAction<UpdatePayload>
+        ) => {
+            updatableKeys.forEach((key) => {
+                const value = action.payload[key]
+                if (value !== undefined) {
+                    state[key] = value as any
+                }
+            })
         }
     }
 })

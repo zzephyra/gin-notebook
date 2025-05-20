@@ -46,7 +46,7 @@ func NewQiniu(cfg QiniuConfig) {
 
 // 1) 生成客户端直传用的 UploadToken
 func (q *QiniuService) UploadToken() (string, error) {
-	pp, err := uptoken.NewPutPolicy(q.cfg.Bucket, time.Now().Add(q.cfg.TTL))
+	pp, err := uptoken.NewPutPolicy(q.cfg.Bucket, time.Now().Add(5*time.Minute))
 	if err != nil {
 		return "", err
 	}

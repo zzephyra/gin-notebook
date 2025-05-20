@@ -10,3 +10,4 @@ export const workspaceNoteDeleteApi: string = "/workspace/note/delete/";
 export const workspaceCategoryRecommandApi: string = "/workspace/recommend/category/";
 export const settingsApi: string = "/settings"
 export const systemSettingsApi: string = "/settings/system"
+export const uploadPolicyApi: string = "/upload/policy"

@@ -2,16 +2,18 @@ package userRoute
 
 import (
 	"gin-notebook/internal/model"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 type UserAccountDTO struct {
-	Nickname *string  `json:"nickname" gorm:";default:NULL"`
-	Email    string   `json:"email" gorm:"unique;not null"`
-	Role     []string `json:"role" gorm:"not null"`
-	Phone    string   `json:"phone" gorm:"unique;default:NULL"`
-	Avatar   string   `json:"avatar" gorm:"default:NULL"`
+	Nickname *string  `json:"nickname"`
+	Email    string   `json:"email"`
+	Role     []string `json:"role"`
+	Phone    string   `json:"phone"`
+	Avatar   string   `json:"avatar"`
+	ID       string   `json:"id"`
 }
 
 func UserBriefSerializer(c *gin.Context, user *model.User) UserAccountDTO {
@@ -21,5 +23,6 @@ func UserBriefSerializer(c *gin.Context, user *model.User) UserAccountDTO {
 		Phone:    user.Phone,
 		Role:     c.MustGet("role").([]string),
 		Avatar:   user.Avatar,
+		ID:       strconv.FormatInt(user.ID, 10),
 	}
 }

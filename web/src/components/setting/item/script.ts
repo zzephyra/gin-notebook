@@ -1,6 +1,6 @@
 
 export interface SettingsItemsProps {
-    label: string;
+    label?: string;
     description?: string;
     children: React.ReactNode;
     className?: string
