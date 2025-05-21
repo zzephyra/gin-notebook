@@ -8,6 +8,7 @@ const (
 	ERROR_DATABASE           = 502
 	ERROR_INTERNAL_SERVER    = 503
 	ERROR_ASSERT_TYPE_FAILED = 600
+	ERROR_IP_NOT_FOUND       = 601
 
 	// 用户模块的错误
 	ERROR_USERNAME_USED           = 1001
@@ -27,6 +28,9 @@ const (
 	ERROR_PASSWORD_INVALID        = 1015
 	ERROR_USER_VALIDATE           = 1016
 	ERROR_USER_UPDATE             = 1017
+	ERROR_USER_EMAIL_EXIST        = 1018
+	ERROR_CREATE_USER_DEVICE      = 1019
+	ERROR_GET_USER_DEVICE_LIST    = 1020
 
 	// 文章模块的错误
 	ERROR_ART_NOT_EXIST           = 2001
@@ -111,4 +115,7 @@ var CodeMsg = map[int]string{
 	ERROR_STORAGE_DRIVER_NOT_SUPPORT:        "存储驱动不支持",
 	ERROR_QINIU_TOKEN:                       "获取七牛云token失败",
 	ERROR_USER_VALIDATE:                     "用户数据验证失败",
+	ERROR_USER_EMAIL_EXIST:                  "用户邮箱已存在",
+	ERROR_IP_NOT_FOUND:                      "IP地址未找到",
+	ERROR_GET_USER_DEVICE_LIST:              "获取用户设备列表失败",
 }

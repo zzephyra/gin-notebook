@@ -1,6 +1,8 @@
+import ChangeEmailModal from "@/components/modal/user/changeEmail";
 import ModifyPasswordModal from "@/components/modal/user/modifyPassword";
 import SettingsItem from "@/components/setting/item";
 import SettingsWrapper from "@/components/setting/wrapper";
+import DeviceTable from "@/components/table/device";
 import { updateInfoRequest } from "@/features/api/user";
 import { RootState } from "@/store";
 import { Status, useUpload } from "@/thirdpart/qiniu/upload";
@@ -17,6 +19,7 @@ const AccountSettings = () => {
     var { t } = useLingui()
     var fileInputRef = useRef<HTMLInputElement | null>(null);
     const { isOpen: isOpenPasswordModal, onOpen: opOpenPasswordModal, onOpenChange: onOpenChangePasswordModal } = useDisclosure();
+    const { isOpen: isOpenEmailModal, onOpen: opOpenEmailModal, onOpenChange: onOpenChangeEmailModal } = useDisclosure();
 
     async function handleUpdateNickName(e: React.FocusEvent<HTMLInputElement>) {
         let isUpdated = await updateInfoRequest(userState.id, {
@@ -83,8 +86,19 @@ const AccountSettings = () => {
                         {t`Change Password`}
                     </Button>
                 </SettingsItem>
+                <SettingsItem label={t`Email`} description={userState.email}>
+                    <Button size="sm" color="default" onPress={opOpenEmailModal}>
+                        {t`Change Email`}
+                    </Button>
+                </SettingsItem>
+                <ModifyPasswordModal userID={userState.id} isOpen={isOpenPasswordModal} onChange={onOpenChangePasswordModal} />
+                <ChangeEmailModal userID={userState.id} isOpen={isOpenEmailModal} onChange={onOpenChangeEmailModal} />
             </SettingsWrapper>
-            <ModifyPasswordModal userID={userState.id} isOpen={isOpenPasswordModal} onChange={onOpenChangePasswordModal} />
+            <SettingsWrapper title="Device" >
+                <SettingsItem custom>
+                    <DeviceTable userInfo={userState}></DeviceTable>
+                </SettingsItem>
+            </SettingsWrapper>
         </>
     );
 }

@@ -6,6 +6,7 @@ import (
 	"gin-notebook/internal/http/response"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/dto"
+	"gin-notebook/internal/pkg/geoip"
 	"gin-notebook/internal/service/userService"
 	"gin-notebook/pkg/utils/tools"
 	validator "gin-notebook/pkg/utils/validatior"
@@ -59,5 +60,57 @@ func UpdateUserInfoApi(c *gin.Context) {
 	if data != nil {
 		data = UserBriefSerializer(c, data.(*model.User))
 	}
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func UserDeviceApi(c *gin.Context) {
+	userID := c.MustGet("userID").(int64)
+	params := &dto.UserDeviceCreateDTO{}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(400, nil))
+		return
+	}
+
+	ipLookup, err := geoip.Lookup(c.ClientIP())
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_USER_VALIDATE, nil))
+	}
+	params.IP = c.ClientIP()
+	params.Location = ipLookup
+	params.UserID = userID
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusOK, response.Response(message.ERROR_USER_VALIDATE, nil))
+	}
+	responseCode, data := userService.CreateUserDevice(params)
+
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func UserDeviceListApi(c *gin.Context) {
+	userID := c.MustGet("userID").(int64)
+	params := &dto.UserDeviceListDTO{}
+
+	if err := c.ShouldBindQuery(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(400, nil))
+		return
+	}
+
+	params.UserID = userID
+
+	if params.Limit == 0 {
+		params.Limit = 5
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusOK, response.Response(message.ERROR_USER_VALIDATE, nil))
+	}
+	responseCode, data := userService.GetUserDeviceList(params)
+
+	if data != nil {
+		data["devices"] = UserDeviceSerializer(c, data["devices"].(*[]model.UserDevice))
+	}
+
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }

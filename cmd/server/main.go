@@ -6,6 +6,7 @@ import (
 	"gin-notebook/internal/api"
 	"gin-notebook/internal/pkg/cache"
 	"gin-notebook/internal/pkg/database"
+	"gin-notebook/internal/pkg/geoip"
 	"gin-notebook/internal/pkg/queue"
 	"gin-notebook/internal/pkg/rbac"
 	"gin-notebook/pkg/logger"
@@ -55,6 +56,9 @@ func main() {
 	}
 
 	startup.Init()
+
+	// 初始化mmdb
+	geoip.InitGeoIP(config.GeoIP.DBPath)
 
 	// 设置路由
 	var router = api.SetRouter()

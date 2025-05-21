@@ -37,6 +37,9 @@ type Config struct {
 		MaxWorker int    `toml:"max_worker"`
 		MaxReties int    `toml:"max_retries"`
 	}
+	GeoIP struct {
+		DBPath string `toml:"db_path"`
+	}
 }
 
 var Configs *Config

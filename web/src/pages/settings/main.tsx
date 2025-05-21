@@ -49,7 +49,7 @@ const SettingsPage = () => {
 
 
     return (
-        <div className='px-4 py-6 flex-1 gap-2 flex lg:flex-row md:flex-col sm:flex-col flex-col'>
+        <div className='px-4 py-6 flex-1 gap-2 flex overflow-auto lg:flex-row md:flex-col sm:flex-col flex-col'>
             <div>
                 <Card className='w-[16rem]'>
                     <CardBody>
@@ -67,7 +67,7 @@ const SettingsPage = () => {
                     </CardBody>
                 </Card>
             </div>
-            <Card className='flex-1'>
+            <Card className='flex-1 !overflow-visible'>
                 <CardBody className='items-center'>
                     <div className='w-full lg:w-[36rem] py-5'>
                         {findSelectedComponent()}

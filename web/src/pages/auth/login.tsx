@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { loginUserApi } from "@/features/api/login";
-import { getUserInfoRequest } from "@/features/api/user";
+import { getUserInfoRequest, storageUserDeviceRequest } from "@/features/api/user";
 import { addToast, Button, ToastProvider } from "@heroui/react";
 import { LoginForm } from "@/components/form/login/form";
 import "@/styles/login.css";
@@ -22,6 +22,7 @@ export default function LoginPage() {
       if (code == responseCode.SUCCESS) {
         await getUserInfoRequest();
         await getSettingsRequest({})
+        await storageUserDeviceRequest()
         const state = store.getState();
         const isAuth = state.user.isAuth;
         if (isAuth) {

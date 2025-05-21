@@ -7,16 +7,20 @@ import LoadingPage from "./pages/loading.tsx";
 import { Toaster } from "react-hot-toast";
 
 import { getSystemLang } from "./utils/tools.ts";
-import { getUserInfoRequest } from "./features/api/user.ts";
+import { getUserInfoRequest, storageUserDeviceRequest } from "./features/api/user.ts";
 import { getSettingsRequest } from "./features/api/settings.ts";
+import { responseCode } from "./features/constant/response.ts";
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
     const initI18n = async () => {
       try {
         await loadCatalog(getSystemLang()); // ✅ 等待语言包加载完成
-        await getUserInfoRequest();
-        await getSettingsRequest({});
+        let res = await getUserInfoRequest();
+        if (res.code == responseCode.SUCCESS) {
+          await getSettingsRequest({});
+          await storageUserDeviceRequest();
+        }
         setIsLoaded(true); // 标记为已加载
 
       } catch (err) {

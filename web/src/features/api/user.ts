@@ -1,8 +1,9 @@
 import axiosClient from "@/lib/api/client";
-import { userInfoApi } from "./routes";
+import { userInfoApi, userDeviceApi } from "./routes";
 import { InitUserInfo, UpdateUserInfo } from '@/store/features/user'
 import { store } from '@/store';
 import { responseCode } from "../constant/response";
+import { getCurrentDeviceInfo } from "@/utils/device";
 
 interface UserInfoResponse {
     code: number;
@@ -51,4 +52,38 @@ export async function updateInfoRequest(userID: string, data: Partial<UseUpdateP
     } catch (err) {
         return false
     }
+}
+
+
+export async function storageUserDeviceRequest() {
+    try {
+        var data = await getCurrentDeviceInfo()
+        store.dispatch(UpdateUserInfo({ device: data }))
+        let res = await axiosClient.post(userDeviceApi, data)
+        if (res.data.code == responseCode.SUCCESS) {
+            return true
+        }
+        return false
+    } catch (err) {
+        return false
+    }
+}
+
+export async function getUserDevicesList(limit: number, offset: number) {
+    try {
+        let res = await axiosClient.get(userDeviceApi, { params: { limit, offset } })
+        if (res.data.code == responseCode.SUCCESS) {
+            return res.data.data
+        }
+        return {
+            total: 0,
+            devices: []
+        }
+    } catch (err) {
+        return {
+            total: 0,
+            devices: []
+        }
+    }
+
 }

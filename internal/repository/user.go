@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"encoding/json"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
@@ -8,7 +9,10 @@ import (
 	"gin-notebook/internal/pkg/rbac"
 	"gin-notebook/pkg/utils/algorithm"
 
+	"github.com/jinzhu/copier"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func CreateUser(data dto.CreateUserDTO) error {
@@ -67,4 +71,40 @@ func UpdateUser(UserID int64, data map[string]interface{}) (err error) {
 
 	err = database.DB.Model(&model.User{}).Where("id = ?", UserID).Updates(data).Error
 	return
+}
+
+func CreateUserDevice(params *dto.UserDeviceCreateDTO) error {
+	var device = model.UserDevice{}
+	copier.Copy(&device, params) // 将dto参数复制到model结构体中，但是缺少country和city
+
+	location := params.Location
+	if location != nil {
+		country, _ := json.Marshal(location.Country)
+		city, _ := json.Marshal(location.City)
+
+		device.Country = datatypes.JSON(country)
+		device.City = datatypes.JSON(city)
+	}
+	return database.DB.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "fingerprint"}}, // 冲突目标
+		DoUpdates: clause.AssignmentColumns([]string{"ip", "user_agent", "country", "city", "updated_at"}),
+	}).Create(&device).Error
+}
+
+func GetUserDeviceList(filter map[string]interface{}, limit int, offset int) (*[]model.UserDevice, int64, error) {
+	var (
+		devices []model.UserDevice
+		total   int64
+	)
+
+	db := database.DB.Model(&model.UserDevice{}).Where(filter)
+	if err := db.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	err := database.DB.Limit(limit).Offset(offset).Where(filter).Find(&devices).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	return &devices, total, nil
 }

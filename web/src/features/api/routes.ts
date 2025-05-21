@@ -1,5 +1,6 @@
 export const loginApi: string = "/auth/login";
 export const userInfoApi: string = "/user/info";
+export const userDeviceApi: string = "/user/device";
 export const registerApi: string = "/auth/register";
 export const verificationCodeApi: string = "/auth/captchas";
 export const workspacesApi: string = "/workspace";

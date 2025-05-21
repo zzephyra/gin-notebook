@@ -3,7 +3,7 @@ import { SettingsItemsProps } from "./script";
 
 export default function SettingsItem(props: SettingsItemsProps) {
     return (
-        <div className={`flex gap-2 ${props.className}`}>
+        <div className={`flex gap-2 ${props.className || ''}`}>
             {props.custom ? props.children : (
                 <>
                     <div className="flex flex-col gap-2 flex-1">

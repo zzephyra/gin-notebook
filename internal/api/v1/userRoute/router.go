@@ -13,5 +13,7 @@ func RegisterUserRoutes(r *gin.RouterGroup) {
 	{
 		authGroup.GET("/info", UserInfoApi)
 		authGroup.POST("/info/:id", UpdateUserInfoApi)
+		authGroup.POST("/device", UserDeviceApi)
+		authGroup.GET("/device", UserDeviceListApi)
 	}
 }
