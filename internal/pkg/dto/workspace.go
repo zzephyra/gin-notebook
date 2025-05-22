@@ -1,6 +1,10 @@
 package dto
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/datatypes"
+)
 
 type WorkspaceListDTO struct {
 	ID            int64     `json:"id"`
@@ -39,4 +43,22 @@ type WorkerMemberValidation struct {
 	UserID      int64  `validate:"required,gt=0"`     // 必须存在，并且大于0
 	Role        string `validate:"required"`          // 必须存在
 	Nickname    string `validate:"omitempty,max=100"` // 可选字段，长度限制
+}
+
+type WorkspaceDTO struct {
+	ID            int64          `json:"id"`
+	Name          string         `json:"name"`
+	Owner         int64          `json:"owner"`
+	OwnerAvatar   string         `json:"owner_avatar"`
+	OwnerNickname string         `json:"owner_name"`
+	OwnerEmail    string         `json:"owner_email"`
+	OwnerPhone    string         `json:"owner_phone"`
+	Description   string         `json:"description"`
+	AllowInvite   bool           `json:"allow_invite"`
+	AllowJoin     bool           `json:"allow_join"`
+	AllowPublic   bool           `json:"allow_public"`
+	AllowShare    bool           `json:"allow_share"`
+	AllowComment  bool           `json:"allow_comment"`
+	Roles         datatypes.JSON `json:"roles"`
+	Editable      bool           `json:"editable"`
 }

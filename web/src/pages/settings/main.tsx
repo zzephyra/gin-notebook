@@ -6,11 +6,15 @@ import { Listbox, ListboxItem, ListboxSection, Card, CardBody, menuItem } from "
 import { useLingui } from '@lingui/react/macro';
 import AccountSettings from './accountSettings';
 import StorageSettings from './storageSettings';
+import { store } from '@/store';
+import WorkspaceSettings from './workspaceSettings';
 
 const SettingsPage = () => {
     const [selectedKey, setSelectedKey] = useState('account');
+    const state = store.getState()
     const { t, i18n } = useLingui();
-
+    const isSystemAdmin = (state.user.role as string[])?.includes("admin") ?? false;
+    const isWorkspaceAdmin = (state.workspace.currentWorkspace?.roles as string[])?.includes("admin") ?? false;
     const menuList = [
         {
             title: 'User',
@@ -22,17 +26,38 @@ const SettingsPage = () => {
                 },
             ]
         },
-        {
-            title: 'System',
-            children: [
-                {
-                    key: 'storage',
-                    title: 'Storage',
-                    component: <StorageSettings />
-                }
-            ]
-        }
     ]
+
+    if (isWorkspaceAdmin) {
+        menuList.push(
+            {
+                title: 'Workspace',
+                children: [
+                    {
+                        key: 'members',
+                        title: 'Members',
+                        component: <WorkspaceSettings />
+                    }
+                ]
+            }
+        )
+    }
+
+    if (isSystemAdmin) {
+        menuList.push(
+            {
+                title: 'System',
+                children: [
+                    {
+                        key: 'storage',
+                        title: 'Storage',
+                        component: <StorageSettings />
+                    }
+                ]
+            }
+        )
+    }
+
 
     const findSelectedComponent = () => {
         for (const item of menuList) {

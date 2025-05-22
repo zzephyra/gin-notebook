@@ -10,7 +10,7 @@ interface WorkspaceSelctListProps {
 export default function WorkspaceSelctList(props: WorkspaceSelctListProps) {
   const { t } = useLingui();
   const navigate = useNavigate();
-  function handleSelectWorkspace(workspaceID: number) {
+  function handleSelectWorkspace(workspaceID: string) {
     navigate(`/workspace/${workspaceID}`);
   }
 

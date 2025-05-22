@@ -10,6 +10,7 @@ export interface WorkspaceItem {
     owner_name: string,
     owner_avatar: string,
     owner_email: string,
+    roles: string[],
     [key: string]: any
 }
 

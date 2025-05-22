@@ -19,6 +19,7 @@ export type WorkspaceDataType = {
     allow_public: boolean;
     allow_share: boolean;
     allow_comment: boolean;
+    role: string[];
 }
 
 export type WorkspaceNoteCreateParams = {

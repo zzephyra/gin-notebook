@@ -1,7 +1,8 @@
 import { workspacesApi, workspacesListApi } from "@/features/api/routes";
 import axiosClient from "@/lib/api/client";
 import { responseCode } from "../constant/response";
-import { ApiResponse, WorkspaceDataType } from "./type";
+import { ApiResponse } from "./type";
+import { WorkspaceItem } from "@/store/features/workspace";
 
 
 
@@ -33,7 +34,7 @@ interface SearchWorkspaceParams {
     workspace_id: any;
 }
 
-export async function GetWorkspace(params: SearchWorkspaceParams): Promise<ApiResponse<WorkspaceDataType>> {
+export async function GetWorkspace(params: SearchWorkspaceParams): Promise<ApiResponse<WorkspaceItem>> {
     try {
         const res = await axiosClient.get(workspacesApi, { params: params })
         return res.data

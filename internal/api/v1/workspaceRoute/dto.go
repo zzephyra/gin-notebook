@@ -1,6 +1,7 @@
 package workspaceRoute
 
 import (
+	"encoding/json"
 	"fmt"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/dto"
@@ -10,19 +11,21 @@ import (
 )
 
 type WorkspaceDTO struct {
-	ID            int64     `json:"id" gorm:"primaryKey;autoIncrement"`
-	Name          string    `json:"name" gorm:"not null; index:idx_name"`
-	Description   string    `json:"description" gorm:"default:NULL"`
-	Owner         int64     `json:"owner" gorm:"not null; index:idx_owner"`
-	OwnerNickname string    `json:"owner_name" gorm:"default:NULL"`
-	OwnerAvatar   string    `json:"owner_avatar" gorm:"default:NULL"`
-	OwnerEmail    string    `json:"owner_email" gorm:"default:NULL"`
-	AllowInvite   bool      `json:"allow_invite" gorm:"default:true"`
-	AllowJoin     bool      `json:"allow_join" gorm:"default:true"`
-	AllowPublic   bool      `json:"allow_public" gorm:"default:true"`
-	AllowShare    bool      `json:"allow_share" gorm:"default:true"`
-	AllowComment  bool      `json:"allow_comment" gorm:"default:true"`
-	CreatedAt     time.Time `json:"created_at" gorm:"not null;autoCreateTime" time_format:"2006-01-02"`
+	ID            int64     `json:"id,string"`
+	Name          string    `json:"name"`
+	Description   string    `json:"description"`
+	Owner         int64     `json:"owner,string"`
+	OwnerNickname string    `json:"owner_name" `
+	OwnerAvatar   string    `json:"owner_avatar"`
+	OwnerEmail    string    `json:"owner_email" `
+	AllowInvite   bool      `json:"allow_invite"`
+	AllowJoin     bool      `json:"allow_join"`
+	AllowPublic   bool      `json:"allow_public"`
+	AllowShare    bool      `json:"allow_share"`
+	AllowComment  bool      `json:"allow_comment"`
+	CreatedAt     time.Time `json:"created_at"`
+	Roles         []string  `json:"roles"`
+	Editable      bool      `json:"editable"`
 }
 
 type RecommendNoteCategoryDTO struct {
@@ -52,7 +55,10 @@ func WorkspaceListSerializer(c *gin.Context, workspace *[]dto.WorkspaceListDTO) 
 	return workspaces
 }
 
-func WorkspaceSerializer(c *gin.Context, workspace *dto.WorkspaceListDTO) WorkspaceDTO {
+func WorkspaceSerializer(c *gin.Context, workspace *dto.WorkspaceDTO) WorkspaceDTO {
+	roles := make([]string, 0)
+	json.Unmarshal(workspace.Roles, &roles)
+
 	return WorkspaceDTO{
 		ID:            workspace.ID,
 		Name:          workspace.Name,
@@ -66,6 +72,8 @@ func WorkspaceSerializer(c *gin.Context, workspace *dto.WorkspaceListDTO) Worksp
 		AllowPublic:   workspace.AllowPublic,
 		AllowShare:    workspace.AllowShare,
 		AllowComment:  workspace.AllowComment,
+		Roles:         roles,
+		Editable:      workspace.Editable,
 	}
 }
 

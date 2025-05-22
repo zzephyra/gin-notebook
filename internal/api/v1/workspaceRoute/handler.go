@@ -54,7 +54,7 @@ func GetWorkspaceApi(c *gin.Context) {
 	workspaceID := c.Query("workspace_id")
 	responseCode, data := workspace.GetWorkspace(workspaceID, userID)
 	if data != nil {
-		data = WorkspaceSerializer(c, data.(*dto.WorkspaceListDTO))
+		data = WorkspaceSerializer(c, data.(*dto.WorkspaceDTO))
 	}
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }

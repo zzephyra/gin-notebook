@@ -12,14 +12,14 @@ export interface UserState {
     email: string,
     nickname: string,
     phone: string,
-    roles: [], // e.g: ["admin", "user"]
+    role: [], // e.g: ["admin", "user"]
     avatar: string,
     isAuth: boolean,
     id: string,
     device: Partial<DeviceInfo>,
 }
 
-const updatableKeys = ['email', 'nickname', 'phone', 'roles', 'avatar', 'device'] as const
+const updatableKeys = ['email', 'nickname', 'phone', 'role', 'avatar', 'device'] as const
 type UpdatableKey = typeof updatableKeys[number]
 type UpdatePayload = Partial<Pick<UserState, UpdatableKey>>
 
@@ -27,7 +27,7 @@ var initialState: UserState = {
     email: "",
     nickname: "",
     phone: "",
-    roles: [], // e.g: ["admin", "user"]
+    role: [], // e.g: ["admin", "user"]
     isAuth: false,
     avatar: "",
     id: "",
@@ -41,7 +41,7 @@ export const userSlice = createSlice({
             state.email = action.payload.email
             state.nickname = action.payload.nickname
             state.phone = action.payload.phone
-            state.roles = action.payload.roles
+            state.role = action.payload.role
             state.avatar = action.payload.avatar
             state.id = action.payload.id
             state.isAuth = true
@@ -53,7 +53,7 @@ export const userSlice = createSlice({
             state.email = ""
             state.nickname = ""
             state.phone = ""
-            state.roles = []
+            state.role = []
             state.avatar = ""
             state.isAuth = false
         },

@@ -2,6 +2,8 @@ package model
 
 import (
 	"time"
+
+	"gorm.io/datatypes"
 )
 
 type MemberRoleStructure struct {
@@ -28,11 +30,11 @@ type Workspace struct {
 
 type WorkspaceMember struct {
 	BaseModel
-	WorkspaceID int64  `json:"workspace_id" gorm:"not null; index:idx_workspace_id"`
-	UserID      int64  `json:"user_id" gorm:"not null; index:idx_user_id"`
-	Role        string `json:"role" gorm:"not null; default:'member'"`
-	Nickname    string `json:"nickname" gorm:"default:NULL"`
-	Editable    bool   `json:"editable" gorm:"default:true"`
+	WorkspaceID int64          `json:"workspace_id" gorm:"not null; index:idx_workspace_id"`
+	UserID      int64          `json:"user_id" gorm:"not null; index:idx_user_id"`
+	Role        datatypes.JSON `json:"role" gorm:"not null; index:idx_role"`
+	Nickname    string         `json:"nickname" gorm:"default:NULL"`
+	Editable    bool           `json:"editable" gorm:"default:true"`
 }
 
 type WorkspaceInvite struct {

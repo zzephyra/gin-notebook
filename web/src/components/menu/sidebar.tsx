@@ -2,7 +2,7 @@ import { Tabs, Tab, Avatar, Popover, PopoverTrigger, PopoverContent } from "@her
 import { store } from "@/store";
 import { Key } from "react";
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface MenuItem {
     key: string;
@@ -16,9 +16,10 @@ export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
     const state = store.getState();
     const user = state.user;
     const navigate = useNavigate();
-
+    const currentMenuKey = menuItems.find((item) =>
+        location.pathname.startsWith(item.route)
+    )?.key;
     const [openTooltip, useOpenTooltip] = useState(false);
-
     function handleTabClick(key: Key) {
         var selectedItem = menuItems.find((item) => item.key === key);
         if (selectedItem) {
@@ -51,7 +52,7 @@ export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
                     </PopoverContent>
                 </Popover>
             </div>
-            <Tabs aria-label="Options" variant="bordered" isVertical={isVertical} onSelectionChange={handleTabClick}
+            <Tabs aria-label="Options" variant="bordered" defaultSelectedKey={currentMenuKey} isVertical={isVertical} onSelectionChange={handleTabClick}
                 classNames={{ tab: "h-10 w-10", tabList: "h-full border-r-2 border-0 p-1", tabWrapper: "h-full" }}>
                 {menuItems.map((item) => (
                     <Tab key={item.key} className="flex items-center gap-2"
@@ -60,7 +61,6 @@ export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
                                 {item.icon}
                             </div>
                         }
-                        onClick={() => handleTabClick(item.key)}
                     >
                     </Tab>
                 ))}

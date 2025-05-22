@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"encoding/json"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
@@ -11,6 +12,7 @@ import (
 	"strconv"
 	"time"
 
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -38,10 +40,12 @@ func CreateWorkspace(workspace *dto.WorkspaceValidation) (responseCode int, data
 			return err
 		}
 
+		workspaceRole, _ := json.Marshal([]string{model.MemberRole.Admin})
+
 		workspaceMember := &model.WorkspaceMember{
 			WorkspaceID: workspaceModel.ID,
 			UserID:      workspace.Owner,
-			Role:        model.MemberRole.Admin,
+			Role:        datatypes.JSON(workspaceRole),
 		}
 		err = repository.CreateMember(workspaceMember)
 		if err != nil {
@@ -106,8 +110,8 @@ func CreateWorkspace(workspace *dto.WorkspaceValidation) (responseCode int, data
 	return
 }
 
-func GetWorkspace(workspaceID string, OwnerID int64) (responseCode int, data any) {
-	workspaces, err := repository.GetWorkspaceByID(workspaceID, OwnerID)
+func GetWorkspace(workspaceID string, UserID int64) (responseCode int, data any) {
+	workspaces, err := repository.GetWorkspaceByID(workspaceID, UserID)
 	if err != nil {
 		responseCode = message.ERROR_DATABASE
 		return responseCode, nil
