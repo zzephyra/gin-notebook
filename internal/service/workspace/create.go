@@ -10,8 +10,10 @@ import (
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/tools"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -91,10 +93,10 @@ func CreateWorkspace(workspace *dto.WorkspaceValidation) (responseCode int, data
 				WorkspaceID: workspaceModel.ID,
 				UUID:        workspace.UUID,
 				Count:       0,
-				ExpiresAt:   *expireDate,
+				ExpiresAt:   expireDate,
 			}
 			err = repository.CreateWorkspaceInviteLink(tx, invite)
-			if err == nil {
+			if err != nil {
 				// 发送邀请邮件失败
 				responseCode = message.ERROR_WORKSPACE_INVITE_EMAIL
 				return
@@ -103,7 +105,7 @@ func CreateWorkspace(workspace *dto.WorkspaceValidation) (responseCode int, data
 
 		responseCode = message.SUCCESS
 		// 返回workspace ID，前端需要这个ID来跳转
-		data = workspaceModel.ID
+		data = strconv.FormatInt(workspaceModel.ID, 10)
 		return nil
 	})
 
@@ -121,4 +123,45 @@ func GetWorkspace(workspaceID string, UserID int64) (responseCode int, data any)
 	data = workspaces
 
 	return responseCode, data
+}
+
+func CreateWorkspaceLinks(params *dto.CreateWorkspaceInviteLinkDTO) (responseCode int, data *model.WorkspaceInvite) {
+	isAllowed := repository.IsUserAllowedToModifyWorkspace(params.UserID, params.WorkspaceID)
+	if !isAllowed {
+		responseCode = message.ERROR_NO_PERMISSION_TO_UPDATE_WORKSPACE
+		return
+	}
+	_, exist := tools.Find([]string{"", "1", "7", "14", "30"}, params.ExipiresAt)
+	var expireDate *time.Time = nil
+	if exist {
+		if params.ExipiresAt != "" {
+			days, err := strconv.Atoi(params.ExipiresAt)
+			if err == nil {
+				t := time.Now().AddDate(0, 0, days)
+				expireDate = &t
+			} else {
+				t := time.Now().AddDate(0, 0, 7)
+				expireDate = &t
+			}
+		}
+	} else {
+		t := time.Now().AddDate(0, 0, 7)
+		expireDate = &t
+	}
+
+	invite := &model.WorkspaceInvite{
+		WorkspaceID: params.WorkspaceID,
+		UUID:        strings.ReplaceAll(uuid.New().String(), "-", ""),
+		Count:       0,
+		ExpiresAt:   expireDate,
+	}
+	err := repository.CreateWorkspaceInviteLink(nil, invite)
+	if err != nil {
+		// 发送邀请邮件失败
+		responseCode = message.ERROR_WORKSPACE_INVITE_EMAIL
+		return
+	}
+	responseCode = message.SUCCESS
+	data = invite
+	return
 }

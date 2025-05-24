@@ -7,6 +7,7 @@ import (
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/pkg/logger"
+	"gin-notebook/pkg/utils/tools"
 
 	"gorm.io/gorm"
 )
@@ -34,11 +35,17 @@ func GetWorkspacePrivileges(workspaceID any, userID int64, fields string) (*[]mo
 }
 
 func CreateWorkspace(db *gorm.DB, workspace *model.Workspace) error {
+	if db == nil {
+		db = database.DB
+	}
 	result := db.Create(workspace)
 	return result.Error
 }
 
 func CreateWorkspaceInviteLink(db *gorm.DB, inviteLink *model.WorkspaceInvite) error {
+	if db == nil {
+		db = database.DB
+	}
 	result := db.Create(inviteLink)
 	return result.Error
 }
@@ -56,4 +63,50 @@ func GetWorkspaceByID(workspaceID any, OwnerID int64) (*dto.WorkspaceDTO, error)
 
 	fmt.Println("获取工作区信息:", roles)
 	return &workspace, nil
+}
+
+func UpdateWorkspace(workspaceID any, workspace map[string]interface{}) error {
+	fmt.Print(workspace)
+	result := database.DB.Model(&model.Workspace{}).Where("id = ?", workspaceID).Updates(workspace)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("更新工作区数据失败")
+	}
+	return nil
+}
+
+func IsUserAllowedToModifyWorkspace(userID int64, workspaceID int64) bool {
+	workspaceMember := model.WorkspaceMember{}
+	tx := database.DB.Model(&model.WorkspaceMember{}).Where(&model.WorkspaceMember{WorkspaceID: workspaceID, UserID: userID}).First(&workspaceMember)
+	if tx.Error != nil {
+		return false
+	}
+
+	roles := make([]string, 0)
+	if err := json.Unmarshal(workspaceMember.Role, &roles); err != nil {
+		return false
+	}
+	return tools.Contains(roles, model.MemberRole.Admin)
+}
+
+func GetWorkspaceLinks(workspaceID string) (*[]model.WorkspaceInvite, error) {
+	var workspaceLinks []model.WorkspaceInvite
+	err := database.DB.Table("workspace_invites").Select("workspace_invites.*").Where("workspace_id = ?", workspaceID).Find(&workspaceLinks).Error
+	if err != nil {
+		return nil, err
+	}
+	return &workspaceLinks, nil
+}
+
+func DeleteWorkspaceInviteLink(linkID string) error {
+	result := database.DB.Where("id = ?", linkID).Delete(&model.WorkspaceInvite{})
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("删除工作区邀请链接失败")
+	}
+	return nil
 }

@@ -19,15 +19,17 @@ import toast from "react-hot-toast";
 import ChaseLoading from "@/components/loading/Chase/loading";
 import { CreateWorkspace } from "@/features/api/workspace";
 import { responseCode } from "@/features/constant/response";
+import { useNavigate } from "react-router-dom";
 
 export default function WorkspaceInitStep() {
   const uuid = uuidv4().replace(/-/g, "");
   const [currentStep, setStep] = useState(0);
+  const navicate = useNavigate();
   const [workspaceName, setWorkspaceName] = useState("");
   const [error, setError] = useState({});
   const [titleRef] = useAnimate();
   const link = useMemo(() => {
-    return `${window.location.origin}/${workspaceName}/invite/${uuid}`;
+    return `${window.location.origin}/invite/${uuid}`;
   }, [workspaceName]);
   const [disableCreate, setDisableCreate] = useState(true);
   const { t } = useLingui();
@@ -64,9 +66,10 @@ export default function WorkspaceInitStep() {
       return;
     }
     data["name"] = workspaceName;
+    data["uuid"] = uuid;
     const res = await CreateWorkspace(data);
     if (res.code == responseCode.SUCCESS) {
-      console.log(res);
+      navicate(`/workspace/${res.data}`);
     } else {
       prev();
       toast.error(t`Create workspace failed`);
@@ -158,9 +161,9 @@ export default function WorkspaceInitStep() {
               />
               <Divider className="my-4" />
               <div className="flex flex-col gap-6">
-              <Snippet symbol="#" variant="bordered" onCopy={() => {navigator.clipboard.writeText(link);}}>
-                {uuid}
-              </Snippet>
+                <Snippet symbol="#" variant="bordered" onCopy={() => { navigator.clipboard.writeText(link); }}>
+                  {uuid}
+                </Snippet>
                 <Select
                   labelPlacement="outside"
                   label={t`Expiration`}

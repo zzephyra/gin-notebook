@@ -34,7 +34,7 @@ type WorkspaceValidation struct {
 	AllowPublic  *bool  `json:"allow_public" validate:"omitempty"`
 	AllowShare   *bool  `json:"allow_share" validate:"omitempty"`
 	AllowComment *bool  `json:"allow_comment" validate:"omitempty"`
-	UUID         string `json:"uuid" validate:"omitempty,uuid4"`
+	UUID         string `json:"uuid" validate:"omitempty,len=32,hexadecimal"`
 	Expire       string `json:"expire" validate:"omitempty"`
 }
 
@@ -61,4 +61,32 @@ type WorkspaceDTO struct {
 	AllowComment  bool           `json:"allow_comment"`
 	Roles         datatypes.JSON `json:"roles"`
 	Editable      bool           `json:"editable"`
+}
+
+type UpdateWorkspaceDTO struct {
+	WorkspaceID  int64   `json:"workspace_id" validate:"required,gt=0"` // 必须存在，并且大于0
+	Name         *string `json:"name" validate:"omitempty,min=1,max=100,alphanumunicode"`
+	Description  *string `json:"description" validate:"omitempty,max=1000"`
+	AllowInvite  *bool   `json:"allow_invite" validate:"omitempty"`
+	AllowJoin    *bool   `json:"allow_join" validate:"omitempty"`
+	AllowPublic  *bool   `json:"allow_public" validate:"omitempty"`
+	AllowShare   *bool   `json:"allow_share" validate:"omitempty"`
+	AllowComment *bool   `json:"allow_comment" validate:"omitempty"`
+	Owner        int64   `json:"owner" validate:"required,gt=0"` // 必须存在，并且大于0
+}
+
+type WorkspaceLinksDTO struct {
+	WorkspaceID string `json:"workspace_id" validate:"required"` // 必须存在，并且大于0
+}
+
+type DeleteWorkspaceInviteLinkDTO struct {
+	WorkspaceID int64  `form:"workspace,string" validate:"required"` // 必须存在，并且大于0
+	LinkID      string `json:"link_id" validate:"required"`          // 必须存在，并且大于0
+	UserID      int64  `json:"user_id" validate:"required"`          // 必须存在，并且大于0
+}
+
+type CreateWorkspaceInviteLinkDTO struct {
+	WorkspaceID int64  `json:"workspace_id,string" validate:"required,gt=0"` // 必须存在，并且大于0
+	ExipiresAt  string `json:"expires_at" validate:"omitempty"`              // 可选，过期时间
+	UserID      int64  `json:"user_id" validate:"required"`                  // 必须存在，并且大于0
 }

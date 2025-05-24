@@ -22,3 +22,7 @@ export function checkFileType(file: File, assertType: string) {
     var type = file.type.split('/')[0]
     return type == assertType
 }
+
+export function generateInviteUrl(uuid: string) {
+    return `${window.location.origin}/invite/${uuid}`
+}

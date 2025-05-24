@@ -19,7 +19,7 @@ import WorkspaceSelctList from "@/components/list/workspaceEntry/list";
 import WorkspaceInitStep from "@/components/step/workspace/main";
 import { store } from "@/store";
 import ChaseLoading from "@/components/loading/Chase/loading";
-import { GetWorkspaceList } from "@/features/api/workspace";
+import { getWorkspaceListRequest } from "@/features/api/workspace";
 import { responseCode } from "@/features/constant/response";
 
 export default function InitWorkspace() {
@@ -42,7 +42,7 @@ export default function InitWorkspace() {
   const showDivider = hasOwner && hasOthers;
   async function GetUserWorkspace() {
     setLoading(true);
-    const res = await GetWorkspaceList();
+    const res = await getWorkspaceListRequest();
     if (res.code == responseCode.SUCCESS) {
       store.dispatch(UpdateWorkspaceList({ workspaces: res.data.workspaces }));
     }

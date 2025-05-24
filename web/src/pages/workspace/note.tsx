@@ -36,7 +36,6 @@ import CategoryTitle from "@/components/category/title";
 export default function WorkspaceMain() {
   const [collapsed, setCollapsed] = useState(false);
   var params = useParams();
-  console.log("params", params);
   const { t } = useLingui();
   const [loading, setLoading] = useState(true);
   const { isOpen: isOpenIgnorePrompt, onOpen: onOpenPrompt, onOpenChange: onOpenPromptChange } = useDisclosure();

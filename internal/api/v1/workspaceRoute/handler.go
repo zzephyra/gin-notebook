@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/http/response"
+	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/service/note"
 	"gin-notebook/internal/service/workspace"
@@ -257,4 +258,103 @@ func GetRecommandNotesCategoryApi(c *gin.Context) {
 	RecommendNoteCategorySerializer(c, &data)
 
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func UpdateWorkspaceApi(c *gin.Context) {
+	userID := c.MustGet("userID").(int64)
+	params := &dto.UpdateWorkspaceDTO{}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		log.Printf("params %s", err)
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	workspaceID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	params.WorkspaceID = workspaceID
+	params.Owner = userID
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusOK, response.Response(message.ERROR_WORKSPACE_VALIDATE, nil))
+		return
+	}
+
+	responseCode, data := workspace.UpdateWorkspace(params)
+	if responseCode != message.SUCCESS {
+		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
+		return
+	}
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func GetWorkspaceLinkApi(c *gin.Context) {
+	params := &dto.WorkspaceLinksDTO{
+		WorkspaceID: c.Param("id"),
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusOK, response.Response(message.ERROR_WORKSPACE_VALIDATE, nil))
+		return
+	}
+
+	responseCode, data := workspace.GetWorkspaceLinks(params)
+
+	if responseCode == message.SUCCESS {
+		data = WorkspaceLinkListSerializer(c, data.(*[]model.WorkspaceInvite))
+	}
+
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func DeleteWorkspaceLinkApi(c *gin.Context) {
+	params := &dto.DeleteWorkspaceInviteLinkDTO{
+		LinkID: c.Param("id"),
+		UserID: c.MustGet("userID").(int64),
+	}
+
+	if err := c.ShouldBindQuery(params); err != nil {
+		log.Printf("params %s", err)
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode, data := workspace.DeleteWorkspaceLinks(params)
+
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func CreateWorkspaceLinkApi(c *gin.Context) {
+	userID := c.MustGet("userID").(int64)
+	params := &dto.CreateWorkspaceInviteLinkDTO{}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		log.Printf("params %s", err)
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	params.UserID = userID
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusOK, response.Response(message.ERROR_WORKSPACE_VALIDATE, nil))
+		return
+	}
+
+	responseCode, data := workspace.CreateWorkspaceLinks(params)
+
+	if responseCode != message.SUCCESS {
+		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
+		return
+	}
+	c.JSON(http.StatusCreated, response.Response(responseCode, WorkspaceLinkSerializer(c, data)))
 }

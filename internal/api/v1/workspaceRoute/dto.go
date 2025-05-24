@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/dto"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -118,4 +119,29 @@ func RecommendNoteCategorySerializer(c *gin.Context, noteCategory *dto.Recommend
 		}
 	}
 	*noteCategory.Recent = recentSlice[:index]
+}
+
+func WorkspaceLinkListSerializer(c *gin.Context, workspaceLink *[]model.WorkspaceInvite) []map[string]interface{} {
+	links := make([]map[string]interface{}, len(*workspaceLink))
+	for i, w := range *workspaceLink {
+		links[i] = WorkspaceLinkSerializer(c, &w)
+	}
+	return links
+}
+
+func WorkspaceLinkSerializer(c *gin.Context, workspaceLink *model.WorkspaceInvite) map[string]interface{} {
+	var isExpired = false
+	expiredAt := workspaceLink.ExpiresAt
+	if expiredAt != nil {
+		isExpired = (*expiredAt).Before(time.Now())
+	}
+
+	links := map[string]interface{}{
+		"id":          strconv.FormatInt(workspaceLink.ID, 10),
+		"uuid":        workspaceLink.UUID,
+		"expire_time": expiredAt,
+		"is_expired":  isExpired,
+		"count":       workspaceLink.Count,
+	}
+	return links
 }
