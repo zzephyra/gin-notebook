@@ -11,6 +11,7 @@ import RequireAuth from "./RequireAuth";
 import BaseLayout from "@/layouts/backstage";
 import SelectWorkspace from "@/pages/workspace/select";
 import WorkspaceNote from "@/pages/workspace/note";
+import InviteWorkspacePage from "@/pages/workspace/invite";
 import SettingsPage from "@/pages/settings/main";
 let router = createBrowserRouter([
   {
@@ -51,6 +52,11 @@ let router = createBrowserRouter([
         index: true,
         Component: SelectWorkspace,
       },
+      {
+        path: "invite/:id",
+        index: true,
+        Component: InviteWorkspacePage,
+      }
     ],
   },
   {

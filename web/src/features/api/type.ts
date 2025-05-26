@@ -36,3 +36,14 @@ export type WorkspaceNoteCreateParams = {
     allow_share?: boolean;
     allow_comment?: boolean;
 }
+
+export interface WorkspaceInviteLinkResponse {
+    id: string,
+    uuid: string,
+    workspace_id: string,
+    workspace_name: string,
+    workspace_description: string | null,
+    workspace_avatar: string,
+    expire_at: string | null,
+    allow_join: boolean
+}

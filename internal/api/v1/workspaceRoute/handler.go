@@ -8,6 +8,7 @@ import (
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/service/note"
 	"gin-notebook/internal/service/workspace"
+	"gin-notebook/pkg/logger"
 	validator "gin-notebook/pkg/utils/validatior"
 	"log"
 	"net/http"
@@ -292,9 +293,9 @@ func UpdateWorkspaceApi(c *gin.Context) {
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }
 
-func GetWorkspaceLinkApi(c *gin.Context) {
+func GetWorkspaceLinksListApi(c *gin.Context) {
 	params := &dto.WorkspaceLinksDTO{
-		WorkspaceID: c.Param("id"),
+		WorkspaceID: c.Param("workspaceID"),
 	}
 
 	if err := validator.ValidateStruct(params); err != nil {
@@ -357,4 +358,40 @@ func CreateWorkspaceLinkApi(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, response.Response(responseCode, WorkspaceLinkSerializer(c, data)))
+}
+
+func GetWorkspaceLinkApi(c *gin.Context) {
+	LinkUUID := c.Param("linkUUID")
+
+	params := &dto.GetWorkspaceInviteLinkDTO{
+		LinkUUID: LinkUUID,
+		UserID:   c.MustGet("userID").(int64),
+	}
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_WORKSPACE_VALIDATE, nil))
+		return
+	}
+
+	responseCode, data := workspace.GetWorkspaceInviteLink(params)
+
+	c.JSON(http.StatusCreated, response.Response(responseCode, data))
+
+}
+
+func CreateWorkspaceMemberByLinkApi(c *gin.Context) {
+	params := &dto.CreateWorkspaceMemberDTO{}
+	if err := c.ShouldBindJSON(params); err != nil {
+		log.Printf("params %s", err)
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_WORKSPACE_VALIDATE, nil))
+		return
+	}
+	responseCode, data := workspace.CreateWorkspaceMemberByLInk(params)
+	c.JSON(http.StatusCreated, response.Response(responseCode, data))
 }

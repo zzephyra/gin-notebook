@@ -77,13 +77,21 @@ func UpdateWorkspace(workspaceID any, workspace map[string]interface{}) error {
 	return nil
 }
 
-func IsUserAllowedToModifyWorkspace(userID int64, workspaceID int64) bool {
+func GetWorkspaceMember(userID int64, workspaceID int64) (*model.WorkspaceMember, error) {
 	workspaceMember := model.WorkspaceMember{}
 	tx := database.DB.Model(&model.WorkspaceMember{}).Where(&model.WorkspaceMember{WorkspaceID: workspaceID, UserID: userID}).First(&workspaceMember)
 	if tx.Error != nil {
-		return false
+		return nil, tx.Error
 	}
 
+	return &workspaceMember, nil
+}
+
+func IsUserAllowedToModifyWorkspace(userID int64, workspaceID int64) bool {
+	workspaceMember, err := GetWorkspaceMember(userID, workspaceID)
+	if err != nil {
+		return false
+	}
 	roles := make([]string, 0)
 	if err := json.Unmarshal(workspaceMember.Role, &roles); err != nil {
 		return false
@@ -109,4 +117,22 @@ func DeleteWorkspaceInviteLink(linkID string) error {
 		return fmt.Errorf("删除工作区邀请链接失败")
 	}
 	return nil
+}
+
+func GetWorkspaceInviteLinkByID(linkUUID string) (*dto.WorkspaceInviteLinkDTO, error) {
+	var inviteLink dto.WorkspaceInviteLinkDTO
+	err := database.DB.Select("workspace_invites.*, workspaces.avatar as workspace_avatar, workspaces.allow_join, workspaces.name as workspace_name, workspaces.description as workspace_description").Table("workspace_invites").Joins("JOIN workspaces ON workspaces.id = workspace_invites.workspace_id").Where("uuid = ?", linkUUID).First(&inviteLink).Error
+	if err != nil {
+		return nil, err
+	}
+	return &inviteLink, nil
+}
+
+func IsInviteLinkMatchingWorkspace(linkUUID string, workspaceID int64) bool {
+	var count int64
+	err := database.DB.Model(&model.WorkspaceInvite{}).Where("workspace_id = ? and uuid = ?", workspaceID, linkUUID).Count(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
 }

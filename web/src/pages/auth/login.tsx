@@ -26,7 +26,8 @@ export default function LoginPage() {
         const state = store.getState();
         const isAuth = state.user.isAuth;
         if (isAuth) {
-          navigate("/select"); // 跳转到仪表盘
+          const redirect = new URLSearchParams(location.search).get("redirect") || "/select";
+          navigate(redirect); // 跳转到仪表盘或其他页面
           return;
         }
       } else {

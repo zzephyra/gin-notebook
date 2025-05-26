@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -163,5 +164,25 @@ func CreateWorkspaceLinks(params *dto.CreateWorkspaceInviteLinkDTO) (responseCod
 	}
 	responseCode = message.SUCCESS
 	data = invite
+	return
+}
+
+func CreateWorkspaceMemberByLInk(params *dto.CreateWorkspaceMemberDTO) (responseCode int, data any) {
+	isMatched := repository.IsInviteLinkMatchingWorkspace(params.LinkUUID, params.WorkspaceID)
+	if !isMatched {
+		responseCode = message.ERROR_WORKSPACE_INVITE_LINK_NOT_MATCH
+		return
+	}
+	workspaceRole, _ := json.Marshal([]string{model.MemberRole.User}) // 默认角色为普通成员
+	member := &model.WorkspaceMember{
+		Role: datatypes.JSON(workspaceRole),
+	}
+	copier.Copy(&member, params)
+	err := repository.CreateWorkspaceMember(member)
+	if err != nil {
+		responseCode = message.ERROR_WORKSPACE_MEMBER_EXIST
+		return
+	}
+	responseCode = message.SUCCESS
 	return
 }

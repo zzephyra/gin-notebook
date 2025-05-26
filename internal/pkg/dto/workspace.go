@@ -23,6 +23,7 @@ type WorkspaceListDTO struct {
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
 	DeletedAt     time.Time `json:"deleted_at"`
+	Avatar        string    `json:"avatar"`
 }
 
 type WorkspaceValidation struct {
@@ -89,4 +90,26 @@ type CreateWorkspaceInviteLinkDTO struct {
 	WorkspaceID int64  `json:"workspace_id,string" validate:"required,gt=0"` // 必须存在，并且大于0
 	ExipiresAt  string `json:"expires_at" validate:"omitempty"`              // 可选，过期时间
 	UserID      int64  `json:"user_id" validate:"required"`                  // 必须存在，并且大于0
+}
+
+type GetWorkspaceInviteLinkDTO struct {
+	LinkUUID string `json:"link_uuid" validate:"required"` // 必须存在，并且大于0
+	UserID   int64  `json:"user_id" validate:"required"`   // 必须存在，并且大于0
+}
+
+type WorkspaceInviteLinkDTO struct {
+	ID                   int64      `json:"id,string"`
+	WorkspaceID          int64      `json:"workspace_id,string"`
+	UUID                 string     `json:"uuid"`
+	ExpiresAt            *time.Time `json:"expires_at"`
+	WorkspaceName        string     `json:"workspace_name"`
+	WorkspaceDescription *string    `json:"workspace_description"`
+	AllowJoin            bool       `json:"allow_join"`
+	WorkspaceAvatar      string     `json:"workspace_avatar"`
+}
+
+type CreateWorkspaceMemberDTO struct {
+	WorkspaceID int64  `json:"workspace_id,string" validate:"required,gt=0"` // 必须存在，并且大于0
+	LinkUUID    string `json:"link_uuid" validate:"required"`                // 必须存在，并且大于0
+	UserID      int64  `json:"user_id,string" validate:"required,gt=0"`      // 必须存在，并且大于0
 }
