@@ -1,0 +1,53 @@
+services:
+  service:
+    image: golang:latest
+    build:
+      context: ./
+    container_name: gnote-service
+    depends_on:
+      - redis
+      - postgresql
+    ports:
+      - "8899:8899"
+    volumes:
+      - .:/gnote-service
+    networks:
+      - note-network
+  client:
+    image: node:22.0.0
+    container_name: gnote-client
+    build:
+      context: ./web
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web:/gnote-client
+      - /gnote-client/node_modules
+    networks:
+      - note-network
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6380:6379"
+    networks:
+      - note-network
+
+  postgresql:
+    image: bitnami/postgresql:latest
+    container_name: postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=123123
+      - POSTGRESQL_DATABASE=gnote
+      - POSTGRESQL_PORT_NUMBER=5432
+      - POSTGRESQL_ENABLE_SSL=false
+    volumes:
+      - /data/postgresql:/var/lib/postgresql/data
+    networks:
+      - note-network
+networks:
+  note-network:
+    driver: bridge
