@@ -98,10 +98,7 @@ export async function createWorkspaceInviteLinkRequest(data: Object) {
 export async function getWorkspaceInviteLinkRequest(link_id: string): Promise<ApiResponse<WorkspaceInviteLinkResponse> | null> {
     try {
         const res = await axiosClient.get(`${workspacesLinkApi}/${link_id}`, {})
-        if (res.data.code == responseCode.SUCCESS) {
-            return res.data
-        }
-        return null
+        return res.data
     } catch (err) {
         return null
     }

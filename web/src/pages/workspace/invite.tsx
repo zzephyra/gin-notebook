@@ -2,23 +2,26 @@ import { Avatar, Card, CardBody, Image, Button } from "@heroui/react"
 import logoImage from '@/assets/images/logo/logo.png'; // 相对路径
 import { useEffect, useState } from "react";
 import { getWorkspaceInviteLinkRequest, joinWorkspaceByInviteLinkRequest } from "@/features/api/workspace";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { responseCode } from "@/features/constant/response";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { WorkspaceInviteLinkResponse } from "@/features/api/type";
 import { useLingui } from "@lingui/react/macro";
 import toast from "react-hot-toast";
+import LinkExpire from "@/assets/images/common/link-expire.png";
 
 enum LinkStatues {
     Active = "active",
     Expired = "expired",
     NotAllow = "not_allow",
     Joined = "joined",
+    NotExist = "not_exist"
 }
 
 const InviteWorkspacePage = () => {
     const params = useParams();
+    const navigate = useNavigate();
     const { t } = useLingui();
     const user = useSelector((state: RootState) => state.user);
     const [link, setLink] = useState<WorkspaceInviteLinkResponse>();
@@ -29,10 +32,24 @@ const InviteWorkspacePage = () => {
             return;
         }
         getWorkspaceInviteLinkRequest(params?.id).then((data) => {
-            if (data?.code == responseCode.SUCCESS) {
-                setStatus(LinkStatues.Active)
-                setLink(data.data);
+            switch (data?.code) {
+                case responseCode.SUCCESS:
+                    setStatus(LinkStatues.Active);
+                    break;
+                case responseCode.ERROR_WORKSPACE_MEMBER_EXIST:
+                    setStatus(LinkStatues.Joined);
+                    break;
+                case responseCode.ERROR_WORKSPACE_INVITE_LINK_NOT_ALLOW_JOIN:
+                    setStatus(LinkStatues.NotAllow);
+                    break;
+                case responseCode.ERROR_WORKSPACE_INVITE_LINK_EXPIRED:
+                    setStatus(LinkStatues.Expired);
+                    break;
+                default:
+                    setStatus(LinkStatues.NotExist);
+                    return;
             }
+            setLink(data.data);
         })
     }, [params?.id]);
 
@@ -73,6 +90,57 @@ const InviteWorkspacePage = () => {
                                         <div>
                                             <Button className="w-full mt-4" color="primary" variant="solid" onPress={AcceptInvitation}>
                                                 {t`Join Workspace`}
+                                            </Button>
+                                        </div>
+                                    </>
+                                )
+                            }
+                            {
+                                status == LinkStatues.Joined && (
+                                    <>
+                                        <div className="p-4">
+                                            <p className="text-lg font-semibold">{t`You have already joined this workspace!`}</p>
+                                            <Button className="w-full mt-4" color="primary" variant="solid" onPress={() => navigate(`/workspace/${link?.workspace_id}`)}>
+                                                {t`Go to Workspace`}
+                                            </Button>
+                                        </div>
+                                    </>
+                                )
+                            }
+                            {
+                                status == LinkStatues.Expired && (
+                                    <>
+                                        <div className="py-4 px-8 flex flex-col items-center">
+                                            <Image src={LinkExpire} className="w-auto mb-2 h-24 mx-auto"></Image>
+                                            <p className="text-lg font-semibold">{t`Oops, This invitation link has expired.`}</p>
+                                            <Button className="w-full mt-4" color="primary" variant="solid" onPress={() => navigate(`/select`)}>
+                                                {t`Go to selct other Workspace`}
+                                            </Button>
+                                        </div>
+                                    </>
+                                )
+                            }
+                            {
+                                status == LinkStatues.NotAllow && (
+                                    <>
+                                        <div className="py-4 px-8 flex flex-col items-center">
+                                            <Image src={LinkExpire} className="w-auto mb-2 h-24 mx-auto"></Image>
+                                            <p className="text-lg font-semibold">{t`You are not allowed to join this workspace.`}</p>
+                                            <Button className="w-full mt-4" color="primary" variant="solid" onPress={() => navigate(`/select`)}>
+                                                {t`Go to select other Workspace`}
+                                            </Button>
+                                        </div>
+                                    </>
+                                )
+                            }
+                            {
+                                status == LinkStatues.NotExist && (
+                                    <>
+                                        <div className="py-4 px-8 flex flex-col items-center">
+                                            <Image src={LinkExpire} className="w-auto mb-2 h-24 mx-auto"></Image>
+                                            <p className="text-lg font-semibold">{t`This invitation link does not exist.`}</p>
+                                            <Button className="w-full mt-4" color="primary" variant="solid" onPress={() => navigate(`/select`)}>
+                                                {t`Go to select other Workspace`}
                                             </Button>
                                         </div>
                                     </>

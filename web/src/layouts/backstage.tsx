@@ -13,7 +13,6 @@ export default function BaseLayout() {
   const { t } = useLingui();
   let params = useParams();
   let navigate = useNavigate();
-  let state = store.getState();
   async function getWorkspaceData() {
     const res = await GetWorkspace({ workspace_id: params.id });
     if (res.data != undefined) {

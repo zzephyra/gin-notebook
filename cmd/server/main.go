@@ -28,6 +28,16 @@ func main() {
 	logger.InitLogger(*config)
 	logger.LogInfo("logger init success", nil)
 
+	// 连接数据库
+	database.ConnectDB(config)
+	logger.LogInfo("Database connect success", nil)
+
+	// 连接redis
+	err = cache.InitRedisClinet(*config)
+	if err != nil {
+		panic(err)
+	}
+
 	// 创建雪花算法实例
 	algorithm.NewSnowflake(1)
 	logger.LogInfo("Snowflake init success", nil)
@@ -44,16 +54,6 @@ func main() {
 
 	// 连接Kafka，创建provider
 	queue.NewProducerProvider()
-
-	// 连接数据库
-	database.ConnectDB(config)
-	logger.LogInfo("Database connect success", nil)
-
-	// 连接redis
-	err = cache.InitRedisClinet(*config)
-	if err != nil {
-		panic(err)
-	}
 
 	startup.Init()
 

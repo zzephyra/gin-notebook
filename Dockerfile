@@ -1,5 +1,5 @@
 FROM golang:1.24.3
-RUN echo "GOPROXY=https://mirrors.aliyun.com/goproxy/" >> /etc/profile
+ENV GOPROXY https://goproxy.cn,direct
 RUN go install github.com/air-verse/air@latest
 COPY . /gnote-server
 WORKDIR /gnote-server

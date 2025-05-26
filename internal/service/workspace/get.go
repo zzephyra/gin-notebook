@@ -26,11 +26,11 @@ func GetWorkspaceInviteLink(params *dto.GetWorkspaceInviteLinkDTO) (responseCode
 	}
 
 	_, err = repository.GetWorkspaceMember(params.UserID, link.WorkspaceID)
+	data = link
 	if err == nil {
 		responseCode = message.ERROR_WORKSPACE_MEMBER_EXIST
 		return
 	}
-	data = link
 	responseCode = message.SUCCESS
 	return
 }
