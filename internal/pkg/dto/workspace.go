@@ -62,6 +62,8 @@ type WorkspaceDTO struct {
 	AllowComment  bool           `json:"allow_comment"`
 	Roles         datatypes.JSON `json:"roles"`
 	Editable      bool           `json:"editable"`
+	Avatar        string         `json:"avatar"`
+	MemberCount   int            `json:"member_count"` // 成员数量
 }
 
 type UpdateWorkspaceDTO struct {

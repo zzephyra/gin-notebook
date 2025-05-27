@@ -14,7 +14,7 @@ import (
 
 func GetWorkspaceListByUserID(UserID int64, start int, limit int) (*[]dto.WorkspaceListDTO, error) {
 	var workspace []dto.WorkspaceListDTO
-	err := database.DB.Table("workspaces").Select("workspaces.*, users.email AS owner_email").Joins("left join users ON users.id = workspaces.owner").Where("owner = ?", UserID).Offset(start).Limit(limit).Scan(&workspace).Error
+	err := database.DB.Table("workspaces").Select("workspaces.*, users.email AS owner_email").Joins("LEFT JOIN users ON users.id = workspaces.owner").Where("owner = ?", UserID).Offset(start).Limit(limit).Scan(&workspace).Error
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,24 @@ func CreateWorkspaceInviteLink(db *gorm.DB, inviteLink *model.WorkspaceInvite) e
 
 func GetWorkspaceByID(workspaceID any, OwnerID int64) (*dto.WorkspaceDTO, error) {
 	var workspace dto.WorkspaceDTO
-	err := database.DB.Table("workspaces").Select("workspaces.*, users.email AS owner_email, wm.role as roles, wm.nickname as nickname, wm.editable as editable").Joins("left join users ON users.id = workspaces.owner").Joins("left join workspace_members as wm on wm.workspace_id = workspaces.id and wm.user_id = ?", OwnerID).Where("workspaces.id = ? and owner = ?", workspaceID, OwnerID).First(&workspace).Error
+	err := database.DB.Table("workspaces").
+		Select(`
+			workspaces.*, 
+			users.email AS owner_email, 
+			wm.role as roles, 
+			wm.nickname as nickname, 
+			wm.editable as editable,
+			wmc.member_cnt as member_count `).
+		Joins("LEFT JOIN users ON users.id = workspaces.owner").
+		Joins("LEFT JOIN workspace_members as wm on wm.workspace_id = workspaces.id and wm.user_id = ?", OwnerID).
+		Joins(`LEFT JOIN (
+			SELECT workspace_id, COUNT(*) AS member_cnt
+			FROM   workspace_members
+			GROUP  BY workspace_id
+			) AS wmc
+			ON wmc.workspace_id = workspaces.id`).
+		Where("workspaces.id = ? and owner = ?", workspaceID, OwnerID).
+		First(&workspace).Error
 	if err != nil {
 		return nil, err
 	}

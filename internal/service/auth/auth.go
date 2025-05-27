@@ -80,3 +80,10 @@ func UserRegister(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, response.Response(message.SUCCESS, nil))
 }
+
+func UserLogout(c *gin.Context) {
+	// 清除用户的登录状态
+	// 这里可以根据实际情况清除用户的登录状态，比如清除cookie或session等
+	c.SetCookie("access_token", "", -1, "/", "", false, true) // 清除cookie
+	c.JSON(http.StatusOK, response.Response(message.SUCCESS, nil))
+}

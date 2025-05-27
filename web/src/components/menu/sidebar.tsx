@@ -1,9 +1,15 @@
-import { Tabs, Tab, Avatar, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
-import { store } from "@/store";
+import { Tabs, Tab, Avatar, Popover, PopoverTrigger, PopoverContent, ListboxItem, Listbox, ListboxSection, Divider, Button, Modal, ModalContent, ModalBody } from "@heroui/react";
+import { RootState, store } from "@/store";
 import { Key } from "react";
 import { useState } from "react";
-import { useNavigate, useLocation } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { useLingui } from "@lingui/react/macro";
+import { ArrowLeftRight } from "lucide-react";
+import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/solid";
+import { Logout } from "@/store/features/user";
+import { CleanWorkspaceState } from "@/store/features/workspace";
+import { UserLogOutRequest } from "@/features/api/user";
 interface MenuItem {
     key: string;
     label: string;
@@ -13,8 +19,10 @@ interface MenuItem {
 
 export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
     const isVertical = true; // Set to true for vertical tabs
-    const state = store.getState();
-    const user = state.user;
+    const { t } = useLingui();
+    const user = useSelector((state: RootState) => state.user);
+    const workspace = useSelector((state: RootState) => state.workspace);
+
     const navigate = useNavigate();
     const currentMenuKey = menuItems.find((item) =>
         location.pathname.startsWith(item.route)
@@ -25,6 +33,12 @@ export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
         if (selectedItem) {
             navigate(selectedItem.route)
         }
+    }
+
+    const handleLogout = () => {
+        store.dispatch(Logout())
+        store.dispatch(CleanWorkspaceState())
+        UserLogOutRequest()
     }
 
     function handleOpenTooltip() {
@@ -47,8 +61,37 @@ export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
                             alt="User Avatar"
                         />
                     </PopoverTrigger>
-                    <PopoverContent>
-                        test
+                    <PopoverContent className="w-64 max-h-[400px] overflow-y-auto">
+                        <div className="p-2 w-full text-[12px]">
+                            <div className="pb-3 flex items-center gap-2">
+                                <div className="flex  gap-2">
+                                    <Avatar src={workspace.currentWorkspace?.avatar} aria-label="Workspace Avatar" radius="sm" size="md" isBordered>
+                                    </Avatar>
+                                    <div className="flex flex-col pl-1">
+                                        <span>
+                                            {t`Workspace: `}{workspace.currentWorkspace?.name || t`No Workspace`}
+                                        </span>
+                                        <span className="text-[12px] text-gray-500">
+                                            {workspace.currentWorkspace?.memberCount || 1} {(workspace.currentWorkspace?.memberCount || 1) === 1 ? t`member` : t`members`}
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div className="mb-2">
+                                <Button size="sm" variant="ghost" className="border-1" onPress={() => navigate(`/select`)}>
+                                    <div className="flex items-center gap-1" >
+                                        <ArrowLeftRight className="w-3"></ArrowLeftRight>
+                                        <span className="">{t`Switch`}</span>
+                                    </div>
+                                </Button>
+                            </div>
+                            <Divider></Divider>
+                            <div className="h-7 mt-2 flex items-center gap-1 text-[12px] text-gray-600 cursor-pointer hover:bg-gray-100 py-2 px-1 rounded-md" onClick={handleLogout}>
+                                <ArrowRightStartOnRectangleIcon className="w-5" />
+                                {t`Log out`}
+                            </div>
+                        </div>
                     </PopoverContent>
                 </Popover>
             </div>

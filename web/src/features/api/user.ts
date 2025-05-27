@@ -1,9 +1,10 @@
 import axiosClient from "@/lib/api/client";
-import { userInfoApi, userDeviceApi } from "./routes";
+import { userInfoApi, userDeviceApi, userLogoutApi } from "./routes";
 import { InitUserInfo, UpdateUserInfo } from '@/store/features/user'
 import { store } from '@/store';
 import { responseCode } from "../constant/response";
 import { getCurrentDeviceInfo } from "@/utils/device";
+import { router } from "@/routes";
 
 interface UserInfoResponse {
     code: number;
@@ -86,4 +87,16 @@ export async function getUserDevicesList(limit: number, offset: number) {
         }
     }
 
+}
+
+export async function UserLogOutRequest() {
+    try {
+        let res = await axiosClient.post(userLogoutApi, {})
+        if (res.data.code == responseCode.SUCCESS) {
+            router.navigate('/auth/login', { replace: true });
+        }
+        return
+    } catch (err) {
+        return
+    }
 }

@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { UpdateCurrentWorkspace } from "@/store/features/workspace";
 import { store } from "@/store";
 import { NewspaperIcon } from "@heroicons/react/24/solid";
+import { StarIcon } from "lucide-react";
 
 export default function BaseLayout() {
   const { t } = useLingui();
@@ -33,6 +34,11 @@ export default function BaseLayout() {
       icon: <NewspaperIcon className="w-6" />,
       key: "notes",
       route: `/workspace/${params.id}`,
+    }, {
+      label: t`Favorites`,
+      icon: <StarIcon className="w-6" />,
+      key: "favorites",
+      route: `/workspace/${params.id}/favorites`,
     },
     {
       label: t`Settings`,

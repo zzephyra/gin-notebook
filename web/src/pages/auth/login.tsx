@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { loginUserApi } from "@/features/api/login";
 import { getUserInfoRequest, storageUserDeviceRequest } from "@/features/api/user";
-import { addToast, Button, ToastProvider } from "@heroui/react";
+import { addToast, Button, ToastProvider, Image } from "@heroui/react";
 import { LoginForm } from "@/components/form/login/form";
+import LogoInmage from "@/assets/images/logo/logo.png"
 import "@/styles/login.css";
 import { store } from "@/store";
 import { Trans as TransMacro, useLingui } from "@lingui/react/macro";
@@ -48,7 +49,9 @@ export default function LoginPage() {
   return (
     <div className="w-96 m-auto	h-full justify-center flex flex-col content-center">
       <ToastProvider placement="top-left" />
-      <p className="font-bold text-center text-4xl pb-2">Memoas</p>
+      <div className="w-full flex justify-center mb-4">
+        <Image className="w-48" src={LogoInmage}></Image>
+      </div>
       <LoginForm onSubmit={handleLogin} />
       <p>
         <TransMacro>Don't have an account yet?</TransMacro>{" "}

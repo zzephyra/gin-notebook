@@ -11,6 +11,7 @@ export interface WorkspaceItem {
     owner_avatar: string,
     owner_email: string,
     roles: string[],
+    avatar: string,
     [key: string]: any
 }
 
@@ -59,6 +60,13 @@ export const workspaceSlice = createSlice({
         setSelectedNoteId(state, { payload }) {
             state.selectedNoteId = payload;
         },
+        CleanWorkspaceState: (state) => {
+            state.workspaceList = [];
+            state.currentWorkspace = null;
+            state.categoryList = [];
+            state.selectedNoteId = null;
+            notesAdapter.removeAll(state.noteList);
+        },
         UpdateNoteList: (state, action: PayloadAction<Note[]>) => {
             notesAdapter.addMany(state.noteList, action.payload);
         },
@@ -91,7 +99,7 @@ export const workspaceSlice = createSlice({
     }
 })
 
-export const { UpdateWorkspaceList, DeleteNoteByID, InsertNewCategory, UpdateCurrentWorkspace, setSelectedNoteId, UpdateNoteCategoryList, UpdateNoteList, UpdateNoteByID, UpdateCategoryByID } = workspaceSlice.actions
+export const { UpdateWorkspaceList, CleanWorkspaceState, DeleteNoteByID, InsertNewCategory, UpdateCurrentWorkspace, setSelectedNoteId, UpdateNoteCategoryList, UpdateNoteList, UpdateNoteByID, UpdateCategoryByID } = workspaceSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type  
 export default workspaceSlice.reducer

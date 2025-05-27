@@ -32,8 +32,25 @@ const StorageSettings = () => {
 
     async function handleSubmitSettings() {
         setUpdateLoading(true)
+        var data = {}
+        if (systemSetting.storage_driver === 'qiniu') {
+            data = {
+                storage_driver: systemSetting.storage_driver,
+                qiniu_ak: systemSetting.qiniu_ak,
+                qiniu_sk: systemSetting.qiniu_sk,
+                qiniu_bucket: systemSetting.qiniu_bucket,
+                qiniu_domain: systemSetting.qiniu_domain,
+                qiniu_region: systemSetting.qiniu_region
+            }
+        } else {
+            data = {
+                storage_driver: systemSetting.storage_driver,
+                storage_path: systemSetting.storage_path
+            }
+        }
+
         try {
-            let res = await updateSystemSettingsRequest(systemSetting)
+            let res = await updateSystemSettingsRequest(data)
             if (res.code == responseCode.SUCCESS) {
                 toast.success(t`Update successfully`)
             }

@@ -27,6 +27,8 @@ type WorkspaceDTO struct {
 	CreatedAt     time.Time `json:"created_at"`
 	Roles         []string  `json:"roles"`
 	Editable      bool      `json:"editable"`
+	Avatar        string    `json:"avatar"`
+	MemberCount   int       `json:"memberCount"`
 }
 
 type RecommendNoteCategoryDTO struct {
@@ -75,6 +77,8 @@ func WorkspaceSerializer(c *gin.Context, workspace *dto.WorkspaceDTO) WorkspaceD
 		AllowComment:  workspace.AllowComment,
 		Roles:         roles,
 		Editable:      workspace.Editable,
+		Avatar:        workspace.Avatar,
+		MemberCount:   workspace.MemberCount,
 	}
 }
 

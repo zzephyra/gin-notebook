@@ -53,8 +53,10 @@ export const userSlice = createSlice({
             state.email = ""
             state.nickname = ""
             state.phone = ""
+            state.id = ""
             state.role = []
             state.avatar = ""
+            state.device = {}
             state.isAuth = false
         },
         UpdateUserInfo: (

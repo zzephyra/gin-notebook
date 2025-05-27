@@ -1,4 +1,5 @@
 export const loginApi: string = "/auth/login";
+export const userLogoutApi: string = "/auth/logout";
 export const userInfoApi: string = "/user/info";
 export const userDeviceApi: string = "/user/device";
 export const registerApi: string = "/auth/register";

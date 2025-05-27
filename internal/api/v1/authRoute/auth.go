@@ -10,6 +10,7 @@ func RegisterAuthRoutes(r *gin.RouterGroup) {
 	authGroup := r.Group("/auth")
 	{
 		authGroup.POST("/login", auth.UserLogin)
+		authGroup.POST("/logout", auth.UserLogout)
 		authGroup.POST("/captchas", auth.SendRegisterCaptcha)
 		authGroup.POST("/register", auth.UserRegister)
 	}

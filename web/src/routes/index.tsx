@@ -13,7 +13,7 @@ import SelectWorkspace from "@/pages/workspace/select";
 import WorkspaceNote from "@/pages/workspace/note";
 import InviteWorkspacePage from "@/pages/workspace/invite";
 import SettingsPage from "@/pages/settings/main";
-let router = createBrowserRouter([
+export let router = createBrowserRouter([
   {
     path: "/",
     element: (
