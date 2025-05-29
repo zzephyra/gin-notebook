@@ -9,13 +9,13 @@ import {
   ModalBody,
   ModalHeader,
   Checkbox,
-  useDisclosure
+  useDisclosure,
+  Accordion, AccordionItem
 } from "@heroui/react";
 import { createRef, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLingui } from "@lingui/react/macro";
 import { Note, NoteCategory } from "./type"
-import { Accordion, AccordionItem } from "@heroui/accordion";
 import SearchIcon from "@/components/icons/search";
 import NotePage from "@/components/note/main";
 import { useSelector } from "react-redux";
@@ -124,7 +124,7 @@ export default function WorkspaceMain() {
     <>
       <div className="flex h-full flex-1">
         <div
-          className={`px-2 pt-4 relative `}
+          className={`${collapsed ? '' : 'px-2 pt-4 '}relative `}
         >
           <div className={`transition-all duration-300 ${collapsed ? "w-0 opacity-0" : "w-80"}`}>
             <div className="flex items-center justify-between mb-2 gap-4">
@@ -189,18 +189,10 @@ export default function WorkspaceMain() {
               </ModalContent>
             </Modal>
           </div>
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2 
-                     w-6 h-20 bg-white text-black shadow-md rounded-full 
-                     flex items-center justify-center z-10"
-          >
-            {collapsed ? ">" : "<"}
-          </button>
         </div>
         {!collapsed && <Divider orientation="vertical"></Divider>}
         <div className="flex-1 flex flex-col w-0 ">
-          {selectedId != null ? <NotePage note={note} /> : <div ></div>}
+          {selectedId != null ? <NotePage note={note} isCollapsed={collapsed} setCollapsed={setCollapsed} /> : <div ></div>}
         </div>
       </div>
     </>

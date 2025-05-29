@@ -6,7 +6,7 @@ import (
 	"gin-notebook/internal/http/response"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/service/settingsService"
-	validator "gin-notebook/pkg/utils/validatior"
+	"gin-notebook/pkg/utils/validator"
 	"log"
 	"net/http"
 

@@ -1,5 +1,5 @@
 import axiosClient from "@/lib/api/client";
-import { workspaceNotesApi, workspaceNoteCategoryApi, workspaceNoteDeleteApi, workspaceCategoryRecommandApi } from "./routes";
+import { workspaceNotesApi, workspaceNoteCategoryApi, workspaceNoteDeleteApi, workspaceCategoryRecommandApi, favoriteNoteApi } from "./routes";
 import { i18n } from "@lingui/core";
 import { responseCode } from "../constant/response";
 import { store } from "@/store";
@@ -144,5 +144,19 @@ export async function GetRecommandCategories(workspace_id: string) {
         return res.data.data
     } catch (err) {
         return defaultResponse
+    }
+}
+
+
+export async function SetFavoriteNoeRequest(note_id: string, is_favorite: boolean) {
+    try {
+        const res = await axiosClient.post(favoriteNoteApi, { note_id, is_favorite, sep: Date.now() })
+        if (res.data.code == responseCode.SUCCESS) {
+            return true
+        } else {
+            return false
+        }
+    } catch (err) {
+        return false
     }
 }

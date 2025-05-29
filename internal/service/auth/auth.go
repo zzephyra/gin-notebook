@@ -7,7 +7,7 @@ import (
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/repository"
 	"gin-notebook/pkg/utils/token"
-	validator "gin-notebook/pkg/utils/validatior"
+	"gin-notebook/pkg/utils/validator"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

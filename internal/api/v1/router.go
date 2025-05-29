@@ -2,6 +2,7 @@ package v1
 
 import (
 	"gin-notebook/internal/api/v1/authRoute"
+	"gin-notebook/internal/api/v1/noteRoute"
 	"gin-notebook/internal/api/v1/settingsRoute"
 	"gin-notebook/internal/api/v1/uploadRoute"
 	"gin-notebook/internal/api/v1/userRoute"
@@ -17,4 +18,5 @@ func RegisterV1Routes(r *gin.RouterGroup) {
 	workspaceRoute.RegisterUserRoutes(group)
 	settingsRoute.RegisterSettingsRoutes(group)
 	uploadRoute.RegisterSettingsRoutes(group)
+	noteRoute.RegisterAuthRoutes(group)
 }

@@ -5,6 +5,10 @@ import { lingui } from "@lingui/vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  resolve: {
+    dedupe: ['slate', 'slate-react'],          // 让 Vite 遇到多路径时始终复用同一份
+
+  },
   server: {
     host: '0.0.0.0',      // 或 '127.0.0.1'
     port: 5173,
@@ -17,5 +21,5 @@ export default defineConfig({
     },
   ),
   lingui(),
-    , tsconfigPaths()],
+  tsconfigPaths()],
 })

@@ -9,7 +9,7 @@ import (
 	"gin-notebook/internal/pkg/geoip"
 	"gin-notebook/internal/service/userService"
 	"gin-notebook/pkg/utils/tools"
-	validator "gin-notebook/pkg/utils/validatior"
+	"gin-notebook/pkg/utils/validator"
 	"net/http"
 	"strconv"
 

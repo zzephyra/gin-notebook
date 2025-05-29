@@ -3,7 +3,7 @@ import { useLingui } from "@lingui/react/macro";
 import PlateEditor from "@/components/third-party/PlateEditor";
 import { useMemo, useRef, useState } from "react";
 import { debounce } from "lodash";
-import { AutoUpdateContent, DeleteNote, UpdateNote } from "@/features/api/note";
+import { AutoUpdateContent, DeleteNote, SetFavoriteNoeRequest, UpdateNote } from "@/features/api/note";
 import { useParams } from "react-router-dom";
 import { responseCode } from "@/features/constant/response";
 import LoadingArrow from "../../icons/loading";
@@ -24,8 +24,6 @@ import {
     SharedSelection,
     Input
 } from "@heroui/react";
-import { motion } from "motion/react";
-import { Tooltip } from "@heroui/tooltip";
 import ShareIcon from "../../icons/share";
 import SettingIcon from "../../icons/setting";
 import "./style.css"
@@ -41,6 +39,8 @@ import SquareIcon from "../../icons/square";
 import { store } from "@/store";
 import { UpdateNoteByID } from "@/store/features/workspace";
 import DeleteNoteModal from "@/components/modal/note/deleteModal";
+import { StarIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftStartOnRectangleIcon, StarIcon as SolidStarIcon } from "@heroicons/react/24/solid";
 const iconSize = 14
 
 function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }: { isOpen: boolean, onOpenChange: (open: boolean) => void, activeKey?: string, note: Note, workspaceID: any }) {
@@ -230,6 +230,11 @@ export default function NotePage(props: NoteProps) {
         }
     }, 500)
 
+    const handleStarNote = async () => {
+        SetFavoriteNoeRequest(props.note.id, !props.note.is_favorite)
+        store.dispatch(UpdateNoteByID({ ...props.note, is_favorite: !props.note.is_favorite }))
+    }
+
     const handleBlurTitle = () => {
         setIsEditingTitle(false);
         store.dispatch(UpdateNoteByID({ ...props.note, title: inputRef.current ? inputRef.current.value : props.note.title }))
@@ -239,44 +244,24 @@ export default function NotePage(props: NoteProps) {
         <>
             <div className="flex flex-col h-screen">
                 <div className="h-11 flex items-center justify-between px-4">
-                    {/* <div>
-                        {saving ?
-                            <motion.div
-                                key="saving"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                className="flex items-center gap-2"
-                            >
-                                <div className="flex items-center gap-2">
-                                    <LoadingArrow size={14} className="animate-spin"></LoadingArrow>
-                                    <span>
-                                        {t`Auto-saving...`}
-                                    </span>
-                                </div>
-                            </motion.div> :
-                            lastSaveTime &&
-                            <motion.div
-                                key="saved"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                            >
-                                <Tooltip content={t`Last saved at ${lastSaveTime}`} showArrow={true}>
-                                    <div className="text-sm text-slate-400">
-                                        {t`Synchronized`}
-                                    </div>
-                                </Tooltip>
-                            </motion.div>
-                        }
-                    </div> */}
-                    <div>
+                    <div className="flex items-center">
+                        <span>
+                            <Button variant="light" isIconOnly size="sm" className="px-2" onPress={() => props.setCollapsed(!props.isCollapsed)}>
+                                <ViewColumnsIcon></ViewColumnsIcon>
+                            </Button>
+                        </span>
                         {
                             isEditingTitle ? <Input ref={inputRef} size="sm" defaultValue={props.note.title} onBlur={handleBlurTitle}></Input> : <span onClick={handleEditTitle} className="text-sm w-40 block hover:text-accent-foreground hover:bg-accent py-1 px-2 rounded-lg cursor-pointer" > {props.note.title}</span>
                         }
 
                     </div>
                     <div className="flex items-center gap-2">
+                        <Button variant="light" isIconOnly size="sm" className="px-2" onPress={handleStarNote} >
+                            {
+                                !props.note.is_favorite ? <StarIcon className=""></StarIcon> : <SolidStarIcon className="text-yellow-400"></SolidStarIcon>
+                            }
+
+                        </Button>
                         <Button variant="light" isIconOnly size="sm" className="px-2" onPress={onOpenSetting}>
                             <ShareIcon></ShareIcon>
                         </Button>

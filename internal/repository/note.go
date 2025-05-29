@@ -8,14 +8,23 @@ import (
 	"gin-notebook/pkg/logger"
 	"strings"
 	"time"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func GetNotesList(workspaceID string, userID int64, limit int, offset int) (*[]dto.WorkspaceNoteDTO, error) {
 	var notes []dto.WorkspaceNoteDTO
 	err := database.DB.
 		Table("notes").
-		Select("notes.*, users.email AS owner_email").
+		Select(
+			`notes.*, users.email AS owner_email, 
+			CASE 
+				WHEN fn.is_favorite IS NULL THEN false 
+				ELSE fn.is_favorite 
+			END AS is_favorite`).
 		Joins("LEFT JOIN users ON users.id = notes.owner_id").
+		Joins("LEFT JOIN favorite_notes as fn ON fn.note_id = notes.id AND fn.user_id = ?", userID).
 		Limit(limit).
 		Offset(offset).
 		Where("workspace_id = ? AND owner_id = ? AND notes.deleted_at is NULL", workspaceID, userID).
@@ -162,4 +171,25 @@ func GetRecentCreatedCategories(workspaceID int64, limit int) (*[]model.NoteCate
 
 func GetFrequentUsedCategories(workspaceID int64, limit int) (*[]model.NoteCategory, error) {
 	return GetCategories(workspaceID, "updated_at", limit, nil)
+}
+
+func SetFavoriteNote(favoriteNote *model.FavoriteNote) error {
+	logger.LogInfo("设置笔记收藏", map[string]interface{}{
+		"user_id":     favoriteNote.UserID,
+		"note_id":     favoriteNote.NoteID,
+		"is_favorite": favoriteNote.IsFavorite,
+	})
+
+	return database.DB.
+		Clauses(clause.OnConflict{
+			Columns: []clause.Column{{Name: "user_id"}, {Name: "note_id"}},
+			DoUpdates: []clause.Assignment{
+				{Column: clause.Column{Name: "is_favorite"}, Value: gorm.Expr("EXCLUDED.is_favorite")},
+				{Column: clause.Column{Name: "sep"}, Value: gorm.Expr("EXCLUDED.sep")},
+			},
+			Where: clause.Where{Exprs: []clause.Expression{
+				gorm.Expr("favorite_notes.sep < EXCLUDED.sep"),
+			}},
+		}).
+		Create(favoriteNote).Error
 }

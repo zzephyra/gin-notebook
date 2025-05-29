@@ -6,10 +6,10 @@ import (
 	"gin-notebook/internal/http/response"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/dto"
-	"gin-notebook/internal/service/note"
+	"gin-notebook/internal/service/noteService"
 	"gin-notebook/internal/service/workspace"
 	"gin-notebook/pkg/logger"
-	validator "gin-notebook/pkg/utils/validatior"
+	"gin-notebook/pkg/utils/validator"
 	"log"
 	"net/http"
 	"strconv"
@@ -87,7 +87,7 @@ func GetWorkspaceNotesApi(c *gin.Context) {
 		userID = c.MustGet("userID").(int64)
 	}
 
-	responseCode, data := note.GetWorkspaceNotesList(workspaceID, userID, noteLimit, noteOffset)
+	responseCode, data := noteService.GetWorkspaceNotesList(workspaceID, userID, noteLimit, noteOffset)
 	if data != nil {
 		data = map[string]interface{}{
 			"notes": data,
@@ -112,7 +112,7 @@ func GetWorkspaceNotesCategoryApi(c *gin.Context) {
 		return
 	}
 
-	responseCode, data := note.GetWorkspaceNotesCategory(params)
+	responseCode, data := noteService.GetWorkspaceNotesCategory(params)
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 
 }
@@ -131,7 +131,7 @@ func UpdateWorkspaceNoteApi(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_WORKSPACE_NOTE_VALIDATE, nil))
 		return
 	}
-	responseCode, data := note.UpdateNote(params)
+	responseCode, data := noteService.UpdateNote(params)
 	if responseCode != message.SUCCESS {
 		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
 		return
@@ -154,7 +154,7 @@ func CreateWorkspaceNoteApi(c *gin.Context) {
 		c.JSON(http.StatusOK, response.Response(message.ERROR_WORKSPACE_NOTE_VALIDATE, nil))
 		return
 	}
-	responseCode, data := note.CreateNote(params)
+	responseCode, data := noteService.CreateNote(params)
 	if responseCode != message.SUCCESS {
 		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
 		return
@@ -181,7 +181,7 @@ func UpdateWorkspaceCategoryApi(c *gin.Context) {
 		return
 	}
 
-	responseCode, data := note.UpdateNoteCategory(params)
+	responseCode, data := noteService.UpdateNoteCategory(params)
 	if responseCode != message.SUCCESS {
 		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
 		return
@@ -204,7 +204,7 @@ func CreateWorkspaceCategoryApi(c *gin.Context) {
 		return
 	}
 
-	responseCode, data := note.CreateNoteCategory(params)
+	responseCode, data := noteService.CreateNoteCategory(params)
 	if responseCode != message.SUCCESS {
 		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
 		return
@@ -227,7 +227,7 @@ func DeleteWorkspaceNoteApi(c *gin.Context) {
 		c.JSON(http.StatusOK, response.Response(message.ERROR_WORKSPACE_NOTE_VALIDATE, nil))
 		return
 	}
-	responseCode, data := note.DeleteNote(params)
+	responseCode, data := noteService.DeleteNote(params)
 	if responseCode != message.SUCCESS {
 		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
 		return
@@ -250,7 +250,7 @@ func GetRecommandNotesCategoryApi(c *gin.Context) {
 		return
 	}
 
-	responseCode, data := note.GetRecommandNotesCategory(params)
+	responseCode, data := noteService.GetRecommandNotesCategory(params)
 	if responseCode != message.SUCCESS {
 		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
 		return

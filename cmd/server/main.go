@@ -11,7 +11,7 @@ import (
 	"gin-notebook/internal/pkg/rbac"
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/algorithm"
-	validator "gin-notebook/pkg/utils/validatior"
+	"gin-notebook/pkg/utils/validator"
 )
 
 func Stop() {
@@ -62,5 +62,5 @@ func main() {
 
 	// 设置路由
 	var router = api.SetRouter()
-	router.Run("0.0.0.0:8899") // 监听并在 0.0.0.0:8080 上启动服务
+	router.Run("0.0.0.0:8899") // 监听并在 0.0.0.0:8899 上启动服务
 }

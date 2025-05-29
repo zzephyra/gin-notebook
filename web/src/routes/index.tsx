@@ -13,6 +13,7 @@ import SelectWorkspace from "@/pages/workspace/select";
 import WorkspaceNote from "@/pages/workspace/note";
 import InviteWorkspacePage from "@/pages/workspace/invite";
 import SettingsPage from "@/pages/settings/main";
+import FavoritesPage from "@/pages/workspace/favorites";
 export let router = createBrowserRouter([
   {
     path: "/",
@@ -31,6 +32,13 @@ export let router = createBrowserRouter([
         path: "workspace/:id",
         index: true,
         Component: WorkspaceNote,
+      },
+      {
+        path: "workspace/:id/favorites",
+        index: true,
+        Component: FavoritesPage,
+      },
+      {
       },
       {
         path: "settings/:id",

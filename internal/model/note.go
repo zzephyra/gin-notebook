@@ -37,3 +37,11 @@ type NoteCategory struct {
 	WorkspaceID  int64  `json:"workspace_id" gorm:"not null; index:idx_workspace_id"`
 	OwnerID      int64  `json:"owner_id" gorm:"not null; index:idx_owner_id"`
 }
+
+type FavoriteNote struct {
+	ID         int64 `json:"id,string" gorm:"primaryKey"`
+	NoteID     int64 `json:"note_id" gorm:"not null; uniqueIndex:uidx_note_user"`
+	UserID     int64 `json:"user_id" gorm:"not null; uniqueIndex:uidx_note_user"`
+	IsFavorite *bool `json:"is_favorite" gorm:"default:true"`
+	Sep        int64 `json:"sep" gorm:"not null; default:0"` // 用于排序
+}

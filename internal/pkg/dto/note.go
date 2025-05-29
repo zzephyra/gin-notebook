@@ -22,6 +22,7 @@ type WorkspaceNoteDTO struct {
 	OwnerAvatar  string  `json:"owner_avatar"`
 	OwnerEmail   string  `json:"owner_email"`
 	Deleted_at   *string `json:"deleted_at"`
+	IsFavorite   bool    `json:"is_favorite"` // 是否收藏
 }
 
 type WorkspaceUpdateNoteCategoryDTO struct {
@@ -72,8 +73,7 @@ func (dto *CreateWorkspaceNoteDTO) ToModel(ignoredFields []string) *model.Note {
 }
 
 func (v *UpdateWorkspaceNoteValidator) ToUpdate() map[string]interface{} {
-	updates := tools.StructToUpdateMap(v, map[string]string{"Status": "status"}, nil)
-
+	updates := tools.StructToUpdateMap(v, map[string]string{"Status": "status"}, []string{"NoteID"})
 	if v.Status != nil {
 		updates["status"] = model.NoteStatus(*v.Status)
 	}
@@ -128,4 +128,11 @@ type RecommendNoteCategoryDTO struct {
 type NoteCategoryQueryDTO struct {
 	WorkspaceID  int64  `form:"workspace_id,string" validate:"required"`
 	CategoryName string `form:"kw" validate:"omitempty,min=1,max=20"`
+}
+
+type FavoriteNoteDTO struct {
+	NoteID     int64 `json:"note_id,string" validate:"required,gt=0"`
+	UserID     int64 `json:"user_id,string" validate:"required,gt=0"`
+	IsFavorite *bool `json:"is_favorite" validate:"required"` // 是否收藏
+	Sep        int64 `json:"sep" validate:"required,gt=0"`    // 收藏顺序
 }

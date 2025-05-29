@@ -15,6 +15,7 @@ export interface Note {
     owner_name: string
     owner_avatar: string
     owner_email: string
+    is_favorite: boolean
     [key: string]: any
 }
 
