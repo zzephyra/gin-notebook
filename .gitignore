@@ -28,3 +28,4 @@ docker-compose.yml
 */*.mmdb
 .VSCodeCounter/*
 bin/*
+**/*.log
