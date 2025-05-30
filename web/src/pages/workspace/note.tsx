@@ -12,7 +12,7 @@ import {
   useDisclosure,
   Accordion, AccordionItem
 } from "@heroui/react";
-import { createRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLingui } from "@lingui/react/macro";
 import { Note, NoteCategory } from "./type"
@@ -38,7 +38,7 @@ export default function WorkspaceMain() {
   var params = useParams();
   const { t } = useLingui();
   const [loading, setLoading] = useState(true);
-  const { isOpen: isOpenIgnorePrompt, onOpen: onOpenPrompt, onOpenChange: onOpenPromptChange } = useDisclosure();
+  const { isOpen: isOpenIgnorePrompt, onOpen: _, onOpenChange: onOpenPromptChange } = useDisclosure();
   const [promptText, setPromptTextName] = useState<string>("123");
   const noteTransferRef = useRef({ noteID: "", originalCategoryId: "", targetCategoryId: "" });
   const categoryList = useSelector((state: RootState) => state.workspace.categoryList);

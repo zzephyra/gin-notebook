@@ -1,4 +1,4 @@
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Form, Select, Button, SelectItem } from "@heroui/react"
+import { Modal, ModalBody, ModalContent, ModalHeader, Form, Select, Button, SelectItem } from "@heroui/react"
 import { useLingui } from "@lingui/react/macro";
 import { QRCodeCanvas } from "qrcode.react";
 import { useState } from "react";

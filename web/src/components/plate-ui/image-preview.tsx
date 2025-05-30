@@ -1,6 +1,5 @@
 'use client';
 
-import { Input } from '@heroui/input';
 import { cn } from '@udecode/cn';
 import {
   PreviewImage,
@@ -146,7 +145,7 @@ export const ImagePreview = () => {
 };
 
 export function ScaleInput(props: React.ComponentProps<'input'>) {
-  const { props: scaleInputProps, ref } = useScaleInput();
+  const { props: scaleInputProps } = useScaleInput();
 
   return <input {...scaleInputProps} {...props} />;
 }

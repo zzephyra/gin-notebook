@@ -6,9 +6,6 @@ import {
     TableBody,
     TableRow,
     TableCell,
-    Pagination,
-    getKeyValue,
-    Chip,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { useLingui } from '@lingui/react/macro';
@@ -20,13 +17,14 @@ const DeviceTable = ({ userInfo }: { userInfo: UserState }) => {
     const { t } = useLingui()
     const [devices, setDevices] = useState<any[]>([])
     const [total, setTotal] = useState(0)
-    const [offset, setOffset] = useState(0)
-    const [limit, setLimit] = useState(5)
+    const offset = 0
+    const limit = 5
     useEffect(() => {
         getUserDevicesList(limit, offset).then((res) => {
             setDevices(res.devices)
             setTotal(res.total)
         })
+        console.debug("total devices: ", total)
     }, [limit, offset])
     const RenderCell = (columnKey: React.Key, data: any) => {
         switch (columnKey) {

@@ -5,7 +5,7 @@ import { RootState, store } from "@/store";
 import { UpdateCurrentWorkspace, WorkspaceItem } from "@/store/features/workspace";
 import { generateInviteUrl } from "@/utils/tools";
 import { QrCodeIcon, QuestionMarkCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { TableColumn, TableHeader, ModalFooter, Table, Switch, Snippet, useDisclosure, TableBody, TableRow, TableCell, Tooltip, Chip, Modal, ModalContent, ModalHeader, ModalBody, Button, Form, Select } from "@heroui/react";
+import { TableColumn, TableHeader, ModalFooter, Table, Switch, Snippet, useDisclosure, TableBody, TableRow, TableCell, Tooltip, Chip, Modal, ModalContent, ModalHeader, ModalBody, Button } from "@heroui/react";
 import { useLingui } from "@lingui/react/macro";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -19,7 +19,7 @@ const WorkspaceSettings = () => {
     const [inviteQrcodeUrl, setInviteQrcodeUrl] = useState<string>("")
     const { isOpen: isOpenQrcodeModal, onOpen: onOpenQrcodeModal, onOpenChange: onOpenChangeQrcodeModal } = useDisclosure();
     const { isOpen: isOpenDeleteLinkModal, onOpen: onOpenDeleteLinkModal, onOpenChange: onOpenChangeDeleteLinkModal } = useDisclosure();
-    const { isOpen: isOpenAddLinkModal, onOpen: onOpenAddLinkModal, onOpenChange: onOpenChangeAddLinkModal } = useDisclosure();
+    const { isOpen: isOpenAddLinkModal, onOpen: _, onOpenChange: onOpenChangeAddLinkModal } = useDisclosure();
 
     const [deleteLinkId, setDeleteLinkId] = useState<string>("")
     const handleUpdate = async (value: Partial<WorkspaceItem>, successMsg?: string) => {
@@ -86,7 +86,7 @@ const WorkspaceSettings = () => {
                 </div>
             case "uuid":
                 return <div>
-                    <Snippet hideSymbol size="sm" onCopy={(value) => {
+                    <Snippet hideSymbol size="sm" onCopy={() => {
                         navigator.clipboard.writeText(generateInviteUrl(data.uuid))
                         toast.success(t`Copy successfully`)
                     }}>{data.uuid}</Snippet>

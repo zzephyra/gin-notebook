@@ -25,7 +25,7 @@ import { EmojiInputPlugin } from '@udecode/plate-emoji/react';
 import { ExcalidrawPlugin } from '@udecode/plate-excalidraw/react';
 import { HEADING_KEYS } from '@udecode/plate-heading';
 import { TocPlugin } from '@udecode/plate-heading/react';
-import { HighlightPlugin } from '@udecode/plate-highlight/react';
+// import { HighlightPlugin } from '@udecode/plate-highlight/react';
 import { HorizontalRulePlugin } from '@udecode/plate-horizontal-rule/react';
 import { KbdPlugin } from '@udecode/plate-kbd/react';
 import { ColumnItemPlugin, ColumnPlugin } from '@udecode/plate-layout/react';
@@ -39,7 +39,7 @@ import {
     FilePlugin,
     ImagePlugin,
     MediaEmbedPlugin,
-    PlaceholderPlugin,
+    // PlaceholderPlugin,
     VideoPlugin,
 } from '@udecode/plate-media/react';
 import {
@@ -160,7 +160,6 @@ export const editorComponents = {
     [SlashInputPlugin.key]: SlashInputElement,
 };
 
-const markdownString = '# Hello, *Plate*!';
 export const useCreateEditor = (
     {
         components,

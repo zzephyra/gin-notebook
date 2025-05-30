@@ -1,5 +1,5 @@
 import { updateInfoRequest } from "@/features/api/user";
-import { Button, Form, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
+import { Button, Form, Input, Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
 import { useLingui } from "@lingui/react/macro";
 import { FormEvent, useState, useRef, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -8,7 +8,6 @@ import zxcvbn from "zxcvbn";
 const ModifyPasswordModal = ({ userID, isOpen, onChange }: { userID: string, isOpen: boolean, onChange: (open: boolean) => void }) => {
     var { t } = useLingui()
     var [password, setPassword] = useState('')
-    var [strength, setStrength] = useState(0);
     const zxcvbnResultRef = useRef<zxcvbn.ZXCVBNResult | null>(null)
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -25,7 +24,6 @@ const ModifyPasswordModal = ({ userID, isOpen, onChange }: { userID: string, isO
         setPassword(val)
         const result = zxcvbn(val)
         zxcvbnResultRef.current = result
-        setStrength(result.score)
     }, [])
 
     const validatePassword = useCallback((val: string) => {

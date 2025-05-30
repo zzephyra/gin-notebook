@@ -1,14 +1,13 @@
-import { RootState, store } from "@/store";
+import { RootState } from "@/store";
 import { Listbox, ListboxItem } from "@heroui/react";
 import { useSelector } from "react-redux";
 import CategoryListItem from "../categoryItem";
-import { CategoryItem, UpdateNoteByID } from "@/store/features/workspace";
+import { CategoryItem } from "@/store/features/workspace";
 import { Note } from "@/pages/workspace/type";
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
-import { Draggable } from "@/components/plate-ui/draggable";
 
 
-export default function CategoryListBox({ category, onSelect, onDropNoteToCategory }: {
+export default function CategoryListBox({ category, onSelect }: {
     category: CategoryItem, onSelect: (note: Note) => void, onDropNoteToCategory?: (noteId: string, targetCategoryId: string, originalCategoryId: string) => void;
 }) {
     const notes = useSelector(

@@ -85,7 +85,6 @@ export function EmojiPickerContent({
   emojiLibrary,
   i18n,
   isSearching = false,
-  refs,
   searchResult,
   settings = EmojiSettings,
   visibleCategories,
@@ -114,7 +113,7 @@ export function EmojiPickerContent({
         return (
           <div
             key={categoryId}
-            ref={section.root}
+            // ref={section.root}
             style={{ width: getRowWidth }}
             data-id={categoryId}
           >
@@ -181,7 +180,7 @@ export function EmojiPickerContent({
 
   return (
     <div
-      ref={refs.current.contentRoot}
+      // ref={refs.current.contentRoot}
       className={cn(
         'h-full min-h-[50%] overflow-x-hidden overflow-y-auto px-2',
         '[&::-webkit-scrollbar]:w-4',
@@ -191,7 +190,9 @@ export function EmojiPickerContent({
       )}
       data-id="scroll"
     >
-      <div ref={refs.current.content} className="h-full">
+      <div
+        // ref={refs.current.content} 
+        className="h-full">
         {isSearching ? SearchList() : EmojiList()}
       </div>
     </div>

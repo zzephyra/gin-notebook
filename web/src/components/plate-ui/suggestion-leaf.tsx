@@ -1,6 +1,4 @@
 'use client';
-import React from 'react';
-
 import type { TSuggestionText } from '@udecode/plate-suggestion';
 
 import { cn } from '@udecode/cn';
@@ -47,10 +45,10 @@ export function SuggestionLeaf(props: PlateLeafProps) {
         'border-b-2 border-b-brand/[.24] bg-brand/[.08] text-brand/80 no-underline transition-colors duration-200',
         (hasActive || hasHover) && 'border-b-brand/[.60] bg-brand/[.13]',
         hasRemove &&
-          'border-b-gray-300 bg-gray-300/25 text-gray-400 line-through',
+        'border-b-gray-300 bg-gray-300/25 text-gray-400 line-through',
         (hasActive || hasHover) &&
-          hasRemove &&
-          'border-b-gray-500 bg-gray-400/25 text-gray-500 no-underline',
+        hasRemove &&
+        'border-b-gray-500 bg-gray-400/25 text-gray-500 no-underline',
         className
       )}
       onMouseEnter={() => setOption('hoverId', leafId)}

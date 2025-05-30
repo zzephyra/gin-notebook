@@ -1,7 +1,4 @@
 'use client';
-
-import React from 'react';
-
 import { cn } from '@udecode/cn';
 import { PlateElement, withRef } from '@udecode/plate/react';
 

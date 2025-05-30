@@ -3,14 +3,14 @@ import { responseCode } from "@/features/constant/response";
 import { store } from "@/store";
 import { UpdateCategoryByID } from "@/store/features/workspace";
 import { Input } from "@heroui/react";
-import { useEffect, useState, useImperativeHandle, forwardRef, useRef } from "react";
+import { useEffect, useState, forwardRef, useRef } from "react";
 import { CategoryTitleRef } from "@/components/category/title/scipt";
 
 const CategoryTitle = forwardRef<CategoryTitleRef, {
     title: string,
     workspaceID: string,
     categoryID: string,
-}>(({ title, workspaceID, categoryID }, ref) => {
+}>(({ title, workspaceID, categoryID }) => {
     const [isEditing, setIsEditing] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     function handleDoubleClick(e: React.MouseEvent<HTMLDivElement>) {

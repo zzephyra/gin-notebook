@@ -1,4 +1,4 @@
-import { Tabs, Tab, Avatar, Popover, PopoverTrigger, PopoverContent, ListboxItem, Listbox, ListboxSection, Divider, Button, Modal, ModalContent, ModalBody } from "@heroui/react";
+import { Tabs, Tab, Avatar, Popover, PopoverTrigger, PopoverContent, Divider, Button } from "@heroui/react";
 import { RootState, store } from "@/store";
 import { Key } from "react";
 import { useState } from "react";
@@ -28,7 +28,7 @@ export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
         location.pathname.startsWith(item.route)
     )?.key;
     const [openTooltip, useOpenTooltip] = useState(false);
-    function handleTabClick(key: Key) {
+    function handleTabClick(key: Key | null) {
         var selectedItem = menuItems.find((item) => item.key === key);
         if (selectedItem) {
             navigate(selectedItem.route)

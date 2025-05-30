@@ -26,8 +26,8 @@ export function ImportToolbarButton({ children, ...props }: DropdownMenuProps) {
   const editor = useEditorRef();
   const openState = useOpenState();
 
-  const [type, setType] = React.useState<ImportType>('html');
-  const accept = type === 'html' ? ['text/html'] : ['.md'];
+  const [_, setType] = React.useState<ImportType>('html');
+  // const accept = type === 'html' ? ['text/html'] : ['.md'];
 
   const getFileNodes = (text: string, type: ImportType) => {
     if (type === 'html') {

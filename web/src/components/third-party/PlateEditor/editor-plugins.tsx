@@ -23,7 +23,7 @@ import { TrailingBlockPlugin } from '@udecode/plate-trailing-block';
 import { FixedToolbarPlugin } from '@/components/editor/plugins/fixed-toolbar-plugin';
 import { FloatingToolbarPlugin } from '@/components/editor/plugins/floating-toolbar-plugin';
 // import { BlockDiscussion } from '@/components/plate-ui/block-discussion';
-import { SuggestionBelowNodes } from '@/components/plate-ui/suggestion-line-break';
+// import { SuggestionBelowNodes } from '@/components/plate-ui/suggestion-line-break';
 
 import { aiPlugins } from '@/components/editor/plugins/ai-plugins';
 import { alignPlugin } from '@/components/editor/plugins/align-plugin';

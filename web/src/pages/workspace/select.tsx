@@ -1,18 +1,13 @@
 import {
-  Listbox,
-  ListboxItem,
   Divider,
-  Button,
   Card,
   CardBody,
 } from "@heroui/react";
-import { useLingui, Trans as TransMacro } from "@lingui/react/macro";
+import { useLingui } from "@lingui/react/macro";
 import { WorkspaceItem } from "@/store/features/workspace";
-import { i18n } from "@lingui/core";
 import { useEffect, useState } from "react";
 import {
   UpdateWorkspaceList,
-  UpdateCurrentWorkspace,
 } from "@/store/features/workspace";
 import { motion } from "motion/react";
 import WorkspaceSelctList from "@/components/list/workspaceEntry/list";

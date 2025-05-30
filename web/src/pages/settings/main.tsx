@@ -2,7 +2,7 @@
     设置主文件，文件夹内其他文件均为子文件，最终合并在该文件内
 */
 import { useState } from 'react';
-import { Listbox, ListboxItem, ListboxSection, Card, CardBody, menuItem } from "@heroui/react";
+import { Listbox, ListboxItem, ListboxSection, Card, CardBody } from "@heroui/react";
 import { useLingui } from '@lingui/react/macro';
 import AccountSettings from './accountSettings';
 import StorageSettings from './storageSettings';
@@ -12,7 +12,7 @@ import WorkspaceSettings from './workspaceSettings';
 const SettingsPage = () => {
     const [selectedKey, setSelectedKey] = useState('account');
     const state = store.getState()
-    const { t, i18n } = useLingui();
+    const { i18n } = useLingui();
     const isSystemAdmin = (state.user.role as string[])?.includes("admin") ?? false;
     const isWorkspaceAdmin = (state.workspace.currentWorkspace?.roles as string[])?.includes("admin") ?? false;
     const menuList = [

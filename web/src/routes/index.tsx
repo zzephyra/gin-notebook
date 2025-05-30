@@ -1,7 +1,6 @@
 import {
   createBrowserRouter,
   RouterProvider,
-  redirect,
 } from "react-router-dom";
 // import HomePage from "../pages/index";
 import LoginPage from "../pages/auth/login";

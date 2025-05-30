@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import LiteYouTubeEmbed from 'react-lite-youtube-embed';
 import ReactPlayer from 'react-player';
 

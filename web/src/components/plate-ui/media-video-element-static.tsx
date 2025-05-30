@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type { SlateElementProps } from '@udecode/plate';
 import type { TCaptionElement } from '@udecode/plate-caption';
 import type { TVideoElement } from '@udecode/plate-media';
@@ -18,9 +16,9 @@ export function MediaVideoElementStatic({
     url,
     width,
   } = props.element as TVideoElement &
-    TCaptionElement & {
-      width: number;
-    };
+  TCaptionElement & {
+    width: number;
+  };
 
   return (
     <SlateElement className={cn(className, 'py-2.5')} {...props}>

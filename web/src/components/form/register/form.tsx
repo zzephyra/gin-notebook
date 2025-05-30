@@ -1,6 +1,6 @@
 import { useState, FormEvent, useEffect } from "react";
 import { Input } from "@heroui/input";
-import { Button, PressEvent } from "@heroui/button";
+import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Trans as TransMacro, useLingui } from "@lingui/react/macro";
 import { Link } from "react-router-dom";
@@ -53,7 +53,7 @@ export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
     };
 
 
-    const handleSendCode = async (e: PressEvent) => {
+    const handleSendCode = async () => {
         const data = new FormData();
         if (emailValue == null || emailValue == "") {
             setErrors({ email: "请填写邮箱" });

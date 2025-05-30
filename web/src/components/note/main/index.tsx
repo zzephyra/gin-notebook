@@ -3,14 +3,11 @@ import { useLingui } from "@lingui/react/macro";
 import PlateEditor from "@/components/third-party/PlateEditor";
 import { useMemo, useRef, useState } from "react";
 import { debounce } from "lodash";
-import { AutoUpdateContent, DeleteNote, SetFavoriteNoeRequest, UpdateNote } from "@/features/api/note";
+import { AutoUpdateContent, SetFavoriteNoeRequest, UpdateNote } from "@/features/api/note";
 import { useParams } from "react-router-dom";
 import { responseCode } from "@/features/constant/response";
-import LoadingArrow from "../../icons/loading";
 import {
     Modal,
-    ModalFooter,
-    ModalHeader,
     Button,
     ListboxSection,
     ModalContent,
@@ -40,7 +37,7 @@ import { store } from "@/store";
 import { UpdateNoteByID } from "@/store/features/workspace";
 import DeleteNoteModal from "@/components/modal/note/deleteModal";
 import { StarIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
-import { ArrowLeftStartOnRectangleIcon, StarIcon as SolidStarIcon } from "@heroicons/react/24/solid";
+import { StarIcon as SolidStarIcon } from "@heroicons/react/24/solid";
 const iconSize = 14
 
 function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }: { isOpen: boolean, onOpenChange: (open: boolean) => void, activeKey?: string, note: Note, workspaceID: any }) {
@@ -102,7 +99,7 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
     return (
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl" className="max-h-[715px] share-modal">
             <ModalContent >
-                {(onClose) => (
+                {() => (
                     <>
                         <ModalBody className="p-0">
                             <div className="flex h-full">
@@ -193,12 +190,11 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
 }
 
 export default function NotePage(props: NoteProps) {
-    const { t } = useLingui();
-    const [content, setContent] = useState<string>(props.note.content);
+    // const { t } = useLingui();
+    const [content, _] = useState<string>(props.note.content);
     const params = useParams();
-    const [lastSaveTime, setLastSaveTime] = useState<string | null>(null);
-    const [saving, setSaving] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [lastSaveTime, setLastSaveTime] = useState<string | null>(null);
+    // const [saving, setSaving] = useState<boolean>(false);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const { isOpen: isOpenSetting, onOpen: onOpenSetting, onOpenChange: onOpenSettingChange } = useDisclosure();
@@ -213,18 +209,17 @@ export default function NotePage(props: NoteProps) {
 
         store.dispatch(UpdateNoteByID({ ...props.note, content: newContent }))
         if (content != newContent) {
-            setSaving(true);
+            // setSaving(true);
             AutoUpdateContent({
                 content: newContent,
                 workspace_id: params.id,
                 note_id: props.note.id
             }).then((res) => {
                 if (res.code == responseCode.SUCCESS) {
-                    setLastSaveTime(new Date().toLocaleTimeString());
-                    setSaving(false);
+                    // setLastSaveTime(new Date().toLocaleTimeString());
+                    // setSaving(false);
                 } else {
-                    setSaving(false);
-                    setError(res.error);
+                    // setSaving(false);
                 }
             })
         }

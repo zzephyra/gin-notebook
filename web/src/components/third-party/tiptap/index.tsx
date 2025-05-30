@@ -1,5 +1,5 @@
 import RichTextEditor from 'reactjs-tiptap-editor';
-import { BaseKit, FontFamily, Table, CodeBlock, ImportWord, Drawer, ExportWord, Twitter, Mention, Mermaid, Attachment, ImageGif, TextDirection, Excalidraw, TableOfContents, TaskList, Strike, Underline, Katex, Video, SearchAndReplace, TextAlign, Indent, Italic, LineHeight, OrderedList, SlashCommand, MoreMark, Link, HorizontalRule, Image, History, Highlight, Emoji, Heading, ExportPdf, FormatPainter, Code, Blockquote, Bold, Clear, FontSize, BulletList } from 'reactjs-tiptap-editor/extension-bundle';
+import { BaseKit, FontFamily, Table, CodeBlock, ImportWord, Drawer, ExportWord, Twitter, Mention, Mermaid, Attachment, ImageGif, TextDirection, Excalidraw, TableOfContents, TaskList, Strike, Underline, Katex, Video, SearchAndReplace, TextAlign, Indent, Italic, LineHeight, OrderedList, SlashCommand, MoreMark, Link, HorizontalRule, Image, History, Highlight, Emoji, Heading, ExportPdf, FormatPainter, Blockquote, Bold, Clear, FontSize, BulletList } from 'reactjs-tiptap-editor/extension-bundle';
 import 'reactjs-tiptap-editor/style.css';
 import "./style.css"
 import 'react-image-crop/dist/ReactCrop.css';

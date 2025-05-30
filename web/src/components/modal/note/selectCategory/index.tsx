@@ -1,7 +1,6 @@
 import { GetNoteCategory, GetRecommandCategories, UpdateNote } from "@/features/api/note";
 import {
     Modal, ModalBody, ModalContent, ModalHeader, ModalFooter, Button, Autocomplete,
-    AutocompleteSection,
     Listbox, ListboxItem, ListboxSection,
     AutocompleteItem
 } from "@heroui/react";

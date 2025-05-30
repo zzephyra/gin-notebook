@@ -5,8 +5,8 @@ import PlusIcon from "@/components/icons/plus";
 import { CreateCategory, CreateNote } from "@/features/api/note";
 import { responseCode } from "@/features/constant/response";
 import { RootState, store } from "@/store";
-import { DocumentTextIcon, FolderPlusIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
-import { Button, Dropdown, DropdownItem, useDisclosure, DropdownMenu, DropdownTrigger, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Form, Select, SelectItem, Textarea, Checkbox } from "@heroui/react";
+import { DocumentTextIcon, FolderPlusIcon } from "@heroicons/react/24/outline";
+import { Button, Dropdown, DropdownItem, useDisclosure, DropdownMenu, DropdownTrigger, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Form, Select, SelectItem, Checkbox } from "@heroui/react";
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -20,7 +20,7 @@ import { setSelectedNoteId } from "@/store/features/workspace";
 const NoteDropdown = () => {
     const { t } = useLingui();
     const [loadingCategory, setLoadingCategory] = useState(false)
-    const [loadingNote, setLoadingNote] = useState(false)
+    const [_, setLoadingNote] = useState(false)
     const { isOpen: isOpenNewCategoryModel, onOpen: onOpenNewCategoryModel, onOpenChange: onOpenChangeNewCategoryModel } = useDisclosure();
     const { isOpen: isOpenNewNoteModel, onOpen: onOpenNewNoteModel, onOpenChange: onOpenChangeNewNoteModel } = useDisclosure();
     const categoryList = useSelector((state: RootState) => state.workspace.categoryList);

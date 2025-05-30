@@ -24,7 +24,7 @@ axiosClient.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
+  () => {
     // 统一处理错误，返回固定结构
     return Promise.resolve({
       data: {

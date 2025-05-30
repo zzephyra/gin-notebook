@@ -8,7 +8,7 @@ export const markdownPlugin = MarkdownPlugin.configure({
         remarkPlugins: [remarkMath, remarkGfm, remarkMdx],
         rules: {
             date: {
-                deserialize(mdastNode, deco, options) {
+                deserialize(mdastNode) {
                     if (mdastNode.children?.[0] && 'value' in mdastNode.children[0]) {
                         return {
                             children: [{ text: '', type: 'text' }],

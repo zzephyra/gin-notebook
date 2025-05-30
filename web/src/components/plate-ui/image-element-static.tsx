@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type { SlateElementProps } from '@udecode/plate';
 import type { TCaptionElement } from '@udecode/plate-caption';
 import type { TImageElement } from '@udecode/plate-media';
@@ -19,9 +17,9 @@ export function ImageElementStatic({
     url,
     width,
   } = props.element as TImageElement &
-    TCaptionElement & {
-      width: number;
-    };
+  TCaptionElement & {
+    width: number;
+  };
 
   return (
     <SlateElement

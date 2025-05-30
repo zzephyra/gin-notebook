@@ -6,7 +6,7 @@ import DeviceTable from "@/components/table/device";
 import { updateInfoRequest } from "@/features/api/user";
 import { RootState } from "@/store";
 import { Status, useUpload } from "@/thirdpart/qiniu/upload";
-import { Avatar, Input, Tooltip, Spinner, Button, Modal, useDisclosure, ModalContent, ModalHeader, ModalBody, ModalFooter, Form } from "@heroui/react";
+import { Avatar, Input, Tooltip, Spinner, Button, useDisclosure } from "@heroui/react";
 import { useLingui } from "@lingui/react/macro";
 import { useRef } from "react"
 import toast from "react-hot-toast";

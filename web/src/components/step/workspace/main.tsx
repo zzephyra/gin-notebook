@@ -13,7 +13,6 @@ import {
   Snippet,
 } from "@heroui/react";
 import { useState, useMemo } from "react";
-import CopyIcon from "@/components/icons/copy";
 import { v4 as uuidv4 } from "uuid";
 import toast from "react-hot-toast";
 import ChaseLoading from "@/components/loading/Chase/loading";

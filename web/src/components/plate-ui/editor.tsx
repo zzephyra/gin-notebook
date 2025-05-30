@@ -8,7 +8,7 @@ import type { VariantProps } from 'class-variance-authority';
 import { cn } from '@udecode/cn';
 import {
   PlateContent,
-  useEditorContainerRef,
+  // useEditorContainerRef,
   useEditorRef,
 } from '@udecode/plate/react';
 import { cva } from 'class-variance-authority';
@@ -45,7 +45,7 @@ export const EditorContainer = ({
 }: React.HTMLAttributes<HTMLDivElement> &
   VariantProps<typeof editorContainerVariants>) => {
   const editor = useEditorRef();
-  const containerRef = useEditorContainerRef();
+  // const containerRef = useEditorContainerRef();
 
   return (
     <div
