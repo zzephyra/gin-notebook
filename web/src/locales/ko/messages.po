@@ -13,92 +13,825 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: src/pages/workspace/note.tsx:173
+msgid "Would you like to move the file to the \"{total}\" folder?"
+msgstr "파일을 \"{합계}\" 폴더로 이동하시겠습니까?"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:12
+#: src/features/api/note.ts:33
+msgid "Missing valid value"
+msgstr "유효한 값 누락"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:85
+msgid "Add new note failed"
+msgstr "새 노트를 추가하지 못했습니다."
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:102
+msgid "Add new category failed"
+msgstr "새 범주를 추가하지 못했습니다."
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:123
+msgid "Delete note failed"
+msgstr "노트 삭제 실패"
+
+#: src/components/step/workspace/main.tsx:38
+msgid "1 day"
+msgstr "하루 1일"
+
+#: src/components/step/workspace/main.tsx:40
+msgid "14 days"
+msgstr "14 일"
+
+#: src/components/step/workspace/main.tsx:41
+msgid "30 days"
+msgstr "30 일"
+
+#: src/components/step/workspace/main.tsx:39
+msgid "7 days"
+msgstr "7 일"
+
+#: src/pages/settings/storageSettings.tsx:76
+msgid "Access Key"
+msgstr "액세스 키"
+
+#: src/pages/settings/workspaceSettings.tsx:148
+msgid "Action"
+msgstr "액션 (Action)"
+
+#: src/pages/settings/workspaceSettings.tsx:82
+msgid "Active"
+msgstr "활성 상태"
+
+#: src/components/modal/workspace/link/index.tsx:83
+msgid "Add Invite Link"
+msgstr "초대 링크 추가"
+
+#: src/components/dropdown/note/index.tsx:99
+msgid "Add New Category"
+msgstr "새 범주 추가"
+
+#: src/pages/settings/workspaceSettings.tsx:133
+msgid "Add new Invite Link"
+msgstr "새 초대 링크 추가"
+
+#: src/components/dropdown/note/index.tsx:123
+msgid "Add New Note"
+msgstr "새 노트 추가"
+
+#: src/components/note/categoryItem/index.tsx:60
+msgid "Add to Favorites"
+msgstr "즐겨찾기에 추가"
+
+#: src/components/dropdown/note/index.tsx:152
+msgid "Allow commenting"
+msgstr "주석 달기 허용"
+
+#: src/components/dropdown/note/index.tsx:147
+msgid "Allow editing"
+msgstr "편집 허용"
+
+#: src/components/note/main/index.tsx:136
+msgid "Allow editing this note."
+msgstr "이 노트를 편집할 수 있습니다."
+
+#: src/components/dropdown/note/index.tsx:187
+msgid "Allow inviting"
+msgstr "초대 허용"
+
+#: src/components/dropdown/note/index.tsx:182
+msgid "Allow joining"
+msgstr "조인 허용"
+
+#: src/components/dropdown/note/index.tsx:157
+msgid "Allow sharing"
+msgstr "공유 허용"
+
+#: src/components/note/main/index.tsx:133
+msgid "Allow sharing this note with others or third-party applications."
+msgstr "이 노트를 다른 사용자 또는 타사 응용프로그램과 공유할 수 있습니다."
+
 #: src/components/form/register/form.tsx:97
 msgid "Already have an account?"
-msgstr ""
+msgstr "이미 계정이 있습니까?"
 
-#: src/pages/auth/login.tsx:44
+#: src/pages/settings/workspaceSettings.tsx:190
+msgid "Are you sure you want to delete this invite link?"
+msgstr "이 초대 링크를 삭제하시겠습니까?"
+
+#: src/components/modal/note/deleteModal/index.tsx:37
+msgid "Are you sure you want to delete this note? This action cannot be undone."
+msgstr "이 노트를 삭제하시겠습니까? 이 작업은 실행 취소할 수 없습니다."
+
+#: src/components/step/workspace/main.tsx:182
+msgid "Back"
+msgstr "뒤로 (Back)"
+
+#: src/components/note/main/index.tsx:120
+msgid "Basic Information"
+msgstr "기본 정보"
+
+#: src/pages/settings/storageSettings.tsx:82
+msgid "Bucket Name"
+msgstr "버켓 이름"
+
+#: src/pages/workspace/note.tsx:181
+#: src/pages/settings/workspaceSettings.tsx:194
+#: src/components/modal/user/modifyPassword/index.tsx:58
+#: src/components/modal/note/selectCategory/index.tsx:113
+#: src/components/modal/note/deleteModal/index.tsx:42
+#: src/components/dropdown/note/index.tsx:105
+#: src/components/dropdown/note/index.tsx:204
+msgid "Cancel"
+msgstr "취소 (Cancel)"
+
+#: src/components/note/main/index.tsx:124
+msgid "Categorize the note by selecting an existing note category."
+msgstr "기존 노트 범주를 선택하여 노트를 분류합니다."
+
+#: src/components/note/main/index.tsx:124
+msgid "Category"
+msgstr "범주 (Category)"
+
+#: src/components/dropdown/note/index.tsx:101
+msgid "Category Name"
+msgstr "범주 이름"
+
+#: src/components/dropdown/note/index.tsx:38
+#: src/components/dropdown/note/index.tsx:101
+msgid "Category name is required"
+msgstr "범주 이름이 필요합니다."
+
+#: src/pages/settings/accountSettings.tsx:91
+#: src/components/modal/user/changeEmail/index.tsx:24
+#: src/components/modal/user/changeEmail/index.tsx:31
+msgid "Change Email"
+msgstr "전자 메일 변경"
+
+#: src/pages/settings/accountSettings.tsx:86
+#: src/components/modal/user/modifyPassword/index.tsx:40
+msgid "Change Password"
+msgstr "암호 변경"
+
+#: src/pages/settings/accountSettings.tsx:84
+msgid "Change your password"
+msgstr "암호 변경"
+
+#: src/pages/settings/accountSettings.tsx:81
+msgid "Come up with a good name!"
+msgstr "좋은 이름을 생각해 보세요!"
+
+#: src/components/modal/user/modifyPassword/index.tsx:51
+msgid "Confirm Password"
+msgstr "비밀번호 확인"
+
+#: src/components/modal/user/modifyPassword/index.tsx:51
+msgid "Confirm your new password"
+msgstr "새 암호 확인"
+
+#: src/components/modal/workspace/link/index.tsx:116
+msgid "Copy Link"
+msgstr "링크 복사"
+
+#: src/pages/settings/workspaceSettings.tsx:91
+msgid "Copy successfully"
+msgstr "복제 성공"
+
+#: src/components/dropdown/note/index.tsx:108
+#: src/components/dropdown/note/index.tsx:207
+msgid "Create"
+msgstr "생성 (Create)"
+
+#: src/components/step/workspace/main.tsx:110
+msgid "Create a new workspace"
+msgstr "새 작업공간 만들기"
+
+#: src/components/dropdown/note/index.tsx:71
+msgid "Create note success"
+msgstr "노트 작성 성공"
+
+#: src/components/step/workspace/main.tsx:135
+msgid "Create Workspace"
+msgstr "작업공간 작성"
+
+#: src/components/step/workspace/main.tsx:74
+msgid "Create workspace failed"
+msgstr "작업공간 만들기 실패"
+
+#: src/components/list/workspaceEntry/list.tsx:27
+msgid "Created by:"
+msgstr "만든 사람:"
+
+#: src/components/step/workspace/main.tsx:192
+msgid "Creating workspace..."
+msgstr "작업 영역 생성 중..."
+
+#: src/components/table/device/index.tsx:38
+msgid "Current device"
+msgstr "현재 디바이스"
+
+#: src/components/note/main/index.tsx:140
+msgid "Danger Zone"
+msgstr "위험지대 (Danger Zone)"
+
+#: src/pages/settings/workspaceSettings.tsx:195
+#: src/components/modal/note/deleteModal/index.tsx:29
+#: src/components/modal/note/deleteModal/index.tsx:43
+msgid "Delete"
+msgstr "삭제 (Delete)"
+
+#: src/pages/settings/workspaceSettings.tsx:66
+msgid "Delete failed"
+msgstr "삭제 실패"
+
+#: src/pages/settings/workspaceSettings.tsx:185
+msgid "Delete Invite Link"
+msgstr "초대 링크 삭제"
+
+#: src/components/note/main/index.tsx:141
+#: src/components/note/main/index.tsx:143
+msgid "Delete Note"
+msgstr "메모 삭제"
+
+#: src/pages/settings/workspaceSettings.tsx:63
+#: src/components/modal/note/deleteModal/index.tsx:17
+msgid "Delete successfully"
+msgstr "삭제 성공"
+
+#: src/components/note/main/index.tsx:141
+msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
+msgstr "이 항목을 삭제하는 것은 영구적인 작업이며 되돌릴 수 없습니다. 주의하여 계속하십시오."
+
+#: src/pages/settings/storageSettings.tsx:85
+msgid "Domain Url"
+msgstr "도메인 URL"
+
+#: src/pages/auth/login.tsx:57
 msgid "Don't have an account yet?"
-msgstr ""
+msgstr "아직 계좌가 없으신가요?"
+
+#: src/components/modal/workspace/link/index.tsx:115
+msgid "Download QR Code"
+msgstr "QR 코드 다운로드"
+
+#: src/pages/settings/workspaceSettings.tsx:174
+msgid "Download Qrcode"
+msgstr "다운로드 Qrcode"
+
+#: src/pages/settings/accountSettings.tsx:89
+msgid "Email"
+msgstr "e-메일"
+
+#: src/components/step/workspace/main.tsx:157
+msgid "Emails"
+msgstr "e-메일"
+
+#: src/components/step/workspace/main.tsx:159
+msgid "Emails go here → one@example.com, two@example.com"
+msgstr "이메일 은   여기 로   이동one@example.com, two@example.com"
+
+#: src/components/note/main/index.tsx:136
+msgid "Enable Edit"
+msgstr "편집 사용"
+
+#: src/components/note/main/index.tsx:133
+msgid "Enable Share"
+msgstr "공유 사용"
+
+#: src/components/modal/user/changeEmail/index.tsx:28
+msgid "Enter your new email"
+msgstr "새 전자 메일 입력"
+
+#: src/components/modal/user/modifyPassword/index.tsx:45
+msgid "Enter your new password"
+msgstr "새 암호 입력"
+
+#: src/components/step/workspace/main.tsx:168
+msgid "Expiration"
+msgstr "만료 됨"
+
+#: src/pages/settings/workspaceSettings.tsx:82
+msgid "Expired"
+msgstr "만료 됨"
+
+#: src/components/modal/workspace/link/index.tsx:57
+msgid "Failed to generate invite link"
+msgstr "초대 링크를 생성할 수 없습니다."
+
+#: src/layouts/backstage.tsx:38
+msgid "Favorites"
+msgstr "즐겨찾기 모음"
+
+#: src/pages/workspace/note.tsx:169
+msgid "File movement"
+msgstr "파일 이동"
+
+#: src/components/modal/note/selectCategory/index.tsx:92
+msgid "Frequent Used"
+msgstr "자주 사용됨"
+
+#: src/components/note/main/index.tsx:107
+msgid "General"
+msgstr "일반 (General)"
+
+#: src/components/modal/workspace/link/index.tsx:105
+msgid "Generate Link"
+msgstr "링크 생성"
+
+#: src/components/modal/workspace/link/index.tsx:89
+msgid "Generating invite link"
+msgstr "초대 링크 생성"
+
+#: src/components/step/workspace/main.tsx:101
+msgid "Get Started"
+msgstr "시작하기"
+
+#: src/pages/workspace/invite.tsx:117
+msgid "Go to selct other Workspace"
+msgstr "다른 작업 영역 선택으로 이동"
+
+#: src/pages/workspace/invite.tsx:130
+#: src/pages/workspace/invite.tsx:143
+msgid "Go to select other Workspace"
+msgstr "다른 작업공간 선택으로 이동"
+
+#: src/pages/workspace/invite.tsx:104
+msgid "Go to Workspace"
+msgstr "작업공간으로 이동"
+
+#: src/components/step/workspace/main.tsx:93
+msgid "Hi! Welcome to Memoas!"
+msgstr "안녕하세요! Memoas에 오신 것을 환영합니다!"
+
+#: src/components/step/workspace/main.tsx:147
+msgid "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
+msgstr "게스트를 데려오는 경우 이메일을 아래에 추가하거나 단순히 초대장 링크를 복사하여 공유하십시오!"
+
+#: src/pages/workspace/note.tsx:176
+msgid "Ignore this prompt for this login"
+msgstr "이 로그인에 대한 이 프롬프트 무시"
+
+#: src/pages/settings/workspaceSettings.tsx:120
+msgid "Invite link"
+msgstr "초대 링크"
+
+#: src/components/note/main/index.tsx:112
+msgid "Invite Link"
+msgstr "링크 초대"
+
+#: src/components/modal/workspace/link/index.tsx:63
+msgid "Invite link copied to clipboard"
+msgstr "클립보드에 복사된 링크 초대"
+
+#: src/pages/settings/workspaceSettings.tsx:114
+msgid "Invite link created successfully"
+msgstr "초대 링크가 성공적으로 만들어졌습니다."
+
+#: src/pages/settings/workspaceSettings.tsx:120
+msgid "Invite link to join the workspace"
+msgstr "작업공간에 참여할 링크 초대"
+
+#: src/components/step/workspace/main.tsx:144
+msgid "Invite to your workspace"
+msgstr "작업 영역에 초대"
+
+#: src/pages/settings/workspaceSettings.tsx:142
+msgid "Invited Members"
+msgstr "초대된 멤버"
+
+#: src/pages/workspace/invite.tsx:92
+msgid "Join Workspace"
+msgstr "작업 영역 조인"
+
+#: src/pages/workspace/invite.tsx:63
+msgid "Join workspace successfully!"
+msgstr "작업 공간에 성공적으로 참여하십시오!"
+
+#: src/pages/settings/workspaceSettings.tsx:138
+msgid "Key"
+msgstr "키 (key)"
 
 #: src/layouts/base.tsx:29
 msgid "Languages"
-msgstr "bbb"
+msgstr "언어 Name"
 
-#: src/pages/auth/login.tsx:27
-#: src/pages/auth/login.tsx:33
+#: src/pages/workspace/note.tsx:64
+msgid "Loading notes..."
+msgstr "노트 로드 중..."
+
+#: src/pages/workspace/select.tsx:59
+msgid "Loading Workspace..."
+msgstr "작업공간 로드..."
+
+#: src/pages/settings/storageSettings.tsx:96
+msgid "Local storage path"
+msgstr "로컬 스토리지 경로"
+
+#: src/components/menu/sidebar.tsx:92
+msgid "Log out"
+msgstr "로그아웃"
+
+#: src/pages/auth/login.tsx:36
+#: src/pages/auth/login.tsx:43
 msgid "Login failed"
-msgstr ""
+msgstr "로그인 실패"
 
-#: src/pages/auth/login.tsx:34
+#: src/pages/auth/login.tsx:44
 msgid "Login failed, please check your email and password"
-msgstr ""
+msgstr "로그인 실패. 이메일과 암호를 확인하십시오."
 
-#: src/pages/auth/login.tsx:45
+#: src/components/note/main/index.tsx:108
+msgid "Management"
+msgstr "관리 (Management)"
+
+#: src/components/menu/sidebar.tsx:75
+msgid "member"
+msgstr "구성원"
+
+#: src/components/menu/sidebar.tsx:75
+msgid "members"
+msgstr "구성원"
+
+#: src/pages/workspace/note.tsx:184
+msgid "Move"
+msgstr "이동 (Move)"
+
+#: src/pages/workspace/note.tsx:75
+msgid "Move note failed"
+msgstr "노트 이동 실패"
+
+#: src/components/note/categoryItem/index.tsx:63
+msgid "Move to"
+msgstr "다음으로 이동"
+
+#: src/components/modal/note/selectCategory/index.tsx:67
+msgid "Move to Category"
+msgstr "범주로 이동"
+
+#: src/components/modal/note/selectCategory/index.tsx:56
+msgid "Move to category successfully"
+msgstr "범주로 성공적으로 이동"
+
+#: src/components/note/categoryItem/index.tsx:65
+msgid "Move to trash"
+msgstr "휴지통으로 이동"
+
+#: src/components/dropdown/note/index.tsx:89
+msgid "New file"
+msgstr "새 파일"
+
+#: src/components/dropdown/note/index.tsx:90
+msgid "New folder"
+msgstr "새 폴더"
+
+#: src/components/modal/user/modifyPassword/index.tsx:45
+msgid "New Password"
+msgstr "새 암호"
+
+#: src/components/note/main/index.tsx:127
+msgid "No Category"
+msgstr "범주 없음"
+
+#: src/components/step/workspace/main.tsx:42
+msgid "No expiration"
+msgstr "만료 없음"
+
+#: src/components/menu/sidebar.tsx:72
+msgid "No Workspace"
+msgstr "작업공간 없음"
+
+#: src/components/note/main/index.tsx:121
+msgid "Note ID"
+msgstr "노트 ID"
+
+#: src/components/dropdown/note/index.tsx:125
+msgid "Note Name"
+msgstr "노트 이름"
+
+#: src/components/note/main/index.tsx:132
+msgid "Note Settings"
+msgstr "메모 설정"
+
+#: src/components/note/main/index.tsx:152
+#: src/components/note/main/index.tsx:158
+msgid "Note Status"
+msgstr "노트 상태"
+
+#: src/components/dropdown/note/index.tsx:125
+msgid "Note title is required"
+msgstr "노트 제목은 필수입니다."
+
+#: src/layouts/backstage.tsx:33
+msgid "Notes"
+msgstr "메모 (Notes)"
+
+#: src/components/table/device/index.tsx:43
+msgid "Now"
+msgstr "지금 당장"
+
+#: src/pages/workspace/invite.tsx:115
+msgid "Oops, This invitation link has expired."
+msgstr "이 초대 링크가 만료되었습니다."
+
+#: src/pages/auth/login.tsx:61
 msgid "Or"
-msgstr ""
+msgstr "또는"
+
+#: src/pages/settings/accountSettings.tsx:84
+msgid "Password"
+msgstr "비밀 번호"
+
+#: src/components/modal/user/modifyPassword/index.tsx:53
+msgid "Passwords do not match"
+msgstr "암호가 일치하지 않습니다."
+
+#: src/components/note/main/index.tsx:109
+#: src/components/note/main/index.tsx:151
+msgid "Permission"
+msgstr "허가 (Permission)"
+
+#: src/components/dropdown/note/index.tsx:143
+msgid "Permission Setting"
+msgstr "권한 설정"
 
 #: src/components/form/register/form.tsx:69
 msgid "Please check your email."
-msgstr ""
+msgstr "이메일을 확인해 주세요."
 
 #: src/components/form/register/form.tsx:40
 msgid "Please enter the verification code."
-msgstr ""
+msgstr "확인 코드를 입력하십시오."
 
 #: src/components/form/register/form.tsx:35
 msgid "Please enter your email address."
-msgstr ""
+msgstr "전자 메일 주소를 입력하십시오."
 
 #: src/components/form/register/form.tsx:45
 msgid "Please enter your password."
-msgstr ""
+msgstr "암호를 입력하십시오."
 
 #: src/routes/index.tsx:12
-msgid "Please login first!"
-msgstr ""
+#~ msgid "Please login first!"
+#~ msgstr "먼저 로그인하십시오!"
+
+#: src/components/modal/note/selectCategory/index.tsx:50
+msgid "Please select a category"
+msgstr "범주를 선택하십시오."
+
+#: src/components/note/main/index.tsx:155
+msgid "Privite"
+msgstr "Privite (Privite)"
+
+#: src/components/note/main/index.tsx:154
+msgid "Public"
+msgstr "공개 (Public)"
+
+#: src/pages/settings/storageSettings.tsx:76
+msgid "Qi Niu Cloud access key"
+msgstr "클라우드 액세스 키"
+
+#: src/pages/settings/storageSettings.tsx:82
+msgid "Qi Niu Cloud bucket name"
+msgstr "구름 이름 이름"
+
+#: src/pages/settings/storageSettings.tsx:85
+msgid "Qi Niu Cloud domain url"
+msgstr "클라우드 도메인 URL"
+
+#: src/pages/settings/storageSettings.tsx:88
+msgid "Qi Niu Cloud region"
+msgstr "기우구름 지역"
+
+#: src/pages/settings/storageSettings.tsx:79
+msgid "Qi Niu Cloud secret key"
+msgstr "구름 비밀 열쇠"
+
+#: src/pages/settings/workspaceSettings.tsx:166
+msgid "QR Code"
+msgstr "QR 코드"
+
+#: src/components/modal/note/selectCategory/index.tsx:101
+msgid "Recent Created"
+msgstr "최근 작성됨"
+
+#: src/pages/settings/storageSettings.tsx:88
+msgid "Region"
+msgstr "지역 (Region)"
 
 #: src/pages/auth/register.tsx:26
 #: src/pages/auth/register.tsx:35
 msgid "Register failed"
-msgstr ""
+msgstr "등록 실패"
 
 #: src/pages/auth/register.tsx:36
 msgid "Register failed, please check your email and password"
-msgstr ""
+msgstr "등록 실패. 이메일과 암호를 확인하십시오."
 
 #: src/pages/auth/register.tsx:18
 msgid "Register success"
-msgstr ""
+msgstr "등록 성공"
 
 #: src/pages/auth/register.tsx:19
 msgid "Register success, please check your email"
-msgstr ""
+msgstr "등록 성공, 이메일 확인"
 
 #: src/components/form/login/form.tsx:37
 msgid "Remember me"
-msgstr ""
+msgstr "나를 기억해줘"
+
+#: src/components/note/categoryItem/index.tsx:61
+msgid "Remove from Favorites"
+msgstr "즐겨찾기에서 제거"
+
+#: src/pages/settings/storageSettings.tsx:104
+#: src/components/modal/user/modifyPassword/index.tsx:59
+msgid "Save"
+msgstr "저장하기"
+
+#: src/components/modal/note/selectCategory/index.tsx:72
+#: src/components/modal/note/selectCategory/index.tsx:73
+msgid "Search Category"
+msgstr "범주 검색"
+
+#: src/pages/settings/storageSettings.tsx:79
+msgid "Secret Key"
+msgstr "비밀 열쇠"
+
+#: src/components/modal/note/selectCategory/index.tsx:114
+#: src/components/list/workspaceEntry/list.tsx:34
+msgid "Select"
+msgstr "선택"
+
+#: src/pages/workspace/select.tsx:69
+msgid "Select a workspace to start using Memoas"
+msgstr "Memoas 사용을 시작할 작업 영역 선택"
+
+#: src/components/dropdown/note/index.tsx:127
+#: src/components/dropdown/note/index.tsx:134
+msgid "Select Category"
+msgstr "범주 선택"
+
+#: src/components/dropdown/note/index.tsx:195
+msgid "Select note status"
+msgstr "노트 상태 선택"
+
+#: src/pages/workspace/select.tsx:66
+msgid "Select your workspace"
+msgstr "작업 영역 선택"
 
 #: src/components/form/register/form.tsx:89
 msgid "Send Code"
-msgstr ""
+msgstr "코드 보내기"
 
 #: src/components/form/register/form.tsx:89
 msgid "Sent"
-msgstr ""
+msgstr "전송 됨"
+
+#: src/components/note/main/index.tsx:152
+#: src/components/note/main/index.tsx:158
+msgid "Set the current note's status. When set to private, it will be invisible to others."
+msgstr "현재 노트의 상태를 설정합니다. 비공개로 설정하면 다른 사용자가 볼 수 없습니다."
+
+#: src/layouts/backstage.tsx:44
+msgid "Settings"
+msgstr "설정 (Settings)"
+
+#: src/components/note/main/index.tsx:111
+msgid "Share"
+msgstr "공유 (Share)"
+
+#: src/components/note/main/index.tsx:113
+msgid "Share Notion"
+msgstr "공유 Notion"
+
+#: src/components/note/main/index.tsx:114
+msgid "Share Wechat"
+msgstr "공유 WeChat"
 
 #: src/components/form/login/form.tsx:40
 msgid "Sign In"
-msgstr ""
+msgstr "로그인(Sign In)"
 
 #: src/components/form/register/form.tsx:94
 msgid "Sign Up"
-msgstr ""
+msgstr "등록 하기"
+
+#: src/pages/settings/workspaceSettings.tsx:139
+#: src/components/dropdown/note/index.tsx:195
+msgid "Status"
+msgstr "상태 (Status)"
+
+#: src/pages/settings/storageSettings.tsx:64
+msgid "Storage Management"
+msgstr "스토리지 관리"
+
+#: src/pages/settings/storageSettings.tsx:65
+msgid "Storage Object"
+msgstr "저장 객체"
+
+#: src/pages/settings/storageSettings.tsx:96
+msgid "Storage Path"
+msgstr "저장 경로"
+
+#: src/components/step/workspace/main.tsx:185
+msgid "Submit"
+msgstr "제출"
+
+#: src/components/menu/sidebar.tsx:85
+msgid "Switch"
+msgstr "스위치 (Switch)"
+
+#: src/components/dropdown/note/index.tsx:125
+msgid "The note title is required and must not exceed 100 characters in length."
+msgstr "노트 제목은 필수이며 100자를 초과하면 안 됩니다."
+
+#: src/pages/settings/workspaceSettings.tsx:143
+msgid "The number of members who have joined the workspace using this link"
+msgstr "이 링크를 사용하여 작업공간에 가입한 멤버 수"
+
+#: src/components/note/main/index.tsx:121
+msgid "The unique ID of the note."
+msgstr "노트의 고유 ID입니다."
+
+#: src/components/step/workspace/main.tsx:64
+msgid "The workspace name contains illegal characters"
+msgstr "작업공간 이름에 잘못된 문자가 있습니다."
+
+#: src/pages/workspace/invite.tsx:141
+msgid "This invitation link does not exist."
+msgstr "이 초대 링크가 존재하지 않습니다."
+
+#: src/pages/settings/workspaceSettings.tsx:49
+msgid "This link is expired"
+msgstr "이 링크는 만료되었습니다."
+
+#: src/components/step/workspace/main.tsx:113
+msgid "To ensure compatibility, please avoid special characters in the name."
+msgstr "호환성을 보장하려면 이름에 특수 문자를 사용하지 마십시오."
+
+#: src/components/table/device/index.tsx:49
+msgid "Unknow"
+msgstr "알 수 없음 (Unknow)"
+
+#: src/pages/settings/accountSettings.tsx:46
+msgid "Update avatar successfully"
+msgstr "아바타 업데이트 성공"
+
+#: src/pages/settings/accountSettings.tsx:29
+msgid "Update nickname successfully"
+msgstr "닉네임을 업데이트했습니다."
+
+#: src/components/modal/user/modifyPassword/index.tsx:18
+#: src/components/modal/user/changeEmail/index.tsx:14
+msgid "Update password successfully"
+msgstr "암호를 성공적으로 업데이트했습니다."
+
+#: src/pages/settings/storageSettings.tsx:55
+#: src/components/note/main/index.tsx:56
+#: src/components/note/main/index.tsx:93
+msgid "Update successfully"
+msgstr "업데이트 성공"
+
+#: src/pages/settings/accountSettings.tsx:77
+msgid "Upload"
+msgstr "업로드 (Upload)"
+
+#: src/pages/settings/accountSettings.tsx:61
+msgid "Upload Avatar"
+msgstr "아바타 업로드"
+
+#: src/pages/settings/accountSettings.tsx:39
+msgid "Upload avatar failed"
+msgstr "아바타 업로드 실패"
 
 #: src/components/form/register/form.tsx:74
 msgid "Verification code failed to send."
-msgstr ""
+msgstr "유효성 검사 코드를 보내지 못했습니다."
 
 #: src/components/form/register/form.tsx:68
 msgid "Verification code has been sent."
-msgstr ""
+msgstr "확인 코드가 전송되었습니다."
+
+#: src/components/step/workspace/main.tsx:96
+msgid "We are glad to have you here."
+msgstr "우리는 당신이 여기에 있어서 매우 기쁩니다."
+
+#: src/components/step/workspace/main.tsx:129
+msgid "Workspace Name"
+msgstr "작업공간 이름"
+
+#: src/components/menu/sidebar.tsx:72
+msgid "Workspace: "
+msgstr "작업 공간:"
+
+#: src/pages/workspace/invite.tsx:128
+msgid "You are not allowed to join this workspace."
+msgstr "이 작업 영역에 참여할 수 없습니다."
+
+#: src/pages/workspace/invite.tsx:102
+msgid "You have already joined this workspace!"
+msgstr "이 작업 영역에 이미 가입했습니다!"

@@ -13,30 +13,550 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: src/pages/workspace/note.tsx:173
+msgid "Would you like to move the file to the \"{total}\" folder?"
+msgstr "Would you like to move the file to the \"{total}\" folder?"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:12
+#: src/features/api/note.ts:33
+msgid "Missing valid value"
+msgstr "Missing valid value"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:85
+msgid "Add new note failed"
+msgstr "Add new note failed"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:102
+msgid "Add new category failed"
+msgstr "Add new category failed"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:123
+msgid "Delete note failed"
+msgstr "Delete note failed"
+
+#: src/components/step/workspace/main.tsx:38
+msgid "1 day"
+msgstr "1 day"
+
+#: src/components/step/workspace/main.tsx:40
+msgid "14 days"
+msgstr "14 days"
+
+#: src/components/step/workspace/main.tsx:41
+msgid "30 days"
+msgstr "30 days"
+
+#: src/components/step/workspace/main.tsx:39
+msgid "7 days"
+msgstr "7 days"
+
+#: src/pages/settings/storageSettings.tsx:76
+msgid "Access Key"
+msgstr "Access Key"
+
+#: src/pages/settings/workspaceSettings.tsx:148
+msgid "Action"
+msgstr "Action"
+
+#: src/pages/settings/workspaceSettings.tsx:82
+msgid "Active"
+msgstr "Active"
+
+#: src/components/modal/workspace/link/index.tsx:83
+msgid "Add Invite Link"
+msgstr "Add Invite Link"
+
+#: src/components/dropdown/note/index.tsx:99
+msgid "Add New Category"
+msgstr "Add New Category"
+
+#: src/pages/settings/workspaceSettings.tsx:133
+msgid "Add new Invite Link"
+msgstr "Add new Invite Link"
+
+#: src/components/dropdown/note/index.tsx:123
+msgid "Add New Note"
+msgstr "Add New Note"
+
+#: src/components/note/categoryItem/index.tsx:60
+msgid "Add to Favorites"
+msgstr "Add to Favorites"
+
+#: src/components/dropdown/note/index.tsx:152
+msgid "Allow commenting"
+msgstr "Allow commenting"
+
+#: src/components/dropdown/note/index.tsx:147
+msgid "Allow editing"
+msgstr "Allow editing"
+
+#: src/components/note/main/index.tsx:136
+msgid "Allow editing this note."
+msgstr "Allow editing this note."
+
+#: src/components/dropdown/note/index.tsx:187
+msgid "Allow inviting"
+msgstr "Allow inviting"
+
+#: src/components/dropdown/note/index.tsx:182
+msgid "Allow joining"
+msgstr "Allow joining"
+
+#: src/components/dropdown/note/index.tsx:157
+msgid "Allow sharing"
+msgstr "Allow sharing"
+
+#: src/components/note/main/index.tsx:133
+msgid "Allow sharing this note with others or third-party applications."
+msgstr "Allow sharing this note with others or third-party applications."
+
 #: src/components/form/register/form.tsx:97
 msgid "Already have an account?"
 msgstr "Already have an account?"
 
-#: src/pages/auth/login.tsx:44
+#: src/pages/settings/workspaceSettings.tsx:190
+msgid "Are you sure you want to delete this invite link?"
+msgstr "Are you sure you want to delete this invite link?"
+
+#: src/components/modal/note/deleteModal/index.tsx:37
+msgid "Are you sure you want to delete this note? This action cannot be undone."
+msgstr "Are you sure you want to delete this note? This action cannot be undone."
+
+#: src/components/step/workspace/main.tsx:182
+msgid "Back"
+msgstr "Back"
+
+#: src/components/note/main/index.tsx:120
+msgid "Basic Information"
+msgstr "Basic Information"
+
+#: src/pages/settings/storageSettings.tsx:82
+msgid "Bucket Name"
+msgstr "Bucket Name"
+
+#: src/pages/workspace/note.tsx:181
+#: src/pages/settings/workspaceSettings.tsx:194
+#: src/components/modal/user/modifyPassword/index.tsx:58
+#: src/components/modal/note/selectCategory/index.tsx:113
+#: src/components/modal/note/deleteModal/index.tsx:42
+#: src/components/dropdown/note/index.tsx:105
+#: src/components/dropdown/note/index.tsx:204
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/components/note/main/index.tsx:124
+msgid "Categorize the note by selecting an existing note category."
+msgstr "Categorize the note by selecting an existing note category."
+
+#: src/components/note/main/index.tsx:124
+msgid "Category"
+msgstr "Category"
+
+#: src/components/dropdown/note/index.tsx:101
+msgid "Category Name"
+msgstr "Category Name"
+
+#: src/components/dropdown/note/index.tsx:38
+#: src/components/dropdown/note/index.tsx:101
+msgid "Category name is required"
+msgstr "Category name is required"
+
+#: src/pages/settings/accountSettings.tsx:91
+#: src/components/modal/user/changeEmail/index.tsx:24
+#: src/components/modal/user/changeEmail/index.tsx:31
+msgid "Change Email"
+msgstr "Change Email"
+
+#: src/pages/settings/accountSettings.tsx:86
+#: src/components/modal/user/modifyPassword/index.tsx:40
+msgid "Change Password"
+msgstr "Change Password"
+
+#: src/pages/settings/accountSettings.tsx:84
+msgid "Change your password"
+msgstr "Change your password"
+
+#: src/pages/settings/accountSettings.tsx:81
+msgid "Come up with a good name!"
+msgstr "Come up with a good name!"
+
+#: src/components/modal/user/modifyPassword/index.tsx:51
+msgid "Confirm Password"
+msgstr "Confirm Password"
+
+#: src/components/modal/user/modifyPassword/index.tsx:51
+msgid "Confirm your new password"
+msgstr "Confirm your new password"
+
+#: src/components/modal/workspace/link/index.tsx:116
+msgid "Copy Link"
+msgstr "Copy Link"
+
+#: src/pages/settings/workspaceSettings.tsx:91
+msgid "Copy successfully"
+msgstr "Copy successfully"
+
+#: src/components/dropdown/note/index.tsx:108
+#: src/components/dropdown/note/index.tsx:207
+msgid "Create"
+msgstr "Create"
+
+#: src/components/step/workspace/main.tsx:110
+msgid "Create a new workspace"
+msgstr "Create a new workspace"
+
+#: src/components/dropdown/note/index.tsx:71
+msgid "Create note success"
+msgstr "Create note success"
+
+#: src/components/step/workspace/main.tsx:135
+msgid "Create Workspace"
+msgstr "Create Workspace"
+
+#: src/components/step/workspace/main.tsx:74
+msgid "Create workspace failed"
+msgstr "Create workspace failed"
+
+#: src/components/list/workspaceEntry/list.tsx:27
+msgid "Created by:"
+msgstr "Created by:"
+
+#: src/components/step/workspace/main.tsx:192
+msgid "Creating workspace..."
+msgstr "Creating workspace..."
+
+#: src/components/table/device/index.tsx:38
+msgid "Current device"
+msgstr "Current device"
+
+#: src/components/note/main/index.tsx:140
+msgid "Danger Zone"
+msgstr "Danger Zone"
+
+#: src/pages/settings/workspaceSettings.tsx:195
+#: src/components/modal/note/deleteModal/index.tsx:29
+#: src/components/modal/note/deleteModal/index.tsx:43
+msgid "Delete"
+msgstr "Delete"
+
+#: src/pages/settings/workspaceSettings.tsx:66
+msgid "Delete failed"
+msgstr "Delete failed"
+
+#: src/pages/settings/workspaceSettings.tsx:185
+msgid "Delete Invite Link"
+msgstr "Delete Invite Link"
+
+#: src/components/note/main/index.tsx:141
+#: src/components/note/main/index.tsx:143
+msgid "Delete Note"
+msgstr "Delete Note"
+
+#: src/pages/settings/workspaceSettings.tsx:63
+#: src/components/modal/note/deleteModal/index.tsx:17
+msgid "Delete successfully"
+msgstr "Delete successfully"
+
+#: src/components/note/main/index.tsx:141
+msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
+msgstr "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
+
+#: src/pages/settings/storageSettings.tsx:85
+msgid "Domain Url"
+msgstr "Domain Url"
+
+#: src/pages/auth/login.tsx:57
 msgid "Don't have an account yet?"
 msgstr "Don't have an account yet?"
+
+#: src/components/modal/workspace/link/index.tsx:115
+msgid "Download QR Code"
+msgstr "Download QR Code"
+
+#: src/pages/settings/workspaceSettings.tsx:174
+msgid "Download Qrcode"
+msgstr "Download Qrcode"
+
+#: src/pages/settings/accountSettings.tsx:89
+msgid "Email"
+msgstr "Email"
+
+#: src/components/step/workspace/main.tsx:157
+msgid "Emails"
+msgstr "Emails"
+
+#: src/components/step/workspace/main.tsx:159
+msgid "Emails go here → one@example.com, two@example.com"
+msgstr "Emails go here → one@example.com, two@example.com"
+
+#: src/components/note/main/index.tsx:136
+msgid "Enable Edit"
+msgstr "Enable Edit"
+
+#: src/components/note/main/index.tsx:133
+msgid "Enable Share"
+msgstr "Enable Share"
+
+#: src/components/modal/user/changeEmail/index.tsx:28
+msgid "Enter your new email"
+msgstr "Enter your new email"
+
+#: src/components/modal/user/modifyPassword/index.tsx:45
+msgid "Enter your new password"
+msgstr "Enter your new password"
+
+#: src/components/step/workspace/main.tsx:168
+msgid "Expiration"
+msgstr "Expiration"
+
+#: src/pages/settings/workspaceSettings.tsx:82
+msgid "Expired"
+msgstr "Expired"
+
+#: src/components/modal/workspace/link/index.tsx:57
+msgid "Failed to generate invite link"
+msgstr "Failed to generate invite link"
+
+#: src/layouts/backstage.tsx:38
+msgid "Favorites"
+msgstr "Favorites"
+
+#: src/pages/workspace/note.tsx:169
+msgid "File movement"
+msgstr "File movement"
+
+#: src/components/modal/note/selectCategory/index.tsx:92
+msgid "Frequent Used"
+msgstr "Frequent Used"
+
+#: src/components/note/main/index.tsx:107
+msgid "General"
+msgstr "General"
+
+#: src/components/modal/workspace/link/index.tsx:105
+msgid "Generate Link"
+msgstr "Generate Link"
+
+#: src/components/modal/workspace/link/index.tsx:89
+msgid "Generating invite link"
+msgstr "Generating invite link"
+
+#: src/components/step/workspace/main.tsx:101
+msgid "Get Started"
+msgstr "Get Started"
+
+#: src/pages/workspace/invite.tsx:117
+msgid "Go to selct other Workspace"
+msgstr "Go to selct other Workspace"
+
+#: src/pages/workspace/invite.tsx:130
+#: src/pages/workspace/invite.tsx:143
+msgid "Go to select other Workspace"
+msgstr "Go to select other Workspace"
+
+#: src/pages/workspace/invite.tsx:104
+msgid "Go to Workspace"
+msgstr "Go to Workspace"
+
+#: src/components/step/workspace/main.tsx:93
+msgid "Hi! Welcome to Memoas!"
+msgstr "Hi! Welcome to Memoas!"
+
+#: src/components/step/workspace/main.tsx:147
+msgid "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
+msgstr "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
+
+#: src/pages/workspace/note.tsx:176
+msgid "Ignore this prompt for this login"
+msgstr "Ignore this prompt for this login"
+
+#: src/pages/settings/workspaceSettings.tsx:120
+msgid "Invite link"
+msgstr "Invite link"
+
+#: src/components/note/main/index.tsx:112
+msgid "Invite Link"
+msgstr "Invite Link"
+
+#: src/components/modal/workspace/link/index.tsx:63
+msgid "Invite link copied to clipboard"
+msgstr "Invite link copied to clipboard"
+
+#: src/pages/settings/workspaceSettings.tsx:114
+msgid "Invite link created successfully"
+msgstr "Invite link created successfully"
+
+#: src/pages/settings/workspaceSettings.tsx:120
+msgid "Invite link to join the workspace"
+msgstr "Invite link to join the workspace"
+
+#: src/components/step/workspace/main.tsx:144
+msgid "Invite to your workspace"
+msgstr "Invite to your workspace"
+
+#: src/pages/settings/workspaceSettings.tsx:142
+msgid "Invited Members"
+msgstr "Invited Members"
+
+#: src/pages/workspace/invite.tsx:92
+msgid "Join Workspace"
+msgstr "Join Workspace"
+
+#: src/pages/workspace/invite.tsx:63
+msgid "Join workspace successfully!"
+msgstr "Join workspace successfully!"
+
+#: src/pages/settings/workspaceSettings.tsx:138
+msgid "Key"
+msgstr "Key"
 
 #: src/layouts/base.tsx:29
 msgid "Languages"
 msgstr "Languages"
 
-#: src/pages/auth/login.tsx:27
-#: src/pages/auth/login.tsx:33
+#: src/pages/workspace/note.tsx:64
+msgid "Loading notes..."
+msgstr "Loading notes..."
+
+#: src/pages/workspace/select.tsx:59
+msgid "Loading Workspace..."
+msgstr "Loading Workspace..."
+
+#: src/pages/settings/storageSettings.tsx:96
+msgid "Local storage path"
+msgstr "Local storage path"
+
+#: src/components/menu/sidebar.tsx:92
+msgid "Log out"
+msgstr "Log out"
+
+#: src/pages/auth/login.tsx:36
+#: src/pages/auth/login.tsx:43
 msgid "Login failed"
 msgstr "Login failed"
 
-#: src/pages/auth/login.tsx:34
+#: src/pages/auth/login.tsx:44
 msgid "Login failed, please check your email and password"
 msgstr "Login failed, please check your email and password"
 
-#: src/pages/auth/login.tsx:45
+#: src/components/note/main/index.tsx:108
+msgid "Management"
+msgstr "Management"
+
+#: src/components/menu/sidebar.tsx:75
+msgid "member"
+msgstr "member"
+
+#: src/components/menu/sidebar.tsx:75
+msgid "members"
+msgstr "members"
+
+#: src/pages/workspace/note.tsx:184
+msgid "Move"
+msgstr "Move"
+
+#: src/pages/workspace/note.tsx:75
+msgid "Move note failed"
+msgstr "Move note failed"
+
+#: src/components/note/categoryItem/index.tsx:63
+msgid "Move to"
+msgstr "Move to"
+
+#: src/components/modal/note/selectCategory/index.tsx:67
+msgid "Move to Category"
+msgstr "Move to Category"
+
+#: src/components/modal/note/selectCategory/index.tsx:56
+msgid "Move to category successfully"
+msgstr "Move to category successfully"
+
+#: src/components/note/categoryItem/index.tsx:65
+msgid "Move to trash"
+msgstr "Move to trash"
+
+#: src/components/dropdown/note/index.tsx:89
+msgid "New file"
+msgstr "New file"
+
+#: src/components/dropdown/note/index.tsx:90
+msgid "New folder"
+msgstr "New folder"
+
+#: src/components/modal/user/modifyPassword/index.tsx:45
+msgid "New Password"
+msgstr "New Password"
+
+#: src/components/note/main/index.tsx:127
+msgid "No Category"
+msgstr "No Category"
+
+#: src/components/step/workspace/main.tsx:42
+msgid "No expiration"
+msgstr "No expiration"
+
+#: src/components/menu/sidebar.tsx:72
+msgid "No Workspace"
+msgstr "No Workspace"
+
+#: src/components/note/main/index.tsx:121
+msgid "Note ID"
+msgstr "Note ID"
+
+#: src/components/dropdown/note/index.tsx:125
+msgid "Note Name"
+msgstr "Note Name"
+
+#: src/components/note/main/index.tsx:132
+msgid "Note Settings"
+msgstr "Note Settings"
+
+#: src/components/note/main/index.tsx:152
+#: src/components/note/main/index.tsx:158
+msgid "Note Status"
+msgstr "Note Status"
+
+#: src/components/dropdown/note/index.tsx:125
+msgid "Note title is required"
+msgstr "Note title is required"
+
+#: src/layouts/backstage.tsx:33
+msgid "Notes"
+msgstr "Notes"
+
+#: src/components/table/device/index.tsx:43
+msgid "Now"
+msgstr "Now"
+
+#: src/pages/workspace/invite.tsx:115
+msgid "Oops, This invitation link has expired."
+msgstr "Oops, This invitation link has expired."
+
+#: src/pages/auth/login.tsx:61
 msgid "Or"
 msgstr "Or"
+
+#: src/pages/settings/accountSettings.tsx:84
+msgid "Password"
+msgstr "Password"
+
+#: src/components/modal/user/modifyPassword/index.tsx:53
+msgid "Passwords do not match"
+msgstr "Passwords do not match"
+
+#: src/components/note/main/index.tsx:109
+#: src/components/note/main/index.tsx:151
+msgid "Permission"
+msgstr "Permission"
+
+#: src/components/dropdown/note/index.tsx:143
+msgid "Permission Setting"
+msgstr "Permission Setting"
 
 #: src/components/form/register/form.tsx:69
 msgid "Please check your email."
@@ -55,8 +575,52 @@ msgid "Please enter your password."
 msgstr "Please enter your password."
 
 #: src/routes/index.tsx:12
-msgid "Please login first!"
-msgstr "Please login first!"
+#~ msgid "Please login first!"
+#~ msgstr "Please login first!"
+
+#: src/components/modal/note/selectCategory/index.tsx:50
+msgid "Please select a category"
+msgstr "Please select a category"
+
+#: src/components/note/main/index.tsx:155
+msgid "Privite"
+msgstr "Privite"
+
+#: src/components/note/main/index.tsx:154
+msgid "Public"
+msgstr "Public"
+
+#: src/pages/settings/storageSettings.tsx:76
+msgid "Qi Niu Cloud access key"
+msgstr "Qi Niu Cloud access key"
+
+#: src/pages/settings/storageSettings.tsx:82
+msgid "Qi Niu Cloud bucket name"
+msgstr "Qi Niu Cloud bucket name"
+
+#: src/pages/settings/storageSettings.tsx:85
+msgid "Qi Niu Cloud domain url"
+msgstr "Qi Niu Cloud domain url"
+
+#: src/pages/settings/storageSettings.tsx:88
+msgid "Qi Niu Cloud region"
+msgstr "Qi Niu Cloud region"
+
+#: src/pages/settings/storageSettings.tsx:79
+msgid "Qi Niu Cloud secret key"
+msgstr "Qi Niu Cloud secret key"
+
+#: src/pages/settings/workspaceSettings.tsx:166
+msgid "QR Code"
+msgstr "QR Code"
+
+#: src/components/modal/note/selectCategory/index.tsx:101
+msgid "Recent Created"
+msgstr "Recent Created"
+
+#: src/pages/settings/storageSettings.tsx:88
+msgid "Region"
+msgstr "Region"
 
 #: src/pages/auth/register.tsx:26
 #: src/pages/auth/register.tsx:35
@@ -79,6 +643,46 @@ msgstr "Register success, please check your email"
 msgid "Remember me"
 msgstr "Remember me"
 
+#: src/components/note/categoryItem/index.tsx:61
+msgid "Remove from Favorites"
+msgstr "Remove from Favorites"
+
+#: src/pages/settings/storageSettings.tsx:104
+#: src/components/modal/user/modifyPassword/index.tsx:59
+msgid "Save"
+msgstr "Save"
+
+#: src/components/modal/note/selectCategory/index.tsx:72
+#: src/components/modal/note/selectCategory/index.tsx:73
+msgid "Search Category"
+msgstr "Search Category"
+
+#: src/pages/settings/storageSettings.tsx:79
+msgid "Secret Key"
+msgstr "Secret Key"
+
+#: src/components/modal/note/selectCategory/index.tsx:114
+#: src/components/list/workspaceEntry/list.tsx:34
+msgid "Select"
+msgstr "Select"
+
+#: src/pages/workspace/select.tsx:69
+msgid "Select a workspace to start using Memoas"
+msgstr "Select a workspace to start using Memoas"
+
+#: src/components/dropdown/note/index.tsx:127
+#: src/components/dropdown/note/index.tsx:134
+msgid "Select Category"
+msgstr "Select Category"
+
+#: src/components/dropdown/note/index.tsx:195
+msgid "Select note status"
+msgstr "Select note status"
+
+#: src/pages/workspace/select.tsx:66
+msgid "Select your workspace"
+msgstr "Select your workspace"
+
 #: src/components/form/register/form.tsx:89
 msgid "Send Code"
 msgstr "Send Code"
@@ -86,6 +690,27 @@ msgstr "Send Code"
 #: src/components/form/register/form.tsx:89
 msgid "Sent"
 msgstr "Sent"
+
+#: src/components/note/main/index.tsx:152
+#: src/components/note/main/index.tsx:158
+msgid "Set the current note's status. When set to private, it will be invisible to others."
+msgstr "Set the current note's status. When set to private, it will be invisible to others."
+
+#: src/layouts/backstage.tsx:44
+msgid "Settings"
+msgstr "Settings"
+
+#: src/components/note/main/index.tsx:111
+msgid "Share"
+msgstr "Share"
+
+#: src/components/note/main/index.tsx:113
+msgid "Share Notion"
+msgstr "Share Notion"
+
+#: src/components/note/main/index.tsx:114
+msgid "Share Wechat"
+msgstr "Share Wechat"
 
 #: src/components/form/login/form.tsx:40
 msgid "Sign In"
@@ -95,9 +720,97 @@ msgstr "Sign In"
 msgid "Sign Up"
 msgstr "Sign Up"
 
+#: src/pages/settings/workspaceSettings.tsx:139
+#: src/components/dropdown/note/index.tsx:195
+msgid "Status"
+msgstr "Status"
+
+#: src/pages/settings/storageSettings.tsx:64
+msgid "Storage Management"
+msgstr "Storage Management"
+
+#: src/pages/settings/storageSettings.tsx:65
+msgid "Storage Object"
+msgstr "Storage Object"
+
+#: src/pages/settings/storageSettings.tsx:96
+msgid "Storage Path"
+msgstr "Storage Path"
+
+#: src/components/step/workspace/main.tsx:185
+msgid "Submit"
+msgstr "Submit"
+
+#: src/components/menu/sidebar.tsx:85
+msgid "Switch"
+msgstr "Switch"
+
 #: src/pages/login.tsx:30
 #~ msgid "Test"
 #~ msgstr "Test"
+
+#: src/components/dropdown/note/index.tsx:125
+msgid "The note title is required and must not exceed 100 characters in length."
+msgstr "The note title is required and must not exceed 100 characters in length."
+
+#: src/pages/settings/workspaceSettings.tsx:143
+msgid "The number of members who have joined the workspace using this link"
+msgstr "The number of members who have joined the workspace using this link"
+
+#: src/components/note/main/index.tsx:121
+msgid "The unique ID of the note."
+msgstr "The unique ID of the note."
+
+#: src/components/step/workspace/main.tsx:64
+msgid "The workspace name contains illegal characters"
+msgstr "The workspace name contains illegal characters"
+
+#: src/pages/workspace/invite.tsx:141
+msgid "This invitation link does not exist."
+msgstr "This invitation link does not exist."
+
+#: src/pages/settings/workspaceSettings.tsx:49
+msgid "This link is expired"
+msgstr "This link is expired"
+
+#: src/components/step/workspace/main.tsx:113
+msgid "To ensure compatibility, please avoid special characters in the name."
+msgstr "To ensure compatibility, please avoid special characters in the name."
+
+#: src/components/table/device/index.tsx:49
+msgid "Unknow"
+msgstr "Unknow"
+
+#: src/pages/settings/accountSettings.tsx:46
+msgid "Update avatar successfully"
+msgstr "Update avatar successfully"
+
+#: src/pages/settings/accountSettings.tsx:29
+msgid "Update nickname successfully"
+msgstr "Update nickname successfully"
+
+#: src/components/modal/user/modifyPassword/index.tsx:18
+#: src/components/modal/user/changeEmail/index.tsx:14
+msgid "Update password successfully"
+msgstr "Update password successfully"
+
+#: src/pages/settings/storageSettings.tsx:55
+#: src/components/note/main/index.tsx:56
+#: src/components/note/main/index.tsx:93
+msgid "Update successfully"
+msgstr "Update successfully"
+
+#: src/pages/settings/accountSettings.tsx:77
+msgid "Upload"
+msgstr "Upload"
+
+#: src/pages/settings/accountSettings.tsx:61
+msgid "Upload Avatar"
+msgstr "Upload Avatar"
+
+#: src/pages/settings/accountSettings.tsx:39
+msgid "Upload avatar failed"
+msgstr "Upload avatar failed"
 
 #: src/components/form/register/form.tsx:74
 msgid "Verification code failed to send."
@@ -106,3 +819,23 @@ msgstr "Verification code failed to send."
 #: src/components/form/register/form.tsx:68
 msgid "Verification code has been sent."
 msgstr "Verification code has been sent."
+
+#: src/components/step/workspace/main.tsx:96
+msgid "We are glad to have you here."
+msgstr "We are glad to have you here."
+
+#: src/components/step/workspace/main.tsx:129
+msgid "Workspace Name"
+msgstr "Workspace Name"
+
+#: src/components/menu/sidebar.tsx:72
+msgid "Workspace: "
+msgstr "Workspace: "
+
+#: src/pages/workspace/invite.tsx:128
+msgid "You are not allowed to join this workspace."
+msgstr "You are not allowed to join this workspace."
+
+#: src/pages/workspace/invite.tsx:102
+msgid "You have already joined this workspace!"
+msgstr "You have already joined this workspace!"

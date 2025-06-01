@@ -52,14 +52,13 @@ const CategoryListItem = ({ note }: { note: Note }) => {
                         <EllipsisHorizontalIcon
                             className={`fill-slate-600 w-5 transition-opacity duration-200 ${isDropdownOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                                 }`}
-                        />                    </DropdownTrigger>
+                        />
+                    </DropdownTrigger>
                     <DropdownMenu aria-label="Static Actions">
-                        {/* <DropdownItem key="new">New file</DropdownItem>
-                        <DropdownItem key="copy">Copy link</DropdownItem> */}
                         {
                             !noteById.is_favorite ?
-                                <DropdownItem key="add_favorite" startContent={<StarIcon className="w-4" />} onPress={handleSetNoteFavorite} >{t`Add to Favorites`}</DropdownItem> :
-                                <DropdownItem key="remove_favorite" startContent={<SolidStarIcon className="w-4 text-yellow-400" />} onPress={handleSetNoteFavorite} >{t`Remove from Favorites`}</DropdownItem>
+                                (<DropdownItem key="add_favorite" startContent={<StarIcon className="w-4" />} onPress={handleSetNoteFavorite} >{t`Add to Favorites`}</DropdownItem>) :
+                                (<DropdownItem key="remove_favorite" startContent={<SolidStarIcon className="w-4 text-yellow-400" />} onPress={handleSetNoteFavorite} >{t`Remove from Favorites`}</DropdownItem>)
                         }
                         <DropdownItem key="edit" onPress={onOpenMoveToModal} showDivider startContent={<ArrowTurnUpRightIcon className="w-4" />}>{t`Move to`}</DropdownItem>
                         <DropdownItem key="delete" onPress={onOpenDeleteModal} className="text-danger" color="danger" startContent={<Trash2 className="w-4" />}>

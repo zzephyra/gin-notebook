@@ -13,92 +13,825 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: src/pages/workspace/note.tsx:173
+msgid "Would you like to move the file to the \"{total}\" folder?"
+msgstr "ファイルを\“{total}\”フォルダに移動しますか？"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:12
+#: src/features/api/note.ts:33
+msgid "Missing valid value"
+msgstr "有効な値がない"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:85
+msgid "Add new note failed"
+msgstr "新規ノートの追加失敗"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:102
+msgid "Add new category failed"
+msgstr "新規カテゴリの追加失敗"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:123
+msgid "Delete note failed"
+msgstr "ノートの削除失敗"
+
+#: src/components/step/workspace/main.tsx:38
+msgid "1 day"
+msgstr "1日"
+
+#: src/components/step/workspace/main.tsx:40
+msgid "14 days"
+msgstr "14日間"
+
+#: src/components/step/workspace/main.tsx:41
+msgid "30 days"
+msgstr "30日"
+
+#: src/components/step/workspace/main.tsx:39
+msgid "7 days"
+msgstr "7日間"
+
+#: src/pages/settings/storageSettings.tsx:76
+msgid "Access Key"
+msgstr "アクセスキー"
+
+#: src/pages/settings/workspaceSettings.tsx:148
+msgid "Action"
+msgstr "アクション"
+
+#: src/pages/settings/workspaceSettings.tsx:82
+msgid "Active"
+msgstr "アクティブ"
+
+#: src/components/modal/workspace/link/index.tsx:83
+msgid "Add Invite Link"
+msgstr "招待リンクを追加"
+
+#: src/components/dropdown/note/index.tsx:99
+msgid "Add New Category"
+msgstr "新しいカテゴリを追加"
+
+#: src/pages/settings/workspaceSettings.tsx:133
+msgid "Add new Invite Link"
+msgstr "新しい招待リンクを追加"
+
+#: src/components/dropdown/note/index.tsx:123
+msgid "Add New Note"
+msgstr "新しいノートを追加"
+
+#: src/components/note/categoryItem/index.tsx:60
+msgid "Add to Favorites"
+msgstr "お気に入りに追加"
+
+#: src/components/dropdown/note/index.tsx:152
+msgid "Allow commenting"
+msgstr "コメントを許可"
+
+#: src/components/dropdown/note/index.tsx:147
+msgid "Allow editing"
+msgstr "編集を許可"
+
+#: src/components/note/main/index.tsx:136
+msgid "Allow editing this note."
+msgstr "このノートを編集できます。"
+
+#: src/components/dropdown/note/index.tsx:187
+msgid "Allow inviting"
+msgstr "招待許可"
+
+#: src/components/dropdown/note/index.tsx:182
+msgid "Allow joining"
+msgstr "参加許可"
+
+#: src/components/dropdown/note/index.tsx:157
+msgid "Allow sharing"
+msgstr "共有を許可"
+
+#: src/components/note/main/index.tsx:133
+msgid "Allow sharing this note with others or third-party applications."
+msgstr "このノートを他のアプリケーションやサードパーティアプリケーションと共有することを許可します。"
+
 #: src/components/form/register/form.tsx:97
 msgid "Already have an account?"
-msgstr ""
+msgstr "アカウントをお持ちですか？"
 
-#: src/pages/auth/login.tsx:44
+#: src/pages/settings/workspaceSettings.tsx:190
+msgid "Are you sure you want to delete this invite link?"
+msgstr "この招待リンクを削除しても大丈夫ですか？"
+
+#: src/components/modal/note/deleteModal/index.tsx:37
+msgid "Are you sure you want to delete this note? This action cannot be undone."
+msgstr "本当にこのノートを削除しますか？この操作は元に戻すことはできません。"
+
+#: src/components/step/workspace/main.tsx:182
+msgid "Back"
+msgstr "バック"
+
+#: src/components/note/main/index.tsx:120
+msgid "Basic Information"
+msgstr "基本情報"
+
+#: src/pages/settings/storageSettings.tsx:82
+msgid "Bucket Name"
+msgstr "バケット名"
+
+#: src/pages/workspace/note.tsx:181
+#: src/pages/settings/workspaceSettings.tsx:194
+#: src/components/modal/user/modifyPassword/index.tsx:58
+#: src/components/modal/note/selectCategory/index.tsx:113
+#: src/components/modal/note/deleteModal/index.tsx:42
+#: src/components/dropdown/note/index.tsx:105
+#: src/components/dropdown/note/index.tsx:204
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: src/components/note/main/index.tsx:124
+msgid "Categorize the note by selecting an existing note category."
+msgstr "既存のノートカテゴリを選択してノートを分類します。"
+
+#: src/components/note/main/index.tsx:124
+msgid "Category"
+msgstr "カテゴリー"
+
+#: src/components/dropdown/note/index.tsx:101
+msgid "Category Name"
+msgstr "カテゴリ名"
+
+#: src/components/dropdown/note/index.tsx:38
+#: src/components/dropdown/note/index.tsx:101
+msgid "Category name is required"
+msgstr "カテゴリ名必須"
+
+#: src/pages/settings/accountSettings.tsx:91
+#: src/components/modal/user/changeEmail/index.tsx:24
+#: src/components/modal/user/changeEmail/index.tsx:31
+msgid "Change Email"
+msgstr "メールを変更"
+
+#: src/pages/settings/accountSettings.tsx:86
+#: src/components/modal/user/modifyPassword/index.tsx:40
+msgid "Change Password"
+msgstr "パスワード変更"
+
+#: src/pages/settings/accountSettings.tsx:84
+msgid "Change your password"
+msgstr "パスワード変更"
+
+#: src/pages/settings/accountSettings.tsx:81
+msgid "Come up with a good name!"
+msgstr "良い名前を思い付く！"
+
+#: src/components/modal/user/modifyPassword/index.tsx:51
+msgid "Confirm Password"
+msgstr "パスワードの確認"
+
+#: src/components/modal/user/modifyPassword/index.tsx:51
+msgid "Confirm your new password"
+msgstr "新しいパスワードを確認する"
+
+#: src/components/modal/workspace/link/index.tsx:116
+msgid "Copy Link"
+msgstr "リンクをコピー"
+
+#: src/pages/settings/workspaceSettings.tsx:91
+msgid "Copy successfully"
+msgstr "コピー成功"
+
+#: src/components/dropdown/note/index.tsx:108
+#: src/components/dropdown/note/index.tsx:207
+msgid "Create"
+msgstr "作成"
+
+#: src/components/step/workspace/main.tsx:110
+msgid "Create a new workspace"
+msgstr "新しいワークスペースの作成"
+
+#: src/components/dropdown/note/index.tsx:71
+msgid "Create note success"
+msgstr "ノート成功の作成"
+
+#: src/components/step/workspace/main.tsx:135
+msgid "Create Workspace"
+msgstr "ワークスペースの作成"
+
+#: src/components/step/workspace/main.tsx:74
+msgid "Create workspace failed"
+msgstr "ワークスペース作成失敗"
+
+#: src/components/list/workspaceEntry/list.tsx:27
+msgid "Created by:"
+msgstr "作成者："
+
+#: src/components/step/workspace/main.tsx:192
+msgid "Creating workspace..."
+msgstr "ワークスペースの作成..."
+
+#: src/components/table/device/index.tsx:38
+msgid "Current device"
+msgstr "現在の装置"
+
+#: src/components/note/main/index.tsx:140
+msgid "Danger Zone"
+msgstr "危険地帯"
+
+#: src/pages/settings/workspaceSettings.tsx:195
+#: src/components/modal/note/deleteModal/index.tsx:29
+#: src/components/modal/note/deleteModal/index.tsx:43
+msgid "Delete"
+msgstr "削除"
+
+#: src/pages/settings/workspaceSettings.tsx:66
+msgid "Delete failed"
+msgstr "削除失敗"
+
+#: src/pages/settings/workspaceSettings.tsx:185
+msgid "Delete Invite Link"
+msgstr "招待リンクを削除"
+
+#: src/components/note/main/index.tsx:141
+#: src/components/note/main/index.tsx:143
+msgid "Delete Note"
+msgstr "メモを削除"
+
+#: src/pages/settings/workspaceSettings.tsx:63
+#: src/components/modal/note/deleteModal/index.tsx:17
+msgid "Delete successfully"
+msgstr "正常に削除"
+
+#: src/components/note/main/index.tsx:141
+msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
+msgstr "この項目の削除は永続的なアクションであり、元に戻すことはできません。"
+
+#: src/pages/settings/storageSettings.tsx:85
+msgid "Domain Url"
+msgstr "ドメインURL"
+
+#: src/pages/auth/login.tsx:57
 msgid "Don't have an account yet?"
-msgstr ""
+msgstr "まだアカウントをお持ちでない場合"
+
+#: src/components/modal/workspace/link/index.tsx:115
+msgid "Download QR Code"
+msgstr "QRコードをダウンロード"
+
+#: src/pages/settings/workspaceSettings.tsx:174
+msgid "Download Qrcode"
+msgstr "ダウンロードQrcode"
+
+#: src/pages/settings/accountSettings.tsx:89
+msgid "Email"
+msgstr "メール"
+
+#: src/components/step/workspace/main.tsx:157
+msgid "Emails"
+msgstr "メールアドレス"
+
+#: src/components/step/workspace/main.tsx:159
+msgid "Emails go here → one@example.com, two@example.com"
+msgstr "メール は こちら →one@example.com, two@example.com"
+
+#: src/components/note/main/index.tsx:136
+msgid "Enable Edit"
+msgstr "編集を有効に"
+
+#: src/components/note/main/index.tsx:133
+msgid "Enable Share"
+msgstr "共有を有効に"
+
+#: src/components/modal/user/changeEmail/index.tsx:28
+msgid "Enter your new email"
+msgstr "新しいメールアドレスを入力"
+
+#: src/components/modal/user/modifyPassword/index.tsx:45
+msgid "Enter your new password"
+msgstr "新しいパスワードを入力"
+
+#: src/components/step/workspace/main.tsx:168
+msgid "Expiration"
+msgstr "パスワード"
+
+#: src/pages/settings/workspaceSettings.tsx:82
+msgid "Expired"
+msgstr "期限切れ"
+
+#: src/components/modal/workspace/link/index.tsx:57
+msgid "Failed to generate invite link"
+msgstr "招待リンクの生成に失敗"
+
+#: src/layouts/backstage.tsx:38
+msgid "Favorites"
+msgstr "アーカイブ"
+
+#: src/pages/workspace/note.tsx:169
+msgid "File movement"
+msgstr "ファイル移動"
+
+#: src/components/modal/note/selectCategory/index.tsx:92
+msgid "Frequent Used"
+msgstr "よく使われる"
+
+#: src/components/note/main/index.tsx:107
+msgid "General"
+msgstr "全般"
+
+#: src/components/modal/workspace/link/index.tsx:105
+msgid "Generate Link"
+msgstr "リンクを生成"
+
+#: src/components/modal/workspace/link/index.tsx:89
+msgid "Generating invite link"
+msgstr "招待リンクの生成"
+
+#: src/components/step/workspace/main.tsx:101
+msgid "Get Started"
+msgstr "はじめに"
+
+#: src/pages/workspace/invite.tsx:117
+msgid "Go to selct other Workspace"
+msgstr "他のワークスペースに移動"
+
+#: src/pages/workspace/invite.tsx:130
+#: src/pages/workspace/invite.tsx:143
+msgid "Go to select other Workspace"
+msgstr "他のワークスペースを選択する"
+
+#: src/pages/workspace/invite.tsx:104
+msgid "Go to Workspace"
+msgstr "ワークスペースに移動"
+
+#: src/components/step/workspace/main.tsx:93
+msgid "Hi! Welcome to Memoas!"
+msgstr "こんにちは！Memoasへようこそ！"
+
+#: src/components/step/workspace/main.tsx:147
+msgid "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
+msgstr "ゲストを連れてくる場合は、以下のメールアドレスを追加するか、招待リンクをコピーして共有してください。"
+
+#: src/pages/workspace/note.tsx:176
+msgid "Ignore this prompt for this login"
+msgstr "このログインのプロンプトを無視する"
+
+#: src/pages/settings/workspaceSettings.tsx:120
+msgid "Invite link"
+msgstr "招待リンク"
+
+#: src/components/note/main/index.tsx:112
+msgid "Invite Link"
+msgstr "招待リンク"
+
+#: src/components/modal/workspace/link/index.tsx:63
+msgid "Invite link copied to clipboard"
+msgstr "招待リンクをクリップボードにコピー"
+
+#: src/pages/settings/workspaceSettings.tsx:114
+msgid "Invite link created successfully"
+msgstr "招待リンクの作成成功"
+
+#: src/pages/settings/workspaceSettings.tsx:120
+msgid "Invite link to join the workspace"
+msgstr "ワークスペースに参加するリンクを招待"
+
+#: src/components/step/workspace/main.tsx:144
+msgid "Invite to your workspace"
+msgstr "ワークスペースに招待する"
+
+#: src/pages/settings/workspaceSettings.tsx:142
+msgid "Invited Members"
+msgstr "招待会員"
+
+#: src/pages/workspace/invite.tsx:92
+msgid "Join Workspace"
+msgstr "ワークスペースに参加"
+
+#: src/pages/workspace/invite.tsx:63
+msgid "Join workspace successfully!"
+msgstr "ワークスペースに参加！"
+
+#: src/pages/settings/workspaceSettings.tsx:138
+msgid "Key"
+msgstr "キー"
 
 #: src/layouts/base.tsx:29
 msgid "Languages"
-msgstr ""
+msgstr "言語"
 
-#: src/pages/auth/login.tsx:27
-#: src/pages/auth/login.tsx:33
+#: src/pages/workspace/note.tsx:64
+msgid "Loading notes..."
+msgstr "ノートを読み込み中..."
+
+#: src/pages/workspace/select.tsx:59
+msgid "Loading Workspace..."
+msgstr "ワークスペースをロード中..."
+
+#: src/pages/settings/storageSettings.tsx:96
+msgid "Local storage path"
+msgstr "ローカルストレージパス"
+
+#: src/components/menu/sidebar.tsx:92
+msgid "Log out"
+msgstr "ログインする"
+
+#: src/pages/auth/login.tsx:36
+#: src/pages/auth/login.tsx:43
 msgid "Login failed"
-msgstr ""
+msgstr "ログイン失敗"
 
-#: src/pages/auth/login.tsx:34
+#: src/pages/auth/login.tsx:44
 msgid "Login failed, please check your email and password"
-msgstr ""
+msgstr "ログインに失敗しました。メールアドレスとパスワードを確認してください"
 
-#: src/pages/auth/login.tsx:45
+#: src/components/note/main/index.tsx:108
+msgid "Management"
+msgstr "マネジメント"
+
+#: src/components/menu/sidebar.tsx:75
+msgid "member"
+msgstr "メンバー"
+
+#: src/components/menu/sidebar.tsx:75
+msgid "members"
+msgstr "メンバー"
+
+#: src/pages/workspace/note.tsx:184
+msgid "Move"
+msgstr "移動"
+
+#: src/pages/workspace/note.tsx:75
+msgid "Move note failed"
+msgstr "ノートの移動失敗"
+
+#: src/components/note/categoryItem/index.tsx:63
+msgid "Move to"
+msgstr "移動する"
+
+#: src/components/modal/note/selectCategory/index.tsx:67
+msgid "Move to Category"
+msgstr "カテゴリに移動"
+
+#: src/components/modal/note/selectCategory/index.tsx:56
+msgid "Move to category successfully"
+msgstr "カテゴリへの移行成功"
+
+#: src/components/note/categoryItem/index.tsx:65
+msgid "Move to trash"
+msgstr "ゴミ箱に移動"
+
+#: src/components/dropdown/note/index.tsx:89
+msgid "New file"
+msgstr "新規ファイル"
+
+#: src/components/dropdown/note/index.tsx:90
+msgid "New folder"
+msgstr "新しいフォルダ"
+
+#: src/components/modal/user/modifyPassword/index.tsx:45
+msgid "New Password"
+msgstr "新しいパスワード"
+
+#: src/components/note/main/index.tsx:127
+msgid "No Category"
+msgstr "カテゴリーなし"
+
+#: src/components/step/workspace/main.tsx:42
+msgid "No expiration"
+msgstr "有効期限なし"
+
+#: src/components/menu/sidebar.tsx:72
+msgid "No Workspace"
+msgstr "ワークスペースなし"
+
+#: src/components/note/main/index.tsx:121
+msgid "Note ID"
+msgstr "ノートID"
+
+#: src/components/dropdown/note/index.tsx:125
+msgid "Note Name"
+msgstr "ノート名"
+
+#: src/components/note/main/index.tsx:132
+msgid "Note Settings"
+msgstr "ノートの設定"
+
+#: src/components/note/main/index.tsx:152
+#: src/components/note/main/index.tsx:158
+msgid "Note Status"
+msgstr "ノートステータス"
+
+#: src/components/dropdown/note/index.tsx:125
+msgid "Note title is required"
+msgstr "Note title必須"
+
+#: src/layouts/backstage.tsx:33
+msgid "Notes"
+msgstr "備考"
+
+#: src/components/table/device/index.tsx:43
+msgid "Now"
+msgstr "今"
+
+#: src/pages/workspace/invite.tsx:115
+msgid "Oops, This invitation link has expired."
+msgstr "おっと、この招待リンクは切れました。"
+
+#: src/pages/auth/login.tsx:61
 msgid "Or"
-msgstr ""
+msgstr "OR"
+
+#: src/pages/settings/accountSettings.tsx:84
+msgid "Password"
+msgstr "パスワード"
+
+#: src/components/modal/user/modifyPassword/index.tsx:53
+msgid "Passwords do not match"
+msgstr "パスワードが一致しません"
+
+#: src/components/note/main/index.tsx:109
+#: src/components/note/main/index.tsx:151
+msgid "Permission"
+msgstr "許可"
+
+#: src/components/dropdown/note/index.tsx:143
+msgid "Permission Setting"
+msgstr "権限設定"
 
 #: src/components/form/register/form.tsx:69
 msgid "Please check your email."
-msgstr ""
+msgstr "メールをご確認ください。"
 
 #: src/components/form/register/form.tsx:40
 msgid "Please enter the verification code."
-msgstr ""
+msgstr "認証コードを入力してください。"
 
 #: src/components/form/register/form.tsx:35
 msgid "Please enter your email address."
-msgstr ""
+msgstr "メールアドレスを入力してください。"
 
 #: src/components/form/register/form.tsx:45
 msgid "Please enter your password."
-msgstr ""
+msgstr "パスワードを入力してください。"
 
 #: src/routes/index.tsx:12
-msgid "Please login first!"
-msgstr ""
+#~ msgid "Please login first!"
+#~ msgstr "まずログインしてください！"
+
+#: src/components/modal/note/selectCategory/index.tsx:50
+msgid "Please select a category"
+msgstr "カテゴリーを選択してください"
+
+#: src/components/note/main/index.tsx:155
+msgid "Privite"
+msgstr "プライベート"
+
+#: src/components/note/main/index.tsx:154
+msgid "Public"
+msgstr "パブリック"
+
+#: src/pages/settings/storageSettings.tsx:76
+msgid "Qi Niu Cloud access key"
+msgstr "Qi Niu Cloudアクセスキー"
+
+#: src/pages/settings/storageSettings.tsx:82
+msgid "Qi Niu Cloud bucket name"
+msgstr "Qi Niu雲バケット名"
+
+#: src/pages/settings/storageSettings.tsx:85
+msgid "Qi Niu Cloud domain url"
+msgstr "Qi NiuクラウドドメインURL"
+
+#: src/pages/settings/storageSettings.tsx:88
+msgid "Qi Niu Cloud region"
+msgstr "チーニウ雲地域"
+
+#: src/pages/settings/storageSettings.tsx:79
+msgid "Qi Niu Cloud secret key"
+msgstr "Qi Niu雲秘密鍵"
+
+#: src/pages/settings/workspaceSettings.tsx:166
+msgid "QR Code"
+msgstr "QRコード"
+
+#: src/components/modal/note/selectCategory/index.tsx:101
+msgid "Recent Created"
+msgstr "最近作成"
+
+#: src/pages/settings/storageSettings.tsx:88
+msgid "Region"
+msgstr "地域"
 
 #: src/pages/auth/register.tsx:26
 #: src/pages/auth/register.tsx:35
 msgid "Register failed"
-msgstr ""
+msgstr "登録失敗"
 
 #: src/pages/auth/register.tsx:36
 msgid "Register failed, please check your email and password"
-msgstr ""
+msgstr "メールアドレスとパスワードをご確認ください"
 
 #: src/pages/auth/register.tsx:18
 msgid "Register success"
-msgstr ""
+msgstr "成功登録"
 
 #: src/pages/auth/register.tsx:19
 msgid "Register success, please check your email"
-msgstr ""
+msgstr "成功登録、メールを確認してください"
 
 #: src/components/form/login/form.tsx:37
 msgid "Remember me"
-msgstr ""
+msgstr "お問い合わせ"
+
+#: src/components/note/categoryItem/index.tsx:61
+msgid "Remove from Favorites"
+msgstr "お気に入りから削除"
+
+#: src/pages/settings/storageSettings.tsx:104
+#: src/components/modal/user/modifyPassword/index.tsx:59
+msgid "Save"
+msgstr "保存"
+
+#: src/components/modal/note/selectCategory/index.tsx:72
+#: src/components/modal/note/selectCategory/index.tsx:73
+msgid "Search Category"
+msgstr "カテゴリー検索"
+
+#: src/pages/settings/storageSettings.tsx:79
+msgid "Secret Key"
+msgstr "秘密鍵"
+
+#: src/components/modal/note/selectCategory/index.tsx:114
+#: src/components/list/workspaceEntry/list.tsx:34
+msgid "Select"
+msgstr "選択"
+
+#: src/pages/workspace/select.tsx:69
+msgid "Select a workspace to start using Memoas"
+msgstr "Memoasの使用を開始するワークスペースを選択"
+
+#: src/components/dropdown/note/index.tsx:127
+#: src/components/dropdown/note/index.tsx:134
+msgid "Select Category"
+msgstr "カテゴリーを選択"
+
+#: src/components/dropdown/note/index.tsx:195
+msgid "Select note status"
+msgstr "ノートステータスを選択"
+
+#: src/pages/workspace/select.tsx:66
+msgid "Select your workspace"
+msgstr "ワークスペースを選択"
 
 #: src/components/form/register/form.tsx:89
 msgid "Send Code"
-msgstr ""
+msgstr "コードを送信"
 
 #: src/components/form/register/form.tsx:89
 msgid "Sent"
-msgstr ""
+msgstr "送信"
+
+#: src/components/note/main/index.tsx:152
+#: src/components/note/main/index.tsx:158
+msgid "Set the current note's status. When set to private, it will be invisible to others."
+msgstr "現在のノートのステータスを設定します。privateに設定すると、他のノートには見えません。"
+
+#: src/layouts/backstage.tsx:44
+msgid "Settings"
+msgstr "設定"
+
+#: src/components/note/main/index.tsx:111
+msgid "Share"
+msgstr "シェア"
+
+#: src/components/note/main/index.tsx:113
+msgid "Share Notion"
+msgstr "Share Notion"
+
+#: src/components/note/main/index.tsx:114
+msgid "Share Wechat"
+msgstr "シェアWechat"
 
 #: src/components/form/login/form.tsx:40
 msgid "Sign In"
-msgstr ""
+msgstr "サインイン"
 
 #: src/components/form/register/form.tsx:94
 msgid "Sign Up"
-msgstr ""
+msgstr "サインアップ"
+
+#: src/pages/settings/workspaceSettings.tsx:139
+#: src/components/dropdown/note/index.tsx:195
+msgid "Status"
+msgstr "状態"
+
+#: src/pages/settings/storageSettings.tsx:64
+msgid "Storage Management"
+msgstr "ストレージ管理"
+
+#: src/pages/settings/storageSettings.tsx:65
+msgid "Storage Object"
+msgstr "ストレージオブジェクト"
+
+#: src/pages/settings/storageSettings.tsx:96
+msgid "Storage Path"
+msgstr "ストレージパス"
+
+#: src/components/step/workspace/main.tsx:185
+msgid "Submit"
+msgstr "コンテンツ"
+
+#: src/components/menu/sidebar.tsx:85
+msgid "Switch"
+msgstr "スイッチ"
+
+#: src/components/dropdown/note/index.tsx:125
+msgid "The note title is required and must not exceed 100 characters in length."
+msgstr "ノートタイトルは必須で、長さは100文字を超えてはなりません。"
+
+#: src/pages/settings/workspaceSettings.tsx:143
+msgid "The number of members who have joined the workspace using this link"
+msgstr "このリンクを使用してワークスペースに参加したメンバー数"
+
+#: src/components/note/main/index.tsx:121
+msgid "The unique ID of the note."
+msgstr "ノートの一意のID。"
+
+#: src/components/step/workspace/main.tsx:64
+msgid "The workspace name contains illegal characters"
+msgstr "ワークスペース名に不正文字が含まれる"
+
+#: src/pages/workspace/invite.tsx:141
+msgid "This invitation link does not exist."
+msgstr "この招待リンクは存在しません。"
+
+#: src/pages/settings/workspaceSettings.tsx:49
+msgid "This link is expired"
+msgstr "このリンクは期限切れです"
+
+#: src/components/step/workspace/main.tsx:113
+msgid "To ensure compatibility, please avoid special characters in the name."
+msgstr "互換性を確保するため、名前に特殊文字を使用しないでください。"
+
+#: src/components/table/device/index.tsx:49
+msgid "Unknow"
+msgstr "アンノウ"
+
+#: src/pages/settings/accountSettings.tsx:46
+msgid "Update avatar successfully"
+msgstr "アバターの更新"
+
+#: src/pages/settings/accountSettings.tsx:29
+msgid "Update nickname successfully"
+msgstr "ニックネームの更新"
+
+#: src/components/modal/user/modifyPassword/index.tsx:18
+#: src/components/modal/user/changeEmail/index.tsx:14
+msgid "Update password successfully"
+msgstr "パスワードの更新"
+
+#: src/pages/settings/storageSettings.tsx:55
+#: src/components/note/main/index.tsx:56
+#: src/components/note/main/index.tsx:93
+msgid "Update successfully"
+msgstr "更新成功"
+
+#: src/pages/settings/accountSettings.tsx:77
+msgid "Upload"
+msgstr "アップロード"
+
+#: src/pages/settings/accountSettings.tsx:61
+msgid "Upload Avatar"
+msgstr "アバターをアップロード"
+
+#: src/pages/settings/accountSettings.tsx:39
+msgid "Upload avatar failed"
+msgstr "アバターのアップロード失敗"
 
 #: src/components/form/register/form.tsx:74
 msgid "Verification code failed to send."
-msgstr ""
+msgstr "認証コードの送信に失敗した。"
 
 #: src/components/form/register/form.tsx:68
 msgid "Verification code has been sent."
-msgstr ""
+msgstr "認証コードが送信されました。"
+
+#: src/components/step/workspace/main.tsx:96
+msgid "We are glad to have you here."
+msgstr "皆様のご来場をお待ちしております。"
+
+#: src/components/step/workspace/main.tsx:129
+msgid "Workspace Name"
+msgstr "ワークスペース名"
+
+#: src/components/menu/sidebar.tsx:72
+msgid "Workspace: "
+msgstr "ワークスペース"
+
+#: src/pages/workspace/invite.tsx:128
+msgid "You are not allowed to join this workspace."
+msgstr "このワークスペースには参加できません。"
+
+#: src/pages/workspace/invite.tsx:102
+msgid "You have already joined this workspace!"
+msgstr "すでにこのワークスペースに参加しています。"
