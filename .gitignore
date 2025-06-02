@@ -30,3 +30,4 @@ docker-compose.yml
 bin/*
 **/*.log
 web/.env.production
+tmp/*
