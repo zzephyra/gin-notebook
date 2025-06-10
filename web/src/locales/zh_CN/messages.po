@@ -807,7 +807,7 @@ msgstr "提交"
 
 #: src/components/menu/sidebar.tsx:85
 msgid "Switch"
-msgstr "开关"
+msgstr "切换"
 
 #: src/components/dropdown/note/index.tsx:125
 msgid "The note title is required and must not exceed 100 characters in length."

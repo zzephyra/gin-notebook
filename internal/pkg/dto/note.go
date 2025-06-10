@@ -143,8 +143,8 @@ type FavoriteNoteDTO struct {
 type FavoriteNoteQueryDTO struct {
 	UserID      int64  `form:"user_id,string" validate:"required,gt=0"`
 	WorkspaceID int64  `form:"workspace_id,string" validate:"required,gt=0"`
-	Limit       int64  `form:"limit" validate:"omitempty,gt=0"`
-	Offset      int64  `form:"offset" validate:"omitempty,gt=0,lt=30"`
+	Limit       int    `form:"limit" validate:"omitempty,gt=0"`
+	Offset      int    `form:"offset" validate:"omitempty,gt=0,lt=30"`
 	Order       string `form:"order" validate:"omitempty,oneof=asc desc"`                       // 排序方式
 	OrderBy     string `form:"order_by" validate:"omitempty,oneof=title created_at updated_at"` // 排序字段
 }

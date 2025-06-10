@@ -49,10 +49,11 @@ export interface WorkspaceInviteLinkResponse {
 }
 
 export interface FavoriteNoteListParams {
-    workspace_id: string;
-    limit?: number;
-    offset?: number;
-    ordering?: string;
+    workspace_id?: string;
+    limit: number;
+    offset: number;
+    order_by?: string;
+    order?: "asc" | "desc" | undefined;
     category_id?: string;
     kw?: string;
 }

@@ -63,12 +63,25 @@ func GetRecommandNotesCategory(params *dto.RecommendNoteCategoryQueryDTO) (respo
 	return message.SUCCESS, data
 }
 
-func GetFavoriteNoteList(params *dto.FavoriteNoteQueryDTO) (responseCode int, data *[]dto.WorkspaceNoteDTO) {
-	data, err := repository.GetFavoriteNoteList(params)
+func GetFavoriteNoteList(params *dto.FavoriteNoteQueryDTO) (int, map[string]interface{}) {
+	notes, err := repository.GetFavoriteNoteList(params)
 	if err != nil {
-		responseCode = database.IsError(err)
-		return
+		return database.IsError(err), map[string]interface{}{
+			"notes": nil,
+			"total": 0,
+		}
 	}
-	responseCode = message.SUCCESS
-	return
+
+	count, err := repository.GetFavoriteNoteCount(params.UserID, params.WorkspaceID)
+	if err != nil {
+		return database.IsError(err), map[string]interface{}{
+			"notes": notes,
+			"total": 0,
+		}
+	}
+
+	return message.SUCCESS, map[string]interface{}{
+		"notes": notes,
+		"total": count,
+	}
 }

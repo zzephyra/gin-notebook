@@ -53,5 +53,5 @@ func GetFavoriteNoteApi(c *gin.Context) {
 	}
 
 	responseCode, data := noteService.GetFavoriteNoteList(params)
-	c.JSON(http.StatusCreated, response.Response(responseCode, *data))
+	c.JSON(http.StatusCreated, response.Response(responseCode, data))
 }

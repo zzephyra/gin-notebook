@@ -162,9 +162,9 @@ export async function SetFavoriteNoeRequest(note_id: string, is_favorite: boolea
     }
 }
 
-export async function GetFavoriteNoteListRequest(params: FavoriteNoteListParams): Promise<Note[]> {
+export async function GetFavoriteNoteListRequest(params: FavoriteNoteListParams): Promise<{ notes: Note[], total: number }> {
     if (!params.workspace_id) {
-        return []
+        return { notes: [], total: 0 };
     }
 
     if (!params.offset || params.offset < 0) {
@@ -177,8 +177,8 @@ export async function GetFavoriteNoteListRequest(params: FavoriteNoteListParams)
 
     try {
         var res = await axiosClient.get(favoriteNoteApi, { params })
-        return res.data.data || []
+        return res.data.data || { notes: [], total: 0 }
     } catch (e) {
-        return []
+        return { notes: [], total: 0 }
     }
 }

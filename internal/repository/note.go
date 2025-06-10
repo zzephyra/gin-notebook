@@ -208,7 +208,20 @@ func GetFavoriteNoteList(params *dto.FavoriteNoteQueryDTO) (*[]dto.WorkspaceNote
 		Joins("LEFT JOIN notes ON notes.id = favorite_notes.note_id").
 		Joins("LEFT JOIN users ON users.id = notes.owner_id").
 		Order(fmt.Sprintf("notes.%s %s", params.OrderBy, strings.ToUpper(params.Order))).
-		Where("notes.deleted_at is Null and favorite_notes.user_id = ? and notes.workspace_id = ? and favorite_notes.is_favorite = True", params.UserID, params.WorkspaceID)
+		Where("notes.deleted_at is Null and favorite_notes.user_id = ? and notes.workspace_id = ? and favorite_notes.is_favorite = True", params.UserID, params.WorkspaceID).
+		Offset(params.Offset).Limit(params.Limit)
 	err := query.Scan(&favoriteNotes).Error
 	return &favoriteNotes, err
+}
+
+func GetFavoriteNoteCount(userID int64, workspaceID int64) (int64, error) {
+	var count int64
+	err := database.DB.Table("favorite_notes").
+		Joins("LEFT JOIN notes ON notes.id = favorite_notes.note_id").
+		Where("notes.deleted_at is NULL AND favorite_notes.user_id = ? AND notes.workspace_id = ? AND favorite_notes.is_favorite = True", userID, workspaceID).
+		Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }

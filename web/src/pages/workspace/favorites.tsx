@@ -13,8 +13,10 @@ import {
     getKeyValue,
     Avatar,
     Tooltip,
+    Pagination,
     Image
 } from "@heroui/react"
+import { useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion"
 import emptyFavorites from "@/assets/images/common/emptyFavorite.png";
 import React, { useEffect } from "react";
@@ -29,17 +31,37 @@ import { Note } from "./type";
 const FavoritesPage = () => {
     const { t } = useLingui();
     const params = useParams();
-    // const [isEditTitle, setisEditTitle] = React.useState<boolean>(false);
+    const [searchParams, setSearchParams] = useSearchParams();
     const [data, setData] = React.useState<Note[]>([]);
-    const [filter] = React.useState<FavoriteNoteListParams>({
-        workspace_id: params.id || "",
+    const [filter, setFilter] = React.useState<FavoriteNoteListParams>({
         limit: 10,
         offset: 0,
+        order: "desc",
     });
+    const [total, setTotal] = React.useState<number>(0);
     const [hasMounted, setHasMounted] = React.useState(false);
     const [selectIndex, setSelectIndex] = React.useState<number | null>(null);
+    const page = React.useMemo(() => {
+        return Math.floor(filter.offset / filter.limit) + 1;
+    }, [filter.offset, filter.limit]);
+    const pageCount = React.useMemo(() => {
+        return Math.ceil(total / filter.limit) || 1;
+    }, [total, filter.limit]);
     const selectedNote = selectIndex != null ? data[selectIndex] : null;
     React.useEffect(() => {
+        const limit = searchParams.get("limit");
+        const offset = searchParams.get("offset");
+        const order = searchParams.get("order");
+        const order_by = searchParams.get("order_by");
+        const category_id = searchParams.get("category_id");
+        const kw = searchParams.get("kw");
+        if (limit) filter.limit = Number(limit);
+        if (offset) filter.offset = Number(offset);
+        if (order) filter.order = order == "asc" ? "asc" : "desc";
+        if (order_by) filter.order_by = order_by;
+        if (category_id) filter.category_id = category_id;
+        if (kw) filter.kw = kw;
+
         setHasMounted(true); // 页面挂载完成，后续可以启用动画
     }, []);
 
@@ -72,16 +94,30 @@ const FavoritesPage = () => {
     );
 
     const handleGetFavorites = async () => {
-        let res = await GetFavoriteNoteListRequest(filter)
-        setData(res)
+        let res = await GetFavoriteNoteListRequest({ ...filter, workspace_id: params.id || "" });
+        setData(res.notes || []);
+        setTotal(res.total || 0);
     }
 
-    // const handleUpdateFilter = (newFilter: Partial<FavoriteNoteListParams>) => {
-    //     setFilter((prev) => ({
-    //         ...prev,
-    //         ...newFilter,
-    //     }));
-    // }
+    const handleUpdateFilter = (newFilter: Partial<FavoriteNoteListParams>) => {
+        setFilter((prev) => {
+            const updatedFilter = {
+                ...prev,
+                ...newFilter,
+            };
+
+            // 更新 URL 参数
+            const urlParams = new URLSearchParams();
+            Object.entries(updatedFilter).forEach(([key, value]) => {
+                if (value !== undefined && value !== null && value !== '') {
+                    urlParams.set(key, value.toString());
+                }
+            });
+            setSearchParams(urlParams); // 会更新地址栏 URL
+            return updatedFilter;
+        });
+    };
+
 
     const handleChangeNoteFavorite = async (note_id: string, is_favorite: boolean) => {
         SetFavoriteNoeRequest(note_id, is_favorite);
@@ -150,12 +186,9 @@ const FavoritesPage = () => {
         handleGetFavorites()
     }
 
-
-
     useEffect(() => {
         handleGetFavorites()
     }, [filter])
-
 
     return (
         <>
@@ -186,7 +219,7 @@ const FavoritesPage = () => {
                             <CardBody>
                                 <div className="flex items-center  justify-between">
                                     <div className="flex gap-2 items-center select-none">
-                                        <h2 className="text-[14px] font-semibold">Favorites</h2>
+                                        <h2 className="text-[14px] font-semibold">{t`Favorites`}</h2>
                                     </div>
                                     <div className="flex h-5 items-center gap-2 text-small">
                                         <Button isIconOnly variant="light" size="sm">
@@ -203,20 +236,22 @@ const FavoritesPage = () => {
                                                 {() => (
                                                     <div className="p-2 flex gap-2 w-full">
                                                         <Select label={t`Ordering`} onSelectionChange={(key) => {
-                                                            console.log("Selected ordering key:", key);
+                                                            handleUpdateFilter({ order_by: key.currentKey })
                                                         }} size="sm" name="ordering" labelPlacement="outside-left" defaultSelectedKeys={["title"]} classNames={{ trigger: "w-28 min-h-0 h-7", popoverContent: "w-32" }} placeholder={t`Select sorting field`} className="w-full">
                                                             <SelectItem key="title">
                                                                 {t`Title`}
                                                             </SelectItem>
-                                                            <SelectItem key="updatedAt">
+                                                            <SelectItem key="updated_at">
                                                                 {t`Updated Time`}
                                                             </SelectItem>
-                                                            <SelectItem key="createdAt">
+                                                            <SelectItem key="created_at">
                                                                 {t`Created Time`}
                                                             </SelectItem>
                                                         </Select>
-                                                        <Button isIconOnly variant="light" size="sm">
-                                                            <BarsArrowDownIcon className="w-4 text-gray-600 cursor-pointer" />
+                                                        <Button isIconOnly variant="light" size="sm" onPress={() => {
+                                                            handleUpdateFilter({ order: filter.order == "asc" ? "desc" : "asc" })
+                                                        }}>
+                                                            <BarsArrowDownIcon className={`w-4 text-gray-600 cursor-pointer duration-300 transform${filter.order && filter.order == "asc" ? ' rotate-180' : ''}`} />
                                                         </Button>
                                                     </div>
                                                 )}
@@ -228,27 +263,39 @@ const FavoritesPage = () => {
                         </Card>
 
                         <Table
+                            aria-label="favorite note table table"
                             showSelectionCheckboxes
+                            bottomContent={
+                                <div className="flex w-full justify-center">
+                                    <Pagination
+                                        showShadow
+                                        color="secondary"
+                                        page={page}
+                                        total={pageCount}
+                                        onChange={(p) => handleUpdateFilter({ offset: (p - 1) * filter.limit })}
+                                    />
+                                </div>
+                            }
                             classNames={classNames}>
-                            <TableHeader>
-                                <TableColumn key="is_favorite" className="w-4">
+                            <TableHeader aria-label="favorite note table header">
+                                <TableColumn aria-label="is favorite" key="is_favorite" className="w-4">
                                     {""}
                                 </TableColumn>
-                                <TableColumn key="title" className="pl-5">
+                                <TableColumn aria-label="note title" key="title" className="pl-5">
                                     {t`Title`}
                                 </TableColumn>
-                                <TableColumn key="owner">{t`Owner`}</TableColumn>
-                                <TableColumn key="updated_at">{t`Updated At`}</TableColumn>
+                                <TableColumn aria-label="note owner" key="owner">{t`Owner`}</TableColumn>
+                                <TableColumn aria-label="update time" key="updated_at">{t`Updated At`}</TableColumn>
                             </TableHeader>
-                            <TableBody emptyContent={
+                            <TableBody aria-label="favorite note table body" emptyContent={
                                 <div className="flex flex-col items-center justify-center w-full">
                                     <Image className="select-none appearance-none pointer-events-none" width={200} src={emptyFavorites} alt="empty favorite picture" aria-label="empty favority picture" />
                                     <span className="select-none text-gray-400 text-sm">{t`Meow~ No favorite notes here yet. Time to star the ones you love!`}</span>
                                 </div>
                             }>
                                 {data.map((item, index) => (
-                                    <TableRow key={item.id}>
-                                        {(columnKey) => <TableCell onClick={() => setSelectIndex(index)}>{tableCell(item, columnKey)}</TableCell>}
+                                    <TableRow aria-label="favorite note row" key={item.id}>
+                                        {(columnKey) => <TableCell aria-label="favorite note cell" onClick={() => setSelectIndex(index)}>{tableCell(item, columnKey)}</TableCell>}
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -261,7 +308,6 @@ const FavoritesPage = () => {
                         )}
                 </motion.div>
             </AnimatePresence>
-
         </>
     )
 }
