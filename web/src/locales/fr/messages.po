@@ -59,6 +59,10 @@ msgstr ""
 msgid "Access Key"
 msgstr ""
 
+#: src/pages/settings/accountSettings.tsx:58
+msgid "Account Settings"
+msgstr ""
+
 #: src/pages/settings/workspaceSettings.tsx:148
 msgid "Action"
 msgstr ""
@@ -223,11 +227,15 @@ msgid "Create workspace failed"
 msgstr ""
 
 #: src/pages/workspace/favorites.tsx:214
-msgid "Created At"
-msgstr ""
+#~ msgid "Created At"
+#~ msgstr ""
 
 #: src/components/list/workspaceEntry/list.tsx:27
 msgid "Created by:"
+msgstr ""
+
+#: src/pages/workspace/favorites.tsx:215
+msgid "Created Time"
 msgstr ""
 
 #: src/components/step/workspace/main.tsx:192
@@ -274,6 +282,11 @@ msgstr ""
 
 #: src/components/note/main/index.tsx:141
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
+msgstr ""
+
+#: src/pages/settings/accountSettings.tsx:97
+#: src/components/table/device/index.tsx:60
+msgid "Device"
 msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:85
@@ -437,6 +450,10 @@ msgstr ""
 msgid "Languages"
 msgstr ""
 
+#: src/components/table/device/index.tsx:61
+msgid "Last Active"
+msgstr ""
+
 #: src/pages/workspace/note.tsx:64
 msgid "Loading notes..."
 msgstr ""
@@ -447,6 +464,10 @@ msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:96
 msgid "Local storage path"
+msgstr ""
+
+#: src/components/table/device/index.tsx:62
+msgid "Locaton"
 msgstr ""
 
 #: src/components/menu/sidebar.tsx:92
@@ -472,6 +493,10 @@ msgstr ""
 
 #: src/components/menu/sidebar.tsx:75
 msgid "members"
+msgstr ""
+
+#: src/pages/workspace/favorites.tsx:246
+msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
 msgstr ""
 
 #: src/pages/workspace/note.tsx:184
@@ -563,11 +588,11 @@ msgstr ""
 msgid "Or"
 msgstr ""
 
-#: src/pages/workspace/favorites.tsx:204
+#: src/pages/workspace/favorites.tsx:205
 msgid "Ordering"
 msgstr ""
 
-#: src/pages/workspace/favorites.tsx:239
+#: src/pages/workspace/favorites.tsx:240
 msgid "Owner"
 msgstr ""
 
@@ -713,7 +738,7 @@ msgstr ""
 msgid "Select note status"
 msgstr ""
 
-#: src/pages/workspace/favorites.tsx:206
+#: src/pages/workspace/favorites.tsx:207
 msgid "Select sorting field"
 msgstr ""
 
@@ -808,8 +833,8 @@ msgstr ""
 msgid "This link is expired"
 msgstr ""
 
-#: src/pages/workspace/favorites.tsx:208
-#: src/pages/workspace/favorites.tsx:237
+#: src/pages/workspace/favorites.tsx:209
+#: src/pages/workspace/favorites.tsx:238
 msgid "Title"
 msgstr ""
 
@@ -821,7 +846,7 @@ msgstr ""
 msgid "Unknow"
 msgstr ""
 
-#: src/pages/workspace/favorites.tsx:115
+#: src/pages/workspace/favorites.tsx:116
 msgid "Untitled Note"
 msgstr ""
 
@@ -844,9 +869,12 @@ msgstr ""
 msgid "Update successfully"
 msgstr ""
 
-#: src/pages/workspace/favorites.tsx:211
-#: src/pages/workspace/favorites.tsx:240
+#: src/pages/workspace/favorites.tsx:241
 msgid "Updated At"
+msgstr ""
+
+#: src/pages/workspace/favorites.tsx:212
+msgid "Updated Time"
 msgstr ""
 
 #: src/pages/settings/accountSettings.tsx:77

@@ -126,7 +126,7 @@ const WorkspaceSettings = () => {
                         }}></Switch>
                 </SettingsItem>
                 {workspaceState.currentWorkspace?.allow_invite &&
-                    <>
+                    (
                         <div>
                             <div className="mb-4 flex justify-end">
                                 <Button color="primary" size="sm" onPress={onOpenChangeAddLinkModal}>
@@ -156,7 +156,7 @@ const WorkspaceSettings = () => {
                                 </TableBody>
                             </Table>
                         </div>
-                    </>
+                    )
                 }
             </SettingsWrapper>
             <Modal isOpen={isOpenQrcodeModal} onOpenChange={onOpenChangeQrcodeModal}>

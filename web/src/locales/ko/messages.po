@@ -59,6 +59,10 @@ msgstr "7 일"
 msgid "Access Key"
 msgstr "액세스 키"
 
+#: src/pages/settings/accountSettings.tsx:58
+msgid "Account Settings"
+msgstr ""
+
 #: src/pages/settings/workspaceSettings.tsx:148
 msgid "Action"
 msgstr "액션 (Action)"
@@ -223,12 +227,16 @@ msgid "Create workspace failed"
 msgstr "작업공간 만들기 실패"
 
 #: src/pages/workspace/favorites.tsx:214
-msgid "Created At"
-msgstr "작성 날짜"
+#~ msgid "Created At"
+#~ msgstr "작성 날짜"
 
 #: src/components/list/workspaceEntry/list.tsx:27
 msgid "Created by:"
 msgstr "만든 사람:"
+
+#: src/pages/workspace/favorites.tsx:215
+msgid "Created Time"
+msgstr ""
 
 #: src/components/step/workspace/main.tsx:192
 msgid "Creating workspace..."
@@ -275,6 +283,11 @@ msgstr "삭제 성공"
 #: src/components/note/main/index.tsx:141
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "이 항목을 삭제하는 것은 영구적인 작업이며 되돌릴 수 없습니다. 주의하여 계속하십시오."
+
+#: src/pages/settings/accountSettings.tsx:97
+#: src/components/table/device/index.tsx:60
+msgid "Device"
+msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:85
 msgid "Domain Url"
@@ -437,6 +450,10 @@ msgstr "키 (key)"
 msgid "Languages"
 msgstr "언어 Name"
 
+#: src/components/table/device/index.tsx:61
+msgid "Last Active"
+msgstr ""
+
 #: src/pages/workspace/note.tsx:64
 msgid "Loading notes..."
 msgstr "노트 로드 중..."
@@ -448,6 +465,10 @@ msgstr "작업공간 로드..."
 #: src/pages/settings/storageSettings.tsx:96
 msgid "Local storage path"
 msgstr "로컬 스토리지 경로"
+
+#: src/components/table/device/index.tsx:62
+msgid "Locaton"
+msgstr ""
 
 #: src/components/menu/sidebar.tsx:92
 msgid "Log out"
@@ -473,6 +494,10 @@ msgstr "멤버"
 #: src/components/menu/sidebar.tsx:75
 msgid "members"
 msgstr "구성원"
+
+#: src/pages/workspace/favorites.tsx:246
+msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
+msgstr ""
 
 #: src/pages/workspace/note.tsx:184
 msgid "Move"
@@ -563,11 +588,11 @@ msgstr "이 초대 링크가 만료되었습니다."
 msgid "Or"
 msgstr "또는"
 
-#: src/pages/workspace/favorites.tsx:204
+#: src/pages/workspace/favorites.tsx:205
 msgid "Ordering"
-msgstr "주문 중"
+msgstr "종류"
 
-#: src/pages/workspace/favorites.tsx:239
+#: src/pages/workspace/favorites.tsx:240
 msgid "Owner"
 msgstr "소유자 (Owner)"
 
@@ -713,7 +738,7 @@ msgstr "범주 선택"
 msgid "Select note status"
 msgstr "노트 상태 선택"
 
-#: src/pages/workspace/favorites.tsx:206
+#: src/pages/workspace/favorites.tsx:207
 msgid "Select sorting field"
 msgstr "정렬 필드 선택"
 
@@ -808,8 +833,8 @@ msgstr "이 초대 링크가 존재하지 않습니다."
 msgid "This link is expired"
 msgstr "이 링크는 만료되었습니다."
 
-#: src/pages/workspace/favorites.tsx:208
-#: src/pages/workspace/favorites.tsx:237
+#: src/pages/workspace/favorites.tsx:209
+#: src/pages/workspace/favorites.tsx:238
 msgid "Title"
 msgstr "제목 (Title)"
 
@@ -821,7 +846,7 @@ msgstr "호환성을 보장하려면 이름에 특수 문자를 사용하지 마
 msgid "Unknow"
 msgstr "알 수 없음 (Unknow)"
 
-#: src/pages/workspace/favorites.tsx:115
+#: src/pages/workspace/favorites.tsx:116
 msgid "Untitled Note"
 msgstr "제목 없는 노트"
 
@@ -844,10 +869,13 @@ msgstr "암호를 성공적으로 업데이트했습니다."
 msgid "Update successfully"
 msgstr "업데이트 성공"
 
-#: src/pages/workspace/favorites.tsx:211
-#: src/pages/workspace/favorites.tsx:240
+#: src/pages/workspace/favorites.tsx:241
 msgid "Updated At"
 msgstr "업데이트 위치"
+
+#: src/pages/workspace/favorites.tsx:212
+msgid "Updated Time"
+msgstr ""
 
 #: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"

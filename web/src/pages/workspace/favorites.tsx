@@ -12,10 +12,11 @@ import {
     SelectItem,
     getKeyValue,
     Avatar,
-    Tooltip
+    Tooltip,
+    Image
 } from "@heroui/react"
 import { AnimatePresence, motion } from "framer-motion"
-
+import emptyFavorites from "@/assets/images/common/emptyFavorite.png";
 import React, { useEffect } from "react";
 import { useLingui } from "@lingui/react/macro";
 import { GetFavoriteNoteListRequest, SetFavoriteNoeRequest } from "@/features/api/note";
@@ -25,7 +26,6 @@ import { Key } from "@react-types/shared";
 import { StarIcon as SolidStarIcon } from "@heroicons/react/24/solid";
 import NoteListViewEditor from "@/components/note/noteList";
 import { Note } from "./type";
-
 const FavoritesPage = () => {
     const { t } = useLingui();
     const params = useParams();
@@ -58,6 +58,7 @@ const FavoritesPage = () => {
         () => ({
             base: "flex-1",
             wrapper: "h-full",
+            table: "h-full",
             tbody: "favorite-note-tbody",
             thead: "group",
             th: ["bg-transparent", "text-default-500", "border-b", "border-divider", "border-x", "border-l-transparent", "border-r-transparent", "group-hover:border-r-slate-100", "group-hover:border-l-slate-100", "group-hover:first:border-l-transparent", "group-hover:last:border-r-transparent"],
@@ -208,10 +209,10 @@ const FavoritesPage = () => {
                                                                 {t`Title`}
                                                             </SelectItem>
                                                             <SelectItem key="updatedAt">
-                                                                {t`Updated At`}
+                                                                {t`Updated Time`}
                                                             </SelectItem>
                                                             <SelectItem key="createdAt">
-                                                                {t`Created At`}
+                                                                {t`Created Time`}
                                                             </SelectItem>
                                                         </Select>
                                                         <Button isIconOnly variant="light" size="sm">
@@ -239,7 +240,12 @@ const FavoritesPage = () => {
                                 <TableColumn key="owner">{t`Owner`}</TableColumn>
                                 <TableColumn key="updated_at">{t`Updated At`}</TableColumn>
                             </TableHeader>
-                            <TableBody>
+                            <TableBody emptyContent={
+                                <div className="flex flex-col items-center justify-center w-full">
+                                    <Image className="select-none appearance-none pointer-events-none" width={200} src={emptyFavorites} alt="empty favorite picture" aria-label="empty favority picture" />
+                                    <span className="select-none text-gray-400 text-sm">{t`Meow~ No favorite notes here yet. Time to star the ones you love!`}</span>
+                                </div>
+                            }>
                                 {data.map((item, index) => (
                                     <TableRow key={item.id}>
                                         {(columnKey) => <TableCell onClick={() => setSelectIndex(index)}>{tableCell(item, columnKey)}</TableCell>}

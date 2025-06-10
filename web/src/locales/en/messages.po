@@ -59,6 +59,10 @@ msgstr "7 days"
 msgid "Access Key"
 msgstr "Access Key"
 
+#: src/pages/settings/accountSettings.tsx:58
+msgid "Account Settings"
+msgstr "Account Settings"
+
 #: src/pages/settings/workspaceSettings.tsx:148
 msgid "Action"
 msgstr "Action"
@@ -223,12 +227,16 @@ msgid "Create workspace failed"
 msgstr "Create workspace failed"
 
 #: src/pages/workspace/favorites.tsx:214
-msgid "Created At"
-msgstr "Created At"
+#~ msgid "Created At"
+#~ msgstr "Created At"
 
 #: src/components/list/workspaceEntry/list.tsx:27
 msgid "Created by:"
 msgstr "Created by:"
+
+#: src/pages/workspace/favorites.tsx:215
+msgid "Created Time"
+msgstr "Created Time"
 
 #: src/components/step/workspace/main.tsx:192
 msgid "Creating workspace..."
@@ -275,6 +283,11 @@ msgstr "Delete successfully"
 #: src/components/note/main/index.tsx:141
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
+
+#: src/pages/settings/accountSettings.tsx:97
+#: src/components/table/device/index.tsx:60
+msgid "Device"
+msgstr "Device"
 
 #: src/pages/settings/storageSettings.tsx:85
 msgid "Domain Url"
@@ -437,6 +450,10 @@ msgstr "Key"
 msgid "Languages"
 msgstr "Languages"
 
+#: src/components/table/device/index.tsx:61
+msgid "Last Active"
+msgstr "Last Active"
+
 #: src/pages/workspace/note.tsx:64
 msgid "Loading notes..."
 msgstr "Loading notes..."
@@ -448,6 +465,10 @@ msgstr "Loading Workspace..."
 #: src/pages/settings/storageSettings.tsx:96
 msgid "Local storage path"
 msgstr "Local storage path"
+
+#: src/components/table/device/index.tsx:62
+msgid "Locaton"
+msgstr "Locaton"
 
 #: src/components/menu/sidebar.tsx:92
 msgid "Log out"
@@ -473,6 +494,10 @@ msgstr "member"
 #: src/components/menu/sidebar.tsx:75
 msgid "members"
 msgstr "members"
+
+#: src/pages/workspace/favorites.tsx:246
+msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
+msgstr "Meow~ No favorite notes here yet. Time to star the ones you love!"
 
 #: src/pages/workspace/note.tsx:184
 msgid "Move"
@@ -563,11 +588,11 @@ msgstr "Oops, This invitation link has expired."
 msgid "Or"
 msgstr "Or"
 
-#: src/pages/workspace/favorites.tsx:204
+#: src/pages/workspace/favorites.tsx:205
 msgid "Ordering"
 msgstr "Ordering"
 
-#: src/pages/workspace/favorites.tsx:239
+#: src/pages/workspace/favorites.tsx:240
 msgid "Owner"
 msgstr "Owner"
 
@@ -713,7 +738,7 @@ msgstr "Select Category"
 msgid "Select note status"
 msgstr "Select note status"
 
-#: src/pages/workspace/favorites.tsx:206
+#: src/pages/workspace/favorites.tsx:207
 msgid "Select sorting field"
 msgstr "Select sorting field"
 
@@ -812,8 +837,8 @@ msgstr "This invitation link does not exist."
 msgid "This link is expired"
 msgstr "This link is expired"
 
-#: src/pages/workspace/favorites.tsx:208
-#: src/pages/workspace/favorites.tsx:237
+#: src/pages/workspace/favorites.tsx:209
+#: src/pages/workspace/favorites.tsx:238
 msgid "Title"
 msgstr "Title"
 
@@ -825,7 +850,7 @@ msgstr "To ensure compatibility, please avoid special characters in the name."
 msgid "Unknow"
 msgstr "Unknow"
 
-#: src/pages/workspace/favorites.tsx:115
+#: src/pages/workspace/favorites.tsx:116
 msgid "Untitled Note"
 msgstr "Untitled Note"
 
@@ -848,10 +873,13 @@ msgstr "Update password successfully"
 msgid "Update successfully"
 msgstr "Update successfully"
 
-#: src/pages/workspace/favorites.tsx:211
-#: src/pages/workspace/favorites.tsx:240
+#: src/pages/workspace/favorites.tsx:241
 msgid "Updated At"
 msgstr "Updated At"
+
+#: src/pages/workspace/favorites.tsx:212
+msgid "Updated Time"
+msgstr "Updated Time"
 
 #: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"

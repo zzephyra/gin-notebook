@@ -59,6 +59,10 @@ msgstr "7 Tage"
 msgid "Access Key"
 msgstr "Der Access Key"
 
+#: src/pages/settings/accountSettings.tsx:58
+msgid "Account Settings"
+msgstr ""
+
 #: src/pages/settings/workspaceSettings.tsx:148
 msgid "Action"
 msgstr "Aktion"
@@ -223,12 +227,16 @@ msgid "Create workspace failed"
 msgstr "Workspace erstellen fehlgeschlagen"
 
 #: src/pages/workspace/favorites.tsx:214
-msgid "Created At"
-msgstr "Erschaffen am"
+#~ msgid "Created At"
+#~ msgstr "Erschaffen am"
 
 #: src/components/list/workspaceEntry/list.tsx:27
 msgid "Created by:"
 msgstr "Erstellt von:"
+
+#: src/pages/workspace/favorites.tsx:215
+msgid "Created Time"
+msgstr ""
 
 #: src/components/step/workspace/main.tsx:192
 msgid "Creating workspace..."
@@ -275,6 +283,11 @@ msgstr "erfolgreich löschen"
 #: src/components/note/main/index.tsx:141
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "Das Löschen dieses Elements ist eine permanente Aktion und kann nicht rückgängig gemacht werden. Gehen Sie mit Vorsicht vor."
+
+#: src/pages/settings/accountSettings.tsx:97
+#: src/components/table/device/index.tsx:60
+msgid "Device"
+msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:85
 msgid "Domain Url"
@@ -437,6 +450,10 @@ msgstr "Schlüssel"
 msgid "Languages"
 msgstr "Sprachen"
 
+#: src/components/table/device/index.tsx:61
+msgid "Last Active"
+msgstr ""
+
 #: src/pages/workspace/note.tsx:64
 msgid "Loading notes..."
 msgstr "Aufladen von Notizen…"
@@ -448,6 +465,10 @@ msgstr "Arbeitsraum laden..."
 #: src/pages/settings/storageSettings.tsx:96
 msgid "Local storage path"
 msgstr "Lokaler Speicherpfad"
+
+#: src/components/table/device/index.tsx:62
+msgid "Locaton"
+msgstr ""
 
 #: src/components/menu/sidebar.tsx:92
 msgid "Log out"
@@ -473,6 +494,10 @@ msgstr "Mitglied"
 #: src/components/menu/sidebar.tsx:75
 msgid "members"
 msgstr "Mitglieder"
+
+#: src/pages/workspace/favorites.tsx:246
+msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
+msgstr ""
 
 #: src/pages/workspace/note.tsx:184
 msgid "Move"
@@ -563,11 +588,11 @@ msgstr "Ups, dieser Link zur Einladung ist abgelaufen."
 msgid "Or"
 msgstr "Oder"
 
-#: src/pages/workspace/favorites.tsx:204
+#: src/pages/workspace/favorites.tsx:205
 msgid "Ordering"
 msgstr "Bestellung"
 
-#: src/pages/workspace/favorites.tsx:239
+#: src/pages/workspace/favorites.tsx:240
 msgid "Owner"
 msgstr "Besitzer"
 
@@ -713,7 +738,7 @@ msgstr "Kategorie auswählen"
 msgid "Select note status"
 msgstr "Status auswählen"
 
-#: src/pages/workspace/favorites.tsx:206
+#: src/pages/workspace/favorites.tsx:207
 msgid "Select sorting field"
 msgstr "Sortierfeld auswählen"
 
@@ -808,8 +833,8 @@ msgstr "Dieser Link zur Einladung existiert nicht."
 msgid "This link is expired"
 msgstr "Dieser Link ist abgelaufen"
 
-#: src/pages/workspace/favorites.tsx:208
-#: src/pages/workspace/favorites.tsx:237
+#: src/pages/workspace/favorites.tsx:209
+#: src/pages/workspace/favorites.tsx:238
 msgid "Title"
 msgstr "Titel"
 
@@ -821,7 +846,7 @@ msgstr "Um die Kompatibilität zu gewährleisten, vermeiden Sie bitte Sonderzeic
 msgid "Unknow"
 msgstr "unwissend"
 
-#: src/pages/workspace/favorites.tsx:115
+#: src/pages/workspace/favorites.tsx:116
 msgid "Untitled Note"
 msgstr "Unbenannte Note"
 
@@ -844,10 +869,13 @@ msgstr "Passwort erfolgreich aktualisieren"
 msgid "Update successfully"
 msgstr "Update erfolgreich"
 
-#: src/pages/workspace/favorites.tsx:211
-#: src/pages/workspace/favorites.tsx:240
+#: src/pages/workspace/favorites.tsx:241
 msgid "Updated At"
 msgstr "Aktualisiert AT"
+
+#: src/pages/workspace/favorites.tsx:212
+msgid "Updated Time"
+msgstr ""
 
 #: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"

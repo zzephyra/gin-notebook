@@ -21,7 +21,7 @@ const DeviceTable = ({ userInfo }: { userInfo: UserState }) => {
     const limit = 5
     useEffect(() => {
         getUserDevicesList(limit, offset).then((res) => {
-            setDevices(res.devices)
+            setDevices(res.devices ? res.devices : [])
             setTotal(res.total)
         })
         console.debug("total devices: ", total)
@@ -57,9 +57,9 @@ const DeviceTable = ({ userInfo }: { userInfo: UserState }) => {
         <>
             <Table>
                 <TableHeader>
-                    <TableColumn key="device">Device</TableColumn>
-                    <TableColumn key="last_active">Last Active</TableColumn>
-                    <TableColumn key="location">Locaton</TableColumn>
+                    <TableColumn key="device">{t`Device`}</TableColumn>
+                    <TableColumn key="last_active">{t`Last Active`}</TableColumn>
+                    <TableColumn key="location">{t`Locaton`}</TableColumn>
                 </TableHeader>
                 <TableBody items={devices}>
                     {(item) => (

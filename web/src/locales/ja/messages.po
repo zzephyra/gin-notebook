@@ -59,6 +59,10 @@ msgstr "7日間"
 msgid "Access Key"
 msgstr "アクセスキー"
 
+#: src/pages/settings/accountSettings.tsx:58
+msgid "Account Settings"
+msgstr ""
+
 #: src/pages/settings/workspaceSettings.tsx:148
 msgid "Action"
 msgstr "アクション"
@@ -223,12 +227,16 @@ msgid "Create workspace failed"
 msgstr "ワークスペース作成失敗"
 
 #: src/pages/workspace/favorites.tsx:214
-msgid "Created At"
-msgstr ""
+#~ msgid "Created At"
+#~ msgstr ""
 
 #: src/components/list/workspaceEntry/list.tsx:27
 msgid "Created by:"
 msgstr "作成者："
+
+#: src/pages/workspace/favorites.tsx:215
+msgid "Created Time"
+msgstr ""
 
 #: src/components/step/workspace/main.tsx:192
 msgid "Creating workspace..."
@@ -275,6 +283,11 @@ msgstr "正常に削除"
 #: src/components/note/main/index.tsx:141
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "この項目の削除は永続的なアクションであり、元に戻すことはできません。"
+
+#: src/pages/settings/accountSettings.tsx:97
+#: src/components/table/device/index.tsx:60
+msgid "Device"
+msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:85
 msgid "Domain Url"
@@ -437,6 +450,10 @@ msgstr "キー"
 msgid "Languages"
 msgstr "言語"
 
+#: src/components/table/device/index.tsx:61
+msgid "Last Active"
+msgstr ""
+
 #: src/pages/workspace/note.tsx:64
 msgid "Loading notes..."
 msgstr "ノートを読み込み中..."
@@ -448,6 +465,10 @@ msgstr "ワークスペースをロード中..."
 #: src/pages/settings/storageSettings.tsx:96
 msgid "Local storage path"
 msgstr "ローカルストレージパス"
+
+#: src/components/table/device/index.tsx:62
+msgid "Locaton"
+msgstr ""
 
 #: src/components/menu/sidebar.tsx:92
 msgid "Log out"
@@ -473,6 +494,10 @@ msgstr "メンバー"
 #: src/components/menu/sidebar.tsx:75
 msgid "members"
 msgstr "メンバー"
+
+#: src/pages/workspace/favorites.tsx:246
+msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
+msgstr ""
 
 #: src/pages/workspace/note.tsx:184
 msgid "Move"
@@ -563,11 +588,11 @@ msgstr "おっと、この招待リンクは切れました。"
 msgid "Or"
 msgstr "OR"
 
-#: src/pages/workspace/favorites.tsx:204
+#: src/pages/workspace/favorites.tsx:205
 msgid "Ordering"
-msgstr ""
+msgstr "ソート"
 
-#: src/pages/workspace/favorites.tsx:239
+#: src/pages/workspace/favorites.tsx:240
 msgid "Owner"
 msgstr ""
 
@@ -713,7 +738,7 @@ msgstr "カテゴリーを選択"
 msgid "Select note status"
 msgstr "ノートステータスを選択"
 
-#: src/pages/workspace/favorites.tsx:206
+#: src/pages/workspace/favorites.tsx:207
 msgid "Select sorting field"
 msgstr ""
 
@@ -808,8 +833,8 @@ msgstr "この招待リンクは存在しません。"
 msgid "This link is expired"
 msgstr "このリンクは期限切れです"
 
-#: src/pages/workspace/favorites.tsx:208
-#: src/pages/workspace/favorites.tsx:237
+#: src/pages/workspace/favorites.tsx:209
+#: src/pages/workspace/favorites.tsx:238
 msgid "Title"
 msgstr ""
 
@@ -821,7 +846,7 @@ msgstr "互換性を確保するため、名前に特殊文字を使用しない
 msgid "Unknow"
 msgstr "アンノウ"
 
-#: src/pages/workspace/favorites.tsx:115
+#: src/pages/workspace/favorites.tsx:116
 msgid "Untitled Note"
 msgstr ""
 
@@ -844,9 +869,12 @@ msgstr "パスワードの更新"
 msgid "Update successfully"
 msgstr "更新成功"
 
-#: src/pages/workspace/favorites.tsx:211
-#: src/pages/workspace/favorites.tsx:240
+#: src/pages/workspace/favorites.tsx:241
 msgid "Updated At"
+msgstr ""
+
+#: src/pages/workspace/favorites.tsx:212
+msgid "Updated Time"
 msgstr ""
 
 #: src/pages/settings/accountSettings.tsx:77

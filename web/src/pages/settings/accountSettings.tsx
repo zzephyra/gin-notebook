@@ -55,7 +55,7 @@ const AccountSettings = () => {
 
     return (
         <>
-            <SettingsWrapper title="Account Settings">
+            <SettingsWrapper title={t`Account Settings`}>
                 <SettingsItem custom className="gap-4">
                     <div className="relative group">
                         <Tooltip content={t`Upload Avatar`} color="foreground" placement='bottom' showArrow={true}>
@@ -94,7 +94,7 @@ const AccountSettings = () => {
                 <ModifyPasswordModal userID={userState.id} isOpen={isOpenPasswordModal} onChange={onOpenChangePasswordModal} />
                 <ChangeEmailModal userID={userState.id} isOpen={isOpenEmailModal} onChange={onOpenChangeEmailModal} />
             </SettingsWrapper>
-            <SettingsWrapper title="Device" >
+            <SettingsWrapper title={t`Device`} >
                 <SettingsItem custom>
                     <DeviceTable userInfo={userState}></DeviceTable>
                 </SettingsItem>
