@@ -46,7 +46,7 @@ const FavoritesPage = () => {
     const updateFavoriteNote = (noteId: string, updatedNote: Partial<FavoriteNote>) => {
         setData(prevData =>
             prevData.map(note =>
-                note.note_id === noteId
+                note.id === noteId
                     ? { ...note, ...updatedNote } // Merge the updated fields
                     : note // Keep the rest unchanged
             )
@@ -58,7 +58,7 @@ const FavoritesPage = () => {
         () => ({
             base: "flex-1",
             wrapper: "h-full",
-            table: "h-full",
+            // table: "h-full",
             tbody: "favorite-note-tbody",
             thead: "group",
             th: ["bg-transparent", "text-default-500", "border-b", "border-divider", "border-x", "border-l-transparent", "border-r-transparent", "group-hover:border-r-slate-100", "group-hover:border-l-slate-100", "group-hover:first:border-l-transparent", "group-hover:last:border-r-transparent"],
@@ -104,7 +104,7 @@ const FavoritesPage = () => {
             case "is_favorite":
                 return (
                     <div className="cursor-pointer">
-                        <Button size="sm" isIconOnly variant="light" radius="full" className="hover:!bg-transparent" onPress={() => { handleChangeNoteFavorite(item.note_id, !item.is_favorite) }}>
+                        <Button size="sm" isIconOnly variant="light" radius="full" className="hover:!bg-transparent" onPress={() => { handleChangeNoteFavorite(item.id, !item.is_favorite) }}>
                             {item.is_favorite ? <SolidStarIcon className="w-4 text-yellow-400" /> : <StarIcon className="w-5" />}
                         </Button>
                     </div>
