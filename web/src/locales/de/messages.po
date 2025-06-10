@@ -19,23 +19,23 @@ msgid "Would you like to move the file to the \"{total}\" folder?"
 msgstr "Möchten Sie die Datei in den Ordner\"{total}\" verschieben?"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:12
-#: src/features/api/note.ts:33
+#: src/features/api/note.ts:13
+#: src/features/api/note.ts:34
 msgid "Missing valid value"
 msgstr "Fehlender gültiger Wert"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:85
+#: src/features/api/note.ts:86
 msgid "Add new note failed"
 msgstr "Neue Note fehlgeschlagen"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:102
+#: src/features/api/note.ts:103
 msgid "Add new category failed"
 msgstr "Neue Kategorie hinzufügen fehlgeschlagen"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:123
+#: src/features/api/note.ts:124
 msgid "Delete note failed"
 msgstr "Note gelöscht fehlgeschlagen"
 
@@ -222,6 +222,10 @@ msgstr "Workspace erstellen"
 msgid "Create workspace failed"
 msgstr "Workspace erstellen fehlgeschlagen"
 
+#: src/pages/workspace/favorites.tsx:214
+msgid "Created At"
+msgstr "Erschaffen am"
+
 #: src/components/list/workspaceEntry/list.tsx:27
 msgid "Created by:"
 msgstr "Erstellt von:"
@@ -239,6 +243,7 @@ msgid "Danger Zone"
 msgstr "Gefahrenzone"
 
 #: src/pages/settings/workspaceSettings.tsx:195
+#: src/components/note/noteList/index.tsx:76
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
 msgid "Delete"
@@ -257,6 +262,11 @@ msgstr "Link Einladung löschen"
 msgid "Delete Note"
 msgstr "Löschen Note"
 
+#. placeholder {0}: res.error || "Unknown error"
+#: src/components/note/noteList/index.tsx:35
+msgid "Delete note failed: {0}"
+msgstr "Delete note fehlgeschlagen:"
+
 #: src/pages/settings/workspaceSettings.tsx:63
 #: src/components/modal/note/deleteModal/index.tsx:17
 msgid "Delete successfully"
@@ -270,7 +280,7 @@ msgstr "Das Löschen dieses Elements ist eine permanente Aktion und kann nicht r
 msgid "Domain Url"
 msgstr "Domain URL eingeben"
 
-#: src/pages/auth/login.tsx:57
+#: src/pages/auth/login.tsx:73
 msgid "Don't have an account yet?"
 msgstr "Sie haben noch keinen Account?"
 
@@ -284,7 +294,7 @@ msgstr "Download von Qrcode"
 
 #: src/pages/settings/accountSettings.tsx:89
 msgid "Email"
-msgstr "E-Mail von"
+msgstr "E-Mail"
 
 #: src/components/step/workspace/main.tsx:157
 msgid "Emails"
@@ -317,6 +327,14 @@ msgstr "Expiration"
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Expired"
 msgstr "abgelaufen"
+
+#: src/components/note/noteList/index.tsx:74
+msgid "Export As PDF"
+msgstr "Export als PDF"
+
+#: src/components/note/noteList/index.tsx:75
+msgid "Export As Word"
+msgstr "Export als Wort"
 
 #: src/components/modal/workspace/link/index.tsx:57
 msgid "Failed to generate invite link"
@@ -492,6 +510,10 @@ msgstr "Neuer Folder"
 msgid "New Password"
 msgstr "Neues Passwort"
 
+#: src/components/note/noteList/index.tsx:72
+msgid "Next Note"
+msgstr "Nächste Note"
+
 #: src/components/note/main/index.tsx:127
 msgid "No Category"
 msgstr "Keine Kategorie"
@@ -537,9 +559,17 @@ msgstr "Jetzt"
 msgid "Oops, This invitation link has expired."
 msgstr "Ups, dieser Link zur Einladung ist abgelaufen."
 
-#: src/pages/auth/login.tsx:61
+#: src/pages/auth/login.tsx:77
 msgid "Or"
-msgstr "oder"
+msgstr "Oder"
+
+#: src/pages/workspace/favorites.tsx:204
+msgid "Ordering"
+msgstr "Bestellung"
+
+#: src/pages/workspace/favorites.tsx:239
+msgid "Owner"
+msgstr "Besitzer"
 
 #: src/pages/settings/accountSettings.tsx:84
 msgid "Password"
@@ -582,6 +612,10 @@ msgstr "Bitte geben Sie Ihr Passwort ein."
 msgid "Please select a category"
 msgstr "Bitte wählen Sie eine Kategorie"
 
+#: src/components/note/noteList/index.tsx:71
+msgid "Previous Note"
+msgstr "Vorherige Note"
+
 #: src/components/note/main/index.tsx:155
 msgid "Privite"
 msgstr "Privilegierte"
@@ -622,20 +656,20 @@ msgstr "Kürzlich geschaffen"
 msgid "Region"
 msgstr "Region"
 
-#: src/pages/auth/register.tsx:26
-#: src/pages/auth/register.tsx:35
+#: src/pages/auth/register.tsx:27
+#: src/pages/auth/register.tsx:36
 msgid "Register failed"
 msgstr "Registrierung fehlgeschlagen"
 
-#: src/pages/auth/register.tsx:36
+#: src/pages/auth/register.tsx:37
 msgid "Register failed, please check your email and password"
 msgstr "Anmeldung fehlgeschlagen, bitte überprüfen Sie Ihre E-Mail und Ihr Passwort"
 
-#: src/pages/auth/register.tsx:18
+#: src/pages/auth/register.tsx:19
 msgid "Register success"
 msgstr "Erfolgsregister"
 
-#: src/pages/auth/register.tsx:19
+#: src/pages/auth/register.tsx:20
 msgid "Register success, please check your email"
 msgstr "Anmeldung erfolgreich, bitte überprüfen Sie Ihre E-Mail"
 
@@ -679,6 +713,10 @@ msgstr "Kategorie auswählen"
 msgid "Select note status"
 msgstr "Status auswählen"
 
+#: src/pages/workspace/favorites.tsx:206
+msgid "Select sorting field"
+msgstr "Sortierfeld auswählen"
+
 #: src/pages/workspace/select.tsx:66
 msgid "Select your workspace"
 msgstr "Wähle deinen Workspace"
@@ -700,6 +738,7 @@ msgstr "Legen Sie den Status der aktuellen Notiz fest. Wenn sie auf privat geset
 msgid "Settings"
 msgstr "Die Settings"
 
+#: src/components/note/noteList/index.tsx:62
 #: src/components/note/main/index.tsx:111
 msgid "Share"
 msgstr "Teilen"
@@ -769,6 +808,11 @@ msgstr "Dieser Link zur Einladung existiert nicht."
 msgid "This link is expired"
 msgstr "Dieser Link ist abgelaufen"
 
+#: src/pages/workspace/favorites.tsx:208
+#: src/pages/workspace/favorites.tsx:237
+msgid "Title"
+msgstr "Titel"
+
 #: src/components/step/workspace/main.tsx:113
 msgid "To ensure compatibility, please avoid special characters in the name."
 msgstr "Um die Kompatibilität zu gewährleisten, vermeiden Sie bitte Sonderzeichen im Namen."
@@ -776,6 +820,10 @@ msgstr "Um die Kompatibilität zu gewährleisten, vermeiden Sie bitte Sonderzeic
 #: src/components/table/device/index.tsx:49
 msgid "Unknow"
 msgstr "unwissend"
+
+#: src/pages/workspace/favorites.tsx:115
+msgid "Untitled Note"
+msgstr "Unbenannte Note"
 
 #: src/pages/settings/accountSettings.tsx:46
 msgid "Update avatar successfully"
@@ -795,6 +843,11 @@ msgstr "Passwort erfolgreich aktualisieren"
 #: src/components/note/main/index.tsx:93
 msgid "Update successfully"
 msgstr "Update erfolgreich"
+
+#: src/pages/workspace/favorites.tsx:211
+#: src/pages/workspace/favorites.tsx:240
+msgid "Updated At"
+msgstr "Aktualisiert AT"
 
 #: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"

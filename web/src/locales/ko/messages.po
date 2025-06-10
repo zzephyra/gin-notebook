@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2025-03-31 21:50+0800\n"
+"POT-Creation-Date: 2025-03-31 21:14+0800\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
-"Language: ko\n"
+"Language: zh_cn\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: \n"
@@ -19,23 +19,23 @@ msgid "Would you like to move the file to the \"{total}\" folder?"
 msgstr "파일을 \"{합계}\" 폴더로 이동하시겠습니까?"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:12
-#: src/features/api/note.ts:33
+#: src/features/api/note.ts:13
+#: src/features/api/note.ts:34
 msgid "Missing valid value"
 msgstr "유효한 값 누락"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:85
+#: src/features/api/note.ts:86
 msgid "Add new note failed"
 msgstr "새 노트를 추가하지 못했습니다."
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:102
+#: src/features/api/note.ts:103
 msgid "Add new category failed"
 msgstr "새 범주를 추가하지 못했습니다."
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:123
+#: src/features/api/note.ts:124
 msgid "Delete note failed"
 msgstr "노트 삭제 실패"
 
@@ -204,7 +204,7 @@ msgstr "복제 성공"
 #: src/components/dropdown/note/index.tsx:108
 #: src/components/dropdown/note/index.tsx:207
 msgid "Create"
-msgstr "생성 (Create)"
+msgstr "작성 (Create)"
 
 #: src/components/step/workspace/main.tsx:110
 msgid "Create a new workspace"
@@ -221,6 +221,10 @@ msgstr "작업공간 작성"
 #: src/components/step/workspace/main.tsx:74
 msgid "Create workspace failed"
 msgstr "작업공간 만들기 실패"
+
+#: src/pages/workspace/favorites.tsx:214
+msgid "Created At"
+msgstr "작성 날짜"
 
 #: src/components/list/workspaceEntry/list.tsx:27
 msgid "Created by:"
@@ -239,6 +243,7 @@ msgid "Danger Zone"
 msgstr "위험지대 (Danger Zone)"
 
 #: src/pages/settings/workspaceSettings.tsx:195
+#: src/components/note/noteList/index.tsx:76
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
 msgid "Delete"
@@ -257,6 +262,11 @@ msgstr "초대 링크 삭제"
 msgid "Delete Note"
 msgstr "메모 삭제"
 
+#. placeholder {0}: res.error || "Unknown error"
+#: src/components/note/noteList/index.tsx:35
+msgid "Delete note failed: {0}"
+msgstr "노트 삭제 실패: { 0}"
+
 #: src/pages/settings/workspaceSettings.tsx:63
 #: src/components/modal/note/deleteModal/index.tsx:17
 msgid "Delete successfully"
@@ -270,7 +280,7 @@ msgstr "이 항목을 삭제하는 것은 영구적인 작업이며 되돌릴 �
 msgid "Domain Url"
 msgstr "도메인 URL"
 
-#: src/pages/auth/login.tsx:57
+#: src/pages/auth/login.tsx:73
 msgid "Don't have an account yet?"
 msgstr "아직 계좌가 없으신가요?"
 
@@ -318,13 +328,21 @@ msgstr "만료 됨"
 msgid "Expired"
 msgstr "만료 됨"
 
+#: src/components/note/noteList/index.tsx:74
+msgid "Export As PDF"
+msgstr "PDF로 내보내기"
+
+#: src/components/note/noteList/index.tsx:75
+msgid "Export As Word"
+msgstr "Word로 내보내기"
+
 #: src/components/modal/workspace/link/index.tsx:57
 msgid "Failed to generate invite link"
 msgstr "초대 링크를 생성할 수 없습니다."
 
 #: src/layouts/backstage.tsx:38
 msgid "Favorites"
-msgstr "즐겨찾기 모음"
+msgstr "즐겨찾기 모음집"
 
 #: src/pages/workspace/note.tsx:169
 msgid "File movement"
@@ -450,7 +468,7 @@ msgstr "관리 (Management)"
 
 #: src/components/menu/sidebar.tsx:75
 msgid "member"
-msgstr "구성원"
+msgstr "멤버"
 
 #: src/components/menu/sidebar.tsx:75
 msgid "members"
@@ -491,6 +509,10 @@ msgstr "새 폴더"
 #: src/components/modal/user/modifyPassword/index.tsx:45
 msgid "New Password"
 msgstr "새 암호"
+
+#: src/components/note/noteList/index.tsx:72
+msgid "Next Note"
+msgstr "다음 노트"
 
 #: src/components/note/main/index.tsx:127
 msgid "No Category"
@@ -537,9 +559,17 @@ msgstr "지금 당장"
 msgid "Oops, This invitation link has expired."
 msgstr "이 초대 링크가 만료되었습니다."
 
-#: src/pages/auth/login.tsx:61
+#: src/pages/auth/login.tsx:77
 msgid "Or"
 msgstr "또는"
+
+#: src/pages/workspace/favorites.tsx:204
+msgid "Ordering"
+msgstr "주문 중"
+
+#: src/pages/workspace/favorites.tsx:239
+msgid "Owner"
+msgstr "소유자 (Owner)"
 
 #: src/pages/settings/accountSettings.tsx:84
 msgid "Password"
@@ -582,6 +612,10 @@ msgstr "암호를 입력하십시오."
 msgid "Please select a category"
 msgstr "범주를 선택하십시오."
 
+#: src/components/note/noteList/index.tsx:71
+msgid "Previous Note"
+msgstr "이전 노트"
+
 #: src/components/note/main/index.tsx:155
 msgid "Privite"
 msgstr "Privite (Privite)"
@@ -622,20 +656,20 @@ msgstr "최근 작성됨"
 msgid "Region"
 msgstr "지역 (Region)"
 
-#: src/pages/auth/register.tsx:26
-#: src/pages/auth/register.tsx:35
+#: src/pages/auth/register.tsx:27
+#: src/pages/auth/register.tsx:36
 msgid "Register failed"
 msgstr "등록 실패"
 
-#: src/pages/auth/register.tsx:36
+#: src/pages/auth/register.tsx:37
 msgid "Register failed, please check your email and password"
 msgstr "등록 실패. 이메일과 암호를 확인하십시오."
 
-#: src/pages/auth/register.tsx:18
+#: src/pages/auth/register.tsx:19
 msgid "Register success"
 msgstr "등록 성공"
 
-#: src/pages/auth/register.tsx:19
+#: src/pages/auth/register.tsx:20
 msgid "Register success, please check your email"
 msgstr "등록 성공, 이메일 확인"
 
@@ -664,7 +698,7 @@ msgstr "비밀 열쇠"
 #: src/components/modal/note/selectCategory/index.tsx:114
 #: src/components/list/workspaceEntry/list.tsx:34
 msgid "Select"
-msgstr "선택"
+msgstr "선택 하기"
 
 #: src/pages/workspace/select.tsx:69
 msgid "Select a workspace to start using Memoas"
@@ -678,6 +712,10 @@ msgstr "범주 선택"
 #: src/components/dropdown/note/index.tsx:195
 msgid "Select note status"
 msgstr "노트 상태 선택"
+
+#: src/pages/workspace/favorites.tsx:206
+msgid "Select sorting field"
+msgstr "정렬 필드 선택"
 
 #: src/pages/workspace/select.tsx:66
 msgid "Select your workspace"
@@ -700,6 +738,7 @@ msgstr "현재 노트의 상태를 설정합니다. 비공개로 설정하면 �
 msgid "Settings"
 msgstr "설정 (Settings)"
 
+#: src/components/note/noteList/index.tsx:62
 #: src/components/note/main/index.tsx:111
 msgid "Share"
 msgstr "공유 (Share)"
@@ -769,6 +808,11 @@ msgstr "이 초대 링크가 존재하지 않습니다."
 msgid "This link is expired"
 msgstr "이 링크는 만료되었습니다."
 
+#: src/pages/workspace/favorites.tsx:208
+#: src/pages/workspace/favorites.tsx:237
+msgid "Title"
+msgstr "제목 (Title)"
+
 #: src/components/step/workspace/main.tsx:113
 msgid "To ensure compatibility, please avoid special characters in the name."
 msgstr "호환성을 보장하려면 이름에 특수 문자를 사용하지 마십시오."
@@ -776,6 +820,10 @@ msgstr "호환성을 보장하려면 이름에 특수 문자를 사용하지 마
 #: src/components/table/device/index.tsx:49
 msgid "Unknow"
 msgstr "알 수 없음 (Unknow)"
+
+#: src/pages/workspace/favorites.tsx:115
+msgid "Untitled Note"
+msgstr "제목 없는 노트"
 
 #: src/pages/settings/accountSettings.tsx:46
 msgid "Update avatar successfully"
@@ -795,6 +843,11 @@ msgstr "암호를 성공적으로 업데이트했습니다."
 #: src/components/note/main/index.tsx:93
 msgid "Update successfully"
 msgstr "업데이트 성공"
+
+#: src/pages/workspace/favorites.tsx:211
+#: src/pages/workspace/favorites.tsx:240
+msgid "Updated At"
+msgstr "업데이트 위치"
 
 #: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"

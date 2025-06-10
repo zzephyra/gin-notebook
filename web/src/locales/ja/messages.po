@@ -16,26 +16,26 @@ msgstr ""
 #. js-lingui-explicit-id
 #: src/pages/workspace/note.tsx:173
 msgid "Would you like to move the file to the \"{total}\" folder?"
-msgstr "ファイルを\“{total}\”フォルダに移動しますか？"
+msgstr "ファイルを\\“{total}\\”フォルダに移動しますか？"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:12
-#: src/features/api/note.ts:33
+#: src/features/api/note.ts:13
+#: src/features/api/note.ts:34
 msgid "Missing valid value"
 msgstr "有効な値がない"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:85
+#: src/features/api/note.ts:86
 msgid "Add new note failed"
 msgstr "新規ノートの追加失敗"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:102
+#: src/features/api/note.ts:103
 msgid "Add new category failed"
 msgstr "新規カテゴリの追加失敗"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:123
+#: src/features/api/note.ts:124
 msgid "Delete note failed"
 msgstr "ノートの削除失敗"
 
@@ -222,6 +222,10 @@ msgstr "ワークスペースの作成"
 msgid "Create workspace failed"
 msgstr "ワークスペース作成失敗"
 
+#: src/pages/workspace/favorites.tsx:214
+msgid "Created At"
+msgstr ""
+
 #: src/components/list/workspaceEntry/list.tsx:27
 msgid "Created by:"
 msgstr "作成者："
@@ -239,6 +243,7 @@ msgid "Danger Zone"
 msgstr "危険地帯"
 
 #: src/pages/settings/workspaceSettings.tsx:195
+#: src/components/note/noteList/index.tsx:76
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
 msgid "Delete"
@@ -257,6 +262,11 @@ msgstr "招待リンクを削除"
 msgid "Delete Note"
 msgstr "メモを削除"
 
+#. placeholder {0}: res.error || "Unknown error"
+#: src/components/note/noteList/index.tsx:35
+msgid "Delete note failed: {0}"
+msgstr ""
+
 #: src/pages/settings/workspaceSettings.tsx:63
 #: src/components/modal/note/deleteModal/index.tsx:17
 msgid "Delete successfully"
@@ -270,7 +280,7 @@ msgstr "この項目の削除は永続的なアクションであり、元に戻
 msgid "Domain Url"
 msgstr "ドメインURL"
 
-#: src/pages/auth/login.tsx:57
+#: src/pages/auth/login.tsx:73
 msgid "Don't have an account yet?"
 msgstr "まだアカウントをお持ちでない場合"
 
@@ -317,6 +327,14 @@ msgstr "パスワード"
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Expired"
 msgstr "期限切れ"
+
+#: src/components/note/noteList/index.tsx:74
+msgid "Export As PDF"
+msgstr ""
+
+#: src/components/note/noteList/index.tsx:75
+msgid "Export As Word"
+msgstr ""
 
 #: src/components/modal/workspace/link/index.tsx:57
 msgid "Failed to generate invite link"
@@ -492,6 +510,10 @@ msgstr "新しいフォルダ"
 msgid "New Password"
 msgstr "新しいパスワード"
 
+#: src/components/note/noteList/index.tsx:72
+msgid "Next Note"
+msgstr ""
+
 #: src/components/note/main/index.tsx:127
 msgid "No Category"
 msgstr "カテゴリーなし"
@@ -537,9 +559,17 @@ msgstr "今"
 msgid "Oops, This invitation link has expired."
 msgstr "おっと、この招待リンクは切れました。"
 
-#: src/pages/auth/login.tsx:61
+#: src/pages/auth/login.tsx:77
 msgid "Or"
 msgstr "OR"
+
+#: src/pages/workspace/favorites.tsx:204
+msgid "Ordering"
+msgstr ""
+
+#: src/pages/workspace/favorites.tsx:239
+msgid "Owner"
+msgstr ""
 
 #: src/pages/settings/accountSettings.tsx:84
 msgid "Password"
@@ -582,6 +612,10 @@ msgstr "パスワードを入力してください。"
 msgid "Please select a category"
 msgstr "カテゴリーを選択してください"
 
+#: src/components/note/noteList/index.tsx:71
+msgid "Previous Note"
+msgstr ""
+
 #: src/components/note/main/index.tsx:155
 msgid "Privite"
 msgstr "プライベート"
@@ -622,20 +656,20 @@ msgstr "最近作成"
 msgid "Region"
 msgstr "地域"
 
-#: src/pages/auth/register.tsx:26
-#: src/pages/auth/register.tsx:35
+#: src/pages/auth/register.tsx:27
+#: src/pages/auth/register.tsx:36
 msgid "Register failed"
 msgstr "登録失敗"
 
-#: src/pages/auth/register.tsx:36
+#: src/pages/auth/register.tsx:37
 msgid "Register failed, please check your email and password"
 msgstr "メールアドレスとパスワードをご確認ください"
 
-#: src/pages/auth/register.tsx:18
+#: src/pages/auth/register.tsx:19
 msgid "Register success"
 msgstr "成功登録"
 
-#: src/pages/auth/register.tsx:19
+#: src/pages/auth/register.tsx:20
 msgid "Register success, please check your email"
 msgstr "成功登録、メールを確認してください"
 
@@ -679,6 +713,10 @@ msgstr "カテゴリーを選択"
 msgid "Select note status"
 msgstr "ノートステータスを選択"
 
+#: src/pages/workspace/favorites.tsx:206
+msgid "Select sorting field"
+msgstr ""
+
 #: src/pages/workspace/select.tsx:66
 msgid "Select your workspace"
 msgstr "ワークスペースを選択"
@@ -700,6 +738,7 @@ msgstr "現在のノートのステータスを設定します。privateに設�
 msgid "Settings"
 msgstr "設定"
 
+#: src/components/note/noteList/index.tsx:62
 #: src/components/note/main/index.tsx:111
 msgid "Share"
 msgstr "シェア"
@@ -769,6 +808,11 @@ msgstr "この招待リンクは存在しません。"
 msgid "This link is expired"
 msgstr "このリンクは期限切れです"
 
+#: src/pages/workspace/favorites.tsx:208
+#: src/pages/workspace/favorites.tsx:237
+msgid "Title"
+msgstr ""
+
 #: src/components/step/workspace/main.tsx:113
 msgid "To ensure compatibility, please avoid special characters in the name."
 msgstr "互換性を確保するため、名前に特殊文字を使用しないでください。"
@@ -776,6 +820,10 @@ msgstr "互換性を確保するため、名前に特殊文字を使用しない
 #: src/components/table/device/index.tsx:49
 msgid "Unknow"
 msgstr "アンノウ"
+
+#: src/pages/workspace/favorites.tsx:115
+msgid "Untitled Note"
+msgstr ""
 
 #: src/pages/settings/accountSettings.tsx:46
 msgid "Update avatar successfully"
@@ -795,6 +843,11 @@ msgstr "パスワードの更新"
 #: src/components/note/main/index.tsx:93
 msgid "Update successfully"
 msgstr "更新成功"
+
+#: src/pages/workspace/favorites.tsx:211
+#: src/pages/workspace/favorites.tsx:240
+msgid "Updated At"
+msgstr ""
 
 #: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"
