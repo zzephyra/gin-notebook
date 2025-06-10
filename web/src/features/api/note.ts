@@ -5,7 +5,8 @@ import { responseCode } from "../constant/response";
 import { store } from "@/store";
 import { InsertNewCategory, UpdateNoteByID, DeleteNoteByID, setSelectedNoteId, UpdateNoteList } from "@/store/features/workspace";
 import toast from "react-hot-toast";
-import { WorkspaceNoteCreateParams } from "./type";
+import { FavoriteNoteListParams, WorkspaceNoteCreateParams } from "./type";
+import { Note } from "@/pages/workspace/type";
 
 export async function GetNoteList(workspaceId: any, offset: number, limit: number) {
     if (!workspaceId) {
@@ -158,5 +159,26 @@ export async function SetFavoriteNoeRequest(note_id: string, is_favorite: boolea
         }
     } catch (err) {
         return false
+    }
+}
+
+export async function GetFavoriteNoteListRequest(params: FavoriteNoteListParams): Promise<Note[]> {
+    if (!params.workspace_id) {
+        return []
+    }
+
+    if (!params.offset || params.offset < 0) {
+        params.offset = 0;
+    }
+
+    if (!params.limit || params.limit < 0 || params.limit > 30) {
+        params.limit = 10;
+    }
+
+    try {
+        var res = await axiosClient.get(favoriteNoteApi, { params })
+        return res.data.data || []
+    } catch (e) {
+        return []
     }
 }

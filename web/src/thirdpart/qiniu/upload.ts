@@ -108,7 +108,7 @@ export function useUpload() {
             if (!parseData) {
                 return null
             }
-            return `http://${uploadSetting.qiniu_domain}/${parseData?.key}`
+            return `${window.location.protocol}//${uploadSetting.qiniu_domain}/${parseData?.key}`
         }
         return null
     }

@@ -7,6 +7,7 @@ import (
 	"gin-notebook/internal/pkg/cache"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/geoip"
+	"gin-notebook/internal/pkg/google"
 	"gin-notebook/internal/pkg/queue"
 	"gin-notebook/internal/pkg/rbac"
 	"gin-notebook/pkg/logger"
@@ -60,6 +61,8 @@ func main() {
 	// 初始化mmdb
 	geoip.InitGeoIP(config.GeoIP.DBPath)
 
+	// 初始化Google OAuth2客户端
+	google.Init(config)
 	// 设置路由
 	var router = api.SetRouter()
 	router.Run("0.0.0.0:8899") // 监听并在 0.0.0.0:8899 上启动服务

@@ -1,3 +1,9 @@
+import MarkdownIt from 'markdown-it';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { saveAs } from 'file-saver';
+
 export const getScriptFromLang = (lang: string) => {
     if (["zh-CN", "zh-SG", "zh-Hans"].includes(lang)) return "zh_cn";
     if (["zh-TW", "zh-HK", "zh-MO", "zh-Hant"].includes(lang)) return "zh_tw";
@@ -26,3 +32,75 @@ export function checkFileType(file: File, assertType: string) {
 export function generateInviteUrl(uuid: string) {
     return `${window.location.origin}/invite/${uuid}`
 }
+
+export async function exportToPDf(title: string, content: string) {
+    const md = new MarkdownIt();
+    const html = md.render(content);
+    const container = document.createElement('div');
+    container.innerHTML = html;
+    container.style.position = 'absolute';
+    container.style.left = '-9999px';
+    container.style.top = '0';
+    container.style.width = '800px';
+    container.style.padding = '20px';
+    container.style.background = 'white';
+    container.style.color = 'black';
+    document.body.appendChild(container);
+
+    // 转成 Canvas
+    const canvas = await html2canvas(container, { scale: 2 });
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+    // 清除临时 DOM
+    document.body.removeChild(container);
+
+    // 生成 PDF
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+    }
+
+    pdf.save(`${title}.pdf`);
+}
+
+export const exportToWord = async (title: string, content: string) => {
+    const md = new MarkdownIt();
+    const renderedHTML = md.render(content);
+
+    // 简单提取纯文本段落（更复杂内容需扩展 HTML 解析）
+    const textContent = renderedHTML
+        .replace(/<[^>]+>/g, '') // 去除所有 HTML 标签
+        .split('\n')
+        .filter(line => line.trim() !== '');
+
+    const doc = new Document({
+        sections: [
+            {
+                properties: {},
+                children: textContent.map(line =>
+                    new Paragraph({
+                        children: [new TextRun(line)],
+                    }),
+                ),
+            },
+        ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `${title}.docx`);
+};

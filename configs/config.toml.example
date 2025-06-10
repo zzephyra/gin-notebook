@@ -25,3 +25,10 @@ port = 465
 user = ''
 password = ''
 ssl = true
+
+[GeoIP]
+db_path = "" # 数据库文件绝对路径
+
+[google]
+# Google客户端id
+client_id = ""

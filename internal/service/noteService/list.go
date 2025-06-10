@@ -2,6 +2,7 @@ package noteService
 
 import (
 	"gin-notebook/internal/http/message"
+	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/repository"
 	"gin-notebook/pkg/logger"
@@ -60,4 +61,14 @@ func GetRecommandNotesCategory(params *dto.RecommendNoteCategoryQueryDTO) (respo
 
 	// 返回响应码和 data
 	return message.SUCCESS, data
+}
+
+func GetFavoriteNoteList(params *dto.FavoriteNoteQueryDTO) (responseCode int, data *[]dto.WorkspaceNoteDTO) {
+	data, err := repository.GetFavoriteNoteList(params)
+	if err != nil {
+		responseCode = database.IsError(err)
+		return
+	}
+	responseCode = message.SUCCESS
+	return
 }

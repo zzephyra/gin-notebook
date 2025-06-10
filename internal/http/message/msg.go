@@ -31,6 +31,7 @@ const (
 	ERROR_USER_EMAIL_EXIST        = 1018
 	ERROR_CREATE_USER_DEVICE      = 1019
 	ERROR_GET_USER_DEVICE_LIST    = 1020
+	ERROR_CREATE_GOOGLE_USER      = 1021
 
 	// 文章模块的错误
 	ERROR_ART_NOT_EXIST           = 2001
@@ -81,6 +82,10 @@ const (
 
 	// 七牛云模块的错误
 	ERROR_QINIU_TOKEN = 8001
+
+	// 登录模块的错误
+	ERROR_INVALID_CHANNEL = 9001
+	ERROR_GOOGLE_OAUTH    = 9002 // Google OAuth 认证失败
 )
 
 var CodeMsg = map[int]string{
@@ -132,4 +137,7 @@ var CodeMsg = map[int]string{
 	ERROR_WORKSPACE_MEMBER_EXIST:               "工作区成员已存在",
 	ERROR_WORKSPACE_INVITE_LINK_NOT_ALLOW_JOIN: "工作区邀请链接不允许加入",
 	ERROR_WORKSPACE_INVITE_LINK_NOT_MATCH:      "工作区邀请链接与工作区不匹配",
+	ERROR_GOOGLE_OAUTH:                         "Google OAuth 认证失败",
+	ERROR_INVALID_CHANNEL:                      "无效的登录渠道",
+	ERROR_CREATE_GOOGLE_USER:                   "创建 Google 用户失败",
 }

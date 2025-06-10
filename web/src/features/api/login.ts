@@ -2,14 +2,16 @@
 import axiosClient from '@/lib/api/client';
 import { loginApi } from './routes';
 
-type LoginParams = {
-  email: string;
-  password: string;
+export type LoginParams = {
+  email?: string;
+  password?: string;
+  channel: string; // e.g., 'email', 'google'
+  googleToken?: string; // Required if channel is 'google'
 };
 
 type LoginResponse = {
-    code: number;
-    error?: string;
+  code: number;
+  error?: string;
 };
 
 export const loginUserApi = async (params: LoginParams): Promise<LoginResponse> => {

@@ -12,5 +12,6 @@ func RegisterAuthRoutes(r *gin.RouterGroup) {
 	noteGroup.Use(middleware.RBACMiddleware())
 	{
 		noteGroup.POST("/favorite", FavoriteNoteApi)
+		noteGroup.GET("/favorite", GetFavoriteNoteApi)
 	}
 }

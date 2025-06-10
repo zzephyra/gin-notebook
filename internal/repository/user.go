@@ -15,12 +15,14 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func CreateUser(data dto.CreateUserDTO) error {
+func CreateUser(data dto.CreateUserDTO) (*model.User, error) {
+	user := &model.User{
+		Email:    data.Email,
+		Password: string(algorithm.HashPassword(data.Password)),
+		Nickname: data.Nickname,
+		Avatar:   *data.Avatar,
+	}
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
-		user := &model.User{
-			Email:    data.Email,
-			Password: string(algorithm.HashPassword(data.Password)),
-		}
 		if err := tx.Create(user).Error; err != nil {
 			return err
 		}
@@ -33,10 +35,10 @@ func CreateUser(data dto.CreateUserDTO) error {
 	})
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return user, nil
 }
 
 func CreateUserSettings(userID int64, settings *model.UserSetting) error {

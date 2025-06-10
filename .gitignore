@@ -29,5 +29,5 @@ docker-compose.yml
 .VSCodeCounter/*
 bin/*
 **/*.log
-web/.env.production
+web/.env.*
 tmp/*

@@ -47,3 +47,29 @@ export interface WorkspaceInviteLinkResponse {
     expire_at: string | null,
     allow_join: boolean
 }
+
+export interface FavoriteNoteListParams {
+    workspace_id: string;
+    limit?: number;
+    offset?: number;
+    ordering?: string;
+    category_id?: string;
+    kw?: string;
+}
+
+export interface FavoriteNote {
+    owner_id: string;
+    owner_email: string;
+    owner_nickname: string;
+    owner_avatar: string;
+    note_id: string;
+    note_title: string;
+    note_content: string;
+    note_category: string;
+    note_category_id: string;
+    note_tag: string;
+    note_tag_id: string;
+    is_favorite: boolean;
+    created_at: string;
+    updated_at: string;
+}

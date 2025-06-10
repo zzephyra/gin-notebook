@@ -5,13 +5,14 @@ import { loadCatalog } from "./i18n";
 import AppRouter from "./routes/index.tsx";
 import LoadingPage from "./pages/loading.tsx";
 import { Toaster } from "react-hot-toast";
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { getSystemLang } from "./utils/tools.ts";
 import { getUserInfoRequest, storageUserDeviceRequest } from "./features/api/user.ts";
 import { getSettingsRequest } from "./features/api/settings.ts";
 import { responseCode } from "./features/constant/response.ts";
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
   useEffect(() => {
     const initI18n = async () => {
       try {
@@ -30,16 +31,26 @@ function App() {
     };
     initI18n();
   }, []);
-
   if (!isLoaded) {
     return <LoadingPage />; // 显示加载状态，直到 i18n 完全就绪
   }
 
   return (
-    <I18nProvider i18n={i18n}>
-      <Toaster></Toaster>
-      <AppRouter />
-    </I18nProvider>
+    <>
+      {googleClientId ? (
+        <GoogleOAuthProvider clientId={googleClientId}>
+          <I18nProvider i18n={i18n}>
+            <Toaster></Toaster>
+            <AppRouter />
+          </I18nProvider>
+        </GoogleOAuthProvider>
+      ) : (
+        <I18nProvider i18n={i18n}>
+          <Toaster></Toaster>
+          <AppRouter />
+        </I18nProvider>
+      )}
+    </>
   );
 }
 

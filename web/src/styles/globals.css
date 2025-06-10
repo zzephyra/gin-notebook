@@ -137,3 +137,9 @@ body {
     @apply bg-background text-foreground;
   }
 } */
+
+.favorite-note-tbody {
+  tr td:nth-last-child(2) {
+    width: 250px;
+  }
+}

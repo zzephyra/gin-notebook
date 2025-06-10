@@ -193,3 +193,22 @@ func SetFavoriteNote(favoriteNote *model.FavoriteNote) error {
 		}).
 		Create(favoriteNote).Error
 }
+
+func GetFavoriteNoteList(params *dto.FavoriteNoteQueryDTO) (*[]dto.WorkspaceNoteDTO, error) {
+	var favoriteNotes = []dto.WorkspaceNoteDTO{}
+	query := database.DB.Table("favorite_notes").
+		Select(`
+			favorite_notes.is_favorite, 
+			users.id as owner_id,
+			users.nickname as owner_name,
+			users.email as owner_email,
+			users.avatar as owner_avatar,
+			notes.*
+		`).
+		Joins("LEFT JOIN notes ON notes.id = favorite_notes.note_id").
+		Joins("LEFT JOIN users ON users.id = notes.owner_id").
+		Order(fmt.Sprintf("notes.%s %s", params.OrderBy, strings.ToUpper(params.Order))).
+		Where("notes.deleted_at is Null and favorite_notes.user_id = ? and notes.workspace_id = ? and favorite_notes.is_favorite = True", params.UserID, params.WorkspaceID)
+	err := query.Scan(&favoriteNotes).Error
+	return &favoriteNotes, err
+}

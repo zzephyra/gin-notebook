@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { loginUserApi } from "@/features/api/login";
+import { loginUserApi, LoginParams } from "@/features/api/login";
 import { getUserInfoRequest, storageUserDeviceRequest } from "@/features/api/user";
 import { addToast, Button, ToastProvider, Image } from "@heroui/react";
 import { LoginForm } from "@/components/form/login/form";
@@ -7,19 +7,19 @@ import LogoInmage from "@/assets/images/logo/logo.png"
 import "@/styles/login.css";
 import { store } from "@/store";
 import { Trans as TransMacro, useLingui } from "@lingui/react/macro";
-import GoogleIcon from "@/components/icons/google";
+import { useGoogleLogin } from '@react-oauth/google';
 import { responseCode } from "@/features/constant/response";
 import { getSettingsRequest } from "@/features/api/settings";
+import GoogleIcon from "@/components/icons/google";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   // const { login } = useAuth();
   const { t } = useLingui();
-
-  const handleLogin = async (email: string, password: string) => {
+  const setGoogleClientId = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID);
+  const handleLogin = async (params: LoginParams) => {
     try {
-      const { code, error } = await loginUserApi({ email, password });
-
+      const { code, error } = await loginUserApi(params);
       if (code == responseCode.SUCCESS) {
         await getUserInfoRequest();
         await getSettingsRequest({})
@@ -46,13 +46,29 @@ export default function LoginPage() {
     }
   };
 
+  const handleGoogleLogin = async (tokenResponse: any) => {
+    handleLogin({ channel: "google", googleToken: tokenResponse.access_token });
+  }
+  let googleLogin: (() => void) | null = null;
+
+  if (setGoogleClientId) {
+    googleLogin = useGoogleLogin({
+      onSuccess: tokenResponse => handleGoogleLogin(tokenResponse),
+    });
+  }
+
+  const handleEmailLogin = (email: string, password: string) => {
+    handleLogin({ email, password, channel: "email" });
+  }
+
+
   return (
     <div className="w-96 m-auto	h-full justify-center flex flex-col content-center">
       <ToastProvider placement="top-left" />
       <div className="w-full flex justify-center mb-4">
         <Image className="w-48" src={LogoInmage}></Image>
       </div>
-      <LoginForm onSubmit={handleLogin} />
+      <LoginForm onSubmit={handleEmailLogin} />
       <p>
         <TransMacro>Don't have an account yet?</TransMacro>{" "}
         <Link to="/auth/register">Sign up</Link>
@@ -60,9 +76,23 @@ export default function LoginPage() {
       <div className="line py-2 text-center">
         <TransMacro>Or</TransMacro>
       </div>
-      <Button className="w-full" color="secondary" variant="bordered">
-        <GoogleIcon size={18}></GoogleIcon> Login with Google
-      </Button>
+      <div className="flex">
+        <div className="flex-1 flex justify-center">
+          {
+            setGoogleClientId && (
+              <Button
+                variant="flat"
+                radius="full"
+                className="bg-slate-100 "
+                isIconOnly
+                onPress={() => googleLogin && googleLogin()}
+              >
+                <GoogleIcon className="w-4" />
+              </Button>
+            )
+          }
+        </div>
+      </div>
     </div>
   );
 }

@@ -40,6 +40,9 @@ type Config struct {
 	GeoIP struct {
 		DBPath string `toml:"db_path"`
 	}
+	Google struct {
+		ClientID string `toml:"client_id"`
+	}
 }
 
 var Configs *Config

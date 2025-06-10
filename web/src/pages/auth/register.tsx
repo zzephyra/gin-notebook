@@ -1,8 +1,9 @@
-import { ToastProvider } from "@heroui/react";
+import { ToastProvider, Image } from "@heroui/react";
 import { RegisterForm } from "@/components/form/register/form";
 import { useLingui } from "@lingui/react/macro";
 import { responseCode } from "@/features/constant/response";
 import { useNavigate } from "react-router-dom";
+import LogoInmage from "@/assets/images/logo/logo.png"
 
 export default function RegisterPage() {
     const { t } = useLingui();
@@ -42,7 +43,9 @@ export default function RegisterPage() {
     return (
         <div className="w-96 m-auto	h-full justify-center flex flex-col content-center">
             <ToastProvider placement="top-left" />
-            <p className='font-bold text-center text-4xl pb-2'>Memoas</p>
+            <div className="w-full flex justify-center mb-4">
+                <Image className="w-48" src={LogoInmage}></Image>
+            </div>
             <RegisterForm onSubmit={OnSubmitRegister}></RegisterForm>
 
         </div>

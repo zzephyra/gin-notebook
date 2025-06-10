@@ -3,14 +3,18 @@ package dto
 import "github.com/oschwald/geoip2-golang"
 
 type CreateUserDTO struct {
-	Code     string `validate:"required"`
-	Email    string `validate:"required,email"`
-	Password string `validate:"required,min=6,containsany=!@#$%"`
+	Code     string  `validate:"required"`
+	Email    string  `validate:"required,email"`
+	Password string  `validate:"required,min=6,containsany=!@#$%"`
+	Nickname *string `validate:"required,max=50,min=5"`
+	Avatar   *string `validate:"omitempty,url"`
 }
 
 type UserLoginDTO struct {
-	Email    string `validate:"required,email"`
-	Password string `validate:"required,min=6,containsany=!@#$%"`
+	Channel     string `json:"channel" validate:"oneof=google email"`
+	Email       string `json:"email" validate:"required_if=channel email"`
+	Password    string `json:"password" validate:"required_if=channel email"`
+	GoogleToken string `json:"googleToken" validate:"required_if=channel google"`
 }
 
 type UserUpdateDTO struct {
