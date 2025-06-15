@@ -90,7 +90,7 @@ export default function WorkspaceInitStep() {
         <div className={base_style}>
           <motion.div ref={titleRef}>
             <h1 className="font-bold text-2xl text-center">
-              <TransMacro>Hi! Welcome to Memoas!</TransMacro>
+              <TransMacro>Hi! Welcome to Mameos!</TransMacro>
             </h1>
             <h1 className="font-bold text-2xl text-center">
               <TransMacro>We are glad to have you here.</TransMacro>

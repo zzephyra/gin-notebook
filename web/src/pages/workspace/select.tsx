@@ -66,7 +66,7 @@ export default function InitWorkspace() {
                     {t`Select your workspace`}
                   </p>
                   <p className="text-sm text-center text-gray-500">
-                    {t`Select a workspace to start using Memoas`}
+                    {t`Select a workspace to start using Mameos`}
                   </p>
                 </div>
                 <Card>

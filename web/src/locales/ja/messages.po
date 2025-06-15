@@ -14,11 +14,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/workspace/note.tsx:173
-msgid "Would you like to move the file to the \"{total}\" folder?"
-msgstr "ファイルを\\“{total}\\”フォルダに移動しますか？"
-
-#. js-lingui-explicit-id
 #: src/features/api/note.ts:13
 #: src/features/api/note.ts:34
 msgid "Missing valid value"
@@ -38,6 +33,21 @@ msgstr "新規カテゴリの追加失敗"
 #: src/features/api/note.ts:124
 msgid "Delete note failed"
 msgstr "ノートの削除失敗"
+
+#. js-lingui-explicit-id
+#: src/components/list/notes/index.tsx:127
+msgid "Would you like to move the file to the \"{total}\" folder?"
+msgstr "ファイルを\\“{total}\\”フォルダに移動しますか？"
+
+#. js-lingui-explicit-id
+#: src/components/aiChatInput/index.tsx:28
+msgid "Please enter a message before sending."
+msgstr ""
+
+#. placeholder {0}: item.label
+#: src/components/avatarMenu/index.tsx:80
+msgid "{0}"
+msgstr ""
 
 #: src/components/step/workspace/main.tsx:38
 msgid "1 day"
@@ -75,7 +85,7 @@ msgstr "アクティブ"
 msgid "Add Invite Link"
 msgstr "招待リンクを追加"
 
-#: src/components/dropdown/note/index.tsx:99
+#: src/components/dropdown/note/index.tsx:98
 msgid "Add New Category"
 msgstr "新しいカテゴリを追加"
 
@@ -83,7 +93,7 @@ msgstr "新しいカテゴリを追加"
 msgid "Add new Invite Link"
 msgstr "新しい招待リンクを追加"
 
-#: src/components/dropdown/note/index.tsx:123
+#: src/components/dropdown/note/index.tsx:122
 msgid "Add New Note"
 msgstr "新しいノートを追加"
 
@@ -91,11 +101,11 @@ msgstr "新しいノートを追加"
 msgid "Add to Favorites"
 msgstr "お気に入りに追加"
 
-#: src/components/dropdown/note/index.tsx:152
+#: src/components/dropdown/note/index.tsx:151
 msgid "Allow commenting"
 msgstr "コメントを許可"
 
-#: src/components/dropdown/note/index.tsx:147
+#: src/components/dropdown/note/index.tsx:146
 msgid "Allow editing"
 msgstr "編集を許可"
 
@@ -103,15 +113,15 @@ msgstr "編集を許可"
 msgid "Allow editing this note."
 msgstr "このノートを編集できます。"
 
-#: src/components/dropdown/note/index.tsx:187
+#: src/components/dropdown/note/index.tsx:186
 msgid "Allow inviting"
 msgstr "招待許可"
 
-#: src/components/dropdown/note/index.tsx:182
+#: src/components/dropdown/note/index.tsx:181
 msgid "Allow joining"
 msgstr "参加許可"
 
-#: src/components/dropdown/note/index.tsx:157
+#: src/components/dropdown/note/index.tsx:156
 msgid "Allow sharing"
 msgstr "共有を許可"
 
@@ -143,13 +153,13 @@ msgstr "基本情報"
 msgid "Bucket Name"
 msgstr "バケット名"
 
-#: src/pages/workspace/note.tsx:181
 #: src/pages/settings/workspaceSettings.tsx:194
 #: src/components/modal/user/modifyPassword/index.tsx:58
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/note/deleteModal/index.tsx:42
-#: src/components/dropdown/note/index.tsx:105
-#: src/components/dropdown/note/index.tsx:204
+#: src/components/list/notes/index.tsx:135
+#: src/components/dropdown/note/index.tsx:104
+#: src/components/dropdown/note/index.tsx:203
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -161,12 +171,12 @@ msgstr "既存のノートカテゴリを選択してノートを分類します
 msgid "Category"
 msgstr "カテゴリー"
 
-#: src/components/dropdown/note/index.tsx:101
+#: src/components/dropdown/note/index.tsx:100
 msgid "Category Name"
 msgstr "カテゴリ名"
 
-#: src/components/dropdown/note/index.tsx:38
-#: src/components/dropdown/note/index.tsx:101
+#: src/components/dropdown/note/index.tsx:37
+#: src/components/dropdown/note/index.tsx:100
 msgid "Category name is required"
 msgstr "カテゴリ名必須"
 
@@ -205,8 +215,8 @@ msgstr "リンクをコピー"
 msgid "Copy successfully"
 msgstr "コピー成功"
 
-#: src/components/dropdown/note/index.tsx:108
-#: src/components/dropdown/note/index.tsx:207
+#: src/components/dropdown/note/index.tsx:107
+#: src/components/dropdown/note/index.tsx:206
 msgid "Create"
 msgstr "作成"
 
@@ -214,7 +224,7 @@ msgstr "作成"
 msgid "Create a new workspace"
 msgstr "新しいワークスペースの作成"
 
-#: src/components/dropdown/note/index.tsx:71
+#: src/components/dropdown/note/index.tsx:70
 msgid "Create note success"
 msgstr "ノート成功の作成"
 
@@ -234,7 +244,7 @@ msgstr "ワークスペース作成失敗"
 msgid "Created by:"
 msgstr "作成者："
 
-#: src/pages/workspace/favorites.tsx:215
+#: src/pages/workspace/favorites.tsx:262
 msgid "Created Time"
 msgstr ""
 
@@ -251,7 +261,7 @@ msgid "Danger Zone"
 msgstr "危険地帯"
 
 #: src/pages/settings/workspaceSettings.tsx:195
-#: src/components/note/noteList/index.tsx:76
+#: src/components/note/noteList/index.tsx:77
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
 msgid "Delete"
@@ -271,7 +281,7 @@ msgid "Delete Note"
 msgstr "メモを削除"
 
 #. placeholder {0}: res.error || "Unknown error"
-#: src/components/note/noteList/index.tsx:35
+#: src/components/note/noteList/index.tsx:36
 msgid "Delete note failed: {0}"
 msgstr ""
 
@@ -341,11 +351,11 @@ msgstr "パスワード"
 msgid "Expired"
 msgstr "期限切れ"
 
-#: src/components/note/noteList/index.tsx:74
+#: src/components/note/noteList/index.tsx:75
 msgid "Export As PDF"
 msgstr ""
 
-#: src/components/note/noteList/index.tsx:75
+#: src/components/note/noteList/index.tsx:76
 msgid "Export As Word"
 msgstr ""
 
@@ -353,11 +363,11 @@ msgstr ""
 msgid "Failed to generate invite link"
 msgstr "招待リンクの生成に失敗"
 
-#: src/layouts/backstage.tsx:38
+#: src/pages/workspace/favorites.tsx:236
 msgid "Favorites"
 msgstr "アーカイブ"
 
-#: src/pages/workspace/note.tsx:169
+#: src/components/list/notes/index.tsx:123
 msgid "File movement"
 msgstr "ファイル移動"
 
@@ -394,15 +404,27 @@ msgstr "他のワークスペースを選択する"
 msgid "Go to Workspace"
 msgstr "ワークスペースに移動"
 
+#: src/components/aiChatInput/index.tsx:18
+msgid "Hello, {username}, how's your day going today?"
+msgstr ""
+
+#: src/components/aiChatInput/index.tsx:20
+msgid "Hey {username}, what brilliant ideas are we exploring today?"
+msgstr ""
+
+#: src/components/aiChatInput/index.tsx:19
+msgid "Hi {username}, what can I assist you with today?"
+msgstr ""
+
 #: src/components/step/workspace/main.tsx:93
-msgid "Hi! Welcome to Memoas!"
-msgstr "こんにちは！Memoasへようこそ！"
+msgid "Hi! Welcome to Mameos!"
+msgstr "こんにちは！Mameosへようこそ！"
 
 #: src/components/step/workspace/main.tsx:147
 msgid "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
 msgstr "ゲストを連れてくる場合は、以下のメールアドレスを追加するか、招待リンクをコピーして共有してください。"
 
-#: src/pages/workspace/note.tsx:176
+#: src/components/list/notes/index.tsx:130
 msgid "Ignore this prompt for this login"
 msgstr "このログインのプロンプトを無視する"
 
@@ -454,7 +476,7 @@ msgstr "言語"
 msgid "Last Active"
 msgstr ""
 
-#: src/pages/workspace/note.tsx:64
+#: src/pages/workspace/note.tsx:46
 msgid "Loading notes..."
 msgstr "ノートを読み込み中..."
 
@@ -470,7 +492,8 @@ msgstr "ローカルストレージパス"
 msgid "Locaton"
 msgstr ""
 
-#: src/components/menu/sidebar.tsx:92
+#: src/components/menu/sidebar.tsx:90
+#: src/components/avatarMenu/index.tsx:61
 msgid "Log out"
 msgstr "ログインする"
 
@@ -487,23 +510,23 @@ msgstr "ログインに失敗しました。メールアドレスとパスワー
 msgid "Management"
 msgstr "マネジメント"
 
-#: src/components/menu/sidebar.tsx:75
+#: src/components/menu/sidebar.tsx:73
 msgid "member"
 msgstr "メンバー"
 
-#: src/components/menu/sidebar.tsx:75
+#: src/components/menu/sidebar.tsx:73
 msgid "members"
 msgstr "メンバー"
 
-#: src/pages/workspace/favorites.tsx:246
+#: src/pages/workspace/favorites.tsx:307
 msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
 msgstr ""
 
-#: src/pages/workspace/note.tsx:184
+#: src/components/list/notes/index.tsx:138
 msgid "Move"
 msgstr "移動"
 
-#: src/pages/workspace/note.tsx:75
+#: src/components/list/notes/index.tsx:50
 msgid "Move note failed"
 msgstr "ノートの移動失敗"
 
@@ -523,11 +546,11 @@ msgstr "カテゴリへの移行成功"
 msgid "Move to trash"
 msgstr "ゴミ箱に移動"
 
-#: src/components/dropdown/note/index.tsx:89
+#: src/components/dropdown/note/index.tsx:88
 msgid "New file"
 msgstr "新規ファイル"
 
-#: src/components/dropdown/note/index.tsx:90
+#: src/components/dropdown/note/index.tsx:89
 msgid "New folder"
 msgstr "新しいフォルダ"
 
@@ -535,7 +558,7 @@ msgstr "新しいフォルダ"
 msgid "New Password"
 msgstr "新しいパスワード"
 
-#: src/components/note/noteList/index.tsx:72
+#: src/components/note/noteList/index.tsx:73
 msgid "Next Note"
 msgstr ""
 
@@ -547,7 +570,7 @@ msgstr "カテゴリーなし"
 msgid "No expiration"
 msgstr "有効期限なし"
 
-#: src/components/menu/sidebar.tsx:72
+#: src/components/menu/sidebar.tsx:70
 msgid "No Workspace"
 msgstr "ワークスペースなし"
 
@@ -555,7 +578,7 @@ msgstr "ワークスペースなし"
 msgid "Note ID"
 msgstr "ノートID"
 
-#: src/components/dropdown/note/index.tsx:125
+#: src/components/dropdown/note/index.tsx:124
 msgid "Note Name"
 msgstr "ノート名"
 
@@ -568,13 +591,17 @@ msgstr "ノートの設定"
 msgid "Note Status"
 msgstr "ノートステータス"
 
-#: src/components/dropdown/note/index.tsx:125
+#: src/components/dropdown/note/index.tsx:124
 msgid "Note title is required"
 msgstr "Note title必須"
 
 #: src/layouts/backstage.tsx:33
-msgid "Notes"
-msgstr "備考"
+#~ msgid "Notes"
+#~ msgstr "備考"
+
+#: src/components/drower/folderDrower/index.tsx:14
+msgid "Notes Management"
+msgstr ""
 
 #: src/components/table/device/index.tsx:43
 msgid "Now"
@@ -588,11 +615,11 @@ msgstr "おっと、この招待リンクは切れました。"
 msgid "Or"
 msgstr "OR"
 
-#: src/pages/workspace/favorites.tsx:205
+#: src/pages/workspace/favorites.tsx:252
 msgid "Ordering"
 msgstr "ソート"
 
-#: src/pages/workspace/favorites.tsx:240
+#: src/pages/workspace/favorites.tsx:301
 msgid "Owner"
 msgstr ""
 
@@ -609,7 +636,7 @@ msgstr "パスワードが一致しません"
 msgid "Permission"
 msgstr "許可"
 
-#: src/components/dropdown/note/index.tsx:143
+#: src/components/dropdown/note/index.tsx:142
 msgid "Permission Setting"
 msgstr "権限設定"
 
@@ -637,12 +664,12 @@ msgstr "パスワードを入力してください。"
 msgid "Please select a category"
 msgstr "カテゴリーを選択してください"
 
-#: src/components/note/noteList/index.tsx:71
+#: src/components/note/noteList/index.tsx:72
 msgid "Previous Note"
 msgstr ""
 
 #: src/components/note/main/index.tsx:155
-msgid "Privite"
+msgid "Private"
 msgstr "プライベート"
 
 #: src/components/note/main/index.tsx:154
@@ -726,19 +753,19 @@ msgid "Select"
 msgstr "選択"
 
 #: src/pages/workspace/select.tsx:69
-msgid "Select a workspace to start using Memoas"
-msgstr "Memoasの使用を開始するワークスペースを選択"
+msgid "Select a workspace to start using Mameos"
+msgstr "Mameosの使用を開始するワークスペースを選択"
 
-#: src/components/dropdown/note/index.tsx:127
-#: src/components/dropdown/note/index.tsx:134
+#: src/components/dropdown/note/index.tsx:126
+#: src/components/dropdown/note/index.tsx:133
 msgid "Select Category"
 msgstr "カテゴリーを選択"
 
-#: src/components/dropdown/note/index.tsx:195
+#: src/components/dropdown/note/index.tsx:194
 msgid "Select note status"
 msgstr "ノートステータスを選択"
 
-#: src/pages/workspace/favorites.tsx:207
+#: src/pages/workspace/favorites.tsx:254
 msgid "Select sorting field"
 msgstr ""
 
@@ -760,10 +787,10 @@ msgid "Set the current note's status. When set to private, it will be invisible 
 msgstr "現在のノートのステータスを設定します。privateに設定すると、他のノートには見えません。"
 
 #: src/layouts/backstage.tsx:44
-msgid "Settings"
-msgstr "設定"
+#~ msgid "Settings"
+#~ msgstr "設定"
 
-#: src/components/note/noteList/index.tsx:62
+#: src/components/note/noteList/index.tsx:63
 #: src/components/note/main/index.tsx:111
 msgid "Share"
 msgstr "シェア"
@@ -785,7 +812,7 @@ msgid "Sign Up"
 msgstr "サインアップ"
 
 #: src/pages/settings/workspaceSettings.tsx:139
-#: src/components/dropdown/note/index.tsx:195
+#: src/components/dropdown/note/index.tsx:194
 msgid "Status"
 msgstr "状態"
 
@@ -805,11 +832,15 @@ msgstr "ストレージパス"
 msgid "Submit"
 msgstr "コンテンツ"
 
-#: src/components/menu/sidebar.tsx:85
+#: src/components/menu/sidebar.tsx:83
 msgid "Switch"
 msgstr "スイッチ"
 
-#: src/components/dropdown/note/index.tsx:125
+#: src/components/avatarMenu/index.tsx:59
+msgid "Switch Workspace"
+msgstr ""
+
+#: src/components/dropdown/note/index.tsx:124
 msgid "The note title is required and must not exceed 100 characters in length."
 msgstr "ノートタイトルは必須で、長さは100文字を超えてはなりません。"
 
@@ -833,8 +864,8 @@ msgstr "この招待リンクは存在しません。"
 msgid "This link is expired"
 msgstr "このリンクは期限切れです"
 
-#: src/pages/workspace/favorites.tsx:209
-#: src/pages/workspace/favorites.tsx:238
+#: src/pages/workspace/favorites.tsx:256
+#: src/pages/workspace/favorites.tsx:299
 msgid "Title"
 msgstr ""
 
@@ -846,7 +877,7 @@ msgstr "互換性を確保するため、名前に特殊文字を使用しない
 msgid "Unknow"
 msgstr "アンノウ"
 
-#: src/pages/workspace/favorites.tsx:116
+#: src/pages/workspace/favorites.tsx:153
 msgid "Untitled Note"
 msgstr ""
 
@@ -869,11 +900,11 @@ msgstr "パスワードの更新"
 msgid "Update successfully"
 msgstr "更新成功"
 
-#: src/pages/workspace/favorites.tsx:241
+#: src/pages/workspace/favorites.tsx:302
 msgid "Updated At"
 msgstr ""
 
-#: src/pages/workspace/favorites.tsx:212
+#: src/pages/workspace/favorites.tsx:259
 msgid "Updated Time"
 msgstr ""
 
@@ -901,11 +932,15 @@ msgstr "認証コードが送信されました。"
 msgid "We are glad to have you here."
 msgstr "皆様のご来場をお待ちしております。"
 
+#: src/components/aiChatInput/index.tsx:21
+msgid "Welcome back, {username}! Glad to be working with you again today."
+msgstr ""
+
 #: src/components/step/workspace/main.tsx:129
 msgid "Workspace Name"
 msgstr "ワークスペース名"
 
-#: src/components/menu/sidebar.tsx:72
+#: src/components/menu/sidebar.tsx:70
 msgid "Workspace: "
 msgstr "ワークスペース"
 

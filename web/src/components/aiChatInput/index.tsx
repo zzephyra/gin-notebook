@@ -1,14 +1,13 @@
 import { Textarea } from '@heroui/input';
 import { LinkSlashIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
-import { i18n } from '@lingui/core';
 import { RenderInputAreaProps } from '@douyinfe/semi-ui/lib/es/chat/interface';
 import { UserState } from '@/store/features/user';
 import "./style.css"
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import toast from 'react-hot-toast';
-
+import { useLingui } from '@lingui/react/macro';
 const Prologues = [
     "Hello, {username}, how's your day going today?",
     "Hi {username}, what can I assist you with today?",
@@ -19,13 +18,14 @@ const Prologues = [
 const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { user: UserState, className?: string, props?: RenderInputAreaProps | undefined, onSendMessage?: (message: string) => void, hidePrologue: boolean }) => {
     // const [hidePrologue, sethidePrologue] = useState(true);
     const prologueRef = useRef<HTMLDivElement>(null);
+    const { t, i18n } = useLingui();
 
     const [messageContent, setMessageContent] = useState("");
     const [files] = useState<FileItem[]>([]);
     const randomIndex = useMemo(() => Math.floor(Math.random() * Prologues.length), []);
     const handleSendMessage = (content: string) => {
         if (!content || content.trim() === "") {
-            toast.error(i18n._("Please enter a message before sending."));
+            toast.error(i18n._(`Please enter a message before sending.`));
             return;
         }
 
@@ -57,7 +57,7 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { 
                     <>
                         <div className='text-xl'>
                             <h1 ref={prologueRef} className='typing font-semibold mb-6 mx-auto'>
-                                {i18n._(Prologues[randomIndex], { username: user.nickname || user.email })}
+                                {i18n._(t`${Prologues[randomIndex]}`, { username: user.nickname || user.email })}
                             </h1>
                         </div>
                     </>

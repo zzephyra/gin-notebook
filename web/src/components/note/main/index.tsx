@@ -152,7 +152,7 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                                             <SettingsItem label={t`Note Status`} description={t`Set the current note's status. When set to private, it will be invisible to others.`}>
                                                 <Select size="sm" defaultSelectedKeys={[note.status]} className="w-32" onSelectionChange={(key) => updateNoteSetting("status", key.currentKey)}>
                                                     <SelectItem key="public">{t`Public`}</SelectItem>
-                                                    <SelectItem key="privite">{t`Privite`}</SelectItem>
+                                                    <SelectItem key="Private">{t`Private`}</SelectItem>
                                                 </Select>
                                             </SettingsItem>
                                             <SettingsItem label={t`Note Status`} description={t`Set the current note's status. When set to private, it will be invisible to others.`}>

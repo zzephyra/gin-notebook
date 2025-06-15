@@ -36,7 +36,7 @@ func GenerateTokens(userID int64, role []string, Nickname *string, Email string,
 		Avatar:   Avatar,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(accessExpiration),
-			Issuer:    "memoas",
+			Issuer:    "mameos",
 		},
 	}
 	logger.LogInfo("jwt", map[string]interface{}{

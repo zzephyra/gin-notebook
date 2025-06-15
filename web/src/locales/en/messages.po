@@ -14,11 +14,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/workspace/note.tsx:173
-msgid "Would you like to move the file to the \"{total}\" folder?"
-msgstr "Would you like to move the file to the \"{total}\" folder?"
-
-#. js-lingui-explicit-id
 #: src/features/api/note.ts:13
 #: src/features/api/note.ts:34
 msgid "Missing valid value"
@@ -38,6 +33,21 @@ msgstr "Add new category failed"
 #: src/features/api/note.ts:124
 msgid "Delete note failed"
 msgstr "Delete note failed"
+
+#. js-lingui-explicit-id
+#: src/components/list/notes/index.tsx:127
+msgid "Would you like to move the file to the \"{total}\" folder?"
+msgstr "Would you like to move the file to the \"{total}\" folder?"
+
+#. js-lingui-explicit-id
+#: src/components/aiChatInput/index.tsx:28
+msgid "Please enter a message before sending."
+msgstr "Please enter a message before sending."
+
+#. placeholder {0}: item.label
+#: src/components/avatarMenu/index.tsx:80
+msgid "{0}"
+msgstr "{0}"
 
 #: src/components/step/workspace/main.tsx:38
 msgid "1 day"
@@ -75,7 +85,7 @@ msgstr "Active"
 msgid "Add Invite Link"
 msgstr "Add Invite Link"
 
-#: src/components/dropdown/note/index.tsx:99
+#: src/components/dropdown/note/index.tsx:98
 msgid "Add New Category"
 msgstr "Add New Category"
 
@@ -83,7 +93,7 @@ msgstr "Add New Category"
 msgid "Add new Invite Link"
 msgstr "Add new Invite Link"
 
-#: src/components/dropdown/note/index.tsx:123
+#: src/components/dropdown/note/index.tsx:122
 msgid "Add New Note"
 msgstr "Add New Note"
 
@@ -91,11 +101,11 @@ msgstr "Add New Note"
 msgid "Add to Favorites"
 msgstr "Add to Favorites"
 
-#: src/components/dropdown/note/index.tsx:152
+#: src/components/dropdown/note/index.tsx:151
 msgid "Allow commenting"
 msgstr "Allow commenting"
 
-#: src/components/dropdown/note/index.tsx:147
+#: src/components/dropdown/note/index.tsx:146
 msgid "Allow editing"
 msgstr "Allow editing"
 
@@ -103,15 +113,15 @@ msgstr "Allow editing"
 msgid "Allow editing this note."
 msgstr "Allow editing this note."
 
-#: src/components/dropdown/note/index.tsx:187
+#: src/components/dropdown/note/index.tsx:186
 msgid "Allow inviting"
 msgstr "Allow inviting"
 
-#: src/components/dropdown/note/index.tsx:182
+#: src/components/dropdown/note/index.tsx:181
 msgid "Allow joining"
 msgstr "Allow joining"
 
-#: src/components/dropdown/note/index.tsx:157
+#: src/components/dropdown/note/index.tsx:156
 msgid "Allow sharing"
 msgstr "Allow sharing"
 
@@ -143,13 +153,13 @@ msgstr "Basic Information"
 msgid "Bucket Name"
 msgstr "Bucket Name"
 
-#: src/pages/workspace/note.tsx:181
 #: src/pages/settings/workspaceSettings.tsx:194
 #: src/components/modal/user/modifyPassword/index.tsx:58
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/note/deleteModal/index.tsx:42
-#: src/components/dropdown/note/index.tsx:105
-#: src/components/dropdown/note/index.tsx:204
+#: src/components/list/notes/index.tsx:135
+#: src/components/dropdown/note/index.tsx:104
+#: src/components/dropdown/note/index.tsx:203
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -161,12 +171,12 @@ msgstr "Categorize the note by selecting an existing note category."
 msgid "Category"
 msgstr "Category"
 
-#: src/components/dropdown/note/index.tsx:101
+#: src/components/dropdown/note/index.tsx:100
 msgid "Category Name"
 msgstr "Category Name"
 
-#: src/components/dropdown/note/index.tsx:38
-#: src/components/dropdown/note/index.tsx:101
+#: src/components/dropdown/note/index.tsx:37
+#: src/components/dropdown/note/index.tsx:100
 msgid "Category name is required"
 msgstr "Category name is required"
 
@@ -205,8 +215,8 @@ msgstr "Copy Link"
 msgid "Copy successfully"
 msgstr "Copy successfully"
 
-#: src/components/dropdown/note/index.tsx:108
-#: src/components/dropdown/note/index.tsx:207
+#: src/components/dropdown/note/index.tsx:107
+#: src/components/dropdown/note/index.tsx:206
 msgid "Create"
 msgstr "Create"
 
@@ -214,7 +224,7 @@ msgstr "Create"
 msgid "Create a new workspace"
 msgstr "Create a new workspace"
 
-#: src/components/dropdown/note/index.tsx:71
+#: src/components/dropdown/note/index.tsx:70
 msgid "Create note success"
 msgstr "Create note success"
 
@@ -234,7 +244,7 @@ msgstr "Create workspace failed"
 msgid "Created by:"
 msgstr "Created by:"
 
-#: src/pages/workspace/favorites.tsx:215
+#: src/pages/workspace/favorites.tsx:262
 msgid "Created Time"
 msgstr "Created Time"
 
@@ -251,7 +261,7 @@ msgid "Danger Zone"
 msgstr "Danger Zone"
 
 #: src/pages/settings/workspaceSettings.tsx:195
-#: src/components/note/noteList/index.tsx:76
+#: src/components/note/noteList/index.tsx:77
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
 msgid "Delete"
@@ -271,7 +281,7 @@ msgid "Delete Note"
 msgstr "Delete Note"
 
 #. placeholder {0}: res.error || "Unknown error"
-#: src/components/note/noteList/index.tsx:35
+#: src/components/note/noteList/index.tsx:36
 msgid "Delete note failed: {0}"
 msgstr "Delete note failed: {0}"
 
@@ -341,11 +351,11 @@ msgstr "Expiration"
 msgid "Expired"
 msgstr "Expired"
 
-#: src/components/note/noteList/index.tsx:74
+#: src/components/note/noteList/index.tsx:75
 msgid "Export As PDF"
 msgstr "Export As PDF"
 
-#: src/components/note/noteList/index.tsx:75
+#: src/components/note/noteList/index.tsx:76
 msgid "Export As Word"
 msgstr "Export As Word"
 
@@ -353,11 +363,11 @@ msgstr "Export As Word"
 msgid "Failed to generate invite link"
 msgstr "Failed to generate invite link"
 
-#: src/layouts/backstage.tsx:38
+#: src/pages/workspace/favorites.tsx:236
 msgid "Favorites"
 msgstr "Favorites"
 
-#: src/pages/workspace/note.tsx:169
+#: src/components/list/notes/index.tsx:123
 msgid "File movement"
 msgstr "File movement"
 
@@ -394,15 +404,27 @@ msgstr "Go to select other Workspace"
 msgid "Go to Workspace"
 msgstr "Go to Workspace"
 
+#: src/components/aiChatInput/index.tsx:18
+msgid "Hello, {username}, how's your day going today?"
+msgstr "Hello, {username}, how's your day going today?"
+
+#: src/components/aiChatInput/index.tsx:20
+msgid "Hey {username}, what brilliant ideas are we exploring today?"
+msgstr "Hey {username}, what brilliant ideas are we exploring today?"
+
+#: src/components/aiChatInput/index.tsx:19
+msgid "Hi {username}, what can I assist you with today?"
+msgstr "Hi {username}, what can I assist you with today?"
+
 #: src/components/step/workspace/main.tsx:93
-msgid "Hi! Welcome to Memoas!"
-msgstr "Hi! Welcome to Memoas!"
+msgid "Hi! Welcome to Mameos!"
+msgstr "Hi! Welcome to Mameos!"
 
 #: src/components/step/workspace/main.tsx:147
 msgid "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
 msgstr "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
 
-#: src/pages/workspace/note.tsx:176
+#: src/components/list/notes/index.tsx:130
 msgid "Ignore this prompt for this login"
 msgstr "Ignore this prompt for this login"
 
@@ -454,7 +476,7 @@ msgstr "Languages"
 msgid "Last Active"
 msgstr "Last Active"
 
-#: src/pages/workspace/note.tsx:64
+#: src/pages/workspace/note.tsx:46
 msgid "Loading notes..."
 msgstr "Loading notes..."
 
@@ -470,7 +492,8 @@ msgstr "Local storage path"
 msgid "Locaton"
 msgstr "Locaton"
 
-#: src/components/menu/sidebar.tsx:92
+#: src/components/menu/sidebar.tsx:90
+#: src/components/avatarMenu/index.tsx:61
 msgid "Log out"
 msgstr "Log out"
 
@@ -487,23 +510,23 @@ msgstr "Login failed, please check your email and password"
 msgid "Management"
 msgstr "Management"
 
-#: src/components/menu/sidebar.tsx:75
+#: src/components/menu/sidebar.tsx:73
 msgid "member"
 msgstr "member"
 
-#: src/components/menu/sidebar.tsx:75
+#: src/components/menu/sidebar.tsx:73
 msgid "members"
 msgstr "members"
 
-#: src/pages/workspace/favorites.tsx:246
+#: src/pages/workspace/favorites.tsx:307
 msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
 msgstr "Meow~ No favorite notes here yet. Time to star the ones you love!"
 
-#: src/pages/workspace/note.tsx:184
+#: src/components/list/notes/index.tsx:138
 msgid "Move"
 msgstr "Move"
 
-#: src/pages/workspace/note.tsx:75
+#: src/components/list/notes/index.tsx:50
 msgid "Move note failed"
 msgstr "Move note failed"
 
@@ -523,11 +546,11 @@ msgstr "Move to category successfully"
 msgid "Move to trash"
 msgstr "Move to trash"
 
-#: src/components/dropdown/note/index.tsx:89
+#: src/components/dropdown/note/index.tsx:88
 msgid "New file"
 msgstr "New file"
 
-#: src/components/dropdown/note/index.tsx:90
+#: src/components/dropdown/note/index.tsx:89
 msgid "New folder"
 msgstr "New folder"
 
@@ -535,7 +558,7 @@ msgstr "New folder"
 msgid "New Password"
 msgstr "New Password"
 
-#: src/components/note/noteList/index.tsx:72
+#: src/components/note/noteList/index.tsx:73
 msgid "Next Note"
 msgstr "Next Note"
 
@@ -547,7 +570,7 @@ msgstr "No Category"
 msgid "No expiration"
 msgstr "No expiration"
 
-#: src/components/menu/sidebar.tsx:72
+#: src/components/menu/sidebar.tsx:70
 msgid "No Workspace"
 msgstr "No Workspace"
 
@@ -555,7 +578,7 @@ msgstr "No Workspace"
 msgid "Note ID"
 msgstr "Note ID"
 
-#: src/components/dropdown/note/index.tsx:125
+#: src/components/dropdown/note/index.tsx:124
 msgid "Note Name"
 msgstr "Note Name"
 
@@ -568,13 +591,17 @@ msgstr "Note Settings"
 msgid "Note Status"
 msgstr "Note Status"
 
-#: src/components/dropdown/note/index.tsx:125
+#: src/components/dropdown/note/index.tsx:124
 msgid "Note title is required"
 msgstr "Note title is required"
 
 #: src/layouts/backstage.tsx:33
-msgid "Notes"
-msgstr "Notes"
+#~ msgid "Notes"
+#~ msgstr "Notes"
+
+#: src/components/drower/folderDrower/index.tsx:14
+msgid "Notes Management"
+msgstr "Notes Management"
 
 #: src/components/table/device/index.tsx:43
 msgid "Now"
@@ -588,11 +615,11 @@ msgstr "Oops, This invitation link has expired."
 msgid "Or"
 msgstr "Or"
 
-#: src/pages/workspace/favorites.tsx:205
+#: src/pages/workspace/favorites.tsx:252
 msgid "Ordering"
 msgstr "Ordering"
 
-#: src/pages/workspace/favorites.tsx:240
+#: src/pages/workspace/favorites.tsx:301
 msgid "Owner"
 msgstr "Owner"
 
@@ -609,7 +636,7 @@ msgstr "Passwords do not match"
 msgid "Permission"
 msgstr "Permission"
 
-#: src/components/dropdown/note/index.tsx:143
+#: src/components/dropdown/note/index.tsx:142
 msgid "Permission Setting"
 msgstr "Permission Setting"
 
@@ -637,13 +664,13 @@ msgstr "Please enter your password."
 msgid "Please select a category"
 msgstr "Please select a category"
 
-#: src/components/note/noteList/index.tsx:71
+#: src/components/note/noteList/index.tsx:72
 msgid "Previous Note"
 msgstr "Previous Note"
 
 #: src/components/note/main/index.tsx:155
-msgid "Privite"
-msgstr "Privite"
+msgid "Private"
+msgstr "Private"
 
 #: src/components/note/main/index.tsx:154
 msgid "Public"
@@ -726,19 +753,19 @@ msgid "Select"
 msgstr "Select"
 
 #: src/pages/workspace/select.tsx:69
-msgid "Select a workspace to start using Memoas"
-msgstr "Select a workspace to start using Memoas"
+msgid "Select a workspace to start using Mameos"
+msgstr "Select a workspace to start using Mameos"
 
-#: src/components/dropdown/note/index.tsx:127
-#: src/components/dropdown/note/index.tsx:134
+#: src/components/dropdown/note/index.tsx:126
+#: src/components/dropdown/note/index.tsx:133
 msgid "Select Category"
 msgstr "Select Category"
 
-#: src/components/dropdown/note/index.tsx:195
+#: src/components/dropdown/note/index.tsx:194
 msgid "Select note status"
 msgstr "Select note status"
 
-#: src/pages/workspace/favorites.tsx:207
+#: src/pages/workspace/favorites.tsx:254
 msgid "Select sorting field"
 msgstr "Select sorting field"
 
@@ -760,10 +787,10 @@ msgid "Set the current note's status. When set to private, it will be invisible 
 msgstr "Set the current note's status. When set to private, it will be invisible to others."
 
 #: src/layouts/backstage.tsx:44
-msgid "Settings"
-msgstr "Settings"
+#~ msgid "Settings"
+#~ msgstr "Settings"
 
-#: src/components/note/noteList/index.tsx:62
+#: src/components/note/noteList/index.tsx:63
 #: src/components/note/main/index.tsx:111
 msgid "Share"
 msgstr "Share"
@@ -785,7 +812,7 @@ msgid "Sign Up"
 msgstr "Sign Up"
 
 #: src/pages/settings/workspaceSettings.tsx:139
-#: src/components/dropdown/note/index.tsx:195
+#: src/components/dropdown/note/index.tsx:194
 msgid "Status"
 msgstr "Status"
 
@@ -805,15 +832,19 @@ msgstr "Storage Path"
 msgid "Submit"
 msgstr "Submit"
 
-#: src/components/menu/sidebar.tsx:85
+#: src/components/menu/sidebar.tsx:83
 msgid "Switch"
 msgstr "Switch"
+
+#: src/components/avatarMenu/index.tsx:59
+msgid "Switch Workspace"
+msgstr "Switch Workspace"
 
 #: src/pages/login.tsx:30
 #~ msgid "Test"
 #~ msgstr "Test"
 
-#: src/components/dropdown/note/index.tsx:125
+#: src/components/dropdown/note/index.tsx:124
 msgid "The note title is required and must not exceed 100 characters in length."
 msgstr "The note title is required and must not exceed 100 characters in length."
 
@@ -837,8 +868,8 @@ msgstr "This invitation link does not exist."
 msgid "This link is expired"
 msgstr "This link is expired"
 
-#: src/pages/workspace/favorites.tsx:209
-#: src/pages/workspace/favorites.tsx:238
+#: src/pages/workspace/favorites.tsx:256
+#: src/pages/workspace/favorites.tsx:299
 msgid "Title"
 msgstr "Title"
 
@@ -850,7 +881,7 @@ msgstr "To ensure compatibility, please avoid special characters in the name."
 msgid "Unknow"
 msgstr "Unknow"
 
-#: src/pages/workspace/favorites.tsx:116
+#: src/pages/workspace/favorites.tsx:153
 msgid "Untitled Note"
 msgstr "Untitled Note"
 
@@ -873,11 +904,11 @@ msgstr "Update password successfully"
 msgid "Update successfully"
 msgstr "Update successfully"
 
-#: src/pages/workspace/favorites.tsx:241
+#: src/pages/workspace/favorites.tsx:302
 msgid "Updated At"
 msgstr "Updated At"
 
-#: src/pages/workspace/favorites.tsx:212
+#: src/pages/workspace/favorites.tsx:259
 msgid "Updated Time"
 msgstr "Updated Time"
 
@@ -905,11 +936,15 @@ msgstr "Verification code has been sent."
 msgid "We are glad to have you here."
 msgstr "We are glad to have you here."
 
+#: src/components/aiChatInput/index.tsx:21
+msgid "Welcome back, {username}! Glad to be working with you again today."
+msgstr "Welcome back, {username}! Glad to be working with you again today."
+
 #: src/components/step/workspace/main.tsx:129
 msgid "Workspace Name"
 msgstr "Workspace Name"
 
-#: src/components/menu/sidebar.tsx:72
+#: src/components/menu/sidebar.tsx:70
 msgid "Workspace: "
 msgstr "Workspace: "
 

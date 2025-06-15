@@ -14,11 +14,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/workspace/note.tsx:173
-msgid "Would you like to move the file to the \"{total}\" folder?"
-msgstr "是否要将文件移动到\"{total}\\”文件夹？"
-
-#. js-lingui-explicit-id
 #: src/features/api/note.ts:13
 #: src/features/api/note.ts:34
 msgid "Missing valid value"
@@ -27,7 +22,7 @@ msgstr "缺少有效值"
 #. js-lingui-explicit-id
 #: src/features/api/note.ts:86
 msgid "Add new note failed"
-msgstr "添加新注释失败"
+msgstr "添加新笔记失败"
 
 #. js-lingui-explicit-id
 #: src/features/api/note.ts:103
@@ -38,6 +33,21 @@ msgstr "添加新类别失败"
 #: src/features/api/note.ts:124
 msgid "Delete note failed"
 msgstr "删除笔记失败"
+
+#. js-lingui-explicit-id
+#: src/components/list/notes/index.tsx:127
+msgid "Would you like to move the file to the \"{total}\" folder?"
+msgstr "是否要将文件移动到\"{total}\\”文件夹？"
+
+#. js-lingui-explicit-id
+#: src/components/aiChatInput/index.tsx:28
+msgid "Please enter a message before sending."
+msgstr "请在输入需要发送的信息"
+
+#. placeholder {0}: item.label
+#: src/components/avatarMenu/index.tsx:80
+msgid "{0}"
+msgstr "{0}"
 
 #: src/components/step/workspace/main.tsx:38
 msgid "1 day"
@@ -75,7 +85,7 @@ msgstr "活性"
 msgid "Add Invite Link"
 msgstr "添加邀请链接"
 
-#: src/components/dropdown/note/index.tsx:99
+#: src/components/dropdown/note/index.tsx:98
 msgid "Add New Category"
 msgstr "添加新类别"
 
@@ -83,35 +93,35 @@ msgstr "添加新类别"
 msgid "Add new Invite Link"
 msgstr "添加新的邀请链接"
 
-#: src/components/dropdown/note/index.tsx:123
+#: src/components/dropdown/note/index.tsx:122
 msgid "Add New Note"
-msgstr "添加新注释"
+msgstr "添加新笔记"
 
 #: src/components/note/categoryItem/index.tsx:60
 msgid "Add to Favorites"
 msgstr "添加到收藏夹"
 
-#: src/components/dropdown/note/index.tsx:152
+#: src/components/dropdown/note/index.tsx:151
 msgid "Allow commenting"
 msgstr "允许评论"
 
-#: src/components/dropdown/note/index.tsx:147
+#: src/components/dropdown/note/index.tsx:146
 msgid "Allow editing"
 msgstr "允许编辑"
 
 #: src/components/note/main/index.tsx:136
 msgid "Allow editing this note."
-msgstr "允许编辑此注释。"
+msgstr "允许编辑此笔记。"
 
-#: src/components/dropdown/note/index.tsx:187
+#: src/components/dropdown/note/index.tsx:186
 msgid "Allow inviting"
 msgstr "允许邀请"
 
-#: src/components/dropdown/note/index.tsx:182
+#: src/components/dropdown/note/index.tsx:181
 msgid "Allow joining"
 msgstr "允许加入"
 
-#: src/components/dropdown/note/index.tsx:157
+#: src/components/dropdown/note/index.tsx:156
 msgid "Allow sharing"
 msgstr "允许共享"
 
@@ -143,30 +153,30 @@ msgstr "基本信息"
 msgid "Bucket Name"
 msgstr "桶名称"
 
-#: src/pages/workspace/note.tsx:181
 #: src/pages/settings/workspaceSettings.tsx:194
 #: src/components/modal/user/modifyPassword/index.tsx:58
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/note/deleteModal/index.tsx:42
-#: src/components/dropdown/note/index.tsx:105
-#: src/components/dropdown/note/index.tsx:204
+#: src/components/list/notes/index.tsx:135
+#: src/components/dropdown/note/index.tsx:104
+#: src/components/dropdown/note/index.tsx:203
 msgid "Cancel"
 msgstr "取消"
 
 #: src/components/note/main/index.tsx:124
 msgid "Categorize the note by selecting an existing note category."
-msgstr "通过选择现有注释类别对注释进行分类。"
+msgstr "通过选择现有笔记类别对笔记进行分类。"
 
 #: src/components/note/main/index.tsx:124
 msgid "Category"
 msgstr "类别"
 
-#: src/components/dropdown/note/index.tsx:101
+#: src/components/dropdown/note/index.tsx:100
 msgid "Category Name"
 msgstr "类别名称"
 
-#: src/components/dropdown/note/index.tsx:38
-#: src/components/dropdown/note/index.tsx:101
+#: src/components/dropdown/note/index.tsx:37
+#: src/components/dropdown/note/index.tsx:100
 msgid "Category name is required"
 msgstr "类别名称是必需的"
 
@@ -205,8 +215,8 @@ msgstr "复制链接"
 msgid "Copy successfully"
 msgstr "复制成功"
 
-#: src/components/dropdown/note/index.tsx:108
-#: src/components/dropdown/note/index.tsx:207
+#: src/components/dropdown/note/index.tsx:107
+#: src/components/dropdown/note/index.tsx:206
 msgid "Create"
 msgstr "创建"
 
@@ -214,7 +224,7 @@ msgstr "创建"
 msgid "Create a new workspace"
 msgstr "创建一个新的工作区"
 
-#: src/components/dropdown/note/index.tsx:71
+#: src/components/dropdown/note/index.tsx:70
 msgid "Create note success"
 msgstr "创建笔记成功"
 
@@ -234,7 +244,7 @@ msgstr "创建工作区失败"
 msgid "Created by:"
 msgstr "创建人："
 
-#: src/pages/workspace/favorites.tsx:215
+#: src/pages/workspace/favorites.tsx:262
 msgid "Created Time"
 msgstr "创建时间"
 
@@ -251,7 +261,7 @@ msgid "Danger Zone"
 msgstr "危险区"
 
 #: src/pages/settings/workspaceSettings.tsx:195
-#: src/components/note/noteList/index.tsx:76
+#: src/components/note/noteList/index.tsx:77
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
 msgid "Delete"
@@ -268,10 +278,10 @@ msgstr "删除邀请链接"
 #: src/components/note/main/index.tsx:141
 #: src/components/note/main/index.tsx:143
 msgid "Delete Note"
-msgstr "删除注释"
+msgstr "删除笔记"
 
 #. placeholder {0}: res.error || "Unknown error"
-#: src/components/note/noteList/index.tsx:35
+#: src/components/note/noteList/index.tsx:36
 msgid "Delete note failed: {0}"
 msgstr "删除笔记失败：{0}"
 
@@ -339,13 +349,13 @@ msgstr "到期"
 
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Expired"
-msgstr "过期"
+msgstr "已过期"
 
-#: src/components/note/noteList/index.tsx:74
+#: src/components/note/noteList/index.tsx:75
 msgid "Export As PDF"
 msgstr "导出为PDF"
 
-#: src/components/note/noteList/index.tsx:75
+#: src/components/note/noteList/index.tsx:76
 msgid "Export As Word"
 msgstr "导出为Word"
 
@@ -353,11 +363,11 @@ msgstr "导出为Word"
 msgid "Failed to generate invite link"
 msgstr "无法生成邀请链接"
 
-#: src/layouts/backstage.tsx:38
+#: src/pages/workspace/favorites.tsx:236
 msgid "Favorites"
 msgstr "收藏夹"
 
-#: src/pages/workspace/note.tsx:169
+#: src/components/list/notes/index.tsx:123
 msgid "File movement"
 msgstr "文件移动"
 
@@ -394,15 +404,27 @@ msgstr "转到选择其他工作区"
 msgid "Go to Workspace"
 msgstr "转至工作空间"
 
+#: src/components/aiChatInput/index.tsx:18
+msgid "Hello, {username}, how's your day going today?"
+msgstr "你好，{username}，你今天过得怎么样？"
+
+#: src/components/aiChatInput/index.tsx:20
+msgid "Hey {username}, what brilliant ideas are we exploring today?"
+msgstr "嗨，{username}，今天我们要探索哪些精彩的点子呢？"
+
+#: src/components/aiChatInput/index.tsx:19
+msgid "Hi {username}, what can I assist you with today?"
+msgstr "你好，{username}，今天我能帮你做些什么呢？"
+
 #: src/components/step/workspace/main.tsx:93
-msgid "Hi! Welcome to Memoas!"
-msgstr "嗨！欢迎来到回忆录！"
+msgid "Hi! Welcome to Mameos!"
+msgstr "嗨！欢迎来到Mameos！"
 
 #: src/components/step/workspace/main.tsx:147
 msgid "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
 msgstr "如果你要带一位客人，请随意在下面添加他们的电子邮件，或者简单地复制并与他们分享邀请链接！"
 
-#: src/pages/workspace/note.tsx:176
+#: src/components/list/notes/index.tsx:130
 msgid "Ignore this prompt for this login"
 msgstr "忽略此登录的提示"
 
@@ -454,7 +476,7 @@ msgstr "语言"
 msgid "Last Active"
 msgstr ""
 
-#: src/pages/workspace/note.tsx:64
+#: src/pages/workspace/note.tsx:46
 msgid "Loading notes..."
 msgstr "正在加载笔记..."
 
@@ -470,7 +492,8 @@ msgstr "局部存储路径"
 msgid "Locaton"
 msgstr "定位"
 
-#: src/components/menu/sidebar.tsx:92
+#: src/components/menu/sidebar.tsx:90
+#: src/components/avatarMenu/index.tsx:61
 msgid "Log out"
 msgstr "退出登录"
 
@@ -487,23 +510,23 @@ msgstr "登录失败，请检查您的电子邮件和密码"
 msgid "Management"
 msgstr "管理"
 
-#: src/components/menu/sidebar.tsx:75
+#: src/components/menu/sidebar.tsx:73
 msgid "member"
-msgstr "构件"
+msgstr "成员"
 
-#: src/components/menu/sidebar.tsx:75
+#: src/components/menu/sidebar.tsx:73
 msgid "members"
 msgstr "成员"
 
-#: src/pages/workspace/favorites.tsx:246
+#: src/pages/workspace/favorites.tsx:307
 msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
 msgstr "喵~这里还没有你喜欢的笔记，快去标星吧!"
 
-#: src/pages/workspace/note.tsx:184
+#: src/components/list/notes/index.tsx:138
 msgid "Move"
 msgstr "移动"
 
-#: src/pages/workspace/note.tsx:75
+#: src/components/list/notes/index.tsx:50
 msgid "Move note failed"
 msgstr "移动笔记失败"
 
@@ -523,11 +546,11 @@ msgstr "成功移动到类别"
 msgid "Move to trash"
 msgstr "移到垃圾桶"
 
-#: src/components/dropdown/note/index.tsx:89
+#: src/components/dropdown/note/index.tsx:88
 msgid "New file"
 msgstr "新文件"
 
-#: src/components/dropdown/note/index.tsx:90
+#: src/components/dropdown/note/index.tsx:89
 msgid "New folder"
 msgstr "新文件夹"
 
@@ -535,7 +558,7 @@ msgstr "新文件夹"
 msgid "New Password"
 msgstr "新密码"
 
-#: src/components/note/noteList/index.tsx:72
+#: src/components/note/noteList/index.tsx:73
 msgid "Next Note"
 msgstr "下一条笔记"
 
@@ -547,34 +570,38 @@ msgstr "无类别"
 msgid "No expiration"
 msgstr "没有到期"
 
-#: src/components/menu/sidebar.tsx:72
+#: src/components/menu/sidebar.tsx:70
 msgid "No Workspace"
 msgstr "无工作区"
 
 #: src/components/note/main/index.tsx:121
 msgid "Note ID"
-msgstr "注释ID"
+msgstr "笔记ID"
 
-#: src/components/dropdown/note/index.tsx:125
+#: src/components/dropdown/note/index.tsx:124
 msgid "Note Name"
-msgstr "音符名称"
+msgstr "笔记名称"
 
 #: src/components/note/main/index.tsx:132
 msgid "Note Settings"
-msgstr "注释设置"
+msgstr "笔记设置"
 
 #: src/components/note/main/index.tsx:152
 #: src/components/note/main/index.tsx:158
 msgid "Note Status"
-msgstr "说明的状况"
+msgstr "笔记状态"
 
-#: src/components/dropdown/note/index.tsx:125
+#: src/components/dropdown/note/index.tsx:124
 msgid "Note title is required"
-msgstr "备注标题为必填项"
+msgstr "标题为必填项"
 
 #: src/layouts/backstage.tsx:33
-msgid "Notes"
-msgstr "注意到"
+#~ msgid "Notes"
+#~ msgstr "笔记"
+
+#: src/components/drower/folderDrower/index.tsx:14
+msgid "Notes Management"
+msgstr "笔记管理"
 
 #: src/components/table/device/index.tsx:43
 msgid "Now"
@@ -588,11 +615,11 @@ msgstr "此邀请链接已过期。"
 msgid "Or"
 msgstr "或"
 
-#: src/pages/workspace/favorites.tsx:205
+#: src/pages/workspace/favorites.tsx:252
 msgid "Ordering"
 msgstr "排序"
 
-#: src/pages/workspace/favorites.tsx:240
+#: src/pages/workspace/favorites.tsx:301
 msgid "Owner"
 msgstr "所有者"
 
@@ -609,7 +636,7 @@ msgstr "密码不匹配"
 msgid "Permission"
 msgstr "许可"
 
-#: src/components/dropdown/note/index.tsx:143
+#: src/components/dropdown/note/index.tsx:142
 msgid "Permission Setting"
 msgstr "权限设置"
 
@@ -637,13 +664,13 @@ msgstr "请输入密码"
 msgid "Please select a category"
 msgstr "请选择类别"
 
-#: src/components/note/noteList/index.tsx:71
+#: src/components/note/noteList/index.tsx:72
 msgid "Previous Note"
 msgstr "上一条笔记"
 
 #: src/components/note/main/index.tsx:155
-msgid "Privite"
-msgstr "普里维特"
+msgid "Private"
+msgstr "私有"
 
 #: src/components/note/main/index.tsx:154
 msgid "Public"
@@ -663,7 +690,7 @@ msgstr "七牛云域名url"
 
 #: src/pages/settings/storageSettings.tsx:88
 msgid "Qi Niu Cloud region"
-msgstr "齐牛云域"
+msgstr "七牛云域"
 
 #: src/pages/settings/storageSettings.tsx:79
 msgid "Qi Niu Cloud secret key"
@@ -726,19 +753,19 @@ msgid "Select"
 msgstr "选择"
 
 #: src/pages/workspace/select.tsx:69
-msgid "Select a workspace to start using Memoas"
+msgid "Select a workspace to start using Mameos"
 msgstr "选择一个工作区开始使用备忘录"
 
-#: src/components/dropdown/note/index.tsx:127
-#: src/components/dropdown/note/index.tsx:134
+#: src/components/dropdown/note/index.tsx:126
+#: src/components/dropdown/note/index.tsx:133
 msgid "Select Category"
 msgstr "选择类别"
 
-#: src/components/dropdown/note/index.tsx:195
+#: src/components/dropdown/note/index.tsx:194
 msgid "Select note status"
 msgstr "选择笔记状态"
 
-#: src/pages/workspace/favorites.tsx:207
+#: src/pages/workspace/favorites.tsx:254
 msgid "Select sorting field"
 msgstr "选择排序字段"
 
@@ -760,21 +787,21 @@ msgid "Set the current note's status. When set to private, it will be invisible 
 msgstr "设置当前便笺的状态。当设置为私有时，其他人将看不到该便笺。"
 
 #: src/layouts/backstage.tsx:44
-msgid "Settings"
-msgstr "设置"
+#~ msgid "Settings"
+#~ msgstr "设置"
 
-#: src/components/note/noteList/index.tsx:62
+#: src/components/note/noteList/index.tsx:63
 #: src/components/note/main/index.tsx:111
 msgid "Share"
 msgstr "分享"
 
 #: src/components/note/main/index.tsx:113
 msgid "Share Notion"
-msgstr "分享理念"
+msgstr "分享至Notion"
 
 #: src/components/note/main/index.tsx:114
 msgid "Share Wechat"
-msgstr "分享微信"
+msgstr "分享至微信"
 
 #: src/components/form/login/form.tsx:40
 msgid "Sign In"
@@ -785,9 +812,9 @@ msgid "Sign Up"
 msgstr "报名"
 
 #: src/pages/settings/workspaceSettings.tsx:139
-#: src/components/dropdown/note/index.tsx:195
+#: src/components/dropdown/note/index.tsx:194
 msgid "Status"
-msgstr "地位"
+msgstr "状态"
 
 #: src/pages/settings/storageSettings.tsx:64
 msgid "Storage Management"
@@ -805,11 +832,15 @@ msgstr "存储路径"
 msgid "Submit"
 msgstr "提交"
 
-#: src/components/menu/sidebar.tsx:85
+#: src/components/menu/sidebar.tsx:83
 msgid "Switch"
 msgstr "切换"
 
-#: src/components/dropdown/note/index.tsx:125
+#: src/components/avatarMenu/index.tsx:59
+msgid "Switch Workspace"
+msgstr "更换工作区"
+
+#: src/components/dropdown/note/index.tsx:124
 msgid "The note title is required and must not exceed 100 characters in length."
 msgstr "备注标题为必填项，长度不得超过100个字符。"
 
@@ -819,7 +850,7 @@ msgstr "使用此链接加入工作区的成员数"
 
 #: src/components/note/main/index.tsx:121
 msgid "The unique ID of the note."
-msgstr "注释的唯一ID。"
+msgstr "笔记的唯一ID。"
 
 #: src/components/step/workspace/main.tsx:64
 msgid "The workspace name contains illegal characters"
@@ -833,8 +864,8 @@ msgstr "此邀请链接不存在。"
 msgid "This link is expired"
 msgstr "此链接已过期"
 
-#: src/pages/workspace/favorites.tsx:209
-#: src/pages/workspace/favorites.tsx:238
+#: src/pages/workspace/favorites.tsx:256
+#: src/pages/workspace/favorites.tsx:299
 msgid "Title"
 msgstr "标题"
 
@@ -846,7 +877,7 @@ msgstr "为确保兼容性，请避免在名称中使用特殊字符。"
 msgid "Unknow"
 msgstr "未知"
 
-#: src/pages/workspace/favorites.tsx:116
+#: src/pages/workspace/favorites.tsx:153
 msgid "Untitled Note"
 msgstr "无题笔记"
 
@@ -869,11 +900,11 @@ msgstr "更新密码成功"
 msgid "Update successfully"
 msgstr "更新成功"
 
-#: src/pages/workspace/favorites.tsx:241
+#: src/pages/workspace/favorites.tsx:302
 msgid "Updated At"
 msgstr "更新于"
 
-#: src/pages/workspace/favorites.tsx:212
+#: src/pages/workspace/favorites.tsx:259
 msgid "Updated Time"
 msgstr "更新时间"
 
@@ -901,11 +932,15 @@ msgstr "验证码已发送。"
 msgid "We are glad to have you here."
 msgstr "我们很高兴你能来。"
 
+#: src/components/aiChatInput/index.tsx:21
+msgid "Welcome back, {username}! Glad to be working with you again today."
+msgstr "欢迎回来，{username}！很高兴今天又能与你共事。"
+
 #: src/components/step/workspace/main.tsx:129
 msgid "Workspace Name"
 msgstr "工作区名称"
 
-#: src/components/menu/sidebar.tsx:72
+#: src/components/menu/sidebar.tsx:70
 msgid "Workspace: "
 msgstr "工作区："
 
