@@ -17,6 +17,13 @@ type UserAccountDTO struct {
 	ID       string   `json:"id"`
 }
 
+type UserPublicDataDTO struct {
+	ID       string  `json:"id"`
+	Nickname *string `json:"nickname"`
+	Email    string  `json:"email"`
+	Avatar   string  `json:"avatar"`
+}
+
 func UserBriefSerializer(c *gin.Context, user *model.User) UserAccountDTO {
 	return UserAccountDTO{
 		Nickname: user.Nickname,
@@ -25,6 +32,15 @@ func UserBriefSerializer(c *gin.Context, user *model.User) UserAccountDTO {
 		Role:     c.MustGet("role").([]string),
 		Avatar:   user.Avatar,
 		ID:       strconv.FormatInt(user.ID, 10),
+	}
+}
+
+func UserPublicDataSerializer(c *gin.Context, user *model.User) UserPublicDataDTO {
+	return UserPublicDataDTO{
+		ID:       strconv.FormatInt(user.ID, 10),
+		Nickname: user.Nickname,
+		Email:    user.Email,
+		Avatar:   user.Avatar,
 	}
 }
 

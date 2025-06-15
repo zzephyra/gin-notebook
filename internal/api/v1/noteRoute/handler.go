@@ -55,3 +55,21 @@ func GetFavoriteNoteApi(c *gin.Context) {
 	responseCode, data := noteService.GetFavoriteNoteList(params)
 	c.JSON(http.StatusCreated, response.Response(responseCode, data))
 }
+
+func CreateNoteCommentApi(c *gin.Context) {
+	// params := &dto.CreateNoteCommentDTO{
+	// 	UserID: c.MustGet("userID").(int64),
+	// }
+	// if err := c.ShouldBindJSON(params); err != nil {
+	// 	log.Printf("params %s", err)
+	// 	c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+	// 	return
+	// }
+	// if err := validator.ValidateStruct(params); err != nil {
+	// 	logger.LogError(err, "验证失败：")
+	// 	c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+	// 	return
+	// }
+	// responseCode, data := noteService.CreateNoteComment(params)
+	c.JSON(http.StatusCreated, nil)
+}

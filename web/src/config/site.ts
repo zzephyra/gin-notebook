@@ -1,3 +1,8 @@
+import SettingIcon from "@/components/icons/setting";
+import { MenuItem } from "@/components/menu/type";
+import { NewspaperIcon } from "@heroicons/react/24/solid";
+import { StarIcon } from "lucide-react";
+
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
@@ -67,3 +72,24 @@ export const siteConfig = {
     sponsor: "https://patreon.com/jrgarciadev",
   },
 };
+
+export const getMenuItems = (id: string): MenuItem[] => [
+  {
+    label: "Notes",
+    icon: NewspaperIcon,
+    key: "notes",
+    route: `/workspace/${id}`,
+  },
+  {
+    label: `Favorites`,
+    icon: StarIcon,
+    key: "favorites",
+    route: `/workspace/${id}/favorites`,
+  },
+  {
+    label: `Settings`,
+    icon: SettingIcon,
+    key: "settings",
+    route: `/settings/${id}`,
+  },
+];

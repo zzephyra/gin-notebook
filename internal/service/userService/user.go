@@ -1,6 +1,7 @@
 package userService
 
 import (
+	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
@@ -12,6 +13,7 @@ import (
 func GetUserInfo(UserID int64) (responseCode int, data any) {
 	user, errCode := repository.GetUserByID(UserID)
 	if errCode != 0 {
+		fmt.Println("GetUserByID error code:", errCode)
 		return errCode, nil
 	}
 	return message.SUCCESS, user

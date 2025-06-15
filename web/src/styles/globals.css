@@ -143,3 +143,9 @@ body {
     width: 250px;
   }
 }
+
+::selection {
+  /* 默认（浅色主题） */
+  background: #B3D4FC !important;
+  color: #000;
+}

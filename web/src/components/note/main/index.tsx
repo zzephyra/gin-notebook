@@ -1,6 +1,5 @@
 import { NoteProps } from "./script";
 import { useLingui } from "@lingui/react/macro";
-import PlateEditor from "@/components/third-party/PlateEditor";
 import { useMemo, useRef, useState } from "react";
 import { debounce } from "lodash";
 import { AutoUpdateContent, SetFavoriteNoeRequest, UpdateNote } from "@/features/api/note";
@@ -38,6 +37,7 @@ import { UpdateNoteByID } from "@/store/features/workspace";
 import DeleteNoteModal from "@/components/modal/note/deleteModal";
 import { StarIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
 import { StarIcon as SolidStarIcon } from "@heroicons/react/24/solid";
+import BlockNoteEditor from "@/components/third-party/BlockNoteEditor";
 const iconSize = 14
 
 function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }: { isOpen: boolean, onOpenChange: (open: boolean) => void, activeKey?: string, note: Note, workspaceID: any }) {
@@ -273,7 +273,7 @@ export default function NotePage(props: NoteProps) {
                 </div>
                 <div className="flex-1 overflow-auto p-4">
                     {/* 编辑器组件 */}
-                    <PlateEditor readOnly={props.note.allow_edit} value={props.note.content} onValueChange={handleChangeContent}></PlateEditor>
+                    <BlockNoteEditor noteID={props.note.id} content={props.note.content} onChange={handleChangeContent}></BlockNoteEditor>
                 </div>
             </div>
         </>

@@ -14,22 +14,22 @@ import {
 import SearchIcon from "../icons/search";
 
 export default function NoteNavbar() {
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-    const menuItems = [
-        "Profile",
-        "Dashboard",
-        "Activity",
-        "Analytics",
-        "System",
-        "Deployments",
-        "My Settings",
-        "Team Settings",
-        "Help & Feedback",
-        "Log Out",
-      ];
-    return (
-        <Navbar onMenuOpenChange={setIsMenuOpen}>
+  const menuItems = [
+    "Profile",
+    "Dashboard",
+    "Activity",
+    "Analytics",
+    "System",
+    "Deployments",
+    "My Settings",
+    "Team Settings",
+    "Help & Feedback",
+    "Log Out",
+  ];
+  return (
+    <Navbar onMenuOpenChange={setIsMenuOpen}>
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -97,5 +97,5 @@ export default function NoteNavbar() {
         ))}
       </NavbarMenu>
     </Navbar>
-    )
+  )
 }

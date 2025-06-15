@@ -1,0 +1,10 @@
+.ai-chat .semi-chat-content {
+    overflow: hidden;
+    height: calc(100% - 140px);
+    flex: none !important;
+    transition: height 1.2s ease;
+}
+
+.ai-chat.hide-chat .semi-chat-content {
+    height: 0px;
+}

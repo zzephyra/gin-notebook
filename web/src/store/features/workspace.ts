@@ -12,6 +12,7 @@ export interface WorkspaceItem {
     owner_email: string,
     roles: string[],
     avatar: string,
+    memberCount: number,
     [key: string]: any
 }
 

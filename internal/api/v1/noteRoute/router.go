@@ -13,5 +13,6 @@ func RegisterAuthRoutes(r *gin.RouterGroup) {
 	{
 		noteGroup.POST("/favorite", FavoriteNoteApi)
 		noteGroup.GET("/favorite", GetFavoriteNoteApi)
+		noteGroup.POST("/comments", CreateNoteCommentApi)
 	}
 }

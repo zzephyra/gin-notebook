@@ -2,7 +2,7 @@ import { Tabs, Tab, Avatar, Popover, PopoverTrigger, PopoverContent, Divider, Bu
 import { RootState, store } from "@/store";
 import { Key } from "react";
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import { useLingui } from "@lingui/react/macro";
 import { ArrowLeftRight } from "lucide-react";
@@ -10,16 +10,14 @@ import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/solid";
 import { Logout } from "@/store/features/user";
 import { CleanWorkspaceState } from "@/store/features/workspace";
 import { UserLogOutRequest } from "@/features/api/user";
-interface MenuItem {
-    key: string;
-    label: string;
-    icon: React.ReactNode;
-    route: string;
-}
+import { getMenuItems } from "@/config/site";
 
-export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
+export default function SiderBar() {
     const isVertical = true; // Set to true for vertical tabs
     const { t } = useLingui();
+    let params = useParams();
+
+    const menuItems = getMenuItems(params.id || "");
     const user = useSelector((state: RootState) => state.user);
     const workspace = useSelector((state: RootState) => state.workspace);
 
@@ -101,7 +99,7 @@ export default function SiderBar({ menuItems }: { menuItems: MenuItem[] }) {
                     <Tab key={item.key} className="flex items-center gap-2"
                         title={
                             <div className="flex items-center space-x-2">
-                                {item.icon}
+                                <item.icon className="w-5 h-5" />
                             </div>
                         }
                     >

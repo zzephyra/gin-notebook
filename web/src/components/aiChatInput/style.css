@@ -1,0 +1,31 @@
+.typing {
+    text-align: center;
+    animation:
+        typing 1.5s steps(30, end);
+
+    overflow: hidden;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+@keyframes typing {
+    from {
+        clip-path: inset(0 100% 0 0);
+    }
+
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes blink-caret {
+
+    from,
+    to {
+        border-color: transparent
+    }
+
+    50% {
+        border-color: orange
+    }
+}

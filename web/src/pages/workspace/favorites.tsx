@@ -21,13 +21,14 @@ import { AnimatePresence, motion } from "framer-motion"
 import emptyFavorites from "@/assets/images/common/emptyFavorite.png";
 import React, { useEffect } from "react";
 import { useLingui } from "@lingui/react/macro";
-import { GetFavoriteNoteListRequest, SetFavoriteNoeRequest } from "@/features/api/note";
+import { GetFavoriteNoteListRequest, SetFavoriteNoeRequest, UpdateNote } from "@/features/api/note";
 import { useParams } from "react-router-dom";
 import { FavoriteNoteListParams, FavoriteNote } from "@/features/api/type";
 import { Key } from "@react-types/shared";
 import { StarIcon as SolidStarIcon } from "@heroicons/react/24/solid";
 import NoteListViewEditor from "@/components/note/noteList";
 import { Note } from "./type";
+import { debounce } from "lodash";
 const FavoritesPage = () => {
     const { t } = useLingui();
     const params = useParams();
@@ -186,6 +187,19 @@ const FavoritesPage = () => {
         handleGetFavorites()
     }
 
+    const handleChangeContent = debounce((content: string) => {
+        if (!note || selectIndex == null || content == note.content) return;
+        setData(prevData => {
+            const newData = [...prevData]; // 创建浅拷贝
+            newData[selectIndex] = {
+                ...newData[selectIndex],
+                content: content,
+            };
+            return newData;
+        });
+        UpdateNote(note.workspace_id, note.id, { content });
+    }, 500);
+
     useEffect(() => {
         handleGetFavorites()
     }, [filter])
@@ -303,7 +317,7 @@ const FavoritesPage = () => {
                     </div>)
                         : (
                             <div className="z-50 absolute flex-1 h-full w-full bottom-0 left-0 right-0 bg-white">
-                                <NoteListViewEditor onDelete={handleDeleteNote} note={note} onChangeIndex={handleChangeIndex} currentIndex={selectIndex} maxIndex={data.length} onClose={() => setSelectIndex(null)}></NoteListViewEditor>
+                                <NoteListViewEditor onChange={handleChangeContent} onDelete={handleDeleteNote} note={note} onChangeIndex={handleChangeIndex} currentIndex={selectIndex} maxIndex={data.length} onClose={() => setSelectIndex(null)}></NoteListViewEditor>
                             </div>
                         )}
                 </motion.div>

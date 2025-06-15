@@ -1,18 +1,16 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import SiderBar from "@/components/menu/sidebar";
-import { useLingui } from "@lingui/react/macro";
-import SettingIcon from "@/components/icons/setting";
 import { useEffect } from "react";
 import { GetWorkspace } from "@/features/api/workspace";
 import { useParams } from "react-router-dom";
 import { UpdateCurrentWorkspace } from "@/store/features/workspace";
 import { store } from "@/store";
-import { NewspaperIcon } from "@heroicons/react/24/solid";
-import { StarIcon } from "lucide-react";
+import { useMediaQuery } from 'react-responsive';
 
 export default function BaseLayout() {
-  const { t } = useLingui();
   let params = useParams();
+  const isDesktop = useMediaQuery({ minWidth: 1024 });
+
   let navigate = useNavigate();
   async function getWorkspaceData() {
     const res = await GetWorkspace({ workspace_id: params.id });
@@ -28,28 +26,11 @@ export default function BaseLayout() {
   useEffect(() => {
     getWorkspaceData()
   }, []);
-  const menuItems = [
-    {
-      label: t`Notes`,
-      icon: <NewspaperIcon className="w-6" />,
-      key: "notes",
-      route: `/workspace/${params.id}`,
-    }, {
-      label: t`Favorites`,
-      icon: <StarIcon className="w-6" />,
-      key: "favorites",
-      route: `/workspace/${params.id}/favorites`,
-    },
-    {
-      label: t`Settings`,
-      icon: <SettingIcon />,
-      key: "settings",
-      route: `/settings/${params.id}`,
-    },
-  ];
+
   return (
     <div className="flex h-full">
-      <SiderBar menuItems={menuItems}></SiderBar>
+      {isDesktop && <SiderBar ></SiderBar>}
+
       <Outlet />
     </div>
   );

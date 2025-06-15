@@ -35,6 +35,15 @@ export async function getUserInfoRequest(): Promise<UserInfoResponse> {
     }
 }
 
+export async function getUserInfoByIDRequest(userID: string) {
+    try {
+        let res = await axiosClient.get(`${userInfoApi}/${userID}`, {});
+        return res.data.data || {};
+    } catch (err) {
+        return {}
+    }
+}
+
 export async function updateInfoRequest(userID: string, data: Partial<UseUpdateParams>) {
     if (!userID) {
         console.error("User ID is required");

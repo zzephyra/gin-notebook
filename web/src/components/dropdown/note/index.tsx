@@ -1,7 +1,5 @@
 // Dropdown component for adding new notes and folders。
 // Currently mainly used in note pages
-
-import PlusIcon from "@/components/icons/plus";
 import { CreateCategory, CreateNote } from "@/features/api/note";
 import { responseCode } from "@/features/constant/response";
 import { RootState, store } from "@/store";
@@ -15,6 +13,7 @@ import { useParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion"
 import { Play } from "lucide-react";
 import { setSelectedNoteId } from "@/store/features/workspace";
+import { PlusIcon } from "@heroicons/react/24/solid";
 
 
 const NoteDropdown = () => {
@@ -81,8 +80,8 @@ const NoteDropdown = () => {
         <>
             <Dropdown>
                 <DropdownTrigger>
-                    <Button size="sm" variant="flat" isIconOnly aria-label="add note">
-                        <PlusIcon filled fill="#909090" />
+                    <Button color="primary" size="sm" isIconOnly aria-label="add note">
+                        <PlusIcon className="w-6" />
                     </Button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Dropdown Variants" color="default" variant="faded">

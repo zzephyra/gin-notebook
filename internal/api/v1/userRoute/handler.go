@@ -63,6 +63,31 @@ func UpdateUserInfoApi(c *gin.Context) {
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }
 
+func GetUserInfoApi(c *gin.Context) {
+	userID := c.Param("id")
+	selfID := c.MustGet("userID").(int64)
+	roles := c.MustGet("role").([]string)
+
+	isAdmin := tools.Contains(roles, "admin")
+
+	id, err := strconv.ParseInt(userID, 10, 64)
+	if err != nil || id <= 0 {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode, data := userService.GetUserInfo(id)
+	fmt.Println("responseCode:", responseCode, "data:", data)
+	if data != nil {
+		if !isAdmin && selfID != id { // 非管理员且不是自己, 不能查看其他用户信息
+			data = UserPublicDataSerializer(c, data.(*model.User))
+		} else {
+			data = UserBriefSerializer(c, data.(*model.User))
+		}
+	}
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
 func UserDeviceApi(c *gin.Context) {
 	userID := c.MustGet("userID").(int64)
 	params := &dto.UserDeviceCreateDTO{}

@@ -50,7 +50,7 @@ export default function InitWorkspace() {
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <motion.div
-        className="w-[28rem]"
+        className="w-11/12 lg:w-[28rem]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}

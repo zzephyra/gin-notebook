@@ -16,3 +16,4 @@ export const workspaceCategoryRecommandApi: string = "/workspace/recommend/categ
 export const settingsApi: string = "/settings"
 export const systemSettingsApi: string = "/settings/system"
 export const uploadPolicyApi: string = "/upload/policy"
+export const aiChatApi: string = "/ai/chat";

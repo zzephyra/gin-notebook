@@ -12,6 +12,7 @@ func RegisterUserRoutes(r *gin.RouterGroup) {
 	authGroup.Use(middleware.RBACMiddleware())
 	{
 		authGroup.GET("/info", UserInfoApi)
+		authGroup.GET("/info/:id", GetUserInfoApi)
 		authGroup.POST("/info/:id", UpdateUserInfoApi)
 		authGroup.POST("/device", UserDeviceApi)
 		authGroup.GET("/device", UserDeviceListApi)

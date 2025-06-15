@@ -472,7 +472,7 @@ msgstr "定位"
 
 #: src/components/menu/sidebar.tsx:92
 msgid "Log out"
-msgstr "注销"
+msgstr "退出登录"
 
 #: src/pages/auth/login.tsx:36
 #: src/pages/auth/login.tsx:43

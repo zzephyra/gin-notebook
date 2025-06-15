@@ -2,7 +2,7 @@ import { Note } from "@/pages/workspace/type";
 import { ArrowLongUpIcon, ArrowLongDownIcon, ArrowTopRightOnSquareIcon, ArrowUturnLeftIcon, ChevronDownIcon, ChevronUpIcon, EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@heroui/button";
 import { t } from "@lingui/core/macro";
-import PlateEditor from "@/components/third-party/PlateEditor";
+// import PlateEditor from "@/components/third-party/PlateEditor";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
 import PDFIcon from "@/components/icons/pdf";
 import { exportToPDf, exportToWord } from "@/utils/tools";
@@ -10,7 +10,8 @@ import WordIcon from "@/components/icons/word";
 import { DeleteNote } from "@/features/api/note";
 import { responseCode } from "@/features/constant/response";
 import toast from "react-hot-toast";
-const NoteListViewEditor = ({ note, currentIndex, maxIndex, onClose, onChangeIndex, onDelete }: { note: Note | null, currentIndex: number, maxIndex: number, onClose: () => void, onChangeIndex: (index: number) => void, onDelete?: (noteID: string) => void }) => {
+import BlockNoteEditor from "@/components/third-party/BlockNoteEditor";
+const NoteListViewEditor = ({ note, currentIndex, maxIndex, onClose, onChange, onChangeIndex, onDelete }: { note: Note | null, currentIndex: number, maxIndex: number, onClose: () => void, onChangeIndex: (index: number) => void, onDelete?: (noteID: string) => void, onChange?: (value: string) => void }) => {
     if (note == null) {
         onClose();
         return
@@ -79,8 +80,8 @@ const NoteListViewEditor = ({ note, currentIndex, maxIndex, onClose, onChangeInd
 
                     </div>
                 </div>
-                <div>
-                    <PlateEditor readOnly={true} value={note.content || ""} />
+                <div className="max-h-[calc(100vh_-_3rem)] h-full">
+                    <BlockNoteEditor noteID={note.id} content={note.content} onChange={onChange}></BlockNoteEditor>
                 </div>
             </div>
         </>

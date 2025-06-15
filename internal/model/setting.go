@@ -10,6 +10,9 @@ type SystemSetting struct {
 	QiniuBucket   *string `json:"qiniu_bucket" gorm:"default:NULL"`
 	QiniuDomain   *string `json:"qiniu_domain" gorm:"default:NULL"`
 	QiniuRegion   *string `json:"qiniu_region" gorm:"default:NULL"`
+	AiModel       *string `json:"ai_model" gorm:"not null;default:'deepseek-v3';index:idx_ai_model"`
+	AiApiKey      *string `json:"ai_api_key" gorm:"not null;default:'';index:idx_ai_api_key"`
+	AiApiUrl      *string `json:"ai_api_url" gorm:"not null;';index:idx_ai_api_url"`
 }
 
 type UserSetting struct {
