@@ -13,6 +13,7 @@ export async function getAIChatApi(messages: Message[], controller?: AbortContro
                 data: { messages },
                 responseType: 'stream',
                 adapter: "fetch",
+                timeout: 0,
                 headers: {
                     Accept: "text/event-stream",
                     "Content-Type": "application/json",

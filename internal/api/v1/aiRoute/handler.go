@@ -16,33 +16,36 @@ func aiChatApi(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid body"})
 		return
 	}
-	c.Writer.Header().Set("Content-Type", "text/event-stream")
-	c.Writer.Header().Set("Cache-Control", "no-cache")
-	c.Writer.Header().Set("Connection", "keep-alive")
-	c.Writer.Flush()
-	upRes, err := aiService.GetAIChatResponse(&req)
+
+	upRes, err := aiService.GetAIChatResponse(c.Request.Context(), &req)
 	if err != nil {
 		c.Writer.Write([]byte("data: " + "upstream failed\n\n"))
 		c.Writer.Flush()
 		return
 	}
-	for k, v := range upRes.Header {
-		for _, vi := range v {
-			c.Writer.Header().Add(k, vi)
-		}
-	}
+	defer upRes.Body.Close()
+
+	c.Writer.Header().Set("Content-Type", "text/event-stream")
+	c.Writer.Header().Set("Cache-Control", "no-cache")
+	c.Writer.Header().Set("Connection", "keep-alive")
 	c.Status(upRes.StatusCode)
+	if f, ok := c.Writer.(http.Flusher); ok {
+		f.Flush()
+	}
+
 	flusher, _ := c.Writer.(http.Flusher)
 	buf := make([]byte, 32*1024)
 	for {
 		n, err := upRes.Body.Read(buf)
 		if n > 0 {
 			if _, wErr := c.Writer.Write(buf[:n]); wErr != nil {
+				logger.LogError(wErr, "aiChatApi: failed to write to response")
 				break
 			}
 			flusher.Flush()
 		}
 		if err != nil {
+			logger.LogError(err, "upstream read error:")
 			break
 		}
 	}

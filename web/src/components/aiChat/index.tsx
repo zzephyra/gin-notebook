@@ -1,7 +1,7 @@
 import { RootState } from '@/store';
 import { Chat } from '@douyinfe/semi-ui';
 import "./style.css"
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { Message } from '@douyinfe/semi-ui/lib/es/chat/interface';
@@ -20,7 +20,7 @@ import { useDisclosure } from '@heroui/react';
 const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setCollapsed?: (value: boolean) => void }) => {
     var user = useSelector((state: RootState) => state.user);
     var [chatMessages, setChatMessages] = useState<Message[]>([]);
-    var controller = new AbortController();
+    var controller = useRef(new AbortController());
     const { isOpen: isOpenFolderDrawer, onOpen: onOpenFolderDrawer, onOpenChange: onOpenChangeFolderDrawer } = useDisclosure();
 
     const [mode] = useState<"bubble" | "noBubble" | "userBubble">('bubble');
@@ -48,7 +48,7 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
             id: '1',
             createAt: new Date().getTime(),
             content: content,
-        }], controller)
+        }], controller.current)
         var reader = resp.data?.getReader();
         const decoder = new TextDecoder("utf-8");
         let aiMessage = "";

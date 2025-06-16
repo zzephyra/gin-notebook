@@ -58,6 +58,12 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { 
         setMessageContent("");
     }
 
+    const handleKeyUp = (e: React.KeyboardEvent<any>) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            handleSendMessage(messageContent);
+        }
+    }
+
     useEffect(() => {
         if (prologueRef.current) {
             prologueRef.current.style.setProperty("--characters", greet.length.toString());
@@ -77,7 +83,7 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { 
                     </>
                 )}
                 <div className={`${hidePrologue ? "w-11/12 md:w-10/12 lg:w-[36rem]" : "w-10/12"} transition-all ease-in-out duration-200  bg-gray-100 m-2 p-2 mx-4 rounded-3xl`}>
-                    <Textarea value={messageContent} classNames={{ inputWrapper: "shadow-none" }} onValueChange={setMessageContent} />
+                    <Textarea minRows={3} maxRows={3} onKeyUp={handleKeyUp} value={messageContent} classNames={{ inputWrapper: "shadow-none" }} onValueChange={setMessageContent} />
                     <div className='flex items-center justify-between mt-2'>
                         <div>
                             <Button size='sm' isIconOnly variant="light" className='!rounded-full !p-2 hover:!bg-gray-200'>
@@ -85,7 +91,7 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { 
                             </Button>
                         </div>
                         <div>
-                            <Button isDisabled={messageContent == ""} size='sm' color='primary' isIconOnly className='!rounded-full !p-2 ' onPress={() => handleSendMessage(messageContent)}>
+                            <Button onKeyUp={handleKeyUp} isDisabled={messageContent == ""} size='sm' color='primary' isIconOnly className='!rounded-full !p-2 ' onPress={() => handleSendMessage(messageContent)}>
                                 <PaperAirplaneIcon className='w-4' />
                             </Button>
                         </div>

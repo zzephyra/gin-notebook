@@ -2,13 +2,14 @@ package aiService
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/repository"
 	"net/http"
 )
 
-func GetAIChatResponse(params *dto.AIRequestDTO) (*http.Response, error) {
+func GetAIChatResponse(ctx context.Context, params *dto.AIRequestDTO) (*http.Response, error) {
 	// 1. 后端决定模型
 	aiSettings, err := repository.GetAISettings()
 	if err != nil {
@@ -22,7 +23,7 @@ func GetAIChatResponse(params *dto.AIRequestDTO) (*http.Response, error) {
 
 	body, _ := json.Marshal(payload)
 
-	upReq, _ := http.NewRequest("POST", aiSettings.ApiUrl, bytes.NewReader(body))
+	upReq, _ := http.NewRequestWithContext(ctx, "POST", aiSettings.ApiUrl, bytes.NewReader(body))
 	upReq.Header.Set("Authorization", "Bearer "+aiSettings.ApiKey)
 	upReq.Header.Set("Content-Type", "application/json")
 
