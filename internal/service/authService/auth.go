@@ -106,6 +106,7 @@ func UserRegister(c *gin.Context) {
 	}
 	code, err := validator.ValidateNewUser(user)
 	if err != nil {
+		logger.LogError(err, "用户注册验证失败")
 		c.JSON(http.StatusBadRequest, response.Response(code, nil))
 		return
 	}

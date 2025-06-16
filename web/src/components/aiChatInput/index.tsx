@@ -8,21 +8,35 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import toast from 'react-hot-toast';
 import { useLingui } from '@lingui/react/macro';
+import { t } from '@lingui/macro'
+import { i18n } from '@lingui/core'
 const Prologues = [
-    "Hello, {username}, how's your day going today?",
-    "Hi {username}, what can I assist you with today?",
-    "Hey {username}, what brilliant ideas are we exploring today?",
-    "Welcome back, {username}! Glad to be working with you again today."
-]
+    (username: string) =>
+        i18n._(t`Hello, ${username}, how's your day going today?`),
+
+    (username: string) =>
+        i18n._(t`Hi ${username}, what can I assist you with today?`),
+
+    (username: string) =>
+        i18n._(t`Hey ${username}, what brilliant ideas are we exploring today?`),
+
+    (username: string) =>
+        i18n._(
+            t`Welcome back, ${username}! Glad to be working with you again today.`
+        ),
+];
 
 const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { user: UserState, className?: string, props?: RenderInputAreaProps | undefined, onSendMessage?: (message: string) => void, hidePrologue: boolean }) => {
     // const [hidePrologue, sethidePrologue] = useState(true);
     const prologueRef = useRef<HTMLDivElement>(null);
-    const { t, i18n } = useLingui();
+    const { i18n } = useLingui();
 
     const [messageContent, setMessageContent] = useState("");
     const [files] = useState<FileItem[]>([]);
-    const randomIndex = useMemo(() => Math.floor(Math.random() * Prologues.length), []);
+    const greet = useMemo(
+        () => Prologues[Math.floor(Math.random() * Prologues.length)],
+        []
+    )
     const handleSendMessage = (content: string) => {
         if (!content || content.trim() === "") {
             toast.error(i18n._(`Please enter a message before sending.`));
@@ -46,9 +60,9 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { 
 
     useEffect(() => {
         if (prologueRef.current) {
-            prologueRef.current.style.setProperty("--characters", Prologues[randomIndex].length.toString());
+            prologueRef.current.style.setProperty("--characters", greet.length.toString());
         }
-    }, [randomIndex]);
+    }, [greet]);
 
     return (
         <>
@@ -57,7 +71,7 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { 
                     <>
                         <div className='text-xl'>
                             <h1 ref={prologueRef} className='typing font-semibold mb-6 mx-auto'>
-                                {i18n._(t`${Prologues[randomIndex]}`, { username: user.nickname || user.email })}
+                                {greet(user.nickname || user.email)}
                             </h1>
                         </div>
                     </>

@@ -20,8 +20,12 @@ func CreateUser(data dto.CreateUserDTO) (*model.User, error) {
 		Email:    data.Email,
 		Password: string(algorithm.HashPassword(data.Password)),
 		Nickname: data.Nickname,
-		Avatar:   *data.Avatar,
 	}
+
+	if data.Avatar != nil {
+		user.Avatar = *data.Avatar
+	}
+
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(user).Error; err != nil {
 			return err
