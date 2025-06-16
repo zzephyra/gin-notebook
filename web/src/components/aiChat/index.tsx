@@ -1,7 +1,7 @@
 import { RootState } from '@/store';
 import { Chat, MarkdownRender } from '@douyinfe/semi-ui';
 import "./style.css"
-import { useCallback, useMemo, useState, useRef, LegacyRef } from 'react';
+import { useCallback, useMemo, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { Message, RenderActionProps, RenderContentProps } from '@douyinfe/semi-ui/lib/es/chat/interface';
@@ -20,9 +20,8 @@ import AIChatToolset from '../aiChatToolset';
 
 const SourceCard = (props: any) => {
     const [open, setOpen] = useState(true);
-    const [show, setShow] = useState(false);
+    const [_, setShow] = useState(false);
     const { source } = props;
-    const spanRef = useRef<LegacyRef<HTMLSpanElement>>();
     const onOpen = useCallback(() => {
         setOpen(false);
         setShow(true);

@@ -147,7 +147,11 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue, isPr
                             <Button size='sm' isIconOnly variant="light" className='!rounded-full !p-2 hover:!bg-gray-200'>
                                 <LinkSlashIcon className='w-4' />
                             </Button>
-                            <SearchInternetButton onSelelctChange={handleSearchInternet}></SearchInternetButton>
+                            {
+                                AIConfig.supportAISearch && (
+                                    <SearchInternetButton onSelelctChange={handleSearchInternet}></SearchInternetButton>
+                                )
+                            }
                         </div>
                         <div>
                             {isProcessing ? (
