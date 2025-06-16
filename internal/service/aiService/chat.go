@@ -15,6 +15,9 @@ func GetAIChatResponse(ctx context.Context, params *dto.AIRequestDTO) (*http.Res
 	if err != nil {
 		return nil, err
 	}
+	if params.IsSearchInternet {
+		aiSettings.Model = aiSettings.Model + "?search"
+	}
 	payload := dto.AIHttpRequestDTO{
 		Messages: params.Messages,
 		Stream:   true,

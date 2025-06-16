@@ -1,7 +1,8 @@
 package dto
 
 type AIRequestDTO struct {
-	Messages []map[string]any `json:"messages"`
+	Messages         []map[string]any `json:"messages"`
+	IsSearchInternet bool             `json:"isSearchInternet"`
 }
 
 type AIHttpRequestDTO struct {

@@ -2,7 +2,11 @@ import axiosClient from "@/lib/api/client";
 import { aiChatApi } from "./routes";
 import { Message } from "@douyinfe/semi-ui/lib/es/chat/interface";
 
-export async function getAIChatApi(messages: Message[], controller?: AbortController): Promise<any> {
+type AIChatApiProps = {
+    isSearchInternet?: boolean;
+}
+
+export async function getAIChatApi(messages: Message[], controller?: AbortController, props?: AIChatApiProps): Promise<any> {
     try {
         if (!messages || messages.length === 0) {
             throw new Error("Messages cannot be empty");
@@ -10,7 +14,7 @@ export async function getAIChatApi(messages: Message[], controller?: AbortContro
         const res = await axiosClient(aiChatApi,
             {
                 method: "POST",
-                data: { messages },
+                data: { ...props, messages },
                 responseType: 'stream',
                 adapter: "fetch",
                 timeout: 0,
@@ -23,7 +27,6 @@ export async function getAIChatApi(messages: Message[], controller?: AbortContro
         );
         return res
     } catch (err) {
-        console.error("Error in getAIChatApi:", err);
         return;
     }
 }

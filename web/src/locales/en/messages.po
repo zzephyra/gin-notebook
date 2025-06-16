@@ -40,7 +40,7 @@ msgid "Would you like to move the file to the \"{total}\" folder?"
 msgstr "Would you like to move the file to the \"{total}\" folder?"
 
 #. js-lingui-explicit-id
-#: src/components/aiChatInput/index.tsx:28
+#: src/components/aiChatInput/index.tsx:99
 msgid "Please enter a message before sending."
 msgstr "Please enter a message before sending."
 
@@ -363,6 +363,10 @@ msgstr "Export As Word"
 msgid "Failed to generate invite link"
 msgstr "Failed to generate invite link"
 
+#: src/components/aiChat/index.tsx:180
+msgid "Failed to get response from AI"
+msgstr "Failed to get response from AI"
+
 #: src/pages/workspace/favorites.tsx:236
 msgid "Favorites"
 msgstr "Favorites"
@@ -404,15 +408,15 @@ msgstr "Go to select other Workspace"
 msgid "Go to Workspace"
 msgstr "Go to Workspace"
 
-#: src/components/aiChatInput/index.tsx:18
+#: src/components/aiChatInput/index.tsx:17
 msgid "Hello, {username}, how's your day going today?"
 msgstr "Hello, {username}, how's your day going today?"
 
-#: src/components/aiChatInput/index.tsx:20
+#: src/components/aiChatInput/index.tsx:23
 msgid "Hey {username}, what brilliant ideas are we exploring today?"
 msgstr "Hey {username}, what brilliant ideas are we exploring today?"
 
-#: src/components/aiChatInput/index.tsx:19
+#: src/components/aiChatInput/index.tsx:20
 msgid "Hi {username}, what can I assist you with today?"
 msgstr "Hi {username}, what can I assist you with today?"
 
@@ -505,6 +509,10 @@ msgstr "Login failed"
 #: src/pages/auth/login.tsx:44
 msgid "Login failed, please check your email and password"
 msgstr "Login failed, please check your email and password"
+
+#: src/components/aiChat/index.tsx:281
+msgid "Mameos Robot"
+msgstr "Mameos Robot"
 
 #: src/components/note/main/index.tsx:108
 msgid "Management"
@@ -738,6 +746,14 @@ msgstr "Remove from Favorites"
 msgid "Save"
 msgstr "Save"
 
+#: src/components/aiChatToolset/index.tsx:29
+msgid "Save to Note"
+msgstr "Save to Note"
+
+#: src/components/aiChatInput/index.tsx:80
+msgid "Search"
+msgstr "Search"
+
 #: src/components/modal/note/selectCategory/index.tsx:72
 #: src/components/modal/note/selectCategory/index.tsx:73
 msgid "Search Category"
@@ -936,7 +952,7 @@ msgstr "Verification code has been sent."
 msgid "We are glad to have you here."
 msgstr "We are glad to have you here."
 
-#: src/components/aiChatInput/index.tsx:21
+#: src/components/aiChatInput/index.tsx:27
 msgid "Welcome back, {username}! Glad to be working with you again today."
 msgstr "Welcome back, {username}! Glad to be working with you again today."
 

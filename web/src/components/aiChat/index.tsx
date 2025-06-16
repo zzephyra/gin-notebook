@@ -1,10 +1,10 @@
 import { RootState } from '@/store';
-import { Chat } from '@douyinfe/semi-ui';
+import { Chat, MarkdownRender } from '@douyinfe/semi-ui';
 import "./style.css"
-import { useCallback, useMemo, useState, useRef } from 'react';
+import { useCallback, useMemo, useState, useRef, LegacyRef } from 'react';
 import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { Message } from '@douyinfe/semi-ui/lib/es/chat/interface';
+import { Message, RenderActionProps, RenderContentProps } from '@douyinfe/semi-ui/lib/es/chat/interface';
 import { getAIChatApi } from '@/features/api/ai';
 import AIChatInput from '../aiChatInput';
 import { Button } from '@heroui/button';
@@ -14,11 +14,123 @@ import { useMediaQuery } from 'react-responsive';
 import { Square2StackIcon } from '@heroicons/react/24/outline';
 import { FolderIcon } from '@heroicons/react/24/outline';
 import FolderDrawer from '../drower/folderDrower';
-import { useDisclosure } from '@heroui/react';
+import { Avatar, AvatarGroup, useDisclosure } from '@heroui/react';
+import { useLingui } from '@lingui/react/macro';
+import AIChatToolset from '../aiChatToolset';
 
+const SourceCard = (props: any) => {
+    const [open, setOpen] = useState(true);
+    const [show, setShow] = useState(false);
+    const { source } = props;
+    const spanRef = useRef<LegacyRef<HTMLSpanElement>>();
+    const onOpen = useCallback(() => {
+        setOpen(false);
+        setShow(true);
+    }, []);
+
+    const onClose = useCallback(() => {
+        setOpen(true);
+        setTimeout(() => {
+            setShow(false);
+        }, 350)
+    }, []);
+
+    const openReferenceWeb = (event: React.MouseEvent, url: string) => {
+        event.stopPropagation();
+        window.open(url, '_blank');
+    }
+
+    return (<div style={{
+        transition: open ? 'height 0.4s ease, width 0.4s ease' : 'height 0.4s ease',
+        height: open ? '40px' : '200px',
+        width: open ? '220px' : '100%',
+        background: 'var(--semi-color-tertiary-light-hover)',
+        borderRadius: 16,
+        boxSizing: 'border-box',
+        marginBottom: 10,
+    }}
+    >
+        <span
+            // ref={spanRef}
+            className='cursor-pointer'
+            style={{
+                display: !open ? 'none' : 'flex',
+                width: 'fit-content',
+                columnGap: 10,
+                background: 'var(--semi-color-tertiary-light-hover)',
+                borderRadius: '16px',
+                padding: '5px 10px',
+                fontSize: 14,
+                color: 'var(--semi-color-text-1)',
+            }}
+            onClick={onOpen}
+        >
+            <span>基于{source.length}个搜索来源</span>
+            <AvatarGroup size="sm" >
+                {source.map((s: any, index: number) => (<Avatar key={index} src={s.avatar || "https://cdn.mameos.cn/referenceAvatar.jpeg"}></Avatar>))}
+            </AvatarGroup>
+        </span>
+        <span
+            style={{
+                height: '100%',
+                boxSizing: 'border-box',
+                display: !open ? 'flex' : 'none',
+                flexDirection: 'column',
+                background: 'var(--semi-color-tertiary-light-hover)', borderRadius: '16px', padding: 12
+            }}
+            className='box-border cursor-pointer'
+            onClick={onClose}
+        >
+            <span style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '5px 10px', columnGap: 10, color: 'var(--semi-color-text-1)'
+            }}>
+                <span style={{ fontSize: 14, fontWeight: 500 }}>Source</span>
+                {/* <IconChevronUp /> */}
+            </span>
+            <span style={{ display: 'flex', flexWrap: 'wrap', gap: 10, overflow: 'scroll', padding: '5px 10px' }}>
+                {source.map((s: any) => (
+                    <span style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        rowGap: 5,
+                        flexBasis: 150,
+                        flexGrow: 1,
+                        border: "1px solid var(--semi-color-border)",
+                        borderRadius: 12,
+                        padding: 12,
+                        fontSize: 12
+                    }}
+                        className="cursor-pointer"
+                        onClick={(event) => openReferenceWeb(event, s.url)}
+                    >
+                        <span style={{ display: 'flex', columnGap: 5, alignItems: 'center', }}>
+                            <Avatar style={{ width: 16, height: 16, flexShrink: 0 }} src={s.avatar || "https://cdn.mameos.cn/referenceAvatar.jpeg"} />
+                            <span style={{ color: 'var(--semi-color-text-2)', textOverflow: 'ellipsis' }}>{s.title}</span>
+                        </span>
+                        <span style={{
+                            color: 'var(--semi-color-primary)',
+                            fontSize: 12,
+                        }}
+                        >{s.summary}</span>
+                        <span style={{
+                            display: '-webkit-box',
+                            // "-webkit-box-orient": 'vertical',
+                            WebkitLineClamp: '3',
+                            textOverflow: 'ellipsis',
+                            overflow: 'hidden',
+                            color: 'var(--semi-color-text-2)',
+                        }}>{s.content}</span>
+                    </span>))}
+            </span>
+        </span>
+    </div>
+    )
+}
 
 const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setCollapsed?: (value: boolean) => void }) => {
     var user = useSelector((state: RootState) => state.user);
+    var { t } = useLingui();
     var [chatMessages, setChatMessages] = useState<Message[]>([]);
     var controller = useRef(new AbortController());
     const { isOpen: isOpenFolderDrawer, onOpen: onOpenFolderDrawer, onOpenChange: onOpenChangeFolderDrawer } = useDisclosure();
@@ -29,9 +141,17 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
     const onChatsChange = useCallback((chats: any) => {
         setChatMessages(chats);
     }, []);
+    const [isSearchInternet, setIsSearchInternet] = useState(false);  // 是否搜索互联网
+
+    const isProcessing = useMemo(() => {
+        var status = chatMessages[chatMessages.length - 1]?.status
+        var role = chatMessages[chatMessages.length - 1]?.role;
+        return role == "assistant" && (status === 'loading' || status === 'incomplete');
+    }, [chatMessages]);  // 判断当前是否正在处理消息
+
     const isDesktop = useMediaQuery({ minWidth: 1024 });
-    const onMessageSend = useCallback(async (content: any) => {
-        // var oldMessages = 
+    const onMessageSend = async (content: any) => {
+        controller.current = new AbortController();
         setChatMessages((message) => {
             return [
                 ...message,
@@ -48,12 +168,20 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
             id: '1',
             createAt: new Date().getTime(),
             content: content,
-        }], controller.current)
+        }], controller.current, { isSearchInternet: isSearchInternet })
         var reader = resp.data?.getReader();
         const decoder = new TextDecoder("utf-8");
         let aiMessage = "";
 
-        if (!reader) return;
+        if (!reader) {
+            setChatMessages(prev => {
+                const updated = [...prev];
+                updated[updated.length - 1].status = 'error';
+                updated[updated.length - 1].content = t`Failed to get response from AI`;
+                return updated;
+            })
+            return
+        };
         while (true) {
             const { done, value } = await reader.read();
             if (done) break;
@@ -81,15 +209,58 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
                                 content: aiMessage
                             }
                         }
+
+                        if (parsedData.references) {
+                            newMessage.references = parsedData.references;
+                        }
+
+                        if (parsedData.choices?.[0]?.finish_reason === "stop") {
+                            newMessage.status = 'complete';
+                        }
                         return [...updated.splice(0, updated.length - 1), newMessage];
                     });
                 }
             });
         }
+    };
+
+    const renderContent = useCallback((props: RenderContentProps) => {
+        const { message, className, defaultContent } = props;
+        return <div className={className}>
+            {
+                message?.status == "loading" ? (
+                    defaultContent
+                ) : (
+                    <>
+                        {
+                            message?.role == "assistant" && message.references &&
+                            (
+                                <SourceCard source={message.references} />
+                            )
+                        }
+                        < MarkdownRender raw={message?.content || ""} />
+                    </>
+                )
+            }
+        </div>
+    }, []);
+
+    const chatToolset = useCallback((props: RenderActionProps) => {
+        return <AIChatToolset props={props} />
     }, []);
 
     const onSendMessageCallback = () => {
+
     }
+
+    const onStopGenerator = () => {
+        controller.current.abort();
+        setChatMessages((prev) => {
+            const updated = [...prev];
+            updated[updated.length - 1].status = 'complete';
+            return updated;
+        });
+    };
 
     const handleCloseCollapse = () => {
         if (setCollapsed) {
@@ -107,12 +278,12 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
             avatar: user.avatar
         },
         assistant: {
-            name: 'Assistant',
-            avatar: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/other/logo.png'
+            name: t`Mameos Robot`,
+            avatar: 'https://cdn.mameos.cn/assistantAvatar.jpeg'
         },
         system: {
             name: 'System',
-            avatar: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/other/logo.png'
+            avatar: 'https://cdn.mameos.cn/assistantAvatar.jpeg'
         }
     }
     return (
@@ -157,11 +328,16 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
                 className={`w-full !max-w-full ai-chat ${showChat ? "" : 'hide-chat'}`}
                 // uploadProps={uploadProps}
                 renderInputArea={
-                    (props) => <AIChatInput hidePrologue={!showChat} user={user} onSendMessage={onSendMessageCallback} props={props} />
+                    (props) => <AIChatInput onStop={onStopGenerator} onSeachChange={setIsSearchInternet} isProcessing={isProcessing} hidePrologue={!showChat} user={user} onSendMessage={onSendMessageCallback} props={props} />
                 }
+                chatBoxRenderConfig={{
+                    renderChatBoxAction: chatToolset,
+                    renderChatBoxContent: renderContent,
+                }}
                 chats={chatMessages}
                 roleConfig={roleInfo}
                 onChatsChange={onChatsChange}
+                onStopGenerator={onStopGenerator}
                 onMessageSend={onMessageSend}
             />
         </>

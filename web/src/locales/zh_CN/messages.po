@@ -40,7 +40,7 @@ msgid "Would you like to move the file to the \"{total}\" folder?"
 msgstr "是否要将文件移动到\"{total}\\”文件夹？"
 
 #. js-lingui-explicit-id
-#: src/components/aiChatInput/index.tsx:28
+#: src/components/aiChatInput/index.tsx:99
 msgid "Please enter a message before sending."
 msgstr "请在输入需要发送的信息"
 
@@ -363,6 +363,10 @@ msgstr "导出为Word"
 msgid "Failed to generate invite link"
 msgstr "无法生成邀请链接"
 
+#: src/components/aiChat/index.tsx:180
+msgid "Failed to get response from AI"
+msgstr "AI生成失败，请稍后再试～"
+
 #: src/pages/workspace/favorites.tsx:236
 msgid "Favorites"
 msgstr "收藏夹"
@@ -404,15 +408,15 @@ msgstr "转到选择其他工作区"
 msgid "Go to Workspace"
 msgstr "转至工作空间"
 
-#: src/components/aiChatInput/index.tsx:18
+#: src/components/aiChatInput/index.tsx:17
 msgid "Hello, {username}, how's your day going today?"
 msgstr "你好，{username}，你今天过得怎么样？"
 
-#: src/components/aiChatInput/index.tsx:20
+#: src/components/aiChatInput/index.tsx:23
 msgid "Hey {username}, what brilliant ideas are we exploring today?"
 msgstr "嗨，{username}，今天我们要探索哪些精彩的点子呢？"
 
-#: src/components/aiChatInput/index.tsx:19
+#: src/components/aiChatInput/index.tsx:20
 msgid "Hi {username}, what can I assist you with today?"
 msgstr "你好，{username}，今天我能帮你做些什么呢？"
 
@@ -505,6 +509,10 @@ msgstr "登录失败"
 #: src/pages/auth/login.tsx:44
 msgid "Login failed, please check your email and password"
 msgstr "登录失败，请检查您的电子邮件和密码"
+
+#: src/components/aiChat/index.tsx:281
+msgid "Mameos Robot"
+msgstr "Mameos小机器人"
 
 #: src/components/note/main/index.tsx:108
 msgid "Management"
@@ -738,6 +746,14 @@ msgstr "从收藏夹中删除"
 msgid "Save"
 msgstr "拯救"
 
+#: src/components/aiChatToolset/index.tsx:29
+msgid "Save to Note"
+msgstr "存入笔记"
+
+#: src/components/aiChatInput/index.tsx:80
+msgid "Search"
+msgstr "搜索"
+
 #: src/components/modal/note/selectCategory/index.tsx:72
 #: src/components/modal/note/selectCategory/index.tsx:73
 msgid "Search Category"
@@ -745,7 +761,7 @@ msgstr "搜索类别"
 
 #: src/pages/settings/storageSettings.tsx:79
 msgid "Secret Key"
-msgstr "秘密密钥"
+msgstr "密钥"
 
 #: src/components/modal/note/selectCategory/index.tsx:114
 #: src/components/list/workspaceEntry/list.tsx:34
@@ -775,7 +791,7 @@ msgstr "选择您的工作区"
 
 #: src/components/form/register/form.tsx:89
 msgid "Send Code"
-msgstr "发送代码"
+msgstr "发送验证码"
 
 #: src/components/form/register/form.tsx:89
 msgid "Sent"
@@ -809,7 +825,7 @@ msgstr "登录"
 
 #: src/components/form/register/form.tsx:94
 msgid "Sign Up"
-msgstr "报名"
+msgstr "登录"
 
 #: src/pages/settings/workspaceSettings.tsx:139
 #: src/components/dropdown/note/index.tsx:194
@@ -932,7 +948,7 @@ msgstr "验证码已发送。"
 msgid "We are glad to have you here."
 msgstr "我们很高兴你能来。"
 
-#: src/components/aiChatInput/index.tsx:21
+#: src/components/aiChatInput/index.tsx:27
 msgid "Welcome back, {username}! Glad to be working with you again today."
 msgstr "欢迎回来，{username}！很高兴今天又能与你共事。"
 

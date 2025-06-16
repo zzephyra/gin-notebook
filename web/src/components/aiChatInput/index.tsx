@@ -1,5 +1,5 @@
 import { Textarea } from '@heroui/input';
-import { LinkSlashIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
+import { GlobeAltIcon, LinkSlashIcon, PaperAirplaneIcon, PauseIcon } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
 import { RenderInputAreaProps } from '@douyinfe/semi-ui/lib/es/chat/interface';
 import { UserState } from '@/store/features/user';
@@ -10,6 +10,8 @@ import toast from 'react-hot-toast';
 import { useLingui } from '@lingui/react/macro';
 import { t } from '@lingui/macro'
 import { i18n } from '@lingui/core'
+import AIConfig from '@/config/ai';
+import { tv, useCheckbox, Chip, VisuallyHidden } from '@heroui/react';
 const Prologues = [
     (username: string) =>
         i18n._(t`Hello, ${username}, how's your day going today?`),
@@ -26,11 +28,66 @@ const Prologues = [
         ),
 ];
 
-const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { user: UserState, className?: string, props?: RenderInputAreaProps | undefined, onSendMessage?: (message: string) => void, hidePrologue: boolean }) => {
-    // const [hidePrologue, sethidePrologue] = useState(true);
+
+const SearchInternetButton = ({ onSelelctChange }: { onSelelctChange?: (isSelected: boolean) => void }) => {
+    const { isSelected, isFocusVisible, getBaseProps, getInputProps } =
+        useCheckbox({
+            defaultSelected: false,
+        });
+
+    const checkbox = tv({
+        slots: {
+            base: "border-[0.75px] border-default hover:bg-default-200",
+            content: " p-1 gap-1 flex justify-center items-center text-default-500",
+        },
+        variants: {
+            isSelected: {
+                true: {
+                    base: "border-primary bg-primary hover:bg-primary-500 hover:border-primary-500",
+                    content: "text-primary-foreground",
+                },
+            },
+            isFocusVisible: {
+                true: {
+                    base: "outline-none ring-2 ring-focus ring-offset-2 ring-offset-background",
+                },
+            },
+        },
+    });
+    const styles = checkbox({ isSelected, isFocusVisible });
+    useEffect(() => {
+        if (onSelelctChange) {
+            onSelelctChange(isSelected);
+        }
+    }, [isSelected, onSelelctChange]);
+
+    return (
+        <>
+            <label {...getBaseProps()}>
+                <VisuallyHidden>
+                    <input {...getInputProps()} />
+                </VisuallyHidden>
+                <Chip
+                    classNames={{
+                        base: styles.base(),
+                        content: styles.content(),
+                    }}
+                    color="primary"
+                    variant="faded"
+                >
+                    <GlobeAltIcon className='w-4 h-4' />
+                    <span>
+                        {i18n._(t`Search`)}
+                    </span>
+                </Chip>
+            </label>
+        </>
+    )
+}
+
+const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue, isProcessing, onSeachChange, onStop }: { user: UserState, className?: string, props?: RenderInputAreaProps | undefined, onSendMessage?: (message: string) => void, hidePrologue: boolean, isProcessing: boolean, onSeachChange?: (isSearch: boolean) => void, onStop?: () => void }) => {
     const prologueRef = useRef<HTMLDivElement>(null);
     const { i18n } = useLingui();
-
     const [messageContent, setMessageContent] = useState("");
     const [files] = useState<FileItem[]>([]);
     const greet = useMemo(
@@ -42,10 +99,6 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { 
             toast.error(i18n._(`Please enter a message before sending.`));
             return;
         }
-
-        // if (hidePrologue) {
-        //     sethidePrologue(false);
-        // }
 
         if (onSendMessage) {
             onSendMessage(content);
@@ -62,6 +115,11 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { 
         if (e.key === "Enter" && !e.shiftKey) {
             handleSendMessage(messageContent);
         }
+    }
+
+    const handleSearchInternet = (isSelected: boolean) => {
+        if (!onSeachChange) return
+        onSeachChange(isSelected);
     }
 
     useEffect(() => {
@@ -89,11 +147,19 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue }: { 
                             <Button size='sm' isIconOnly variant="light" className='!rounded-full !p-2 hover:!bg-gray-200'>
                                 <LinkSlashIcon className='w-4' />
                             </Button>
+                            <SearchInternetButton onSelelctChange={handleSearchInternet}></SearchInternetButton>
                         </div>
                         <div>
-                            <Button onKeyUp={handleKeyUp} isDisabled={messageContent == ""} size='sm' color='primary' isIconOnly className='!rounded-full !p-2 ' onPress={() => handleSendMessage(messageContent)}>
-                                <PaperAirplaneIcon className='w-4' />
-                            </Button>
+                            {isProcessing ? (
+                                <Button onKeyUp={handleKeyUp} isDisabled={!isProcessing} size='sm' color='primary' isIconOnly className='!rounded-full !p-2 ' onPress={onStop}>
+                                    <PauseIcon className='w-4' />
+                                </Button>
+                            ) :
+                                (
+                                    <Button onKeyUp={handleKeyUp} isDisabled={messageContent == ""} size='sm' color='primary' isIconOnly className='!rounded-full !p-2 ' onPress={() => handleSendMessage(messageContent)}>
+                                        <PaperAirplaneIcon className='w-4' />
+                                    </Button>
+                                )}
                         </div>
                     </div>
                 </div>

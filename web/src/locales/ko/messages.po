@@ -40,7 +40,7 @@ msgid "Would you like to move the file to the \"{total}\" folder?"
 msgstr "파일을 \"{합계}\" 폴더로 이동하시겠습니까?"
 
 #. js-lingui-explicit-id
-#: src/components/aiChatInput/index.tsx:28
+#: src/components/aiChatInput/index.tsx:99
 msgid "Please enter a message before sending."
 msgstr ""
 
@@ -363,6 +363,10 @@ msgstr "Word로 내보내기"
 msgid "Failed to generate invite link"
 msgstr "초대 링크를 생성할 수 없습니다."
 
+#: src/components/aiChat/index.tsx:180
+msgid "Failed to get response from AI"
+msgstr ""
+
 #: src/pages/workspace/favorites.tsx:236
 msgid "Favorites"
 msgstr "즐겨찾기 모음집"
@@ -404,15 +408,15 @@ msgstr "다른 작업공간 선택으로 이동"
 msgid "Go to Workspace"
 msgstr "작업공간으로 이동"
 
-#: src/components/aiChatInput/index.tsx:18
+#: src/components/aiChatInput/index.tsx:17
 msgid "Hello, {username}, how's your day going today?"
 msgstr ""
 
-#: src/components/aiChatInput/index.tsx:20
+#: src/components/aiChatInput/index.tsx:23
 msgid "Hey {username}, what brilliant ideas are we exploring today?"
 msgstr ""
 
-#: src/components/aiChatInput/index.tsx:19
+#: src/components/aiChatInput/index.tsx:20
 msgid "Hi {username}, what can I assist you with today?"
 msgstr ""
 
@@ -505,6 +509,10 @@ msgstr "로그인 실패"
 #: src/pages/auth/login.tsx:44
 msgid "Login failed, please check your email and password"
 msgstr "로그인 실패. 이메일과 암호를 확인하십시오."
+
+#: src/components/aiChat/index.tsx:281
+msgid "Mameos Robot"
+msgstr ""
 
 #: src/components/note/main/index.tsx:108
 msgid "Management"
@@ -738,6 +746,14 @@ msgstr "즐겨찾기에서 제거"
 msgid "Save"
 msgstr "저장하기"
 
+#: src/components/aiChatToolset/index.tsx:29
+msgid "Save to Note"
+msgstr ""
+
+#: src/components/aiChatInput/index.tsx:80
+msgid "Search"
+msgstr ""
+
 #: src/components/modal/note/selectCategory/index.tsx:72
 #: src/components/modal/note/selectCategory/index.tsx:73
 msgid "Search Category"
@@ -932,7 +948,7 @@ msgstr "확인 코드가 전송되었습니다."
 msgid "We are glad to have you here."
 msgstr "우리는 당신이 여기에 있어서 매우 기쁩니다."
 
-#: src/components/aiChatInput/index.tsx:21
+#: src/components/aiChatInput/index.tsx:27
 msgid "Welcome back, {username}! Glad to be working with you again today."
 msgstr ""
 
