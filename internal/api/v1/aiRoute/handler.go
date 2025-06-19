@@ -1,15 +1,20 @@
 package aiRoute
 
 import (
+	"fmt"
+	"gin-notebook/internal/http/message"
+	"gin-notebook/internal/http/response"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/service/aiService"
 	"gin-notebook/pkg/logger"
+	"gin-notebook/pkg/utils/validator"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-func aiChatApi(c *gin.Context) {
+func AIChatApi(c *gin.Context) {
 	req := dto.AIRequestDTO{}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		logger.LogError(err, "aiChatApi: failed to bind JSON")
@@ -49,4 +54,109 @@ func aiChatApi(c *gin.Context) {
 			break
 		}
 	}
+}
+
+func AIMessageApi(c *gin.Context) {
+	params := &dto.AIMessageParamsDTO{}
+	if err := c.ShouldBindJSON(params); err != nil {
+		logger.LogError(err, "CreateAISessionApi: failed to bind JSON")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid body"})
+		return
+	}
+
+	params.UserID = c.MustGet("userID").(int64)
+
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+	ctx := c.Request.Context()
+	responseCode, data := aiService.AIMessage(ctx, params)
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func AIHostoryChatApi(c *gin.Context) {
+	params := &dto.AIHistoryChatParamsDTO{}
+	if err := c.ShouldBindQuery(params); err != nil {
+		logger.LogError(err, "AIHostoryChatApi: failed to bind query")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid query"})
+		return
+	}
+
+	params.UserID = c.MustGet("userID").(int64)
+
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode, data := aiService.GetAIHistoryChat(params)
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func DeleteAISessionChatApi(c *gin.Context) {
+	params := &dto.AIHistoryDeleteParamsDTO{
+		SessionID: c.Param("id"),
+		UserID:    c.MustGet("userID").(int64),
+	}
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode := aiService.DeleteAIHostoryChat(params)
+	c.JSON(http.StatusOK, response.Response(responseCode, nil))
+}
+
+func UpdateAISessionChatApi(c *gin.Context) {
+	sessionID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		fmt.Println("转换失败:", err)
+		return
+	}
+
+	params := &dto.AIHistoryUpdateParamsDTO{
+		SessionID: sessionID,
+		UserID:    c.MustGet("userID").(int64),
+	}
+	if err := c.ShouldBindJSON(params); err != nil {
+		logger.LogError(err, "UpdateAISessionChatApi: failed to bind JSON")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid body"})
+		return
+	}
+
+	fmt.Println("UpdateAISessionChatApi params:", params)
+
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode := aiService.UpdateAISessionChat(params)
+	c.JSON(http.StatusOK, response.Response(responseCode, nil))
+}
+
+func GetAISessionChatApi(c *gin.Context) {
+	sessionID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		fmt.Println("转换失败:", err)
+		return
+	}
+
+	params := &dto.AISessionParamsDTO{
+		SessionID: sessionID,
+		UserID:    c.MustGet("userID").(int64),
+	}
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode, data := aiService.GetAISession(params)
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }

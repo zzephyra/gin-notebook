@@ -86,6 +86,15 @@ const (
 	// 登录模块的错误
 	ERROR_INVALID_CHANNEL = 9001
 	ERROR_GOOGLE_OAUTH    = 9002 // Google OAuth 认证失败
+
+	// AI 模块的错误
+	ERROR_AI_SESSION_CREATE    = 10001
+	ERROR_AI_SESSION_NOT_EXIST = 10002
+	ERROR_AI_MESSAGE_CREATE    = 10003
+	ERROR_AI_MESSAGE_NOT_EXIST = 10004
+	ERROR_AI_SESSION_UPDATE    = 10005
+	ERROR_AI_SESSION_DELETE    = 10006
+	ERROR_AI_MESSAGE_INDEX     = 10007 // AI 消息索引错误
 )
 
 var CodeMsg = map[int]string{
@@ -140,4 +149,11 @@ var CodeMsg = map[int]string{
 	ERROR_GOOGLE_OAUTH:                         "Google OAuth 认证失败",
 	ERROR_INVALID_CHANNEL:                      "无效的登录渠道",
 	ERROR_CREATE_GOOGLE_USER:                   "创建 Google 用户失败",
+	ERROR_AI_SESSION_CREATE:                    "AI 会话创建失败",
+	ERROR_AI_SESSION_NOT_EXIST:                 "AI 会话不存在",
+	ERROR_AI_MESSAGE_CREATE:                    "AI 消息创建失败",
+	ERROR_AI_MESSAGE_NOT_EXIST:                 "AI 消息不存在",
+	ERROR_AI_SESSION_UPDATE:                    "AI 会话更新失败",
+	ERROR_AI_SESSION_DELETE:                    "AI 会话删除失败",
+	ERROR_AI_MESSAGE_INDEX:                     "AI 消息索引错误",
 }

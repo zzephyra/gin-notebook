@@ -5,9 +5,7 @@ import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { saveAs } from 'file-saver';
 
 export const getScriptFromLang = (lang: string) => {
-    if (["zh-CN", "zh-SG", "zh-Hans"].includes(lang)) return "zh_cn";
-    if (["zh-TW", "zh-HK", "zh-MO", "zh-Hant"].includes(lang)) return "zh_tw";
-    return lang.split("-")[0];
+    return lang.replace(/-/g, '_').toLowerCase() || "en";
 };
 
 export const getSystemLang = () => {

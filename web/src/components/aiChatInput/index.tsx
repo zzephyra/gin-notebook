@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { useLingui } from '@lingui/react/macro';
 import { t } from '@lingui/macro'
 import { i18n } from '@lingui/core'
+import { TypeAnimation } from 'react-type-animation';
 import AIConfig from '@/config/ai';
 import { tv, useCheckbox, Chip, VisuallyHidden } from '@heroui/react';
 const Prologues = [
@@ -27,6 +28,7 @@ const Prologues = [
             t`Welcome back, ${username}! Glad to be working with you again today.`
         ),
 ];
+const CURSOR_CLASS_NAME = 'remove-type-animation-cursor';
 
 
 const SearchInternetButton = ({ onSelelctChange }: { onSelelctChange?: (isSelected: boolean) => void }) => {
@@ -133,10 +135,14 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue, isPr
             <div className={`flex-col flex-1 transition-all ease-in-out flex items-center justify-center ${className || ""}`}>
                 {hidePrologue && (
                     <>
-                        <div className='text-xl'>
-                            <h1 ref={prologueRef} className='typing font-semibold mb-6 mx-auto'>
-                                {greet(user.nickname || user.email)}
-                            </h1>
+                        <div className='text-xl text-center'>
+                            <TypeAnimation
+                                className={`font-semibold mb-6 mx-auto`}
+                                sequence={[
+                                    greet(user.nickname || user.email),
+                                    (el) => el?.classList.add(CURSOR_CLASS_NAME),
+                                ]}
+                            />
                         </div>
                     </>
                 )}

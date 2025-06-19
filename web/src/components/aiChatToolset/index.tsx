@@ -1,6 +1,6 @@
 import { RenderActionProps } from "@douyinfe/semi-ui/lib/es/chat/interface";
-import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, ButtonProps } from "@heroui/react";
+import { EllipsisHorizontalIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, useDisclosure, Button, ButtonProps, ModalContent, ModalHeader, Modal, ModalBody } from "@heroui/react";
 import { useLingui } from "@lingui/react/macro";
 const AIChatToolset = ({ props }: { props: RenderActionProps }) => {
     const { message, defaultActions, className } = props;
@@ -11,9 +11,20 @@ const AIChatToolset = ({ props }: { props: RenderActionProps }) => {
         variant: "light",
         className: "w-4 h-4 min-w-0 hover:!bg-transparent",
     }
+    const { isOpen: isOpenSaveToNoteModal, onOpen: _, onClose: onCloseSaveToNoteModal } = useDisclosure();
 
     return (
         <>
+            <Modal isOpen={isOpenSaveToNoteModal} onOpenChange={onCloseSaveToNoteModal} className="!max-w-2xl">
+                <ModalContent>
+                    <ModalHeader>
+                        <h2 className="text-lg font-bold">{t`Save to Note`}</h2>
+                    </ModalHeader>
+                    <ModalBody>
+
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
             <div className={className}>
                 {defaultActions}
                 {message?.role === 'assistant' && (
@@ -26,7 +37,9 @@ const AIChatToolset = ({ props }: { props: RenderActionProps }) => {
                             </Button>
                         </DropdownTrigger>
                         <DropdownMenu aria-label="extra actions">
-                            <DropdownItem key="save">{t`Save to Note`}</DropdownItem>
+                            <DropdownItem key="save" startContent={<PencilIcon className="w-4"></PencilIcon>} >
+                                {t`Save to Note`}
+                            </DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
                 )}

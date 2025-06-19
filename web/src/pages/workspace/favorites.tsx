@@ -29,6 +29,7 @@ import { StarIcon as SolidStarIcon } from "@heroicons/react/24/solid";
 import NoteListViewEditor from "@/components/note/noteList";
 import { Note } from "./type";
 import { debounce } from "lodash";
+import ChaseLoading from "@/components/loading/Chase/loading";
 const FavoritesPage = () => {
     const { t } = useLingui();
     const params = useParams();
@@ -39,6 +40,7 @@ const FavoritesPage = () => {
         offset: 0,
         order: "desc",
     });
+    const [loading, setLoading] = React.useState<boolean>(true);
     const [total, setTotal] = React.useState<number>(0);
     const [hasMounted, setHasMounted] = React.useState(false);
     const [selectIndex, setSelectIndex] = React.useState<number | null>(null);
@@ -95,9 +97,11 @@ const FavoritesPage = () => {
     );
 
     const handleGetFavorites = async () => {
+        setLoading(true);
         let res = await GetFavoriteNoteListRequest({ ...filter, workspace_id: params.id || "" });
         setData(res.notes || []);
         setTotal(res.total || 0);
+        setLoading(false);
     }
 
     const handleUpdateFilter = (newFilter: Partial<FavoriteNoteListParams>) => {
@@ -301,12 +305,17 @@ const FavoritesPage = () => {
                                 <TableColumn aria-label="note owner" key="owner">{t`Owner`}</TableColumn>
                                 <TableColumn aria-label="update time" key="updated_at">{t`Updated At`}</TableColumn>
                             </TableHeader>
-                            <TableBody aria-label="favorite note table body" emptyContent={
-                                <div className="flex flex-col items-center justify-center w-full">
-                                    <Image className="select-none appearance-none pointer-events-none" width={200} src={emptyFavorites} alt="empty favorite picture" aria-label="empty favority picture" />
-                                    <span className="select-none text-gray-400 text-sm">{t`Meow~ No favorite notes here yet. Time to star the ones you love!`}</span>
-                                </div>
-                            }>
+                            <TableBody aria-label="favorite note table body"
+                                isLoading={loading}
+                                loadingContent={
+                                    <ChaseLoading />
+                                }
+                                emptyContent={
+                                    <div className="flex flex-col items-center justify-center w-full">
+                                        <Image className="select-none appearance-none pointer-events-none" width={200} src={emptyFavorites} alt="empty favorite picture" aria-label="empty favority picture" />
+                                        <span className="select-none text-gray-400 text-sm">{t`Meow~ No favorite notes here yet. Time to star the ones you love!`}</span>
+                                    </div>
+                                }>
                                 {data.map((item, index) => (
                                     <TableRow aria-label="favorite note row" key={item.id}>
                                         {(columnKey) => <TableCell aria-label="favorite note cell" onClick={() => setSelectIndex(index)}>{tableCell(item, columnKey)}</TableCell>}

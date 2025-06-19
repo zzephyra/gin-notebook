@@ -34,6 +34,8 @@ func Migrate(db *gorm.DB) {
 		&model.UserSetting{},
 		&model.UserDevice{},
 		&model.FavoriteNote{},
+		&model.AISession{},
+		&model.AIMessage{},
 	)
 }
 

@@ -17,3 +17,6 @@ export const settingsApi: string = "/settings"
 export const systemSettingsApi: string = "/settings/system"
 export const uploadPolicyApi: string = "/upload/policy"
 export const aiChatApi: string = "/ai/chat";
+export const aiChatMessageApi: string = "/ai/message";
+export const aiChatHistoryApi: string = "/ai/history";
+export const aiChatSessionApi: string = "/ai/session";

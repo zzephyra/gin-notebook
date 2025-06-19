@@ -14,14 +14,15 @@ import (
 )
 
 func FavoriteNoteApi(c *gin.Context) {
-	params := &dto.FavoriteNoteDTO{
-		UserID: c.MustGet("userID").(int64),
-	}
+	params := &dto.FavoriteNoteDTO{}
 	if err := c.ShouldBindJSON(params); err != nil {
 		log.Printf("params %s", err)
 		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return
 	}
+
+	params.UserID = c.MustGet("userID").(int64)
+
 	if err := validator.ValidateStruct(params); err != nil {
 		logger.LogError(err, "验证失败：")
 		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
@@ -33,7 +34,6 @@ func FavoriteNoteApi(c *gin.Context) {
 
 func GetFavoriteNoteApi(c *gin.Context) {
 	params := &dto.FavoriteNoteQueryDTO{
-		UserID:  c.MustGet("userID").(int64),
 		Offset:  0,
 		Limit:   10,
 		OrderBy: "title",
@@ -45,6 +45,8 @@ func GetFavoriteNoteApi(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return
 	}
+
+	params.UserID = c.MustGet("userID").(int64)
 
 	if err := validator.ValidateStruct(params); err != nil {
 		logger.LogError(err, "验证失败：")

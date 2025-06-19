@@ -29,3 +29,13 @@
         border-color: orange
     }
 }
+
+.remove-type-animation-cursor::after {
+    content: '' !important;
+}
+
+@keyframes cursor {
+    50% {
+        opacity: 0;
+    }
+}

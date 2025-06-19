@@ -11,6 +11,11 @@ func RegisterAuthRoutes(r *gin.RouterGroup) {
 	aiGroup.Use(middleware.JWTAuth())
 	aiGroup.Use(middleware.RBACMiddleware())
 	{
-		aiGroup.POST("/chat", aiChatApi)
+		aiGroup.POST("/chat", AIChatApi)
+		aiGroup.POST("/message", AIMessageApi)
+		aiGroup.GET("/history", AIHostoryChatApi)
+		aiGroup.DELETE("/session/:id", DeleteAISessionChatApi)
+		aiGroup.PUT("/session/:id", UpdateAISessionChatApi)
+		aiGroup.GET("/session/:id", GetAISessionChatApi)
 	}
 }

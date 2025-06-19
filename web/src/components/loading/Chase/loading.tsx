@@ -1,11 +1,14 @@
 import "./loading.css"
 import { LoadingProps } from "../type"
+import React from "react";
 
 
-export default function ChaseLoading({ color = "#5b5b5b", text = "", className }: LoadingProps) {
+const ChaseLoading = ({ color = "#5b5b5b", text = "", className, size = "40px" }: LoadingProps) => {
+    var chaseSize = typeof size === "number" ? `${size}px` : size;
+
     return (
         <div className={`flex flex-col items-center justify-center h-full w-full ${className}`}>
-            <div className="sk-chase" style={{ '--dot-color': color } as React.CSSProperties}>
+            <div className="sk-chase" style={{ '--dot-color': color, width: chaseSize, height: chaseSize } as React.CSSProperties}>
                 <div className="sk-chase-dot"></div>
                 <div className="sk-chase-dot"></div>
                 <div className="sk-chase-dot"></div>
@@ -21,3 +24,5 @@ export default function ChaseLoading({ color = "#5b5b5b", text = "", className }
         </div>
     )
 }
+
+export default React.memo(ChaseLoading)

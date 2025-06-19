@@ -74,3 +74,26 @@ export interface FavoriteNote {
     created_at: string;
     updated_at: string;
 }
+
+export interface AISession {
+    id: string;
+    title: string;
+    created_at?: string;
+    updated_at?: string;
+    // messages?: Message[];
+}
+
+export interface UpdateSession {
+    title?: string;
+}
+
+export interface AIMessage {
+    id: string;
+    content: string;
+    role: "user" | "assistant" | "system";
+    status: "incomplete" | "complete" | "error" | "loading";
+    session_id?: string;
+    created_at: string
+    references?: [];
+    [x: string]: any;
+}

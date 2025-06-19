@@ -31,4 +31,4 @@ bin/*
 **/*.log
 web/.env.*
 tmp/*
-web/config/ai.ts
+web/src/config/ai.ts
