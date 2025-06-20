@@ -11,6 +11,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { responseCode } from "@/features/constant/response";
 import { getSettingsRequest } from "@/features/api/settings";
 import GoogleIcon from "@/components/icons/google";
+import QQIcon from "@/components/icons/qq";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -85,12 +86,23 @@ export default function LoginPage() {
                 radius="full"
                 className="bg-slate-100 "
                 isIconOnly
-                onPress={() => googleLogin && googleLogin()}
               >
-                <GoogleIcon className="w-4" />
+                <QQIcon className="w-4" />
               </Button>
             )
           }
+
+        </div>
+        <div className="flex-1 flex justify-center">
+          <Button
+            variant="flat"
+            radius="full"
+            className="bg-slate-100 "
+            isIconOnly
+            onPress={() => googleLogin && googleLogin()}
+          >
+            <GoogleIcon className="w-4" />
+          </Button>
         </div>
       </div>
     </div>
