@@ -125,3 +125,7 @@ func UserLogout(c *gin.Context) {
 	c.SetCookie("access_token", "", -1, "/", "", false, true) // 清除cookie
 	c.JSON(http.StatusOK, response.Response(message.SUCCESS, nil))
 }
+
+func QQLogin() {
+
+}

@@ -24,11 +24,13 @@ type AIMessageParamsDTO struct {
 	Status    string  `json:"status" validate:"required,oneof=complete loading error incomplete"` // 状态: complete, loading, error
 	UserID    int64   `json:"user_id" validate:"required"`                                        // 用户 ID
 	Title     *string `json:"title" validate:"omitempty,min=1,max=50"`                            // 会话标题
-	Action    string  `json:"action" validate:"required,oneof=init insert"`                       // 操作类型
+	Action    string  `json:"action" validate:"required,oneof=init insert reset"`                 // 操作类型
+	ParentID  int64   `json:"parentID,string" validate:"omitempty"`
 }
 
 type AIMessageResponseDTO struct {
 	SessionID int64 `json:"session_id,string"` // 会话 ID
+	MessageID int64 `json:"message_id,string"` // 消息 ID
 }
 
 type AIHistoryChatParamsDTO struct {
@@ -43,12 +45,14 @@ type AIHistoryDeleteParamsDTO struct {
 }
 
 type AIMessageDTO struct {
-	Content string `json:"content"` // 消息内容
-	Role    string `json:"role"`    // 角色: user 或 assistant
-	Index   int64  `json:"index"`   // 顺序号
+	Content string `json:"content"`   // 消息内容
+	Role    string `json:"role"`      // 角色: user 或 assistant
+	Index   int64  `json:"index"`     // 顺序号
+	ID      int64  `json:"id,string"` // 消息 ID
 	// SessionID int64  `json:"session_id,string"` // 会话 ID
-	CreatedAt string `json:"created_at"` // 消息创建时间
-	Status    string `json:"status"`     // 状态: complete, loading 等
+	CreatedAt string `json:"created_at"`       // 消息创建时间
+	Status    string `json:"status"`           // 状态: complete, loading 等
+	ParentID  int64  `json:"parent_id,string"` // 父消息 ID，用于回复
 }
 
 type AIHistoryChatDTO struct {
@@ -75,4 +79,13 @@ type AISessionParamsDTO struct {
 type AISessionResponseDTO struct {
 	Title    string         `json:"title"`    // 会话标题
 	Messages []AIMessageDTO `json:"messages"` // 消息列表
+}
+type AIMessageUpdateParamsDTO struct {
+	SessionID *int64 `json:"session_id,string" validate:"required"` // 会话 ID
+	MessageID int64  `validate:"required"`                          // 消息 ID
+	Content   string `json:"content" validate:"required"`
+	Role      string `json:"role" validate:"required,oneof=assistant"`
+	Status    string `json:"status" validate:"required,oneof=complete loading error incomplete"` // 状态: complete, loading, error
+	UserID    int64  `json:"user_id" validate:"required"`                                        // 用户 ID
+	Action    string `json:"action" validate:"required,oneof=init insert reset"`                 // 操作类型
 }

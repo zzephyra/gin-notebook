@@ -99,7 +99,7 @@ func GetAISessionByID(sessionID int64, userID int64) (data *model.AISession, err
 
 func GetAIMessageBySessionID(sessionID int64, userID int64) (messages []dto.AIMessageDTO, err error) {
 	result := database.DB.Model(&model.AIMessage{}).
-		Select("content", "role", "index", "created_at", "status").
+		Select("content", "role", "index", "created_at", "status", "id", "parent_id").
 		Where("session_id = ? AND user_id = ?", sessionID, userID).
 		Order("index ASC").
 		Scan(&messages)
@@ -109,4 +109,17 @@ func GetAIMessageBySessionID(sessionID int64, userID int64) (messages []dto.AIMe
 		return
 	}
 	return
+}
+
+func UpdateAIMessage(tx *gorm.DB, messageID int64, userID int64, updateData map[string]interface{}) error {
+	result := tx.Model(&model.AIMessage{}).Where("id = ? AND user_id = ?", messageID, userID).Updates(updateData)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("no message found")
+	}
+
+	return nil
 }

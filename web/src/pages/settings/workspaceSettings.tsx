@@ -93,8 +93,8 @@ const WorkspaceSettings = () => {
                 </div>
             default:
                 return <div className="flex items-center gap-4">
-                    <QrCodeIcon className="cursor-pointer" onClick={() => handleOpenQrcodeModal(data)}></QrCodeIcon>
-                    <TrashIcon className="cursor-pointer" onClick={() => handleOpenDeleteLinkModal(data.id)}></TrashIcon>
+                    <QrCodeIcon className="cursor-pointer w-4" onClick={() => handleOpenQrcodeModal(data)}></QrCodeIcon>
+                    <TrashIcon className="cursor-pointer w-4" onClick={() => handleOpenDeleteLinkModal(data.id)}></TrashIcon>
                 </div>
         }
     }
@@ -116,7 +116,7 @@ const WorkspaceSettings = () => {
 
     return (
         <>
-            <SettingsWrapper title="Invate link" >
+            <SettingsWrapper className="dark:text-white" title="Invate link" >
                 <SettingsItem label={t`Invite link`} description={t`Invite link to join the workspace`}>
                     <Switch
                         aria-label="Enable invite link"

@@ -18,6 +18,7 @@ export default function LoginPage() {
   // const { login } = useAuth();
   const { t } = useLingui();
   const setGoogleClientId = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID);
+  const setQQAppId = Boolean(import.meta.env.VITE_QQ_APP_ID);
   const handleLogin = async (params: LoginParams) => {
     try {
       const { code, error } = await loginUserApi(params);
@@ -62,6 +63,11 @@ export default function LoginPage() {
     handleLogin({ email, password, channel: "email" });
   }
 
+  const handleQQLogin = () => {
+    window.open(
+      `https://graph.qq.com/oauth2.0/authorize??response_type=code&client_id=${import.meta.env.VITE_QQ_APP_ID}&redirect_uri=${import.meta.env.VITE_QQ_REDIRECT_URI}&state=STATE`,)
+  }
+
 
   return (
     <div className="w-96 m-auto	h-full justify-center flex flex-col content-center">
@@ -78,32 +84,37 @@ export default function LoginPage() {
         <TransMacro>Or</TransMacro>
       </div>
       <div className="flex">
-        <div className="flex-1 flex justify-center">
-          {
-            setGoogleClientId && (
+
+        {
+          setGoogleClientId && (
+            <div className="flex-1 flex justify-center">
               <Button
                 variant="flat"
                 radius="full"
                 className="bg-slate-100 "
                 isIconOnly
+                onPress={handleQQLogin}
               >
                 <QQIcon className="w-4" />
               </Button>
-            )
-          }
-
-        </div>
-        <div className="flex-1 flex justify-center">
-          <Button
-            variant="flat"
-            radius="full"
-            className="bg-slate-100 "
-            isIconOnly
-            onPress={() => googleLogin && googleLogin()}
-          >
-            <GoogleIcon className="w-4" />
-          </Button>
-        </div>
+            </div>
+          )
+        }
+        {
+          setQQAppId && (
+            <div className="flex-1 flex justify-center">
+              <Button
+                variant="flat"
+                radius="full"
+                className="bg-slate-100 "
+                isIconOnly
+                onPress={() => googleLogin && googleLogin()}
+              >
+                <GoogleIcon className="w-4" />
+              </Button>
+            </div>
+          )
+        }
       </div>
     </div>
   );

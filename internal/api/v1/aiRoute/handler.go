@@ -153,10 +153,38 @@ func GetAISessionChatApi(c *gin.Context) {
 	}
 	if err := validator.ValidateStruct(params); err != nil {
 		logger.LogError(err, "验证失败：")
-		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return
 	}
 
 	responseCode, data := aiService.GetAISession(params)
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func UpdateAIMessageApi(c *gin.Context) {
+	messageID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		fmt.Println("转换失败:", err)
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	params := &dto.AIMessageUpdateParamsDTO{
+		MessageID: messageID,
+		UserID:    c.MustGet("userID").(int64),
+	}
+	if err := c.ShouldBindJSON(params); err != nil {
+		logger.LogError(err, "UpdateAIMessageApi: failed to bind JSON")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid body"})
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode := aiService.UpdateAIMessage(c.Request.Context(), params)
+	c.JSON(http.StatusOK, response.Response(responseCode, nil))
 }

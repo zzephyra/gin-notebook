@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { Message, RenderActionProps, RenderContentProps } from '@douyinfe/semi-ui/lib/es/chat/interface';
-import { createAIMessage, getAIChatApi, getAIChatSessionRequest } from '@/features/api/ai';
+import { createAIMessage, getAIChatApi, getAIChatSessionRequest, updateAIMessage } from '@/features/api/ai';
 import AIChatInput from '../aiChatInput';
 import { Button } from '@heroui/button';
 import { ClockIcon, ViewColumnsIcon } from '@heroicons/react/24/outline';
@@ -175,7 +175,6 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        console.log("location.search", location.search);
         const sessionIDFromUrl = searchParams.get("sessionID");
         if (sessionIDFromUrl) {
             setSessionID(sessionIDFromUrl);
@@ -189,6 +188,7 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
                             status: msg.status || 'complete',
                             createAt: new Date(msg.created_at).getTime() || Date.now(),
                             references: msg.references || null,
+                            parentId: msg.parent_id || undefined,
                         })
                     ));
                 } else {
@@ -199,56 +199,43 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
     }, []);
 
     const isDesktop = useMediaQuery({ minWidth: 1024 });
-    const onMessageSend = async (content: any) => {
-        controller.current = new AbortController();
-        setChatMessages((message) => {
-            return [
-                ...message,
-                {
-                    role: 'assistant',
-                    status: 'loading',
-                    createAt: Date.now(),
-                    id: uuidv4(),
-                }
-            ]
-        });
-        var tempSessionID = sessionID;
-        if (sessionID === undefined) {
-            let res = await createAIMessage(content, "init", "complete", "user", sessionID)
-            if (res?.code == responseCode.SUCCESS) {
-                if (res.data.session_id) {
-                    setSessionID(res.data.session_id)
-                    tempSessionID = res.data.session_id;
-                };
-            }
-        } else {
-            createAIMessage(content, "insert", "complete", "user", sessionID)
-        }
 
-        let newMessage: Message = {
-            status: 'loading',
-        }
-
+    const requestAIResponse = async ({
+        userMessage,
+        controller,
+        isSearchInternet,
+        onStreamUpdate,
+        onFinish,
+        onError,
+        onAbort,
+    }: {
+        userMessage: string,
+        controller: AbortController,
+        isSearchInternet: boolean,
+        onStreamUpdate: (content: string, extra?: any) => void,
+        onFinish: (finalContent: string, extra?: any) => void,
+        onError: () => void,
+        onAbort?: () => void,
+    }) => {
+        let aiMessage = "";
         try {
-            var resp = await getAIChatApi([{
-                role: 'user',
-                id: '1',
-                createAt: new Date().getTime(),
-                content: content,
-            }], controller.current, { isSearchInternet: isSearchInternet })
-            var reader = resp.data?.getReader();
+            const resp = await getAIChatApi([
+                {
+                    role: 'user',
+                    id: '1',
+                    createAt: new Date().getTime(),
+                    content: userMessage,
+                }
+            ], controller, { isSearchInternet });
+
+            const reader = resp.data?.getReader();
             const decoder = new TextDecoder("utf-8");
-            let aiMessage = "";
+
 
             if (!reader) {
-                setChatMessages(prev => {
-                    const updated = [...prev];
-                    updated[updated.length - 1].status = 'error';
-                    updated[updated.length - 1].content = t`Failed to get response from AI`;
-                    return updated;
-                })
-                return
-            };
+                onError();
+                return;
+            }
 
             while (true) {
                 const { done, value } = await reader.read();
@@ -258,56 +245,87 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
                 chunk.split("\n").forEach(line => {
                     if (line.startsWith("data: ")) {
                         const content = line.replace(/^data: /, "");
-                        if (content === "[DONE]") {
-                            return;
-                        }
-                        var parsedData: any = JSON.parse(content);
-                        aiMessage += parsedData.choices[0].delta.content || '';
-                        setChatMessages(prev => {
-                            const updated = [...prev];
-                            const lastMessage = updated[updated.length - 1];
-                            newMessage = { ...lastMessage };
-                            if (lastMessage.status === 'loading') {
-                                newMessage = {
-                                    ...newMessage,
-                                    content: aiMessage,
-                                    status: 'incomplete'
-                                }
-                            }
-                            else if (lastMessage.status === 'incomplete') {
-                                newMessage = {
-                                    ...newMessage,
-                                    content: aiMessage
-                                }
-                            }
-
-                            if (parsedData.references) {
-                                newMessage.references = parsedData.references;
-                            }
-
-                            if (parsedData.choices?.[0]?.finish_reason === "stop") {
-                                newMessage.status = 'complete';
-                            }
-                            return [...updated.splice(0, updated.length - 1), newMessage];
-                        });
+                        if (content === "[DONE]") return;
+                        const parsed = JSON.parse(content);
+                        aiMessage += parsed.choices?.[0]?.delta?.content || '';
+                        onStreamUpdate(aiMessage, parsed);
                     }
                 });
             }
-        } catch (error) {
-            setChatMessages(prev => {
-                const updated = [...prev];
-                const lastMessage = updated[updated.length - 1];
-                newMessage = { ...lastMessage };
-                newMessage = {
-                    ...newMessage,
-                    content: t`Oops, something went wrong!`,
-                    status: 'error'
-                }
-                return [...updated.splice(0, updated.length - 1), newMessage];
+        } catch (e: any) {
+            if (e.name === 'AbortError') {
+                onAbort?.();
+            } else {
+                onError();
             }
-            )
+        } finally {
+            onFinish(aiMessage, {});
         }
-        createAIMessage(String(newMessage.content), "insert", newMessage?.status || "complete", "assistant", sessionID || tempSessionID)
+    };
+    const onMessageSend = async (content: string) => {
+        controller.current = new AbortController();
+        const res = await createAIMessage(content, sessionID ? "insert" : "init", "complete", "user", sessionID);
+        const tempSessionID = res.data.session_id;
+        setSessionID(tempSessionID);
+        const parentID = res.data.message_id;
+
+        let newMessage: Message = {
+            status: 'loading',
+        };
+
+        // 插入临时 assistant 消息
+        setChatMessages(prev => [...prev, {
+            role: 'assistant',
+            status: 'loading',
+            createAt: Date.now(),
+            parentId: parentID,
+            id: uuidv4()
+        }]);
+
+        await requestAIResponse({
+            userMessage: content,
+            controller: controller.current,
+            isSearchInternet,
+            onStreamUpdate: (msg, parsed) => {
+                setChatMessages(prev => {
+                    const updated = [...prev];
+                    const last = updated.at(-1)!;
+                    newMessage = {
+                        ...last,
+                        content: msg,
+                        status: parsed.choices?.[0]?.finish_reason === "stop" ? "complete" : "incomplete",
+                        references: parsed.references ?? last.references,
+                    };
+                    return [...updated.slice(0, -1), newMessage];
+                });
+            },
+            onFinish: async (msg) => {
+                // 完成后创建 AI 消息
+                let latestMessage = chatMessages[chatMessages.length - 1];
+                const result = await createAIMessage(
+                    msg, "insert", latestMessage?.status || "complete", "assistant", tempSessionID, parentID
+                );
+                if (result.code === responseCode.SUCCESS) {
+                    setChatMessages(prev => {
+                        const updated = [...prev];
+                        const last = updated.at(-1)!;
+                        newMessage = { ...last, id: result.data.message_id };
+                        return [...updated.slice(0, -1), newMessage];
+                    });
+                }
+            },
+            onError: () => {
+                setChatMessages(prev => {
+                    const updated = [...prev];
+                    const last = updated.at(-1)!;
+                    return [...updated.slice(0, -1), {
+                        ...last,
+                        content: t`Oops, something went wrong!`,
+                        status: 'error'
+                    }];
+                });
+            }
+        });
     };
 
     const renderContent = useCallback((props: RenderContentProps) => {
@@ -336,18 +354,98 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
     }, []);
 
     const onStopGenerator = () => {
-        controller.current.abort();
         setChatMessages((prev) => {
             const updated = [...prev];
             updated[updated.length - 1].status = 'complete';
             return updated;
         });
+        controller.current.abort();
     };
 
     const handleCloseCollapse = () => {
         if (setCollapsed) {
             setCollapsed(!isCollapsed);
         }
+    }
+
+    const updateMessageByID = (id: string | undefined, data: Partial<Message>) => {
+        if (!id) {
+            return;
+        }
+
+        setChatMessages((prev) => {
+            return prev.map((msg) => {
+                if (msg.id === id) {
+                    return { ...msg, ...data };
+                }
+                return msg;
+            });
+        });
+    }
+
+    const getMessageByID = (id: string) => {
+        return chatMessages.find((msg) => msg.id === id);
+    }
+
+    const handleReloadMessage = async (message: Message | undefined) => {
+        console.log("handleReloadMessage", message);
+        if (!message?.parentId) {
+            toast.error(t`Cannot reload message that has a parent message.`);
+            if (message?.id) {
+                updateMessageByID(message.id, {
+                    status: 'complete',
+                })
+            }
+            return;
+        }
+        const parentMessage = getMessageByID(message.parentId);
+        console.log("parentMessage", parentMessage);
+        if (!parentMessage) {
+            toast.error(t`Parent message not found.`);
+            updateMessageByID(message?.id, {
+                status: 'complete',
+            })
+            return;
+        }
+
+        var newMessage: Message = {
+            ...message,
+            content: '',
+        }
+        await requestAIResponse({
+            userMessage: String(message.content),
+            controller: controller.current,
+            isSearchInternet,
+            onStreamUpdate: (msg, parsed) => {
+                setChatMessages(prev => {
+                    const updated = [...prev];
+                    const last = updated.at(-1)!;
+                    newMessage = {
+                        ...last,
+                        content: msg,
+                        status: parsed.choices?.[0]?.finish_reason === "stop" ? "complete" : "incomplete",
+                        references: parsed.references ?? last.references,
+                    };
+                    return [...updated.slice(0, -1), newMessage];
+                });
+            },
+            onFinish: async (msg) => {
+                // 完成后创建 AI 消息
+                let latestMessage = chatMessages[chatMessages.length - 1];
+                await updateAIMessage(msg, "reset", latestMessage?.status || "complete", "assistant", message?.id, sessionID);
+            },
+            onError: () => {
+                setChatMessages(prev => {
+                    const updated = [...prev];
+                    const last = updated.at(-1)!;
+                    return [...updated.slice(0, -1), {
+                        ...last,
+                        content: t`Oops, something went wrong!`,
+                        status: 'error'
+                    }];
+                });
+            }
+        });
     }
 
     const emptyMessages = () => {
@@ -370,6 +468,7 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
     }
 
     const LoadHistoryMessage = (messages: AIMessage[], sessionID: string) => {
+        console.log("LoadHistoryMessage", messages, sessionID);
         setChatMessages(messages.map(
             (msg) => ({
                 id: msg.id,
@@ -377,6 +476,7 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
                 content: msg.content,
                 status: msg.status || 'complete',
                 createAt: new Date(msg.created_at).getTime() || Date.now(),
+                parentId: msg.parent_id,
                 // references: msg.references || [],
             })
         ))
@@ -443,6 +543,7 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
                 onChatsChange={onChatsChange}
                 onStopGenerator={onStopGenerator}
                 onMessageSend={onMessageSend}
+                onMessageReset={handleReloadMessage}
             />
         </>
     );

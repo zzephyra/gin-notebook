@@ -34,20 +34,42 @@ export async function getAIChatApi(messages: Message[], controller?: AbortContro
     }
 }
 
-export async function createAIMessage(content: string, action: string, status: string, role: string, session_id?: string, title?: string,) {
+export async function createAIMessage(content: string, action: "insert" | "init", status: string, role: string, session_id?: string, parentID?: string, title?: string,) {
     try {
         if (action == "insert" && session_id == undefined) {
             console.error("Session ID is required for insert action");
             return
         }
-
         const res = await axiosClient.post(aiChatMessageApi, {
             content,
             action,
             status,
             role,
             session_id,
+            parentID,
             title
+        });
+        return res.data;
+    } catch (err) {
+        return {
+            code: 500,
+            error: "Create AI message failed"
+        };
+    }
+}
+
+export async function updateAIMessage(content: string, action: "reset", status: string, role: string, message_id: string | undefined, session_id?: string) {
+    try {
+        if (message_id == undefined || message_id == "") {
+            toast.error(i18n._("Message ID is required for update action"));
+            return
+        }
+        const res = await axiosClient.put(`${aiChatMessageApi}/${message_id}`, {
+            content,
+            action,
+            status,
+            role,
+            session_id
         });
         return res.data;
     } catch (err) {

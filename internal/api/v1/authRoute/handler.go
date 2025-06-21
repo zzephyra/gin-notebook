@@ -34,3 +34,5 @@ func LoginAuthApi(c *gin.Context) {
 	token.StorageTokenInCookie(c, accessToken, "access_token", 3600*24, "/", "")
 	c.JSON(http.StatusOK, response.Response(responseCode, nil))
 }
+
+func QQLoginApi(c *gin.Context) {}

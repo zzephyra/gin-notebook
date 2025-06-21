@@ -11,6 +11,8 @@ import { Logout } from "@/store/features/user";
 import { CleanWorkspaceState } from "@/store/features/workspace";
 import { UserLogOutRequest } from "@/features/api/user";
 import { getMenuItems } from "@/config/site";
+import { GithubIcon } from "../icons";
+import { ThemeSwitcher } from "../ThemeSwitch/switch";
 
 export default function SiderBar() {
     const isVertical = true; // Set to true for vertical tabs
@@ -93,7 +95,7 @@ export default function SiderBar() {
                     </PopoverContent>
                 </Popover>
             </div>
-            <Tabs aria-label="Options" variant="bordered" defaultSelectedKey={currentMenuKey} isVertical={isVertical} onSelectionChange={handleTabClick}
+            <Tabs className="flex-1" aria-label="Options" variant="bordered" defaultSelectedKey={currentMenuKey} isVertical={isVertical} onSelectionChange={handleTabClick}
                 classNames={{ tab: "h-10 w-10", tabList: "h-full border-r-2 border-0 p-1", tabWrapper: "h-full" }}>
                 {menuItems.map((item) => (
                     <Tab key={item.key} className="flex items-center gap-2"
@@ -106,6 +108,10 @@ export default function SiderBar() {
                     </Tab>
                 ))}
             </Tabs>
+            <div className="py-2 flex gap-3 flex-col">
+                <ThemeSwitcher onlyIcon></ThemeSwitcher>
+                <GithubIcon onClick={() => { window.open("https://github.com/1131659949/gin-notebook") }} className="w-6 h-6 cursor-pointer hover:text-gray-500" />
+            </div>
         </div>
     )
 }

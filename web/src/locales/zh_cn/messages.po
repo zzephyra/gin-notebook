@@ -84,7 +84,7 @@ msgstr "行动"
 
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Active"
-msgstr "活性"
+msgstr "有效"
 
 #: src/components/modal/workspace/link/index.tsx:83
 msgid "Add Invite Link"
@@ -475,7 +475,7 @@ msgstr "邀请到您的工作区"
 
 #: src/pages/settings/workspaceSettings.tsx:142
 msgid "Invited Members"
-msgstr "请成员"
+msgstr "已邀请数"
 
 #: src/pages/workspace/invite.tsx:92
 msgid "Join Workspace"

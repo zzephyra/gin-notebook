@@ -13,5 +13,6 @@ func RegisterAuthRoutes(r *gin.RouterGroup) {
 		authGroup.POST("/logout", authService.UserLogout)
 		authGroup.POST("/captchas", authService.SendRegisterCaptcha)
 		authGroup.POST("/register", authService.UserRegister)
+		authGroup.POST("/qq-login", QQLoginApi)
 	}
 }

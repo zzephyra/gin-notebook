@@ -95,6 +95,8 @@ const (
 	ERROR_AI_SESSION_UPDATE    = 10005
 	ERROR_AI_SESSION_DELETE    = 10006
 	ERROR_AI_MESSAGE_INDEX     = 10007 // AI 消息索引错误
+	ERROR_AI_MESSAGE_NOT_FOUND = 10008 // AI 消息未找到
+	ERROR_AI_MESSAGE_UPDATE    = 10009 // AI 消息更新失败
 )
 
 var CodeMsg = map[int]string{
@@ -156,4 +158,6 @@ var CodeMsg = map[int]string{
 	ERROR_AI_SESSION_UPDATE:                    "AI 会话更新失败",
 	ERROR_AI_SESSION_DELETE:                    "AI 会话删除失败",
 	ERROR_AI_MESSAGE_INDEX:                     "AI 消息索引错误",
+	ERROR_AI_MESSAGE_NOT_FOUND:                 "AI 消息未找到",
+	ERROR_AI_MESSAGE_UPDATE:                    "AI 消息更新失败",
 }

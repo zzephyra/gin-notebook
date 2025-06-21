@@ -17,5 +17,6 @@ func RegisterAuthRoutes(r *gin.RouterGroup) {
 		aiGroup.DELETE("/session/:id", DeleteAISessionChatApi)
 		aiGroup.PUT("/session/:id", UpdateAISessionChatApi)
 		aiGroup.GET("/session/:id", GetAISessionChatApi)
+		aiGroup.PUT("/message/:id", UpdateAIMessageApi)
 	}
 }

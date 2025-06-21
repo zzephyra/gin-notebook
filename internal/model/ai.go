@@ -14,4 +14,5 @@ type AIMessage struct {
 	Role      string `json:"role" gorm:"type:varchar(20);not null;index:idx_role"`                      // 角色: user 或 assistant
 	Index     int64  `json:"index"    gorm:"not null;index:idx_session_index,unique"`                   // 顺序号
 	Status    string `json:"status" gorm:"type:varchar(20);not null;default:complete;index:idx_status"` // 状态: complete, loading 等
+	ParentID  int64  `json:"parent_id" gorm:""`                                                         // 父消息 ID，用于回复
 }

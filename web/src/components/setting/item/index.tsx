@@ -7,8 +7,8 @@ export default function SettingsItem(props: SettingsItemsProps) {
             {props.custom ? props.children : (
                 <>
                     <div className="flex flex-col gap-2 flex-1">
-                        <span className="text-sm text-gray-700 flex-1 ">{props.label}</span>
-                        {props.description && <p className="text-xs text-gray-500">{props.description}</p>}
+                        <span className="text-sm light:text-gray-700 dark:text-white flex-1 ">{props.label}</span>
+                        {props.description && <p className="text-xs light:text-gray-500 dark:text-white">{props.description}</p>}
                     </div>
                     <div className="m-auto">
                         {props.children}

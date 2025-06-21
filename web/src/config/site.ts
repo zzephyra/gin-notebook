@@ -1,7 +1,5 @@
-import SettingIcon from "@/components/icons/setting";
 import { MenuItem } from "@/components/menu/type";
-import { NewspaperIcon } from "@heroicons/react/24/solid";
-import { StarIcon } from "lucide-react";
+import { Cog6ToothIcon, NewspaperIcon, StarIcon } from "@heroicons/react/24/solid";
 
 export type SiteConfig = typeof siteConfig;
 
@@ -88,7 +86,7 @@ export const getMenuItems = (id: string): MenuItem[] => [
   },
   {
     label: `Settings`,
-    icon: SettingIcon,
+    icon: Cog6ToothIcon,
     key: "settings",
     route: `/settings/${id}`,
   },

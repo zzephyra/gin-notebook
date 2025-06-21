@@ -40,6 +40,7 @@ func AIMessage(ctx context.Context, params *dto.AIMessageParamsDTO) (responseCod
 			Status:    params.Status,
 			UserID:    params.UserID,
 			Index:     index,
+			ParentID:  params.ParentID,
 		}
 		err = repository.CreateAIMessage(tx, &messageModel)
 		if err != nil {
@@ -49,6 +50,7 @@ func AIMessage(ctx context.Context, params *dto.AIMessageParamsDTO) (responseCod
 
 		data = &dto.AIMessageResponseDTO{
 			SessionID: messageModel.SessionID,
+			MessageID: messageModel.ID,
 		}
 		return nil
 	})
