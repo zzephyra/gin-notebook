@@ -97,6 +97,11 @@ const (
 	ERROR_AI_MESSAGE_INDEX     = 10007 // AI 消息索引错误
 	ERROR_AI_MESSAGE_NOT_FOUND = 10008 // AI 消息未找到
 	ERROR_AI_MESSAGE_UPDATE    = 10009 // AI 消息更新失败
+
+	// Event模块的错误
+	ERROR_EVENT_CREATE                  = 11001 // 创建事件失败
+	ERROR_NO_PERMISSION_TO_VIEW_EVENTS  = 11002 // 无权查看事件
+	ERROR_NO_PERMISSION_TO_MODIFY_EVENT = 11003 // 无权修改事件
 )
 
 var CodeMsg = map[int]string{
@@ -160,4 +165,7 @@ var CodeMsg = map[int]string{
 	ERROR_AI_MESSAGE_INDEX:                     "AI 消息索引错误",
 	ERROR_AI_MESSAGE_NOT_FOUND:                 "AI 消息未找到",
 	ERROR_AI_MESSAGE_UPDATE:                    "AI 消息更新失败",
+	ERROR_EVENT_CREATE:                         "活动创建失败",
+	ERROR_NO_PERMISSION_TO_VIEW_EVENTS:         "无权查看活动",
+	ERROR_NO_PERMISSION_TO_MODIFY_EVENT:        "无权修改活动",
 }

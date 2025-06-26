@@ -3,7 +3,17 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { saveAs } from 'file-saver';
+import _ from 'lodash';
 
+export function getUpdatedFieldsDeep<T extends Record<string, any>>(original: T, updated: T): Partial<T> {
+    const diff: Partial<T> = {};
+    for (const key in updated) {
+        if (!_.isEqual(updated[key], original[key])) {
+            diff[key] = updated[key];
+        }
+    }
+    return diff;
+}
 export const getScriptFromLang = (lang: string) => {
     return lang.replace(/-/g, '_').toLowerCase() || "en";
 };

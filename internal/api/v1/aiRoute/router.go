@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterAuthRoutes(r *gin.RouterGroup) {
+func RegisterAiRoutes(r *gin.RouterGroup) {
 	aiGroup := r.Group("/ai")
 	aiGroup.Use(middleware.JWTAuth())
 	aiGroup.Use(middleware.RBACMiddleware())

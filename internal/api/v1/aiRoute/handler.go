@@ -57,15 +57,14 @@ func AIChatApi(c *gin.Context) {
 }
 
 func AIMessageApi(c *gin.Context) {
-	params := &dto.AIMessageParamsDTO{}
+	params := &dto.AIMessageParamsDTO{
+		UserID: c.MustGet("userID").(int64),
+	}
 	if err := c.ShouldBindJSON(params); err != nil {
 		logger.LogError(err, "CreateAISessionApi: failed to bind JSON")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid body"})
 		return
 	}
-
-	params.UserID = c.MustGet("userID").(int64)
-
 	if err := validator.ValidateStruct(params); err != nil {
 		logger.LogError(err, "验证失败：")
 		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
@@ -77,14 +76,14 @@ func AIMessageApi(c *gin.Context) {
 }
 
 func AIHostoryChatApi(c *gin.Context) {
-	params := &dto.AIHistoryChatParamsDTO{}
+	params := &dto.AIHistoryChatParamsDTO{
+		UserID: c.MustGet("userID").(int64),
+	}
 	if err := c.ShouldBindQuery(params); err != nil {
 		logger.LogError(err, "AIHostoryChatApi: failed to bind query")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid query"})
 		return
 	}
-
-	params.UserID = c.MustGet("userID").(int64)
 
 	if err := validator.ValidateStruct(params); err != nil {
 		logger.LogError(err, "验证失败：")

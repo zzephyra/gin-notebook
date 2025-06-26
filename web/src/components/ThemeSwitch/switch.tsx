@@ -6,10 +6,10 @@ export const ThemeSwitcher = ({ onlyIcon, radius, size }: { onlyIcon?: boolean, 
   const { theme, setTheme } = useTheme()
 
   return (
-    <div className="content-center h-6 w-6 cursor-pointer">
+    <div className="content-center cursor-pointer">
       {
         onlyIcon ? (
-          <div onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
+          <div className="content-center h-6 w-6 cursor-pointer" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
             {
               theme === "light" ? <SunIcon className="w-full h-full" /> : <MoonIcon className="w-full h-full" />
             }

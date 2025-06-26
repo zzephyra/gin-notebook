@@ -90,4 +90,10 @@ export const getMenuItems = (id: string): MenuItem[] => [
     key: "settings",
     route: `/settings/${id}`,
   },
+  {
+    label: `Tasks`,
+    icon: Cog6ToothIcon,
+    key: "tasks",
+    route: `/tasks/${id}`,
+  }
 ];

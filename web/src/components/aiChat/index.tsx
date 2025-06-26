@@ -399,7 +399,6 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
             return;
         }
         const parentMessage = getMessageByID(message.parentId);
-        console.log("parentMessage", parentMessage);
         if (!parentMessage) {
             toast.error(t`Parent message not found.`);
             updateMessageByID(message?.id, {
@@ -468,7 +467,6 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
     }
 
     const LoadHistoryMessage = (messages: AIMessage[], sessionID: string) => {
-        console.log("LoadHistoryMessage", messages, sessionID);
         setChatMessages(messages.map(
             (msg) => ({
                 id: msg.id,

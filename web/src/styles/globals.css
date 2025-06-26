@@ -149,3 +149,8 @@ body {
   background: #B3D4FC !important;
   color: #000;
 }
+
+.rdp-day {
+  aspect-ratio: 1 / 1;
+  height: auto !important;
+}

@@ -13,6 +13,7 @@ import WorkspaceNote from "@/pages/workspace/note";
 import InviteWorkspacePage from "@/pages/workspace/invite";
 import SettingsPage from "@/pages/settings/main";
 import FavoritesPage from "@/pages/workspace/favorites";
+import TasksPage from "@/pages/workspace/tasks";
 export let router = createBrowserRouter([
   {
     path: "/",
@@ -43,6 +44,10 @@ export let router = createBrowserRouter([
         path: "settings/:id",
         index: true,
         Component: SettingsPage,
+      }, {
+        path: "tasks/:id",
+        index: true,
+        Component: TasksPage,
       }
     ],
   },

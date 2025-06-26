@@ -20,3 +20,4 @@ export const aiChatApi: string = "/ai/chat";
 export const aiChatMessageApi: string = "/ai/message";
 export const aiChatHistoryApi: string = "/ai/history";
 export const aiChatSessionApi: string = "/ai/session";
+export const eventApi: string = "/event";

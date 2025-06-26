@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterUserRoutes(r *gin.RouterGroup) {
+func RegisterWorkspaceRoutes(r *gin.RouterGroup) {
 	authGroup := r.Group("/workspace")
 	authGroup.Use(middleware.JWTAuth())
 	{
