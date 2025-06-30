@@ -14,9 +14,16 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/features/api/ai.ts:100
-msgid "Failed to fetch AI chat session"
-msgstr "无法获取 AI 聊天会话"
+#: src/pages/workspace/tasks.tsx:147
+#: src/components/modal/event/add/index.tsx:152
+msgid "Monthly on the {day}th"
+msgstr "每月的第 {day} 天"
+
+#. js-lingui-explicit-id
+#: src/pages/workspace/tasks.tsx:150
+#: src/components/modal/event/add/index.tsx:155
+msgid "Last {byDay} of the Month"
+msgstr "每月的最后一个 {byDay}"
 
 #. js-lingui-explicit-id
 #: src/features/api/note.ts:13
@@ -38,6 +45,16 @@ msgstr "添加新类别失败"
 #: src/features/api/note.ts:124
 msgid "Delete note failed"
 msgstr "删除笔记失败"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:64
+msgid "Message ID is required for update action"
+msgstr "更新操作需要提供消息 ID"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:122
+msgid "Failed to fetch AI chat session"
+msgstr "无法获取 AI 聊天会话"
 
 #. js-lingui-explicit-id
 #: src/components/list/notes/index.tsx:127
@@ -106,6 +123,10 @@ msgstr "添加新笔记"
 msgid "Add to Favorites"
 msgstr "添加到收藏夹"
 
+#: src/components/modal/event/add/index.tsx:121
+msgid "All Day"
+msgstr "全天"
+
 #: src/components/dropdown/note/index.tsx:151
 msgid "Allow commenting"
 msgstr "允许评论"
@@ -146,6 +167,10 @@ msgstr "您确定要删除此邀请链接吗？"
 msgid "Are you sure you want to delete this note? This action cannot be undone."
 msgstr "是否确实要删除此便笺？此操作无法撤消。"
 
+#: src/pages/workspace/tasks.tsx:197
+msgid "Auto save failed, please try again later."
+msgstr "自动保存失败，请稍后重试"
+
 #: src/components/step/workspace/main.tsx:182
 msgid "Back"
 msgstr "回来"
@@ -162,11 +187,16 @@ msgstr "桶名称"
 #: src/components/modal/user/modifyPassword/index.tsx:58
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/note/deleteModal/index.tsx:42
+#: src/components/modal/event/add/index.tsx:162
 #: src/components/list/notes/index.tsx:135
 #: src/components/dropdown/note/index.tsx:104
 #: src/components/dropdown/note/index.tsx:203
 msgid "Cancel"
 msgstr "取消"
+
+#: src/components/aiChat/index.tsx:393
+msgid "Cannot reload message that has a parent message."
+msgstr "无法重新加载已有父消息的内容。"
 
 #: src/components/note/main/index.tsx:124
 msgid "Categorize the note by selecting an existing note category."
@@ -200,6 +230,10 @@ msgstr "更改密码"
 msgid "Change your password"
 msgstr "更改密码"
 
+#: src/components/fullCalendar/index.tsx:230
+msgid "Click to see more events"
+msgstr "点击查看更多内容"
+
 #: src/pages/settings/accountSettings.tsx:81
 msgid "Come up with a good name!"
 msgstr "想个好名字！"
@@ -220,6 +254,7 @@ msgstr "复制链接"
 msgid "Copy successfully"
 msgstr "复制成功"
 
+#: src/components/modal/event/add/index.tsx:165
 #: src/components/dropdown/note/index.tsx:107
 #: src/components/dropdown/note/index.tsx:206
 msgid "Create"
@@ -228,6 +263,10 @@ msgstr "创建"
 #: src/components/step/workspace/main.tsx:110
 msgid "Create a new workspace"
 msgstr "创建一个新的工作区"
+
+#: src/components/fullCalendar/index.tsx:141
+msgid "Create event successfully"
+msgstr "事件创建成功"
 
 #: src/components/dropdown/note/index.tsx:70
 msgid "Create note success"
@@ -308,7 +347,7 @@ msgstr "设备"
 msgid "Domain Url"
 msgstr "域Url"
 
-#: src/pages/auth/login.tsx:73
+#: src/pages/auth/login.tsx:80
 msgid "Don't have an account yet?"
 msgstr "还没有帐户？"
 
@@ -348,6 +387,34 @@ msgstr "输入您的新电子邮件"
 msgid "Enter your new password"
 msgstr "输入您的新密码"
 
+#: src/components/fullCalendar/index.tsx:151
+msgid "Event not found"
+msgstr "事件未找到"
+
+#: src/components/modal/event/add/index.tsx:70
+msgid "Event start or end time is invalid"
+msgstr "事件的开始时间或结束时间无效"
+
+#: src/pages/workspace/tasks.tsx:69
+#: src/pages/workspace/tasks.tsx:73
+#: src/components/modal/event/add/index.tsx:90
+msgid "Event Title"
+msgstr "事件标题"
+
+#: src/components/modal/event/add/index.tsx:65
+msgid "Event title is required"
+msgstr "事件标题为必填项"
+
+#: src/pages/workspace/tasks.tsx:138
+#: src/components/modal/event/add/index.tsx:143
+msgid "Every Weekday"
+msgstr "每个工作日"
+
+#: src/pages/workspace/tasks.tsx:135
+#: src/components/modal/event/add/index.tsx:140
+msgid "Everyday"
+msgstr "每天"
+
 #: src/components/step/workspace/main.tsx:168
 msgid "Expiration"
 msgstr "到期"
@@ -369,8 +436,8 @@ msgid "Failed to generate invite link"
 msgstr "无法生成邀请链接"
 
 #: src/components/aiChat/index.tsx:247
-msgid "Failed to get response from AI"
-msgstr "AI生成失败，请稍后再试～"
+#~ msgid "Failed to get response from AI"
+#~ msgstr "AI生成失败，请稍后再试～"
 
 #: src/components/aiChat/index.tsx:195
 msgid "Failed to load chat history"
@@ -433,7 +500,7 @@ msgstr "你好，{username}，今天我能帮你做些什么呢？"
 msgid "Hi! Welcome to Mameos!"
 msgstr "嗨！欢迎来到Mameos！"
 
-#: src/components/aiChat/index.tsx:410
+#: src/components/aiChat/index.tsx:508
 msgid "History"
 msgstr "历史"
 
@@ -495,7 +562,7 @@ msgstr "语言"
 
 #: src/components/table/device/index.tsx:61
 msgid "Last Active"
-msgstr ""
+msgstr "最后活跃时间"
 
 #: src/pages/workspace/note.tsx:46
 msgid "Loading notes..."
@@ -513,21 +580,21 @@ msgstr "局部存储路径"
 msgid "Locaton"
 msgstr "定位"
 
-#: src/components/menu/sidebar.tsx:90
+#: src/components/menu/sidebar.tsx:92
 #: src/components/avatarMenu/index.tsx:61
 msgid "Log out"
 msgstr "退出登录"
 
-#: src/pages/auth/login.tsx:36
-#: src/pages/auth/login.tsx:43
+#: src/pages/auth/login.tsx:38
+#: src/pages/auth/login.tsx:45
 msgid "Login failed"
 msgstr "登录失败"
 
-#: src/pages/auth/login.tsx:44
+#: src/pages/auth/login.tsx:46
 msgid "Login failed, please check your email and password"
 msgstr "登录失败，请检查您的电子邮件和密码"
 
-#: src/components/aiChat/index.tsx:363
+#: src/components/aiChat/index.tsx:460
 msgid "Mameos Robot"
 msgstr "Mameos小机器人"
 
@@ -535,11 +602,11 @@ msgstr "Mameos小机器人"
 msgid "Management"
 msgstr "管理"
 
-#: src/components/menu/sidebar.tsx:73
+#: src/components/menu/sidebar.tsx:75
 msgid "member"
 msgstr "成员"
 
-#: src/components/menu/sidebar.tsx:73
+#: src/components/menu/sidebar.tsx:75
 msgid "members"
 msgstr "成员"
 
@@ -571,9 +638,13 @@ msgstr "成功移动到类别"
 msgid "Move to trash"
 msgstr "移到垃圾桶"
 
-#: src/components/aiChat/index.tsx:406
+#: src/components/aiChat/index.tsx:504
 msgid "New Chat"
 msgstr "新对话"
+
+#: src/components/modal/event/add/index.tsx:81
+msgid "New Event"
+msgstr "新事件"
 
 #: src/components/dropdown/note/index.tsx:88
 msgid "New file"
@@ -599,7 +670,16 @@ msgstr "无类别"
 msgid "No expiration"
 msgstr "没有到期"
 
-#: src/components/menu/sidebar.tsx:70
+#: src/pages/workspace/tasks.tsx:132
+#: src/components/modal/event/add/index.tsx:137
+msgid "No Repeat"
+msgstr "不重复"
+
+#: src/pages/workspace/tasks.tsx:339
+msgid "No Title Event"
+msgstr "无标题事件"
+
+#: src/components/menu/sidebar.tsx:72
 msgid "No Workspace"
 msgstr "无工作区"
 
@@ -624,7 +704,7 @@ msgstr "笔记状态"
 msgid "Note title is required"
 msgstr "标题为必填项"
 
-#: src/components/aiChat/index.tsx:417
+#: src/components/aiChat/index.tsx:515
 msgid "Notes"
 msgstr "笔记"
 
@@ -636,7 +716,8 @@ msgstr "笔记管理"
 msgid "Now"
 msgstr "现在"
 
-#: src/components/aiChat/index.tsx:303
+#: src/components/aiChat/index.tsx:323
+#: src/components/aiChat/index.tsx:442
 msgid "Oops, something went wrong!"
 msgstr "糟糕，出了点问题！"
 
@@ -644,7 +725,7 @@ msgstr "糟糕，出了点问题！"
 msgid "Oops, This invitation link has expired."
 msgstr "此邀请链接已过期。"
 
-#: src/pages/auth/login.tsx:77
+#: src/pages/auth/login.tsx:84
 msgid "Or"
 msgstr "或"
 
@@ -656,6 +737,10 @@ msgstr "排序"
 msgid "Owner"
 msgstr "所有者"
 
+#: src/components/aiChat/index.tsx:403
+msgid "Parent message not found."
+msgstr "未找到父消息"
+
 #: src/pages/settings/accountSettings.tsx:84
 msgid "Password"
 msgstr "密码"
@@ -663,6 +748,16 @@ msgstr "密码"
 #: src/components/modal/user/modifyPassword/index.tsx:53
 msgid "Passwords do not match"
 msgstr "密码不匹配"
+
+#: src/pages/workspace/tasks.tsx:144
+#: src/components/modal/event/add/index.tsx:149
+msgid "Per 2 Weeks"
+msgstr "每两周"
+
+#: src/pages/workspace/tasks.tsx:141
+#: src/components/modal/event/add/index.tsx:146
+msgid "Per Week"
+msgstr "每周"
 
 #: src/components/note/main/index.tsx:109
 #: src/components/note/main/index.tsx:151
@@ -776,6 +871,10 @@ msgstr "拯救"
 msgid "Save to Note"
 msgstr "存入笔记"
 
+#: src/pages/workspace/tasks.tsx:312
+msgid "Schedules"
+msgstr "计划表"
+
 #: src/components/aiChatInput/index.tsx:82
 msgid "Search"
 msgstr "搜索"
@@ -882,7 +981,7 @@ msgstr "存储路径"
 msgid "Submit"
 msgstr "提交"
 
-#: src/components/menu/sidebar.tsx:83
+#: src/components/menu/sidebar.tsx:85
 msgid "Switch"
 msgstr "切换"
 
@@ -939,6 +1038,11 @@ msgstr "未命名会话"
 msgid "Update avatar successfully"
 msgstr "更新头像成功"
 
+#: src/pages/workspace/tasks.tsx:212
+#: src/components/fullCalendar/index.tsx:157
+msgid "Update event failed"
+msgstr "更新事件失败"
+
 #: src/pages/settings/accountSettings.tsx:29
 msgid "Update nickname successfully"
 msgstr "昵称更新成功"
@@ -994,7 +1098,7 @@ msgstr "欢迎回来，{username}！很高兴今天又能与你共事。"
 msgid "Workspace Name"
 msgstr "工作区名称"
 
-#: src/components/menu/sidebar.tsx:70
+#: src/components/menu/sidebar.tsx:72
 msgid "Workspace: "
 msgstr "工作区："
 

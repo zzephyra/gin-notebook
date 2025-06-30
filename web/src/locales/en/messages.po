@@ -14,9 +14,16 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/features/api/ai.ts:100
-msgid "Failed to fetch AI chat session"
-msgstr "Failed to fetch AI chat session"
+#: src/pages/workspace/tasks.tsx:147
+#: src/components/modal/event/add/index.tsx:152
+msgid "Monthly on the {day}th"
+msgstr "Monthly on the {day}th"
+
+#. js-lingui-explicit-id
+#: src/pages/workspace/tasks.tsx:150
+#: src/components/modal/event/add/index.tsx:155
+msgid "Last {byDay} of the Month"
+msgstr "Last {byDay} of the Month"
 
 #. js-lingui-explicit-id
 #: src/features/api/note.ts:13
@@ -38,6 +45,16 @@ msgstr "Add new category failed"
 #: src/features/api/note.ts:124
 msgid "Delete note failed"
 msgstr "Delete note failed"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:64
+msgid "Message ID is required for update action"
+msgstr "Message ID is required for update action"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:122
+msgid "Failed to fetch AI chat session"
+msgstr "Failed to fetch AI chat session"
 
 #. js-lingui-explicit-id
 #: src/components/list/notes/index.tsx:127
@@ -106,6 +123,10 @@ msgstr "Add New Note"
 msgid "Add to Favorites"
 msgstr "Add to Favorites"
 
+#: src/components/modal/event/add/index.tsx:121
+msgid "All Day"
+msgstr "All Day"
+
 #: src/components/dropdown/note/index.tsx:151
 msgid "Allow commenting"
 msgstr "Allow commenting"
@@ -146,6 +167,10 @@ msgstr "Are you sure you want to delete this invite link?"
 msgid "Are you sure you want to delete this note? This action cannot be undone."
 msgstr "Are you sure you want to delete this note? This action cannot be undone."
 
+#: src/pages/workspace/tasks.tsx:197
+msgid "Auto save failed, please try again later."
+msgstr "Auto save failed, please try again later."
+
 #: src/components/step/workspace/main.tsx:182
 msgid "Back"
 msgstr "Back"
@@ -162,11 +187,16 @@ msgstr "Bucket Name"
 #: src/components/modal/user/modifyPassword/index.tsx:58
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/note/deleteModal/index.tsx:42
+#: src/components/modal/event/add/index.tsx:162
 #: src/components/list/notes/index.tsx:135
 #: src/components/dropdown/note/index.tsx:104
 #: src/components/dropdown/note/index.tsx:203
 msgid "Cancel"
 msgstr "Cancel"
+
+#: src/components/aiChat/index.tsx:393
+msgid "Cannot reload message that has a parent message."
+msgstr "Cannot reload message that has a parent message."
 
 #: src/components/note/main/index.tsx:124
 msgid "Categorize the note by selecting an existing note category."
@@ -200,6 +230,10 @@ msgstr "Change Password"
 msgid "Change your password"
 msgstr "Change your password"
 
+#: src/components/fullCalendar/index.tsx:230
+msgid "Click to see more events"
+msgstr "Click to see more events"
+
 #: src/pages/settings/accountSettings.tsx:81
 msgid "Come up with a good name!"
 msgstr "Come up with a good name!"
@@ -220,6 +254,7 @@ msgstr "Copy Link"
 msgid "Copy successfully"
 msgstr "Copy successfully"
 
+#: src/components/modal/event/add/index.tsx:165
 #: src/components/dropdown/note/index.tsx:107
 #: src/components/dropdown/note/index.tsx:206
 msgid "Create"
@@ -228,6 +263,10 @@ msgstr "Create"
 #: src/components/step/workspace/main.tsx:110
 msgid "Create a new workspace"
 msgstr "Create a new workspace"
+
+#: src/components/fullCalendar/index.tsx:141
+msgid "Create event successfully"
+msgstr "Create event successfully"
 
 #: src/components/dropdown/note/index.tsx:70
 msgid "Create note success"
@@ -308,7 +347,7 @@ msgstr "Device"
 msgid "Domain Url"
 msgstr "Domain Url"
 
-#: src/pages/auth/login.tsx:73
+#: src/pages/auth/login.tsx:80
 msgid "Don't have an account yet?"
 msgstr "Don't have an account yet?"
 
@@ -348,6 +387,34 @@ msgstr "Enter your new email"
 msgid "Enter your new password"
 msgstr "Enter your new password"
 
+#: src/components/fullCalendar/index.tsx:151
+msgid "Event not found"
+msgstr "Event not found"
+
+#: src/components/modal/event/add/index.tsx:70
+msgid "Event start or end time is invalid"
+msgstr "Event start or end time is invalid"
+
+#: src/pages/workspace/tasks.tsx:69
+#: src/pages/workspace/tasks.tsx:73
+#: src/components/modal/event/add/index.tsx:90
+msgid "Event Title"
+msgstr "Event Title"
+
+#: src/components/modal/event/add/index.tsx:65
+msgid "Event title is required"
+msgstr "Event title is required"
+
+#: src/pages/workspace/tasks.tsx:138
+#: src/components/modal/event/add/index.tsx:143
+msgid "Every Weekday"
+msgstr "Every Weekday"
+
+#: src/pages/workspace/tasks.tsx:135
+#: src/components/modal/event/add/index.tsx:140
+msgid "Everyday"
+msgstr "Everyday"
+
 #: src/components/step/workspace/main.tsx:168
 msgid "Expiration"
 msgstr "Expiration"
@@ -369,8 +436,8 @@ msgid "Failed to generate invite link"
 msgstr "Failed to generate invite link"
 
 #: src/components/aiChat/index.tsx:247
-msgid "Failed to get response from AI"
-msgstr "Failed to get response from AI"
+#~ msgid "Failed to get response from AI"
+#~ msgstr "Failed to get response from AI"
 
 #: src/components/aiChat/index.tsx:195
 msgid "Failed to load chat history"
@@ -433,7 +500,7 @@ msgstr "Hi {username}, what can I assist you with today?"
 msgid "Hi! Welcome to Mameos!"
 msgstr "Hi! Welcome to Mameos!"
 
-#: src/components/aiChat/index.tsx:410
+#: src/components/aiChat/index.tsx:508
 msgid "History"
 msgstr "History"
 
@@ -513,21 +580,21 @@ msgstr "Local storage path"
 msgid "Locaton"
 msgstr "Locaton"
 
-#: src/components/menu/sidebar.tsx:90
+#: src/components/menu/sidebar.tsx:92
 #: src/components/avatarMenu/index.tsx:61
 msgid "Log out"
 msgstr "Log out"
 
-#: src/pages/auth/login.tsx:36
-#: src/pages/auth/login.tsx:43
+#: src/pages/auth/login.tsx:38
+#: src/pages/auth/login.tsx:45
 msgid "Login failed"
 msgstr "Login failed"
 
-#: src/pages/auth/login.tsx:44
+#: src/pages/auth/login.tsx:46
 msgid "Login failed, please check your email and password"
 msgstr "Login failed, please check your email and password"
 
-#: src/components/aiChat/index.tsx:363
+#: src/components/aiChat/index.tsx:460
 msgid "Mameos Robot"
 msgstr "Mameos Robot"
 
@@ -535,11 +602,11 @@ msgstr "Mameos Robot"
 msgid "Management"
 msgstr "Management"
 
-#: src/components/menu/sidebar.tsx:73
+#: src/components/menu/sidebar.tsx:75
 msgid "member"
 msgstr "member"
 
-#: src/components/menu/sidebar.tsx:73
+#: src/components/menu/sidebar.tsx:75
 msgid "members"
 msgstr "members"
 
@@ -571,9 +638,13 @@ msgstr "Move to category successfully"
 msgid "Move to trash"
 msgstr "Move to trash"
 
-#: src/components/aiChat/index.tsx:406
+#: src/components/aiChat/index.tsx:504
 msgid "New Chat"
 msgstr "New Chat"
+
+#: src/components/modal/event/add/index.tsx:81
+msgid "New Event"
+msgstr "New Event"
 
 #: src/components/dropdown/note/index.tsx:88
 msgid "New file"
@@ -599,7 +670,16 @@ msgstr "No Category"
 msgid "No expiration"
 msgstr "No expiration"
 
-#: src/components/menu/sidebar.tsx:70
+#: src/pages/workspace/tasks.tsx:132
+#: src/components/modal/event/add/index.tsx:137
+msgid "No Repeat"
+msgstr "No Repeat"
+
+#: src/pages/workspace/tasks.tsx:339
+msgid "No Title Event"
+msgstr "No Title Event"
+
+#: src/components/menu/sidebar.tsx:72
 msgid "No Workspace"
 msgstr "No Workspace"
 
@@ -624,7 +704,7 @@ msgstr "Note Status"
 msgid "Note title is required"
 msgstr "Note title is required"
 
-#: src/components/aiChat/index.tsx:417
+#: src/components/aiChat/index.tsx:515
 msgid "Notes"
 msgstr "Notes"
 
@@ -636,7 +716,8 @@ msgstr "Notes Management"
 msgid "Now"
 msgstr "Now"
 
-#: src/components/aiChat/index.tsx:303
+#: src/components/aiChat/index.tsx:323
+#: src/components/aiChat/index.tsx:442
 msgid "Oops, something went wrong!"
 msgstr "Oops, something went wrong!"
 
@@ -644,7 +725,7 @@ msgstr "Oops, something went wrong!"
 msgid "Oops, This invitation link has expired."
 msgstr "Oops, This invitation link has expired."
 
-#: src/pages/auth/login.tsx:77
+#: src/pages/auth/login.tsx:84
 msgid "Or"
 msgstr "Or"
 
@@ -656,6 +737,10 @@ msgstr "Ordering"
 msgid "Owner"
 msgstr "Owner"
 
+#: src/components/aiChat/index.tsx:403
+msgid "Parent message not found."
+msgstr "Parent message not found."
+
 #: src/pages/settings/accountSettings.tsx:84
 msgid "Password"
 msgstr "Password"
@@ -663,6 +748,16 @@ msgstr "Password"
 #: src/components/modal/user/modifyPassword/index.tsx:53
 msgid "Passwords do not match"
 msgstr "Passwords do not match"
+
+#: src/pages/workspace/tasks.tsx:144
+#: src/components/modal/event/add/index.tsx:149
+msgid "Per 2 Weeks"
+msgstr "Per 2 Weeks"
+
+#: src/pages/workspace/tasks.tsx:141
+#: src/components/modal/event/add/index.tsx:146
+msgid "Per Week"
+msgstr "Per Week"
 
 #: src/components/note/main/index.tsx:109
 #: src/components/note/main/index.tsx:151
@@ -776,6 +871,10 @@ msgstr "Save"
 msgid "Save to Note"
 msgstr "Save to Note"
 
+#: src/pages/workspace/tasks.tsx:312
+msgid "Schedules"
+msgstr "Schedules"
+
 #: src/components/aiChatInput/index.tsx:82
 msgid "Search"
 msgstr "Search"
@@ -882,7 +981,7 @@ msgstr "Storage Path"
 msgid "Submit"
 msgstr "Submit"
 
-#: src/components/menu/sidebar.tsx:83
+#: src/components/menu/sidebar.tsx:85
 msgid "Switch"
 msgstr "Switch"
 
@@ -943,6 +1042,11 @@ msgstr "Untitled Session"
 msgid "Update avatar successfully"
 msgstr "Update avatar successfully"
 
+#: src/pages/workspace/tasks.tsx:212
+#: src/components/fullCalendar/index.tsx:157
+msgid "Update event failed"
+msgstr "Update event failed"
+
 #: src/pages/settings/accountSettings.tsx:29
 msgid "Update nickname successfully"
 msgstr "Update nickname successfully"
@@ -998,7 +1102,7 @@ msgstr "Welcome back, {username}! Glad to be working with you again today."
 msgid "Workspace Name"
 msgstr "Workspace Name"
 
-#: src/components/menu/sidebar.tsx:70
+#: src/components/menu/sidebar.tsx:72
 msgid "Workspace: "
 msgstr "Workspace: "
 
@@ -1009,3 +1113,7 @@ msgstr "You are not allowed to join this workspace."
 #: src/pages/workspace/invite.tsx:102
 msgid "You have already joined this workspace!"
 msgstr "You have already joined this workspace!"
+
+#: src/pages/workspace/tasks.tsx:197
+#~ msgid "自动保存失败，请重试"
+#~ msgstr "自动保存失败，请重试"

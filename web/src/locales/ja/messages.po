@@ -14,8 +14,15 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/features/api/ai.ts:100
-msgid "Failed to fetch AI chat session"
+#: src/pages/workspace/tasks.tsx:147
+#: src/components/modal/event/add/index.tsx:152
+msgid "Monthly on the {day}th"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/pages/workspace/tasks.tsx:150
+#: src/components/modal/event/add/index.tsx:155
+msgid "Last {byDay} of the Month"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -38,6 +45,16 @@ msgstr "新規カテゴリの追加失敗"
 #: src/features/api/note.ts:124
 msgid "Delete note failed"
 msgstr "ノートの削除失敗"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:64
+msgid "Message ID is required for update action"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:122
+msgid "Failed to fetch AI chat session"
+msgstr ""
 
 #. js-lingui-explicit-id
 #: src/components/list/notes/index.tsx:127
@@ -106,6 +123,10 @@ msgstr "新しいノートを追加"
 msgid "Add to Favorites"
 msgstr "お気に入りに追加"
 
+#: src/components/modal/event/add/index.tsx:121
+msgid "All Day"
+msgstr ""
+
 #: src/components/dropdown/note/index.tsx:151
 msgid "Allow commenting"
 msgstr "コメントを許可"
@@ -146,6 +167,10 @@ msgstr "この招待リンクを削除しても大丈夫ですか？"
 msgid "Are you sure you want to delete this note? This action cannot be undone."
 msgstr "本当にこのノートを削除しますか？この操作は元に戻すことはできません。"
 
+#: src/pages/workspace/tasks.tsx:197
+msgid "Auto save failed, please try again later."
+msgstr ""
+
 #: src/components/step/workspace/main.tsx:182
 msgid "Back"
 msgstr "バック"
@@ -162,11 +187,16 @@ msgstr "バケット名"
 #: src/components/modal/user/modifyPassword/index.tsx:58
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/note/deleteModal/index.tsx:42
+#: src/components/modal/event/add/index.tsx:162
 #: src/components/list/notes/index.tsx:135
 #: src/components/dropdown/note/index.tsx:104
 #: src/components/dropdown/note/index.tsx:203
 msgid "Cancel"
 msgstr "キャンセル"
+
+#: src/components/aiChat/index.tsx:393
+msgid "Cannot reload message that has a parent message."
+msgstr ""
 
 #: src/components/note/main/index.tsx:124
 msgid "Categorize the note by selecting an existing note category."
@@ -200,6 +230,10 @@ msgstr "パスワード変更"
 msgid "Change your password"
 msgstr "パスワード変更"
 
+#: src/components/fullCalendar/index.tsx:230
+msgid "Click to see more events"
+msgstr ""
+
 #: src/pages/settings/accountSettings.tsx:81
 msgid "Come up with a good name!"
 msgstr "良い名前を思い付く！"
@@ -220,6 +254,7 @@ msgstr "リンクをコピー"
 msgid "Copy successfully"
 msgstr "コピー成功"
 
+#: src/components/modal/event/add/index.tsx:165
 #: src/components/dropdown/note/index.tsx:107
 #: src/components/dropdown/note/index.tsx:206
 msgid "Create"
@@ -228,6 +263,10 @@ msgstr "作成"
 #: src/components/step/workspace/main.tsx:110
 msgid "Create a new workspace"
 msgstr "新しいワークスペースの作成"
+
+#: src/components/fullCalendar/index.tsx:141
+msgid "Create event successfully"
+msgstr ""
 
 #: src/components/dropdown/note/index.tsx:70
 msgid "Create note success"
@@ -308,7 +347,7 @@ msgstr ""
 msgid "Domain Url"
 msgstr "ドメインURL"
 
-#: src/pages/auth/login.tsx:73
+#: src/pages/auth/login.tsx:80
 msgid "Don't have an account yet?"
 msgstr "まだアカウントをお持ちでない場合"
 
@@ -348,6 +387,34 @@ msgstr "新しいメールアドレスを入力"
 msgid "Enter your new password"
 msgstr "新しいパスワードを入力"
 
+#: src/components/fullCalendar/index.tsx:151
+msgid "Event not found"
+msgstr ""
+
+#: src/components/modal/event/add/index.tsx:70
+msgid "Event start or end time is invalid"
+msgstr ""
+
+#: src/pages/workspace/tasks.tsx:69
+#: src/pages/workspace/tasks.tsx:73
+#: src/components/modal/event/add/index.tsx:90
+msgid "Event Title"
+msgstr ""
+
+#: src/components/modal/event/add/index.tsx:65
+msgid "Event title is required"
+msgstr ""
+
+#: src/pages/workspace/tasks.tsx:138
+#: src/components/modal/event/add/index.tsx:143
+msgid "Every Weekday"
+msgstr ""
+
+#: src/pages/workspace/tasks.tsx:135
+#: src/components/modal/event/add/index.tsx:140
+msgid "Everyday"
+msgstr ""
+
 #: src/components/step/workspace/main.tsx:168
 msgid "Expiration"
 msgstr "パスワード"
@@ -369,8 +436,8 @@ msgid "Failed to generate invite link"
 msgstr "招待リンクの生成に失敗"
 
 #: src/components/aiChat/index.tsx:247
-msgid "Failed to get response from AI"
-msgstr ""
+#~ msgid "Failed to get response from AI"
+#~ msgstr ""
 
 #: src/components/aiChat/index.tsx:195
 msgid "Failed to load chat history"
@@ -433,7 +500,7 @@ msgstr ""
 msgid "Hi! Welcome to Mameos!"
 msgstr "こんにちは！Mameosへようこそ！"
 
-#: src/components/aiChat/index.tsx:410
+#: src/components/aiChat/index.tsx:508
 msgid "History"
 msgstr ""
 
@@ -513,21 +580,21 @@ msgstr "ローカルストレージパス"
 msgid "Locaton"
 msgstr ""
 
-#: src/components/menu/sidebar.tsx:90
+#: src/components/menu/sidebar.tsx:92
 #: src/components/avatarMenu/index.tsx:61
 msgid "Log out"
 msgstr "ログインする"
 
-#: src/pages/auth/login.tsx:36
-#: src/pages/auth/login.tsx:43
+#: src/pages/auth/login.tsx:38
+#: src/pages/auth/login.tsx:45
 msgid "Login failed"
 msgstr "ログイン失敗"
 
-#: src/pages/auth/login.tsx:44
+#: src/pages/auth/login.tsx:46
 msgid "Login failed, please check your email and password"
 msgstr "ログインに失敗しました。メールアドレスとパスワードを確認してください"
 
-#: src/components/aiChat/index.tsx:363
+#: src/components/aiChat/index.tsx:460
 msgid "Mameos Robot"
 msgstr ""
 
@@ -535,11 +602,11 @@ msgstr ""
 msgid "Management"
 msgstr "マネジメント"
 
-#: src/components/menu/sidebar.tsx:73
+#: src/components/menu/sidebar.tsx:75
 msgid "member"
 msgstr "メンバー"
 
-#: src/components/menu/sidebar.tsx:73
+#: src/components/menu/sidebar.tsx:75
 msgid "members"
 msgstr "メンバー"
 
@@ -571,8 +638,12 @@ msgstr "カテゴリへの移行成功"
 msgid "Move to trash"
 msgstr "ゴミ箱に移動"
 
-#: src/components/aiChat/index.tsx:406
+#: src/components/aiChat/index.tsx:504
 msgid "New Chat"
+msgstr ""
+
+#: src/components/modal/event/add/index.tsx:81
+msgid "New Event"
 msgstr ""
 
 #: src/components/dropdown/note/index.tsx:88
@@ -599,7 +670,16 @@ msgstr "カテゴリーなし"
 msgid "No expiration"
 msgstr "有効期限なし"
 
-#: src/components/menu/sidebar.tsx:70
+#: src/pages/workspace/tasks.tsx:132
+#: src/components/modal/event/add/index.tsx:137
+msgid "No Repeat"
+msgstr ""
+
+#: src/pages/workspace/tasks.tsx:339
+msgid "No Title Event"
+msgstr ""
+
+#: src/components/menu/sidebar.tsx:72
 msgid "No Workspace"
 msgstr "ワークスペースなし"
 
@@ -624,7 +704,7 @@ msgstr "ノートステータス"
 msgid "Note title is required"
 msgstr "Note title必須"
 
-#: src/components/aiChat/index.tsx:417
+#: src/components/aiChat/index.tsx:515
 msgid "Notes"
 msgstr "備考"
 
@@ -636,7 +716,8 @@ msgstr ""
 msgid "Now"
 msgstr "今"
 
-#: src/components/aiChat/index.tsx:303
+#: src/components/aiChat/index.tsx:323
+#: src/components/aiChat/index.tsx:442
 msgid "Oops, something went wrong!"
 msgstr ""
 
@@ -644,7 +725,7 @@ msgstr ""
 msgid "Oops, This invitation link has expired."
 msgstr "おっと、この招待リンクは切れました。"
 
-#: src/pages/auth/login.tsx:77
+#: src/pages/auth/login.tsx:84
 msgid "Or"
 msgstr "OR"
 
@@ -656,6 +737,10 @@ msgstr "ソート"
 msgid "Owner"
 msgstr ""
 
+#: src/components/aiChat/index.tsx:403
+msgid "Parent message not found."
+msgstr ""
+
 #: src/pages/settings/accountSettings.tsx:84
 msgid "Password"
 msgstr "パスワード"
@@ -663,6 +748,16 @@ msgstr "パスワード"
 #: src/components/modal/user/modifyPassword/index.tsx:53
 msgid "Passwords do not match"
 msgstr "パスワードが一致しません"
+
+#: src/pages/workspace/tasks.tsx:144
+#: src/components/modal/event/add/index.tsx:149
+msgid "Per 2 Weeks"
+msgstr ""
+
+#: src/pages/workspace/tasks.tsx:141
+#: src/components/modal/event/add/index.tsx:146
+msgid "Per Week"
+msgstr ""
 
 #: src/components/note/main/index.tsx:109
 #: src/components/note/main/index.tsx:151
@@ -776,6 +871,10 @@ msgstr "保存"
 msgid "Save to Note"
 msgstr ""
 
+#: src/pages/workspace/tasks.tsx:312
+msgid "Schedules"
+msgstr ""
+
 #: src/components/aiChatInput/index.tsx:82
 msgid "Search"
 msgstr ""
@@ -882,7 +981,7 @@ msgstr "ストレージパス"
 msgid "Submit"
 msgstr "コンテンツ"
 
-#: src/components/menu/sidebar.tsx:83
+#: src/components/menu/sidebar.tsx:85
 msgid "Switch"
 msgstr "スイッチ"
 
@@ -939,6 +1038,11 @@ msgstr ""
 msgid "Update avatar successfully"
 msgstr "アバターの更新"
 
+#: src/pages/workspace/tasks.tsx:212
+#: src/components/fullCalendar/index.tsx:157
+msgid "Update event failed"
+msgstr ""
+
 #: src/pages/settings/accountSettings.tsx:29
 msgid "Update nickname successfully"
 msgstr "ニックネームの更新"
@@ -994,7 +1098,7 @@ msgstr ""
 msgid "Workspace Name"
 msgstr "ワークスペース名"
 
-#: src/components/menu/sidebar.tsx:70
+#: src/components/menu/sidebar.tsx:72
 msgid "Workspace: "
 msgstr "ワークスペース"
 
@@ -1005,3 +1109,7 @@ msgstr "このワークスペースには参加できません。"
 #: src/pages/workspace/invite.tsx:102
 msgid "You have already joined this workspace!"
 msgstr "すでにこのワークスペースに参加しています。"
+
+#: src/pages/workspace/tasks.tsx:197
+#~ msgid "自动保存失败，请重试"
+#~ msgstr ""

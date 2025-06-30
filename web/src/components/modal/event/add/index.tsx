@@ -1,4 +1,4 @@
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDraggable } from "@heroui/react";
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, SharedSelection, Switch, useDraggable } from "@heroui/react";
 import { Popover, PopoverTrigger, PopoverContent } from "@heroui/popover";
 import { useLingui } from "@lingui/react/macro";
 import { DateObject, Calendar } from "react-multi-date-picker";
@@ -10,22 +10,16 @@ import { useRef } from "react";
 import Swatch from '@uiw/react-color-swatch';
 import { hsvaToHex } from '@uiw/color-convert';
 import { Event } from "@/types/event";
+import toast from "react-hot-toast";
 
-const preset = ['#3788d8', '#39c5bb', '#F44E3B', '#FE9200', '#FCDC00', '#DBDF00', '#008744'];
+export const preset = ['#3788d8', '#39c5bb', '#F44E3B', '#FE9200', '#FCDC00', '#DBDF00', '#008744'];
 
-function generateDtstartFromDate(date: Date): string {
-    const iso = date.toISOString(); // e.g., "2025-06-25T06:30:00.000Z"
-    const ymd = iso.slice(0, 10).replace(/-/g, ''); // "20250625"
-    const hms = iso.slice(11, 19).replace(/:/g, ''); // "063000"
-    return `DTSTART:${ymd}T${hms}Z`;
-}
+
 
 const AddNewEventModal = ({ isOpen, onOpenChange, event, onTimeChange, onUpdateEvent, onCreate }: { isOpen: boolean, onOpenChange: (isOpen: boolean) => void, event?: Event, onTimeChange?: (type: "start" | "end", date: Date) => void, onUpdateEvent?: (field: string, value: any, subfield?: string) => void, onCreate?: () => void }) => {
     const { t, i18n } = useLingui();
     const modalRef = useRef(null)
     const today = new Date();
-    const dtstart = generateDtstartFromDate(event?.start || today);
-
     // 星期几（BYDAY）
     const weekdayMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
     const byDay = weekdayMap[today.getDay()];  // 'WE'
@@ -58,8 +52,25 @@ const AddNewEventModal = ({ isOpen, onOpenChange, event, onTimeChange, onUpdateE
         }
     }
 
+    const handleChangeSelection = (value: SharedSelection) => {
+        const rrule_type = value.currentKey
+        handleUpdateEvent("rrule_type", rrule_type);
+
+    }
+
     const handleCreateEvent = () => {
         if (!event) return;
+
+        if (!event.title || event.title.trim() === "") {
+            toast.error(t`Event title is required`);
+            return;
+        }
+
+        if (!event.start || !event.end || event.start.getTime() >= event.end.getTime()) {
+            toast.error(t`Event start or end time is invalid`);
+            return;
+        }
+
         if (onCreate) onCreate();
     }
 
@@ -121,26 +132,26 @@ const AddNewEventModal = ({ isOpen, onOpenChange, event, onTimeChange, onUpdateE
                     </div>
                     <div className="flex items-center gap-4 mt-2">
                         <ArrowPathRoundedSquareIcon className="w-4 text-slate-400" />
-                        <Select size="sm" className="w-full" value={event?.rrule || ""} onSelectionChange={(value) => handleUpdateEvent("rrule", value.currentKey)}>
-                            <SelectItem key={``}>
+                        <Select size="sm" className="w-full" selectedKeys={[event?.rrule_type || "0"]} onSelectionChange={handleChangeSelection}>
+                            <SelectItem key={0}>
                                 {t`No Repeat`}
                             </SelectItem>
-                            <SelectItem key={`${dtstart}\nRRULE:FREQ=DAILY;INTERVAL=1`} >
+                            <SelectItem key={1} >
                                 {t`Everyday`}
                             </SelectItem>
-                            <SelectItem key={`${dtstart}\nRRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR`}>
+                            <SelectItem key={2}>
                                 {t`Every Weekday`}
                             </SelectItem>
-                            <SelectItem key={`${dtstart}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=${byDay}`}>
+                            <SelectItem key={3}>
                                 {t`Per Week`}
                             </SelectItem>
-                            <SelectItem key={`${dtstart}\nRRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=${byDay}`}>
+                            <SelectItem key={4}>
                                 {t`Per 2 Weeks`}
                             </SelectItem>
-                            <SelectItem key={`${dtstart}\nRRULE:FREQ=MONTHLY;INTERVAL=1;BYMONTHDAY=${day}`}>
+                            <SelectItem key={5}>
                                 {i18n._(`Monthly on the {day}th`, { day: day })}
                             </SelectItem>
-                            <SelectItem key={`${dtstart}\nRRULE:FREQ=MONTHLY;INTERVAL=1;BYDAY=${byDay};BYSETPOS=-1`}>
+                            <SelectItem key={6}>
                                 {i18n._(`Last {byDay} of the Month`, { byDay: byDay })}
                             </SelectItem>
                         </Select>

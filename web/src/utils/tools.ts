@@ -112,3 +112,59 @@ export const exportToWord = async (title: string, content: string) => {
     const blob = await Packer.toBlob(doc);
     saveAs(blob, `${title}.docx`);
 };
+
+export function generateDtstartFromDate(date: Date): string {
+    const iso = date.toISOString(); // e.g., "2025-06-25T06:30:00.000Z"
+    const ymd = iso.slice(0, 10).replace(/-/g, ''); // "20250625"
+    const hms = iso.slice(11, 19).replace(/:/g, ''); // "063000"
+    return `DTSTART:${ymd}T${hms}Z`;
+}
+
+export function createRecurringEventFromStartEnd(
+    start: Date,
+    end: Date,
+) {
+    const durationMs = end.getTime() - start.getTime(); // 毫秒差
+    const hours = Math.floor(durationMs / (1000 * 60 * 60));
+    const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+    console.log(hours, minutes, start, end);
+    const duration = {
+        hours: hours,
+        minutes: minutes,
+    }
+    return duration;
+}
+
+export function updateNewRrule(start: Date, rrule: string) {
+    const dtstart = generateDtstartFromDate(start);
+    const rruleLine = rrule.split('\n').find(line => line.startsWith("RRULE:"));
+    return rruleLine ? `${dtstart}\n${rruleLine}` : dtstart;
+}
+
+export function RruleTypes(index: string | undefined, date: Date) {
+    if (!index || !date) return ``;
+
+    const dtstart = generateDtstartFromDate(date);
+    const weekdayMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+
+    const byDay = weekdayMap[date.getDay()];  // 'WE'
+    const day = date.getDate();     // 25
+
+
+    switch (index) {
+        case "1":
+            return `${dtstart}\nRRULE:FREQ=DAILY;INTERVAL=1`;
+        case "2":
+            return `${dtstart}\nRRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR`;
+        case "3":
+            return `${dtstart}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=${byDay}`;
+        case "4":
+            return `${dtstart}\nRRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=${byDay}`
+        case "5":
+            return `${dtstart}\nRRULE:FREQ=MONTHLY;INTERVAL=1;BYMONTHDAY=${day}`
+        case "6":
+            return `${dtstart}\nRRULE:FREQ=MONTHLY;INTERVAL=1;BYDAY=${byDay};BYSETPOS=-1`
+        default:
+            return ``;
+    }
+}

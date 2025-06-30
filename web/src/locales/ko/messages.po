@@ -14,8 +14,15 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/features/api/ai.ts:100
-msgid "Failed to fetch AI chat session"
+#: src/pages/workspace/tasks.tsx:147
+#: src/components/modal/event/add/index.tsx:152
+msgid "Monthly on the {day}th"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/pages/workspace/tasks.tsx:150
+#: src/components/modal/event/add/index.tsx:155
+msgid "Last {byDay} of the Month"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -38,6 +45,16 @@ msgstr "새 범주를 추가하지 못했습니다."
 #: src/features/api/note.ts:124
 msgid "Delete note failed"
 msgstr "노트 삭제 실패"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:64
+msgid "Message ID is required for update action"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:122
+msgid "Failed to fetch AI chat session"
+msgstr ""
 
 #. js-lingui-explicit-id
 #: src/components/list/notes/index.tsx:127
@@ -106,6 +123,10 @@ msgstr "새 노트 추가"
 msgid "Add to Favorites"
 msgstr "즐겨찾기에 추가"
 
+#: src/components/modal/event/add/index.tsx:121
+msgid "All Day"
+msgstr ""
+
 #: src/components/dropdown/note/index.tsx:151
 msgid "Allow commenting"
 msgstr "주석 달기 허용"
@@ -146,6 +167,10 @@ msgstr "이 초대 링크를 삭제하시겠습니까?"
 msgid "Are you sure you want to delete this note? This action cannot be undone."
 msgstr "이 노트를 삭제하시겠습니까? 이 작업은 실행 취소할 수 없습니다."
 
+#: src/pages/workspace/tasks.tsx:197
+msgid "Auto save failed, please try again later."
+msgstr ""
+
 #: src/components/step/workspace/main.tsx:182
 msgid "Back"
 msgstr "뒤로 (Back)"
@@ -162,11 +187,16 @@ msgstr "버켓 이름"
 #: src/components/modal/user/modifyPassword/index.tsx:58
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/note/deleteModal/index.tsx:42
+#: src/components/modal/event/add/index.tsx:162
 #: src/components/list/notes/index.tsx:135
 #: src/components/dropdown/note/index.tsx:104
 #: src/components/dropdown/note/index.tsx:203
 msgid "Cancel"
 msgstr "취소 (Cancel)"
+
+#: src/components/aiChat/index.tsx:393
+msgid "Cannot reload message that has a parent message."
+msgstr ""
 
 #: src/components/note/main/index.tsx:124
 msgid "Categorize the note by selecting an existing note category."
@@ -200,6 +230,10 @@ msgstr "암호 변경"
 msgid "Change your password"
 msgstr "암호 변경"
 
+#: src/components/fullCalendar/index.tsx:230
+msgid "Click to see more events"
+msgstr ""
+
 #: src/pages/settings/accountSettings.tsx:81
 msgid "Come up with a good name!"
 msgstr "좋은 이름을 생각해 보세요!"
@@ -220,6 +254,7 @@ msgstr "링크 복사"
 msgid "Copy successfully"
 msgstr "복제 성공"
 
+#: src/components/modal/event/add/index.tsx:165
 #: src/components/dropdown/note/index.tsx:107
 #: src/components/dropdown/note/index.tsx:206
 msgid "Create"
@@ -228,6 +263,10 @@ msgstr "작성 (Create)"
 #: src/components/step/workspace/main.tsx:110
 msgid "Create a new workspace"
 msgstr "새 작업공간 만들기"
+
+#: src/components/fullCalendar/index.tsx:141
+msgid "Create event successfully"
+msgstr ""
 
 #: src/components/dropdown/note/index.tsx:70
 msgid "Create note success"
@@ -308,7 +347,7 @@ msgstr ""
 msgid "Domain Url"
 msgstr "도메인 URL"
 
-#: src/pages/auth/login.tsx:73
+#: src/pages/auth/login.tsx:80
 msgid "Don't have an account yet?"
 msgstr "아직 계좌가 없으신가요?"
 
@@ -348,6 +387,34 @@ msgstr "새 전자 메일 입력"
 msgid "Enter your new password"
 msgstr "새 암호 입력"
 
+#: src/components/fullCalendar/index.tsx:151
+msgid "Event not found"
+msgstr ""
+
+#: src/components/modal/event/add/index.tsx:70
+msgid "Event start or end time is invalid"
+msgstr ""
+
+#: src/pages/workspace/tasks.tsx:69
+#: src/pages/workspace/tasks.tsx:73
+#: src/components/modal/event/add/index.tsx:90
+msgid "Event Title"
+msgstr ""
+
+#: src/components/modal/event/add/index.tsx:65
+msgid "Event title is required"
+msgstr ""
+
+#: src/pages/workspace/tasks.tsx:138
+#: src/components/modal/event/add/index.tsx:143
+msgid "Every Weekday"
+msgstr ""
+
+#: src/pages/workspace/tasks.tsx:135
+#: src/components/modal/event/add/index.tsx:140
+msgid "Everyday"
+msgstr ""
+
 #: src/components/step/workspace/main.tsx:168
 msgid "Expiration"
 msgstr "만료 됨"
@@ -369,8 +436,8 @@ msgid "Failed to generate invite link"
 msgstr "초대 링크를 생성할 수 없습니다."
 
 #: src/components/aiChat/index.tsx:247
-msgid "Failed to get response from AI"
-msgstr ""
+#~ msgid "Failed to get response from AI"
+#~ msgstr ""
 
 #: src/components/aiChat/index.tsx:195
 msgid "Failed to load chat history"
@@ -433,7 +500,7 @@ msgstr ""
 msgid "Hi! Welcome to Mameos!"
 msgstr "안녕하세요! Mameos에 오신 것을 환영합니다!"
 
-#: src/components/aiChat/index.tsx:410
+#: src/components/aiChat/index.tsx:508
 msgid "History"
 msgstr ""
 
@@ -513,21 +580,21 @@ msgstr "로컬 스토리지 경로"
 msgid "Locaton"
 msgstr ""
 
-#: src/components/menu/sidebar.tsx:90
+#: src/components/menu/sidebar.tsx:92
 #: src/components/avatarMenu/index.tsx:61
 msgid "Log out"
 msgstr "로그아웃"
 
-#: src/pages/auth/login.tsx:36
-#: src/pages/auth/login.tsx:43
+#: src/pages/auth/login.tsx:38
+#: src/pages/auth/login.tsx:45
 msgid "Login failed"
 msgstr "로그인 실패"
 
-#: src/pages/auth/login.tsx:44
+#: src/pages/auth/login.tsx:46
 msgid "Login failed, please check your email and password"
 msgstr "로그인 실패. 이메일과 암호를 확인하십시오."
 
-#: src/components/aiChat/index.tsx:363
+#: src/components/aiChat/index.tsx:460
 msgid "Mameos Robot"
 msgstr ""
 
@@ -535,11 +602,11 @@ msgstr ""
 msgid "Management"
 msgstr "관리 (Management)"
 
-#: src/components/menu/sidebar.tsx:73
+#: src/components/menu/sidebar.tsx:75
 msgid "member"
 msgstr "멤버"
 
-#: src/components/menu/sidebar.tsx:73
+#: src/components/menu/sidebar.tsx:75
 msgid "members"
 msgstr "구성원"
 
@@ -571,8 +638,12 @@ msgstr "범주로 성공적으로 이동"
 msgid "Move to trash"
 msgstr "휴지통으로 이동"
 
-#: src/components/aiChat/index.tsx:406
+#: src/components/aiChat/index.tsx:504
 msgid "New Chat"
+msgstr ""
+
+#: src/components/modal/event/add/index.tsx:81
+msgid "New Event"
 msgstr ""
 
 #: src/components/dropdown/note/index.tsx:88
@@ -599,7 +670,16 @@ msgstr "범주 없음"
 msgid "No expiration"
 msgstr "만료 없음"
 
-#: src/components/menu/sidebar.tsx:70
+#: src/pages/workspace/tasks.tsx:132
+#: src/components/modal/event/add/index.tsx:137
+msgid "No Repeat"
+msgstr ""
+
+#: src/pages/workspace/tasks.tsx:339
+msgid "No Title Event"
+msgstr ""
+
+#: src/components/menu/sidebar.tsx:72
 msgid "No Workspace"
 msgstr "작업공간 없음"
 
@@ -624,7 +704,7 @@ msgstr "노트 상태"
 msgid "Note title is required"
 msgstr "노트 제목은 필수입니다."
 
-#: src/components/aiChat/index.tsx:417
+#: src/components/aiChat/index.tsx:515
 msgid "Notes"
 msgstr "메모 (Notes)"
 
@@ -636,7 +716,8 @@ msgstr ""
 msgid "Now"
 msgstr "지금 당장"
 
-#: src/components/aiChat/index.tsx:303
+#: src/components/aiChat/index.tsx:323
+#: src/components/aiChat/index.tsx:442
 msgid "Oops, something went wrong!"
 msgstr ""
 
@@ -644,7 +725,7 @@ msgstr ""
 msgid "Oops, This invitation link has expired."
 msgstr "이 초대 링크가 만료되었습니다."
 
-#: src/pages/auth/login.tsx:77
+#: src/pages/auth/login.tsx:84
 msgid "Or"
 msgstr "또는"
 
@@ -656,6 +737,10 @@ msgstr "종류"
 msgid "Owner"
 msgstr "소유자 (Owner)"
 
+#: src/components/aiChat/index.tsx:403
+msgid "Parent message not found."
+msgstr ""
+
 #: src/pages/settings/accountSettings.tsx:84
 msgid "Password"
 msgstr "비밀 번호"
@@ -663,6 +748,16 @@ msgstr "비밀 번호"
 #: src/components/modal/user/modifyPassword/index.tsx:53
 msgid "Passwords do not match"
 msgstr "암호가 일치하지 않습니다."
+
+#: src/pages/workspace/tasks.tsx:144
+#: src/components/modal/event/add/index.tsx:149
+msgid "Per 2 Weeks"
+msgstr ""
+
+#: src/pages/workspace/tasks.tsx:141
+#: src/components/modal/event/add/index.tsx:146
+msgid "Per Week"
+msgstr ""
 
 #: src/components/note/main/index.tsx:109
 #: src/components/note/main/index.tsx:151
@@ -776,6 +871,10 @@ msgstr "저장하기"
 msgid "Save to Note"
 msgstr ""
 
+#: src/pages/workspace/tasks.tsx:312
+msgid "Schedules"
+msgstr ""
+
 #: src/components/aiChatInput/index.tsx:82
 msgid "Search"
 msgstr ""
@@ -882,7 +981,7 @@ msgstr "저장 경로"
 msgid "Submit"
 msgstr "제출"
 
-#: src/components/menu/sidebar.tsx:83
+#: src/components/menu/sidebar.tsx:85
 msgid "Switch"
 msgstr "스위치 (Switch)"
 
@@ -939,6 +1038,11 @@ msgstr ""
 msgid "Update avatar successfully"
 msgstr "아바타 업데이트 성공"
 
+#: src/pages/workspace/tasks.tsx:212
+#: src/components/fullCalendar/index.tsx:157
+msgid "Update event failed"
+msgstr ""
+
 #: src/pages/settings/accountSettings.tsx:29
 msgid "Update nickname successfully"
 msgstr "닉네임을 업데이트했습니다."
@@ -994,7 +1098,7 @@ msgstr ""
 msgid "Workspace Name"
 msgstr "작업공간 이름"
 
-#: src/components/menu/sidebar.tsx:70
+#: src/components/menu/sidebar.tsx:72
 msgid "Workspace: "
 msgstr "작업 공간:"
 
@@ -1005,3 +1109,7 @@ msgstr "이 작업 영역에 참여할 수 없습니다."
 #: src/pages/workspace/invite.tsx:102
 msgid "You have already joined this workspace!"
 msgstr "이 작업 영역에 이미 가입했습니다!"
+
+#: src/pages/workspace/tasks.tsx:197
+#~ msgid "自动保存失败，请重试"
+#~ msgstr ""

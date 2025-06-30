@@ -3,11 +3,11 @@ import rrulePlugin from '@fullcalendar/rrule';
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import { useDisclosure, Button } from '@heroui/react'
-import { DateSelectArg } from '@fullcalendar/core/index.js'
+import { DateSelectArg, EventClickArg, MoreLinkContentArg } from '@fullcalendar/core/index.js'
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import type FullCalendarClass from '@fullcalendar/react';
 import { useLingui } from '@lingui/react/macro'
-import { addDays, format, subDays } from "date-fns";
+import { addDays, addMinutes, format, subDays } from "date-fns";
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import AddNewEventModal from '../modal/event/add';
 import { CreateEventRequest, UpdateEventRequest } from '@/features/api/event';
@@ -15,26 +15,26 @@ import { Event } from '@/types/event';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { responseCode } from '@/features/constant/response';
+import { createRecurringEventFromStartEnd, RruleTypes } from '@/utils/tools';
 
-function createRecurringEventFromStartEnd(
-    start: Date,
-    end: Date,
-) {
-    const durationMs = end.getTime() - start.getTime(); // 毫秒差
-    const hours = Math.floor(durationMs / (1000 * 60 * 60));
-    const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
-
-    const duration = {
-        hours: hours,
-        minutes: minutes,
-    }
-    return duration;
+function renderEventContent(eventInfo: MoreLinkContentArg) {
+    return (
+        <>
+            {eventInfo.shortText}
+        </>
+    )
 }
 
-type ChildProps = { events: Event[], date: Date | undefined, onChangeDate?: (date: Date) => void, onEventChange?: (event: any) => void };
+type ChildProps = {
+    events: Event[],
+    date: Date | undefined,
+    eventClick?: (event: Event) => void,
+    onChangeDate?: (date: Date) => void,
+    onEventChange?: (event: any) => void
+};
 
 export type CalendarRef = {
-    onOpen: () => void;
+    handleOpenModalInMobile: () => void;
 };
 
 const Calendar = forwardRef<CalendarRef, ChildProps>((props, ref) => {
@@ -46,7 +46,7 @@ const Calendar = forwardRef<CalendarRef, ChildProps>((props, ref) => {
 
 
     useImperativeHandle(ref, () => ({
-        onOpen
+        handleOpenModalInMobile
     }));
     const handleSelect = (args: DateSelectArg) => {
         args.view.calendar.unselect(); // 清除选择状态
@@ -56,11 +56,24 @@ const Calendar = forwardRef<CalendarRef, ChildProps>((props, ref) => {
             start: args.start,
             end: args.end,
             allDay: args.allDay,
+            rrule_type: "0", // 默认不重复
             title: "",
             color: "#3788d8" // 默认颜色
         });
     }
 
+    const handleOpenModalInMobile = () => {
+        var now = new Date();
+        onOpen();
+        setPendingEvent({
+            start: now,
+            end: addMinutes(now, 30), // 默认结束时间为开始时间后 30 分钟
+            allDay: false,
+            rrule_type: "0", // 默认不重复
+            title: "",
+            color: "#3788d8" // 默认颜色
+        });
+    }
 
 
     const handleDateChange = (action: "add" | "sub") => {
@@ -97,14 +110,15 @@ const Calendar = forwardRef<CalendarRef, ChildProps>((props, ref) => {
                 : value
         };
 
-        if (field == "rrule") {
+        if (field == "rrule_type") {
             // 如果清空了重复规则，则删除 rrule 字段
-            if (value == "") {
+            if (value == "0") {
                 delete update.rrule
                 delete update.duration
             } else {
                 // 如果有重复规则，则生成持续时间
                 if (update.start && update.end) {
+                    update.rrule = RruleTypes(value, update.start);
                     update.duration = createRecurringEventFromStartEnd(update.start, update.end);
                 }
             }
@@ -133,7 +147,6 @@ const Calendar = forwardRef<CalendarRef, ChildProps>((props, ref) => {
     const handleUpdateEventById = async (id: string, event: Partial<Event>) => {
         if (!id || !event) return;
         let oldEvent = props.events.find(e => e.id === id);
-        console.log("oldEvent", props.events, id);
         if (!oldEvent) {
             toast.error(t`Event not found`);
             return;
@@ -144,6 +157,13 @@ const Calendar = forwardRef<CalendarRef, ChildProps>((props, ref) => {
             toast.error(t`Update event failed`);
 
         }
+    }
+
+    const handleEventClick = (info: EventClickArg) => {
+        if (!info.event.id) return;
+        const event = props.events.find(e => e.id === info.event.id)
+        if (!event) return
+        props.eventClick?.(event);
     }
 
     const handleEventChange = async (event: any) => {
@@ -163,20 +183,6 @@ const Calendar = forwardRef<CalendarRef, ChildProps>((props, ref) => {
         <div className="h-full w-full flex-1 flex flex-col">
             <AddNewEventModal onCreate={handleCreateEvent} onTimeChange={handleTimeChange} event={pendingEvent} isOpen={isOpen} onOpenChange={handleOpenChange} onUpdateEvent={handleUpdateEvent}>
             </AddNewEventModal>
-            {/* <Drawer isOpen={isOpen} onOpenChange={onOpenChange} >
-                <DrawerContent>
-                    <DrawerHeader>
-                        <h1>
-                            {t`Create Event`}
-                        </h1>
-                    </DrawerHeader>
-                    <DrawerBody>
-                        <Form>
-                            <Input size='sm' labelPlacement="outside" name='event_name' placeholder={t`Event Name`} label={t`Event Name`}></Input>
-                        </Form>
-                    </DrawerBody>
-                </DrawerContent>
-            </Drawer> */}
             <div className='mb-2'>
                 <div className='font-medium text-xl flex gap-2 items-center'>
                     {
@@ -216,8 +222,16 @@ const Calendar = forwardRef<CalendarRef, ChildProps>((props, ref) => {
                     select={handleSelect}
                     selectable={true}
                     selectMirror={false}
+                    eventMaxStack={1}
+                    eventClick={handleEventClick}
+                    moreLinkClick={() => { console.log(1) }} // 取消默认的点击事件
+                    // moreLinkClick={moreLinkDidMount}
+                    moreLinkContent={renderEventContent}
+                    moreLinkHint={t`Click to see more events`}
+                    moreLinkClassNames={"bg-slate-100 text-slate-500"}
+                    // dayMaxEventRows={false}
                     nowIndicator={true} // 当前时间指示线
-                    dayMaxEvents={true} // allow "more" link when too many events
+
                 />
             </div>
         </div>
