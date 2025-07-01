@@ -31,13 +31,18 @@ import SettingsWrapper from "../../setting/wrapper";
 import SettingsItem from "../../setting/item";
 import { Note } from "@/pages/workspace/type";
 import toast from "react-hot-toast";
+import { IconSidebar } from "@douyinfe/semi-icons"
 import SquareIcon from "../../icons/square";
 import { store } from "@/store";
 import { UpdateNoteByID } from "@/store/features/workspace";
 import DeleteNoteModal from "@/components/modal/note/deleteModal";
-import { StarIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
+import { ChatBubbleLeftEllipsisIcon, SparklesIcon, StarIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
 import { StarIcon as SolidStarIcon } from "@heroicons/react/24/solid";
 import BlockNoteEditor from "@/components/third-party/BlockNoteEditor";
+import { Tabs, Tab } from "@heroui/tabs";
+import { useMediaQuery } from "react-responsive";
+import AvatarMenu from "@/components/avatarMenu";
+
 const iconSize = 14
 
 function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }: { isOpen: boolean, onOpenChange: (open: boolean) => void, activeKey?: string, note: Note, workspaceID: any }) {
@@ -54,7 +59,7 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
         })
         if (res.code == responseCode.SUCCESS) {
             toast.success(t`Update successfully`);
-            store.dispatch(UpdateNoteByID({ ...note, [key]: value }))
+            store.dispatch(UpdateNoteByID({ id: note.id, changes: { [key]: value } }))
         } else {
             toast.error(res.error);
 
@@ -89,7 +94,7 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
             category_id: category_id
         })
         if (res.code == responseCode.SUCCESS) {
-            store.dispatch(UpdateNoteByID({ ...note, category_id: category_id }))
+            store.dispatch(UpdateNoteByID({ id: note.id, changes: { category_id } }))
             toast.success(t`Update successfully`);
         } else {
             toast.error(res.error);
@@ -189,9 +194,28 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
     )
 }
 
+function NoteSidebar() {
+    return (
+        <>
+            <div>
+                <Tabs size="sm">
+                    <Tab className="w-8" title={<SparklesIcon className="h-4 w-4"></SparklesIcon>}>
+
+                    </Tab>
+                    <Tab className="w-8" title={<ChatBubbleLeftEllipsisIcon className="h-4 w-4"></ChatBubbleLeftEllipsisIcon>}>
+
+                    </Tab>
+                </Tabs>
+            </div>
+        </>
+    )
+}
+
 export default function NotePage(props: NoteProps) {
     // const { t } = useLingui();
+    const isDesktop = useMediaQuery({ minWidth: 1024 });
     const [content, _] = useState<string>(props.note.content);
+    const [openSide, setOpenSide] = useState(false);
     const params = useParams();
     // const [lastSaveTime, setLastSaveTime] = useState<string | null>(null);
     // const [saving, setSaving] = useState<boolean>(false);
@@ -206,8 +230,7 @@ export default function NotePage(props: NoteProps) {
     }
     const handleChangeContent = debounce((newContent: string) => {
         if (params.id == undefined) return;
-
-        store.dispatch(UpdateNoteByID({ ...props.note, content: newContent }))
+        store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { content: newContent } }))
         if (content != newContent) {
             // setSaving(true);
             AutoUpdateContent({
@@ -227,53 +250,72 @@ export default function NotePage(props: NoteProps) {
 
     const handleStarNote = async () => {
         SetFavoriteNoeRequest(props.note.id, !props.note.is_favorite)
-        store.dispatch(UpdateNoteByID({ ...props.note, is_favorite: !props.note.is_favorite }))
+        store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { is_favorite: !props.note.is_favorite } }))
     }
 
     const handleBlurTitle = () => {
         setIsEditingTitle(false);
-        store.dispatch(UpdateNoteByID({ ...props.note, title: inputRef.current ? inputRef.current.value : props.note.title }))
+        store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { title: inputRef.current ? inputRef.current.value : props.note.title } }))
     }
 
     return (
         <>
-            <div className="flex flex-col h-screen">
-                <div className="h-11 flex items-center justify-between px-4">
-                    <div className="flex items-center">
-                        <span>
-                            <Button variant="light" isIconOnly size="sm" className="px-2" onPress={() => props.setCollapsed(!props.isCollapsed)}>
-                                <ViewColumnsIcon></ViewColumnsIcon>
-                            </Button>
-                        </span>
-                        {
-                            isEditingTitle ? <Input ref={inputRef} size="sm" defaultValue={props.note.title} onBlur={handleBlurTitle}></Input> : <span onClick={handleEditTitle} className="text-sm w-40 block hover:text-accent-foreground hover:bg-accent py-1 px-2 rounded-lg cursor-pointer" > {props.note.title}</span>
-                        }
-
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Button variant="light" isIconOnly size="sm" className="px-2" onPress={handleStarNote} >
+            <div className="flex h-full w-full">
+                <div className="flex flex-1 w-min-0 flex-col h-screen">
+                    <div className="h-11 flex items-center justify-between px-4">
+                        <div className="flex items-center">
+                            <span className="mr-2">
+                                {
+                                    isDesktop ? (
+                                        <Button variant="light" isIconOnly size="sm" className="px-2" onPress={() => props.setCollapsed(!props.isCollapsed)}>
+                                            <ViewColumnsIcon></ViewColumnsIcon>
+                                        </Button>
+                                    ) : (
+                                        <>
+                                            <AvatarMenu>
+                                            </AvatarMenu>
+                                        </>
+                                    )
+                                }
+                            </span>
                             {
-                                !props.note.is_favorite ? <StarIcon className=""></StarIcon> : <SolidStarIcon className="text-yellow-400"></SolidStarIcon>
+                                isEditingTitle ? <Input ref={inputRef} size="sm" defaultValue={props.note.title} onBlur={handleBlurTitle}></Input> : <span onClick={handleEditTitle} className="text-sm w-40 block hover:text-accent-foreground hover:bg-accent py-1 px-2 rounded-lg cursor-pointer" > {props.note.title}</span>
                             }
 
-                        </Button>
-                        <Button variant="light" isIconOnly size="sm" className="px-2" onPress={onOpenSetting}>
-                            <ShareIcon></ShareIcon>
-                        </Button>
-                        <Button variant="light" isIconOnly size="sm" className="px-2" onPress={onOpenSetting}>
-                            <SettingIcon></SettingIcon>
-                        </Button>
-                        <NoteSettingModal isOpen={isOpenSetting} onOpenChange={onOpenSettingChange} note={props.note} workspaceID={params.id}></NoteSettingModal>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Button variant="light" isIconOnly size="sm" className="px-2" onPress={handleStarNote} >
+                                {
+                                    !props.note.is_favorite ? <StarIcon className=""></StarIcon> : <SolidStarIcon className="text-yellow-400"></SolidStarIcon>
+                                }
+
+                            </Button>
+                            <Button variant="light" isIconOnly size="sm" className="px-2" onPress={onOpenSetting}>
+                                <ShareIcon></ShareIcon>
+                            </Button>
+                            <Button variant="light" isIconOnly size="sm" className="px-2" onPress={onOpenSetting}>
+                                <SettingIcon></SettingIcon>
+                            </Button>
+                            <Button variant="light" isIconOnly size="sm" className="px-2" onPress={() => setOpenSide(!openSide)}>
+                                <IconSidebar className="rotate-180"></IconSidebar>
+                            </Button>
+                            <NoteSettingModal isOpen={isOpenSetting} onOpenChange={onOpenSettingChange} note={props.note} workspaceID={params.id}></NoteSettingModal>
+                        </div>
                     </div>
-                </div>
-                <div>
                     <div>
+                        <div>
+
+                        </div>
+                    </div>
+                    <div className="flex-1 whitespace-normal transition-all duration-300 min-w-0 flex p-4">
+                        <BlockNoteEditor noteID={props.note.id} content={props.note.content} onChange={handleChangeContent} />
 
                     </div>
                 </div>
-                <div className="flex-1 overflow-auto p-4">
-                    {/* 编辑器组件 */}
-                    <BlockNoteEditor noteID={props.note.id} content={props.note.content} onChange={handleChangeContent}></BlockNoteEditor>
+                <div
+                    className={`transition-all ${openSide ? "w-80 p-2" : "w-0 p-0"} overflow-hidden border-l  border-slate-200 duration-300 h-full`}
+                >
+                    <NoteSidebar></NoteSidebar>
                 </div>
             </div>
         </>

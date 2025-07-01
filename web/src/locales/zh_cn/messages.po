@@ -57,7 +57,7 @@ msgid "Failed to fetch AI chat session"
 msgstr "无法获取 AI 聊天会话"
 
 #. js-lingui-explicit-id
-#: src/components/list/notes/index.tsx:127
+#: src/components/list/notes/index.tsx:126
 msgid "Would you like to move the file to the \"{total}\" folder?"
 msgstr "是否要将文件移动到\"{total}\\”文件夹？"
 
@@ -135,7 +135,7 @@ msgstr "允许评论"
 msgid "Allow editing"
 msgstr "允许编辑"
 
-#: src/components/note/main/index.tsx:136
+#: src/components/note/main/index.tsx:141
 msgid "Allow editing this note."
 msgstr "允许编辑此笔记。"
 
@@ -151,7 +151,7 @@ msgstr "允许加入"
 msgid "Allow sharing"
 msgstr "允许共享"
 
-#: src/components/note/main/index.tsx:133
+#: src/components/note/main/index.tsx:138
 msgid "Allow sharing this note with others or third-party applications."
 msgstr "允许与其他人或第三方应用程序共享此笔记。"
 
@@ -175,7 +175,7 @@ msgstr "自动保存失败，请稍后重试"
 msgid "Back"
 msgstr "回来"
 
-#: src/components/note/main/index.tsx:120
+#: src/components/note/main/index.tsx:125
 msgid "Basic Information"
 msgstr "基本信息"
 
@@ -188,21 +188,21 @@ msgstr "桶名称"
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/note/deleteModal/index.tsx:42
 #: src/components/modal/event/add/index.tsx:162
-#: src/components/list/notes/index.tsx:135
+#: src/components/list/notes/index.tsx:134
 #: src/components/dropdown/note/index.tsx:104
 #: src/components/dropdown/note/index.tsx:203
 msgid "Cancel"
 msgstr "取消"
 
-#: src/components/aiChat/index.tsx:393
+#: src/components/aiChat/index.tsx:392
 msgid "Cannot reload message that has a parent message."
 msgstr "无法重新加载已有父消息的内容。"
 
-#: src/components/note/main/index.tsx:124
+#: src/components/note/main/index.tsx:129
 msgid "Categorize the note by selecting an existing note category."
 msgstr "通过选择现有笔记类别对笔记进行分类。"
 
-#: src/components/note/main/index.tsx:124
+#: src/components/note/main/index.tsx:129
 msgid "Category"
 msgstr "类别"
 
@@ -300,7 +300,7 @@ msgstr "正在创建工作区..."
 msgid "Current device"
 msgstr "当前设备"
 
-#: src/components/note/main/index.tsx:140
+#: src/components/note/main/index.tsx:145
 msgid "Danger Zone"
 msgstr "危险区"
 
@@ -319,8 +319,8 @@ msgstr "删除失败"
 msgid "Delete Invite Link"
 msgstr "删除邀请链接"
 
-#: src/components/note/main/index.tsx:141
-#: src/components/note/main/index.tsx:143
+#: src/components/note/main/index.tsx:146
+#: src/components/note/main/index.tsx:148
 msgid "Delete Note"
 msgstr "删除笔记"
 
@@ -334,7 +334,7 @@ msgstr "删除笔记失败：{0}"
 msgid "Delete successfully"
 msgstr "删除成功"
 
-#: src/components/note/main/index.tsx:141
+#: src/components/note/main/index.tsx:146
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "删除此项目是永久性操作，无法撤消。请谨慎操作。"
 
@@ -371,11 +371,11 @@ msgstr "电子邮件"
 msgid "Emails go here → one@example.com, two@example.com"
 msgstr "电子邮件地址：one@example.com，two@example.com"
 
-#: src/components/note/main/index.tsx:136
+#: src/components/note/main/index.tsx:141
 msgid "Enable Edit"
 msgstr "启用编辑"
 
-#: src/components/note/main/index.tsx:133
+#: src/components/note/main/index.tsx:138
 msgid "Enable Share"
 msgstr "Enable Share"
 
@@ -439,7 +439,7 @@ msgstr "无法生成邀请链接"
 #~ msgid "Failed to get response from AI"
 #~ msgstr "AI生成失败，请稍后再试～"
 
-#: src/components/aiChat/index.tsx:195
+#: src/components/aiChat/index.tsx:204
 msgid "Failed to load chat history"
 msgstr "加载聊天记录失败"
 
@@ -447,7 +447,7 @@ msgstr "加载聊天记录失败"
 msgid "Favorites"
 msgstr "收藏夹"
 
-#: src/components/list/notes/index.tsx:123
+#: src/components/list/notes/index.tsx:122
 msgid "File movement"
 msgstr "文件移动"
 
@@ -455,7 +455,7 @@ msgstr "文件移动"
 msgid "Frequent Used"
 msgstr "经常使用"
 
-#: src/components/note/main/index.tsx:107
+#: src/components/note/main/index.tsx:112
 msgid "General"
 msgstr "一般"
 
@@ -500,7 +500,7 @@ msgstr "你好，{username}，今天我能帮你做些什么呢？"
 msgid "Hi! Welcome to Mameos!"
 msgstr "嗨！欢迎来到Mameos！"
 
-#: src/components/aiChat/index.tsx:508
+#: src/pages/workspace/note.tsx:136
 msgid "History"
 msgstr "历史"
 
@@ -512,7 +512,7 @@ msgstr "历史聊天"
 msgid "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
 msgstr "如果你要带一位客人，请随意在下面添加他们的电子邮件，或者简单地复制并与他们分享邀请链接！"
 
-#: src/components/list/notes/index.tsx:130
+#: src/components/list/notes/index.tsx:129
 msgid "Ignore this prompt for this login"
 msgstr "忽略此登录的提示"
 
@@ -520,7 +520,7 @@ msgstr "忽略此登录的提示"
 msgid "Invite link"
 msgstr "邀请链接"
 
-#: src/components/note/main/index.tsx:112
+#: src/components/note/main/index.tsx:117
 msgid "Invite Link"
 msgstr "邀请链接"
 
@@ -564,7 +564,7 @@ msgstr "语言"
 msgid "Last Active"
 msgstr "最后活跃时间"
 
-#: src/pages/workspace/note.tsx:46
+#: src/pages/workspace/note.tsx:84
 msgid "Loading notes..."
 msgstr "正在加载笔记..."
 
@@ -594,11 +594,11 @@ msgstr "登录失败"
 msgid "Login failed, please check your email and password"
 msgstr "登录失败，请检查您的电子邮件和密码"
 
-#: src/components/aiChat/index.tsx:460
+#: src/components/aiChat/index.tsx:455
 msgid "Mameos Robot"
 msgstr "Mameos小机器人"
 
-#: src/components/note/main/index.tsx:108
+#: src/components/note/main/index.tsx:113
 msgid "Management"
 msgstr "管理"
 
@@ -614,7 +614,7 @@ msgstr "成员"
 msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
 msgstr "喵~这里还没有你喜欢的笔记，快去标星吧!"
 
-#: src/components/list/notes/index.tsx:138
+#: src/components/list/notes/index.tsx:137
 msgid "Move"
 msgstr "移动"
 
@@ -638,7 +638,7 @@ msgstr "成功移动到类别"
 msgid "Move to trash"
 msgstr "移到垃圾桶"
 
-#: src/components/aiChat/index.tsx:504
+#: src/pages/workspace/note.tsx:132
 msgid "New Chat"
 msgstr "新对话"
 
@@ -662,7 +662,7 @@ msgstr "新密码"
 msgid "Next Note"
 msgstr "下一条笔记"
 
-#: src/components/note/main/index.tsx:127
+#: src/components/note/main/index.tsx:132
 msgid "No Category"
 msgstr "无类别"
 
@@ -683,7 +683,7 @@ msgstr "无标题事件"
 msgid "No Workspace"
 msgstr "无工作区"
 
-#: src/components/note/main/index.tsx:121
+#: src/components/note/main/index.tsx:126
 msgid "Note ID"
 msgstr "笔记ID"
 
@@ -691,12 +691,12 @@ msgstr "笔记ID"
 msgid "Note Name"
 msgstr "笔记名称"
 
-#: src/components/note/main/index.tsx:132
+#: src/components/note/main/index.tsx:137
 msgid "Note Settings"
 msgstr "笔记设置"
 
-#: src/components/note/main/index.tsx:152
-#: src/components/note/main/index.tsx:158
+#: src/components/note/main/index.tsx:157
+#: src/components/note/main/index.tsx:163
 msgid "Note Status"
 msgstr "笔记状态"
 
@@ -704,7 +704,7 @@ msgstr "笔记状态"
 msgid "Note title is required"
 msgstr "标题为必填项"
 
-#: src/components/aiChat/index.tsx:515
+#: src/pages/workspace/note.tsx:143
 msgid "Notes"
 msgstr "笔记"
 
@@ -716,8 +716,8 @@ msgstr "笔记管理"
 msgid "Now"
 msgstr "现在"
 
-#: src/components/aiChat/index.tsx:323
-#: src/components/aiChat/index.tsx:442
+#: src/components/aiChat/index.tsx:330
+#: src/components/aiChat/index.tsx:441
 msgid "Oops, something went wrong!"
 msgstr "糟糕，出了点问题！"
 
@@ -737,7 +737,7 @@ msgstr "排序"
 msgid "Owner"
 msgstr "所有者"
 
-#: src/components/aiChat/index.tsx:403
+#: src/components/aiChat/index.tsx:402
 msgid "Parent message not found."
 msgstr "未找到父消息"
 
@@ -759,8 +759,8 @@ msgstr "每两周"
 msgid "Per Week"
 msgstr "每周"
 
-#: src/components/note/main/index.tsx:109
-#: src/components/note/main/index.tsx:151
+#: src/components/note/main/index.tsx:114
+#: src/components/note/main/index.tsx:156
 msgid "Permission"
 msgstr "许可"
 
@@ -796,11 +796,11 @@ msgstr "请选择类别"
 msgid "Previous Note"
 msgstr "上一条笔记"
 
-#: src/components/note/main/index.tsx:155
+#: src/components/note/main/index.tsx:160
 msgid "Private"
 msgstr "私有"
 
-#: src/components/note/main/index.tsx:154
+#: src/components/note/main/index.tsx:159
 msgid "Public"
 msgstr "公共"
 
@@ -837,11 +837,11 @@ msgid "Region"
 msgstr "区域"
 
 #: src/pages/auth/register.tsx:27
-#: src/pages/auth/register.tsx:36
+#: src/pages/auth/register.tsx:35
 msgid "Register failed"
 msgstr "注册失败"
 
-#: src/pages/auth/register.tsx:37
+#: src/pages/auth/register.tsx:36
 msgid "Register failed, please check your email and password"
 msgstr "注册失败，请检查您的邮箱和密码"
 
@@ -930,8 +930,8 @@ msgstr "会话删除成功"
 msgid "Session updated successfully"
 msgstr "会话更新成功"
 
-#: src/components/note/main/index.tsx:152
-#: src/components/note/main/index.tsx:158
+#: src/components/note/main/index.tsx:157
+#: src/components/note/main/index.tsx:163
 msgid "Set the current note's status. When set to private, it will be invisible to others."
 msgstr "设置当前便笺的状态。当设置为私有时，其他人将看不到该便笺。"
 
@@ -940,15 +940,15 @@ msgstr "设置当前便笺的状态。当设置为私有时，其他人将看不
 #~ msgstr "设置"
 
 #: src/components/note/noteList/index.tsx:63
-#: src/components/note/main/index.tsx:111
+#: src/components/note/main/index.tsx:116
 msgid "Share"
 msgstr "分享"
 
-#: src/components/note/main/index.tsx:113
+#: src/components/note/main/index.tsx:118
 msgid "Share Notion"
 msgstr "分享至Notion"
 
-#: src/components/note/main/index.tsx:114
+#: src/components/note/main/index.tsx:119
 msgid "Share Wechat"
 msgstr "分享至微信"
 
@@ -997,7 +997,7 @@ msgstr "备注标题为必填项，长度不得超过100个字符。"
 msgid "The number of members who have joined the workspace using this link"
 msgstr "使用此链接加入工作区的成员数"
 
-#: src/components/note/main/index.tsx:121
+#: src/components/note/main/index.tsx:126
 msgid "The unique ID of the note."
 msgstr "笔记的唯一ID。"
 
@@ -1053,8 +1053,8 @@ msgid "Update password successfully"
 msgstr "更新密码成功"
 
 #: src/pages/settings/storageSettings.tsx:55
-#: src/components/note/main/index.tsx:56
-#: src/components/note/main/index.tsx:93
+#: src/components/note/main/index.tsx:61
+#: src/components/note/main/index.tsx:98
 msgid "Update successfully"
 msgstr "更新成功"
 

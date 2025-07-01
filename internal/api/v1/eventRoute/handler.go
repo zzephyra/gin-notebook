@@ -64,6 +64,7 @@ func UpdateEventApi(c *gin.Context) {
 		ID:     eventID,
 	}
 	if err := c.ShouldBindJSON(params); err != nil {
+		logger.LogError(err, "UpdateEventApi: failed to bind JSON")
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return
 	}

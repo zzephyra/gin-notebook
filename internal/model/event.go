@@ -10,9 +10,10 @@ type Event struct {
 	Start       time.Time              `json:"start" gorm:"type:timestamp;not null;index:idx_start_time"`
 	End         time.Time              `json:"end" gorm:"type:timestamp;not null;index:idx_end_time"`
 	Location    string                 `json:"location" gorm:"type:varchar(255);index:idx_location"`
-	AllDay      *bool                  `json:"allday" gorm:"default:false"`                            // 是否全天事件
+	Allday      *bool                  `json:"allday" gorm:"default:false"`                            // 是否全天事件
 	Visibility  string                 `json:"visiblity" gorm:"default:'public';index:idx_visibility"` // 事件可见性，private, public, group
 	Color       string                 `json:"color" gorm:"default:'#3788d8'"`
+	RruleType   string                 `json:"rrule_type" gorm:"default:'0';index:idx_rrule_type"`
 	Rrule       *string                `json:"rrule" gorm:"type:text"`                                     // 重复规则，使用iCal格式
 	Duration    map[string]interface{} `json:"duration" gorm:"type:jsonb"`                                 // 事件持续时间，ISO 8601格式
 	WorkspaceID int64                  `json:"workspace_id,string" gorm:"not null;index:idx_workspace_id"` // 工作空间ID

@@ -57,7 +57,7 @@ msgid "Failed to fetch AI chat session"
 msgstr "Failed to fetch AI chat session"
 
 #. js-lingui-explicit-id
-#: src/components/list/notes/index.tsx:127
+#: src/components/list/notes/index.tsx:126
 msgid "Would you like to move the file to the \"{total}\" folder?"
 msgstr "Would you like to move the file to the \"{total}\" folder?"
 
@@ -135,7 +135,7 @@ msgstr "Allow commenting"
 msgid "Allow editing"
 msgstr "Allow editing"
 
-#: src/components/note/main/index.tsx:136
+#: src/components/note/main/index.tsx:141
 msgid "Allow editing this note."
 msgstr "Allow editing this note."
 
@@ -151,7 +151,7 @@ msgstr "Allow joining"
 msgid "Allow sharing"
 msgstr "Allow sharing"
 
-#: src/components/note/main/index.tsx:133
+#: src/components/note/main/index.tsx:138
 msgid "Allow sharing this note with others or third-party applications."
 msgstr "Allow sharing this note with others or third-party applications."
 
@@ -175,7 +175,7 @@ msgstr "Auto save failed, please try again later."
 msgid "Back"
 msgstr "Back"
 
-#: src/components/note/main/index.tsx:120
+#: src/components/note/main/index.tsx:125
 msgid "Basic Information"
 msgstr "Basic Information"
 
@@ -188,21 +188,21 @@ msgstr "Bucket Name"
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/note/deleteModal/index.tsx:42
 #: src/components/modal/event/add/index.tsx:162
-#: src/components/list/notes/index.tsx:135
+#: src/components/list/notes/index.tsx:134
 #: src/components/dropdown/note/index.tsx:104
 #: src/components/dropdown/note/index.tsx:203
 msgid "Cancel"
 msgstr "Cancel"
 
-#: src/components/aiChat/index.tsx:393
+#: src/components/aiChat/index.tsx:392
 msgid "Cannot reload message that has a parent message."
 msgstr "Cannot reload message that has a parent message."
 
-#: src/components/note/main/index.tsx:124
+#: src/components/note/main/index.tsx:129
 msgid "Categorize the note by selecting an existing note category."
 msgstr "Categorize the note by selecting an existing note category."
 
-#: src/components/note/main/index.tsx:124
+#: src/components/note/main/index.tsx:129
 msgid "Category"
 msgstr "Category"
 
@@ -300,7 +300,7 @@ msgstr "Creating workspace..."
 msgid "Current device"
 msgstr "Current device"
 
-#: src/components/note/main/index.tsx:140
+#: src/components/note/main/index.tsx:145
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
@@ -319,8 +319,8 @@ msgstr "Delete failed"
 msgid "Delete Invite Link"
 msgstr "Delete Invite Link"
 
-#: src/components/note/main/index.tsx:141
-#: src/components/note/main/index.tsx:143
+#: src/components/note/main/index.tsx:146
+#: src/components/note/main/index.tsx:148
 msgid "Delete Note"
 msgstr "Delete Note"
 
@@ -334,7 +334,7 @@ msgstr "Delete note failed: {0}"
 msgid "Delete successfully"
 msgstr "Delete successfully"
 
-#: src/components/note/main/index.tsx:141
+#: src/components/note/main/index.tsx:146
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 
@@ -371,11 +371,11 @@ msgstr "Emails"
 msgid "Emails go here → one@example.com, two@example.com"
 msgstr "Emails go here → one@example.com, two@example.com"
 
-#: src/components/note/main/index.tsx:136
+#: src/components/note/main/index.tsx:141
 msgid "Enable Edit"
 msgstr "Enable Edit"
 
-#: src/components/note/main/index.tsx:133
+#: src/components/note/main/index.tsx:138
 msgid "Enable Share"
 msgstr "Enable Share"
 
@@ -439,7 +439,7 @@ msgstr "Failed to generate invite link"
 #~ msgid "Failed to get response from AI"
 #~ msgstr "Failed to get response from AI"
 
-#: src/components/aiChat/index.tsx:195
+#: src/components/aiChat/index.tsx:204
 msgid "Failed to load chat history"
 msgstr "Failed to load chat history"
 
@@ -447,7 +447,7 @@ msgstr "Failed to load chat history"
 msgid "Favorites"
 msgstr "Favorites"
 
-#: src/components/list/notes/index.tsx:123
+#: src/components/list/notes/index.tsx:122
 msgid "File movement"
 msgstr "File movement"
 
@@ -455,7 +455,7 @@ msgstr "File movement"
 msgid "Frequent Used"
 msgstr "Frequent Used"
 
-#: src/components/note/main/index.tsx:107
+#: src/components/note/main/index.tsx:112
 msgid "General"
 msgstr "General"
 
@@ -500,7 +500,7 @@ msgstr "Hi {username}, what can I assist you with today?"
 msgid "Hi! Welcome to Mameos!"
 msgstr "Hi! Welcome to Mameos!"
 
-#: src/components/aiChat/index.tsx:508
+#: src/pages/workspace/note.tsx:136
 msgid "History"
 msgstr "History"
 
@@ -512,7 +512,7 @@ msgstr "History Chats"
 msgid "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
 msgstr "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
 
-#: src/components/list/notes/index.tsx:130
+#: src/components/list/notes/index.tsx:129
 msgid "Ignore this prompt for this login"
 msgstr "Ignore this prompt for this login"
 
@@ -520,7 +520,7 @@ msgstr "Ignore this prompt for this login"
 msgid "Invite link"
 msgstr "Invite link"
 
-#: src/components/note/main/index.tsx:112
+#: src/components/note/main/index.tsx:117
 msgid "Invite Link"
 msgstr "Invite Link"
 
@@ -564,7 +564,7 @@ msgstr "Languages"
 msgid "Last Active"
 msgstr "Last Active"
 
-#: src/pages/workspace/note.tsx:46
+#: src/pages/workspace/note.tsx:84
 msgid "Loading notes..."
 msgstr "Loading notes..."
 
@@ -594,11 +594,11 @@ msgstr "Login failed"
 msgid "Login failed, please check your email and password"
 msgstr "Login failed, please check your email and password"
 
-#: src/components/aiChat/index.tsx:460
+#: src/components/aiChat/index.tsx:455
 msgid "Mameos Robot"
 msgstr "Mameos Robot"
 
-#: src/components/note/main/index.tsx:108
+#: src/components/note/main/index.tsx:113
 msgid "Management"
 msgstr "Management"
 
@@ -614,7 +614,7 @@ msgstr "members"
 msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
 msgstr "Meow~ No favorite notes here yet. Time to star the ones you love!"
 
-#: src/components/list/notes/index.tsx:138
+#: src/components/list/notes/index.tsx:137
 msgid "Move"
 msgstr "Move"
 
@@ -638,7 +638,7 @@ msgstr "Move to category successfully"
 msgid "Move to trash"
 msgstr "Move to trash"
 
-#: src/components/aiChat/index.tsx:504
+#: src/pages/workspace/note.tsx:132
 msgid "New Chat"
 msgstr "New Chat"
 
@@ -662,7 +662,7 @@ msgstr "New Password"
 msgid "Next Note"
 msgstr "Next Note"
 
-#: src/components/note/main/index.tsx:127
+#: src/components/note/main/index.tsx:132
 msgid "No Category"
 msgstr "No Category"
 
@@ -683,7 +683,7 @@ msgstr "No Title Event"
 msgid "No Workspace"
 msgstr "No Workspace"
 
-#: src/components/note/main/index.tsx:121
+#: src/components/note/main/index.tsx:126
 msgid "Note ID"
 msgstr "Note ID"
 
@@ -691,12 +691,12 @@ msgstr "Note ID"
 msgid "Note Name"
 msgstr "Note Name"
 
-#: src/components/note/main/index.tsx:132
+#: src/components/note/main/index.tsx:137
 msgid "Note Settings"
 msgstr "Note Settings"
 
-#: src/components/note/main/index.tsx:152
-#: src/components/note/main/index.tsx:158
+#: src/components/note/main/index.tsx:157
+#: src/components/note/main/index.tsx:163
 msgid "Note Status"
 msgstr "Note Status"
 
@@ -704,7 +704,7 @@ msgstr "Note Status"
 msgid "Note title is required"
 msgstr "Note title is required"
 
-#: src/components/aiChat/index.tsx:515
+#: src/pages/workspace/note.tsx:143
 msgid "Notes"
 msgstr "Notes"
 
@@ -716,8 +716,8 @@ msgstr "Notes Management"
 msgid "Now"
 msgstr "Now"
 
-#: src/components/aiChat/index.tsx:323
-#: src/components/aiChat/index.tsx:442
+#: src/components/aiChat/index.tsx:330
+#: src/components/aiChat/index.tsx:441
 msgid "Oops, something went wrong!"
 msgstr "Oops, something went wrong!"
 
@@ -737,7 +737,7 @@ msgstr "Ordering"
 msgid "Owner"
 msgstr "Owner"
 
-#: src/components/aiChat/index.tsx:403
+#: src/components/aiChat/index.tsx:402
 msgid "Parent message not found."
 msgstr "Parent message not found."
 
@@ -759,8 +759,8 @@ msgstr "Per 2 Weeks"
 msgid "Per Week"
 msgstr "Per Week"
 
-#: src/components/note/main/index.tsx:109
-#: src/components/note/main/index.tsx:151
+#: src/components/note/main/index.tsx:114
+#: src/components/note/main/index.tsx:156
 msgid "Permission"
 msgstr "Permission"
 
@@ -796,11 +796,11 @@ msgstr "Please select a category"
 msgid "Previous Note"
 msgstr "Previous Note"
 
-#: src/components/note/main/index.tsx:155
+#: src/components/note/main/index.tsx:160
 msgid "Private"
 msgstr "Private"
 
-#: src/components/note/main/index.tsx:154
+#: src/components/note/main/index.tsx:159
 msgid "Public"
 msgstr "Public"
 
@@ -837,11 +837,11 @@ msgid "Region"
 msgstr "Region"
 
 #: src/pages/auth/register.tsx:27
-#: src/pages/auth/register.tsx:36
+#: src/pages/auth/register.tsx:35
 msgid "Register failed"
 msgstr "Register failed"
 
-#: src/pages/auth/register.tsx:37
+#: src/pages/auth/register.tsx:36
 msgid "Register failed, please check your email and password"
 msgstr "Register failed, please check your email and password"
 
@@ -930,8 +930,8 @@ msgstr "Session deleted successfully"
 msgid "Session updated successfully"
 msgstr "Session updated successfully"
 
-#: src/components/note/main/index.tsx:152
-#: src/components/note/main/index.tsx:158
+#: src/components/note/main/index.tsx:157
+#: src/components/note/main/index.tsx:163
 msgid "Set the current note's status. When set to private, it will be invisible to others."
 msgstr "Set the current note's status. When set to private, it will be invisible to others."
 
@@ -940,15 +940,15 @@ msgstr "Set the current note's status. When set to private, it will be invisible
 #~ msgstr "Settings"
 
 #: src/components/note/noteList/index.tsx:63
-#: src/components/note/main/index.tsx:111
+#: src/components/note/main/index.tsx:116
 msgid "Share"
 msgstr "Share"
 
-#: src/components/note/main/index.tsx:113
+#: src/components/note/main/index.tsx:118
 msgid "Share Notion"
 msgstr "Share Notion"
 
-#: src/components/note/main/index.tsx:114
+#: src/components/note/main/index.tsx:119
 msgid "Share Wechat"
 msgstr "Share Wechat"
 
@@ -1001,7 +1001,7 @@ msgstr "The note title is required and must not exceed 100 characters in length.
 msgid "The number of members who have joined the workspace using this link"
 msgstr "The number of members who have joined the workspace using this link"
 
-#: src/components/note/main/index.tsx:121
+#: src/components/note/main/index.tsx:126
 msgid "The unique ID of the note."
 msgstr "The unique ID of the note."
 
@@ -1057,8 +1057,8 @@ msgid "Update password successfully"
 msgstr "Update password successfully"
 
 #: src/pages/settings/storageSettings.tsx:55
-#: src/components/note/main/index.tsx:56
-#: src/components/note/main/index.tsx:93
+#: src/components/note/main/index.tsx:61
+#: src/components/note/main/index.tsx:98
 msgid "Update successfully"
 msgstr "Update successfully"
 

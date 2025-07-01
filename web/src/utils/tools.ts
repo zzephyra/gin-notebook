@@ -127,7 +127,6 @@ export function createRecurringEventFromStartEnd(
     const durationMs = end.getTime() - start.getTime(); // 毫秒差
     const hours = Math.floor(durationMs / (1000 * 60 * 60));
     const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
-    console.log(hours, minutes, start, end);
     const duration = {
         hours: hours,
         minutes: minutes,

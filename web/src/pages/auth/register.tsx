@@ -31,7 +31,6 @@ export default function RegisterPage() {
                 return;
             }
         } catch (err) {
-            console.log(err);
             addToast({
                 title: t`Register failed`,
                 description: t`Register failed, please check your email and password`,

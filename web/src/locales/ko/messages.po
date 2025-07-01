@@ -57,7 +57,7 @@ msgid "Failed to fetch AI chat session"
 msgstr ""
 
 #. js-lingui-explicit-id
-#: src/components/list/notes/index.tsx:127
+#: src/components/list/notes/index.tsx:126
 msgid "Would you like to move the file to the \"{total}\" folder?"
 msgstr "파일을 \"{합계}\" 폴더로 이동하시겠습니까?"
 
@@ -135,7 +135,7 @@ msgstr "주석 달기 허용"
 msgid "Allow editing"
 msgstr "편집 허용"
 
-#: src/components/note/main/index.tsx:136
+#: src/components/note/main/index.tsx:141
 msgid "Allow editing this note."
 msgstr "이 노트를 편집할 수 있습니다."
 
@@ -151,7 +151,7 @@ msgstr "조인 허용"
 msgid "Allow sharing"
 msgstr "공유 허용"
 
-#: src/components/note/main/index.tsx:133
+#: src/components/note/main/index.tsx:138
 msgid "Allow sharing this note with others or third-party applications."
 msgstr "이 노트를 다른 사용자 또는 타사 응용프로그램과 공유할 수 있습니다."
 
@@ -175,7 +175,7 @@ msgstr ""
 msgid "Back"
 msgstr "뒤로 (Back)"
 
-#: src/components/note/main/index.tsx:120
+#: src/components/note/main/index.tsx:125
 msgid "Basic Information"
 msgstr "기본 정보"
 
@@ -188,21 +188,21 @@ msgstr "버켓 이름"
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/note/deleteModal/index.tsx:42
 #: src/components/modal/event/add/index.tsx:162
-#: src/components/list/notes/index.tsx:135
+#: src/components/list/notes/index.tsx:134
 #: src/components/dropdown/note/index.tsx:104
 #: src/components/dropdown/note/index.tsx:203
 msgid "Cancel"
 msgstr "취소 (Cancel)"
 
-#: src/components/aiChat/index.tsx:393
+#: src/components/aiChat/index.tsx:392
 msgid "Cannot reload message that has a parent message."
 msgstr ""
 
-#: src/components/note/main/index.tsx:124
+#: src/components/note/main/index.tsx:129
 msgid "Categorize the note by selecting an existing note category."
 msgstr "기존 노트 범주를 선택하여 노트를 분류합니다."
 
-#: src/components/note/main/index.tsx:124
+#: src/components/note/main/index.tsx:129
 msgid "Category"
 msgstr "범주 (Category)"
 
@@ -300,7 +300,7 @@ msgstr "작업 영역 생성 중..."
 msgid "Current device"
 msgstr "현재 디바이스"
 
-#: src/components/note/main/index.tsx:140
+#: src/components/note/main/index.tsx:145
 msgid "Danger Zone"
 msgstr "위험지대 (Danger Zone)"
 
@@ -319,8 +319,8 @@ msgstr "삭제 실패"
 msgid "Delete Invite Link"
 msgstr "초대 링크 삭제"
 
-#: src/components/note/main/index.tsx:141
-#: src/components/note/main/index.tsx:143
+#: src/components/note/main/index.tsx:146
+#: src/components/note/main/index.tsx:148
 msgid "Delete Note"
 msgstr "메모 삭제"
 
@@ -334,7 +334,7 @@ msgstr "노트 삭제 실패: { 0}"
 msgid "Delete successfully"
 msgstr "삭제 성공"
 
-#: src/components/note/main/index.tsx:141
+#: src/components/note/main/index.tsx:146
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "이 항목을 삭제하는 것은 영구적인 작업이며 되돌릴 수 없습니다. 주의하여 계속하십시오."
 
@@ -371,11 +371,11 @@ msgstr "e-메일"
 msgid "Emails go here → one@example.com, two@example.com"
 msgstr "이메일 은   여기 로   이동one@example.com, two@example.com"
 
-#: src/components/note/main/index.tsx:136
+#: src/components/note/main/index.tsx:141
 msgid "Enable Edit"
 msgstr "편집 사용"
 
-#: src/components/note/main/index.tsx:133
+#: src/components/note/main/index.tsx:138
 msgid "Enable Share"
 msgstr "공유 사용"
 
@@ -439,7 +439,7 @@ msgstr "초대 링크를 생성할 수 없습니다."
 #~ msgid "Failed to get response from AI"
 #~ msgstr ""
 
-#: src/components/aiChat/index.tsx:195
+#: src/components/aiChat/index.tsx:204
 msgid "Failed to load chat history"
 msgstr ""
 
@@ -447,7 +447,7 @@ msgstr ""
 msgid "Favorites"
 msgstr "즐겨찾기 모음집"
 
-#: src/components/list/notes/index.tsx:123
+#: src/components/list/notes/index.tsx:122
 msgid "File movement"
 msgstr "파일 이동"
 
@@ -455,7 +455,7 @@ msgstr "파일 이동"
 msgid "Frequent Used"
 msgstr "자주 사용됨"
 
-#: src/components/note/main/index.tsx:107
+#: src/components/note/main/index.tsx:112
 msgid "General"
 msgstr "일반 (General)"
 
@@ -500,7 +500,7 @@ msgstr ""
 msgid "Hi! Welcome to Mameos!"
 msgstr "안녕하세요! Mameos에 오신 것을 환영합니다!"
 
-#: src/components/aiChat/index.tsx:508
+#: src/pages/workspace/note.tsx:136
 msgid "History"
 msgstr ""
 
@@ -512,7 +512,7 @@ msgstr ""
 msgid "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
 msgstr "게스트를 데려오는 경우 이메일을 아래에 추가하거나 단순히 초대장 링크를 복사하여 공유하십시오!"
 
-#: src/components/list/notes/index.tsx:130
+#: src/components/list/notes/index.tsx:129
 msgid "Ignore this prompt for this login"
 msgstr "이 로그인에 대한 이 프롬프트 무시"
 
@@ -520,7 +520,7 @@ msgstr "이 로그인에 대한 이 프롬프트 무시"
 msgid "Invite link"
 msgstr "초대 링크"
 
-#: src/components/note/main/index.tsx:112
+#: src/components/note/main/index.tsx:117
 msgid "Invite Link"
 msgstr "링크 초대"
 
@@ -564,7 +564,7 @@ msgstr "언어 Name"
 msgid "Last Active"
 msgstr ""
 
-#: src/pages/workspace/note.tsx:46
+#: src/pages/workspace/note.tsx:84
 msgid "Loading notes..."
 msgstr "노트 로드 중..."
 
@@ -594,11 +594,11 @@ msgstr "로그인 실패"
 msgid "Login failed, please check your email and password"
 msgstr "로그인 실패. 이메일과 암호를 확인하십시오."
 
-#: src/components/aiChat/index.tsx:460
+#: src/components/aiChat/index.tsx:455
 msgid "Mameos Robot"
 msgstr ""
 
-#: src/components/note/main/index.tsx:108
+#: src/components/note/main/index.tsx:113
 msgid "Management"
 msgstr "관리 (Management)"
 
@@ -614,7 +614,7 @@ msgstr "구성원"
 msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
 msgstr ""
 
-#: src/components/list/notes/index.tsx:138
+#: src/components/list/notes/index.tsx:137
 msgid "Move"
 msgstr "이동 (Move)"
 
@@ -638,7 +638,7 @@ msgstr "범주로 성공적으로 이동"
 msgid "Move to trash"
 msgstr "휴지통으로 이동"
 
-#: src/components/aiChat/index.tsx:504
+#: src/pages/workspace/note.tsx:132
 msgid "New Chat"
 msgstr ""
 
@@ -662,7 +662,7 @@ msgstr "새 암호"
 msgid "Next Note"
 msgstr "다음 노트"
 
-#: src/components/note/main/index.tsx:127
+#: src/components/note/main/index.tsx:132
 msgid "No Category"
 msgstr "범주 없음"
 
@@ -683,7 +683,7 @@ msgstr ""
 msgid "No Workspace"
 msgstr "작업공간 없음"
 
-#: src/components/note/main/index.tsx:121
+#: src/components/note/main/index.tsx:126
 msgid "Note ID"
 msgstr "노트 ID"
 
@@ -691,12 +691,12 @@ msgstr "노트 ID"
 msgid "Note Name"
 msgstr "노트 이름"
 
-#: src/components/note/main/index.tsx:132
+#: src/components/note/main/index.tsx:137
 msgid "Note Settings"
 msgstr "메모 설정"
 
-#: src/components/note/main/index.tsx:152
-#: src/components/note/main/index.tsx:158
+#: src/components/note/main/index.tsx:157
+#: src/components/note/main/index.tsx:163
 msgid "Note Status"
 msgstr "노트 상태"
 
@@ -704,7 +704,7 @@ msgstr "노트 상태"
 msgid "Note title is required"
 msgstr "노트 제목은 필수입니다."
 
-#: src/components/aiChat/index.tsx:515
+#: src/pages/workspace/note.tsx:143
 msgid "Notes"
 msgstr "메모 (Notes)"
 
@@ -716,8 +716,8 @@ msgstr ""
 msgid "Now"
 msgstr "지금 당장"
 
-#: src/components/aiChat/index.tsx:323
-#: src/components/aiChat/index.tsx:442
+#: src/components/aiChat/index.tsx:330
+#: src/components/aiChat/index.tsx:441
 msgid "Oops, something went wrong!"
 msgstr ""
 
@@ -737,7 +737,7 @@ msgstr "종류"
 msgid "Owner"
 msgstr "소유자 (Owner)"
 
-#: src/components/aiChat/index.tsx:403
+#: src/components/aiChat/index.tsx:402
 msgid "Parent message not found."
 msgstr ""
 
@@ -759,8 +759,8 @@ msgstr ""
 msgid "Per Week"
 msgstr ""
 
-#: src/components/note/main/index.tsx:109
-#: src/components/note/main/index.tsx:151
+#: src/components/note/main/index.tsx:114
+#: src/components/note/main/index.tsx:156
 msgid "Permission"
 msgstr "허가 (Permission)"
 
@@ -796,11 +796,11 @@ msgstr "범주를 선택하십시오."
 msgid "Previous Note"
 msgstr "이전 노트"
 
-#: src/components/note/main/index.tsx:155
+#: src/components/note/main/index.tsx:160
 msgid "Private"
 msgstr "Private (Private)"
 
-#: src/components/note/main/index.tsx:154
+#: src/components/note/main/index.tsx:159
 msgid "Public"
 msgstr "공개 (Public)"
 
@@ -837,11 +837,11 @@ msgid "Region"
 msgstr "지역 (Region)"
 
 #: src/pages/auth/register.tsx:27
-#: src/pages/auth/register.tsx:36
+#: src/pages/auth/register.tsx:35
 msgid "Register failed"
 msgstr "등록 실패"
 
-#: src/pages/auth/register.tsx:37
+#: src/pages/auth/register.tsx:36
 msgid "Register failed, please check your email and password"
 msgstr "등록 실패. 이메일과 암호를 확인하십시오."
 
@@ -930,8 +930,8 @@ msgstr ""
 msgid "Session updated successfully"
 msgstr ""
 
-#: src/components/note/main/index.tsx:152
-#: src/components/note/main/index.tsx:158
+#: src/components/note/main/index.tsx:157
+#: src/components/note/main/index.tsx:163
 msgid "Set the current note's status. When set to private, it will be invisible to others."
 msgstr "현재 노트의 상태를 설정합니다. 비공개로 설정하면 다른 사용자가 볼 수 없습니다."
 
@@ -940,15 +940,15 @@ msgstr "현재 노트의 상태를 설정합니다. 비공개로 설정하면 �
 #~ msgstr "설정 (Settings)"
 
 #: src/components/note/noteList/index.tsx:63
-#: src/components/note/main/index.tsx:111
+#: src/components/note/main/index.tsx:116
 msgid "Share"
 msgstr "공유 (Share)"
 
-#: src/components/note/main/index.tsx:113
+#: src/components/note/main/index.tsx:118
 msgid "Share Notion"
 msgstr "공유 Notion"
 
-#: src/components/note/main/index.tsx:114
+#: src/components/note/main/index.tsx:119
 msgid "Share Wechat"
 msgstr "공유 WeChat"
 
@@ -997,7 +997,7 @@ msgstr "노트 제목은 필수이며 100자를 초과하면 안 됩니다."
 msgid "The number of members who have joined the workspace using this link"
 msgstr "이 링크를 사용하여 작업공간에 가입한 멤버 수"
 
-#: src/components/note/main/index.tsx:121
+#: src/components/note/main/index.tsx:126
 msgid "The unique ID of the note."
 msgstr "노트의 고유 ID입니다."
 
@@ -1053,8 +1053,8 @@ msgid "Update password successfully"
 msgstr "암호를 성공적으로 업데이트했습니다."
 
 #: src/pages/settings/storageSettings.tsx:55
-#: src/components/note/main/index.tsx:56
-#: src/components/note/main/index.tsx:93
+#: src/components/note/main/index.tsx:61
+#: src/components/note/main/index.tsx:98
 msgid "Update successfully"
 msgstr "업데이트 성공"
 

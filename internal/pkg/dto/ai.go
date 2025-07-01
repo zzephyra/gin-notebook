@@ -22,7 +22,7 @@ type AIMessageParamsDTO struct {
 	Content   string  `json:"content" validate:"required"`
 	Role      string  `json:"role" validate:"required,oneof=user assistant"`
 	Status    string  `json:"status" validate:"required,oneof=complete loading error incomplete"` // 状态: complete, loading, error
-	UserID    int64   `validate:"required"`                                                       // 用户 ID
+	UserID    int64   `json:"-" validate:"required"`                                              // 用户 ID
 	Title     *string `json:"title" validate:"omitempty,min=1,max=50"`                            // 会话标题
 	Action    string  `json:"action" validate:"required,oneof=init insert reset"`                 // 操作类型
 	ParentID  int64   `json:"parentID,string" validate:"omitempty"`
@@ -34,14 +34,14 @@ type AIMessageResponseDTO struct {
 }
 
 type AIHistoryChatParamsDTO struct {
-	UserID int64 `validate:"required"`                     // 用户 ID
+	UserID int64 `json:"-" validate:"required"`            // 用户 ID
 	Offset int   `form:"offset" validate:"omitempty,gt=0"` // 偏移量
 	// Limit  int64 `json:"limit" validate:"omitempty,gt=0,lte=30"` // 限制条数，默认 20，最大 30
 }
 
 type AIHistoryDeleteParamsDTO struct {
 	SessionID string `form:"id,string" validate:"required"` // 会话 ID
-	UserID    int64  `json:"user_id" validate:"required"`   // 用户 ID
+	UserID    int64  `json:"-" validate:"required"`         // 用户 ID
 }
 
 type AIMessageDTO struct {
@@ -66,8 +66,8 @@ type AIHistoryChatResponseDTO struct {
 }
 
 type AIHistoryUpdateParamsDTO struct {
-	SessionID int64   `validate:"required"`                            // 会话 ID
-	UserID    int64   `validate:"required"`                            // 用户 ID
+	SessionID int64   `json:"-" validate:"required"`                   // 会话 ID
+	UserID    int64   `json:"-" validate:"required"`                   // 用户 ID
 	Title     *string `json:"title" validate:"omitempty,min=1,max=50"` // 会话标题
 }
 
@@ -82,7 +82,7 @@ type AISessionResponseDTO struct {
 }
 type AIMessageUpdateParamsDTO struct {
 	SessionID *int64 `json:"session_id,string" validate:"required"` // 会话 ID
-	MessageID int64  `validate:"required"`                          // 消息 ID
+	MessageID int64  `json:"-" validate:"required"`                 // 消息 ID
 	Content   string `json:"content" validate:"required"`
 	Role      string `json:"role" validate:"required,oneof=assistant"`
 	Status    string `json:"status" validate:"required,oneof=complete loading error incomplete"` // 状态: complete, loading, error

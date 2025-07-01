@@ -24,8 +24,6 @@ export const setupResponseInterceptors = () => {
       if (response) {
         switch (response.status) {
           case 401:
-            console.log('Token expired or invalid, redirecting to login...');
-            // Token 过期，跳转登录
             window.location.href = '/auth/login';
             break;
           case 403:

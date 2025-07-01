@@ -54,7 +54,7 @@ const SelectCategoryModal = ({ isOpen, onOpenChange, workspaceID, note }: { isOp
         const data = await UpdateNote(workspaceID, note.id, { category_id: selectedCategoryKeys[0] })
         if (data.code == responseCode.SUCCESS) {
             toast.success(t`Move to category successfully`);
-            store.dispatch(UpdateNoteByID({ ...note, category_id: selectedCategoryKeys[0] }));
+            store.dispatch(UpdateNoteByID({ id: note.id, changes: { category_id: selectedCategoryKeys[0] } }));
             onOpenChange(false);
         }
     }

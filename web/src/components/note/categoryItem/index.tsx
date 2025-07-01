@@ -34,9 +34,9 @@ const CategoryListItem = ({ note }: { note: Note }) => {
         var ori_value = note.is_favorite;
         SetFavoriteNoeRequest(note.id, !ori_value).catch(() => {
             // 如果设置收藏失败，恢复原状态
-            store.dispatch(UpdateNoteByID({ ...note, is_favorite: ori_value }));
+            store.dispatch(UpdateNoteByID({ ...note, changes: { is_favorite: ori_value } }));
         })
-        store.dispatch(UpdateNoteByID({ ...note, is_favorite: !ori_value }));
+        store.dispatch(UpdateNoteByID({ ...note, changes: { is_favorite: !ori_value } }));
     }
 
     return (

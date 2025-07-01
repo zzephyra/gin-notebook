@@ -71,8 +71,8 @@ export const workspaceSlice = createSlice({
         UpdateNoteList: (state, action: PayloadAction<Note[]>) => {
             notesAdapter.addMany(state.noteList, action.payload);
         },
-        UpdateNoteByID: (state, action: PayloadAction<Note>) => {
-            notesAdapter.upsertOne(state.noteList, action.payload);
+        UpdateNoteByID: (state, action: PayloadAction<{ id: string; changes: Partial<Note> }>) => {
+            notesAdapter.updateOne(state.noteList, action.payload);
         },
         DeleteNoteByID: (state, action: PayloadAction<string>) => {
             notesAdapter.removeOne(state.noteList, action.payload);

@@ -17,12 +17,14 @@ func CreateEvent(tx *gorm.DB, event *model.Event) error {
 }
 
 func GetEvents(tx *gorm.DB, workspaceID int64, from, to time.Time, OwnerID *int64) ([]dto.EventDTO, error) {
-	var events []dto.EventDTO
+	var oriEvent []dto.EventDTO
 	sql := tx.Model(&model.Event{}).
 		Select(`events.*, users.nickname as user_nickname, users.email as user_email`).
 		Joins("JOIN users on users.id = events.user_id").
 		Where("workspace_id = ?", workspaceID).
-		Where(`start < @to AND "end" >= @from`,
+		Where(`
+            (start < @to AND "end" >= @from) OR 
+            (rrule IS NOT NULL AND rrule != '')`,
 			sql.Named("from", from),
 			sql.Named("to", to))
 
@@ -30,8 +32,16 @@ func GetEvents(tx *gorm.DB, workspaceID int64, from, to time.Time, OwnerID *int6
 		sql = sql.Where("user_id = ?", *OwnerID)
 	}
 
-	if err := sql.Scan(&events).Error; err != nil {
+	if err := sql.Scan(&oriEvent).Error; err != nil {
 		return nil, err
+	}
+
+	var events []dto.EventDTO
+	for _, event := range oriEvent {
+		if event.RruleValidator(from, to) {
+			events = append(events, event)
+			continue
+		}
 	}
 	return events, nil
 }

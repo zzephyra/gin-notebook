@@ -33,7 +33,6 @@ export function useUpload() {
 
     // 开始上传文件
     const qiniuUpload = () => {
-        console.log("上传文件", uploadFile)
         if (!uploadFile) {
             return
         }
@@ -43,7 +42,6 @@ export function useUpload() {
         setError(null)
 
         if (uploadTask) {
-            console.log("正在上传中")
             return uploadTask.start()
         }
 
@@ -54,12 +52,10 @@ export function useUpload() {
                 return res?.token
             },
         }
-        console.log("获取上传配置", uploadConfig)
         const fileData: qiniu.FileData = {
             type: 'file',
             data: uploadFile,
         }
-        console.log("获取文件数据", fileData)
         const newUploadTask = uploadSetting.forceDirect
             ? qiniu.createDirectUploadTask(fileData, uploadConfig)
             : qiniu.createMultipartUploadV2Task(fileData, uploadConfig)
@@ -77,15 +73,12 @@ export function useUpload() {
 
         newUploadTask.onComplete(result => {
             setUploadSate(Status.Finished)
-            console.log("上传完成", result)
             completeInfo.current = result || ''
             setUploadFile(null)
             setUploadTask(null)
             onFinishCallbackRef.current?.(result)
         })
-        console.log("获取上传任务", newUploadTask)
         setUploadTask(newUploadTask)
-        console.log("开始上传文件", uploadFile)
         newUploadTask.start()
     }
 

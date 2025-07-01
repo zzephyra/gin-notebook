@@ -48,7 +48,7 @@ const NotesList = () => {
             const res = await UpdateNote(params.id, noteID, { category_id: targetCategoryId });
             if (res.code != responseCode.SUCCESS) {
                 toast.error(t`Move note failed`);
-                store.dispatch(UpdateNoteByID({ ...transformedNote, category_id: originalCategoryId }));
+                store.dispatch(UpdateNoteByID({ id: noteID, changes: { category_id: originalCategoryId } }));
             }
         }
     }
@@ -56,8 +56,7 @@ const NotesList = () => {
     function SwitchCategory() {
         // 在这里处理 drop 事件，例如更新状态或发送请求
         let { noteID, originalCategoryId, targetCategoryId } = noteTransferRef.current;
-        let transformedNote = notesSelectors.selectById(store.getState(), noteID);
-        store.dispatch(UpdateNoteByID({ ...transformedNote, category_id: targetCategoryId }));
+        store.dispatch(UpdateNoteByID({ id: noteID, changes: { category_id: targetCategoryId } }));
         if (onDropNoteToCategory) {
             onDropNoteToCategory(noteID, targetCategoryId, originalCategoryId);
         }

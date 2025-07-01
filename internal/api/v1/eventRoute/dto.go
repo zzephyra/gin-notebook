@@ -17,7 +17,6 @@ func EventsListSerializer(events dto.EventsListDTO) map[string]interface{} {
 			"color":    event.Color,
 			"location": event.Location,
 			"allday":   event.AllDay,
-
 			"user": map[string]interface{}{
 				"id":       strconv.FormatInt(event.UserID, 10),
 				"nickname": event.UserNickname,
@@ -28,6 +27,7 @@ func EventsListSerializer(events dto.EventsListDTO) map[string]interface{} {
 		if rrule != nil && *rrule != "" {
 			e["rrule"] = *rrule
 			e["duration"] = event.Duration
+			e["rrule_type"] = event.RruleType
 		}
 
 		eventsList = append(eventsList, e)

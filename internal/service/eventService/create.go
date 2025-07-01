@@ -12,17 +12,21 @@ import (
 
 func CreateEvent(params *dto.CreateEventParamsDTO) (responseCode int, data map[string]interface{}) {
 	event := &model.Event{
-		Title:       params.Title,
-		Content:     params.Content,
-		Start:       params.Start,
-		End:         params.End,
-		UserID:      params.UserID,
-		Color:       params.Color,
-		Rrule:       params.Rrule,
-		Location:    params.Location,
-		Duration:    params.Duration,
+		Title:     params.Title,
+		Content:   params.Content,
+		Start:     params.Start,
+		End:       params.End,
+		UserID:    params.UserID,
+		Color:     params.Color,
+		Rrule:     params.Rrule,
+		Location:  params.Location,
+		RruleType: params.RruleType,
+		Duration: map[string]interface{}{
+			"minutes": params.Duration.Minutes,
+			"hours":   params.Duration.Hours,
+		},
 		WorkspaceID: params.WorkspaceID,
-		AllDay:      params.AllDay,
+		Allday:      params.Allday,
 	}
 
 	err := database.DB.Transaction(func(tx *gorm.DB) error {

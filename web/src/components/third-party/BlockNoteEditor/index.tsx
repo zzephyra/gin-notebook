@@ -30,11 +30,11 @@ import { useEffect, useRef } from "react";
 // import { createDeepSeek } from "@ai-sdk/deepseek";
 import { BASE_URL } from "@/lib/api/client";
 // import { aiChatApi } from "@/features/api/routes";
-import { YDocProvider, useYDoc, useYjsProvider } from "@y-sweet/react";
+import { YDocProvider, useYDoc } from "@y-sweet/react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import type { User } from "@blocknote/core/comments";
-import { getUserInfoByIDRequest } from "@/features/api/user";
+// import { getUserInfoByIDRequest } from "@/features/api/user";
 
 export type MyUserType = User & {
     role: "editor" | "comment";
@@ -53,22 +53,22 @@ const getRandomElement = (list: any[]) =>
     list[Math.floor(Math.random() * list.length)];
 export const getRandomColor = () => getRandomElement(colors);
 
-async function resolveUsers(userIds: string[]) {
-    var res = await getUserInfoByIDRequest(userIds[0])
-    if (res) {
-        return [{
-            id: res.id,
-            username: res.nickname || res.email,
-            avatarUrl: res.avatar,
-        }]
-    } else {
-        return [{
-            id: "0",
-            username: "Unknown User",
-            avatarUrl: "https://placehold.co/100x100?text=Unknown",
-        }]
-    }
-}
+// async function resolveUsers(userIds: string[]) {
+//     var res = await getUserInfoByIDRequest(userIds[0])
+//     if (res) {
+//         return [{
+//             id: res.id,
+//             username: res.nickname || res.email,
+//             avatarUrl: res.avatar,
+//         }]
+//     } else {
+//         return [{
+//             id: "0",
+//             username: "Unknown User",
+//             avatarUrl: "https://placehold.co/100x100?text=Unknown",
+//         }]
+//     }
+// }
 
 const BlockNoteEditor = ({ noteID, content, onChange }: { noteID: string, content?: string, onChange?: (value: string) => void }) => {
     return (
@@ -97,7 +97,7 @@ const BlockNoteEditorInner = ({ noteID, content, onChange }: { noteID: string, c
 
     const prevNoteId = useRef("");
     const prevContent = useRef("");
-    const provider = useYjsProvider();
+    // const provider = useYjsProvider();
     const doc = useYDoc();
     const threadStore = new RESTYjsThreadStore(
         // currentUser.id,
@@ -107,7 +107,6 @@ const BlockNoteEditorInner = ({ noteID, content, onChange }: { noteID: string, c
         new DefaultThreadStoreAuth(currentUser.id, "editor"),
     );
     threadStore.createThread = async (options) => {
-        console.log("createThread", options);
         const thread = {
             threadId: crypto.randomUUID(),     // 唯一标识符
             comments: [
@@ -131,18 +130,16 @@ const BlockNoteEditorInner = ({ noteID, content, onChange }: { noteID: string, c
     // })("deepseek-r1-distill-llama-70b");
     const editor = useCreateBlockNote(
         {
-            resolveUsers,
-            comments: {
-                threadStore,
-            },
-            collaboration: {
-                provider,
-                fragment: doc.getXmlFragment("blocknote"),
-                user: { color: getRandomColor(), name: currentUser.username },
-            },
-        },
-        [currentUser, threadStore],
-    );
+            // resolveUsers,
+            // comments: {
+            //     threadStore,
+            // },
+            // collaboration: {
+            //     provider,
+            //     fragment: doc.getXmlFragment("blocknote"),
+            //     user: { color: getRandomColor(), name: currentUser.username },
+            // },
+        });
 
     const handleOnChange = async () => {
         const markdownContent = await editor.blocksToMarkdownLossy(editor.document);
@@ -151,25 +148,32 @@ const BlockNoteEditorInner = ({ noteID, content, onChange }: { noteID: string, c
         }
     }
 
+    async function loadInitialHTML() {
+        const blocks = await editor.tryParseMarkdownToBlocks(content || "");
+        editor.replaceBlocks(editor.document, blocks);
+    }
+
+
     useEffect(() => {
         const noteIdChanged = prevNoteId.current !== noteID;
         const contentChanged = prevContent.current !== content;
-
         if (noteIdChanged || contentChanged) {
-            async function loadInitialHTML() {
-                const blocks = await editor.tryParseMarkdownToBlocks(content || "");
-                editor.replaceBlocks(editor.document, blocks);
-            }
             loadInitialHTML();
             prevNoteId.current = noteID;
             prevContent.current = content || "";
         }
-    }, [editor, content, noteID]);
+    }, [content]);
+
+
+
+
     return (
         <>
 
             <BlockNoteView editor={editor}
-                onChange={handleOnChange} >
+                className="h-full w-full"
+                onChange={handleOnChange}
+            >
 
                 {/* <AIMenuController /> */}
 

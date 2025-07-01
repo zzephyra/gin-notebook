@@ -1,27 +1,18 @@
 import { RootState } from '@/store';
 import { Chat, MarkdownRender } from '@douyinfe/semi-ui';
 import "./style.css"
-import { useCallback, useMemo, useState, useRef, useEffect } from 'react';
+import { useCallback, useMemo, useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { Message, RenderActionProps, RenderContentProps } from '@douyinfe/semi-ui/lib/es/chat/interface';
 import { createAIMessage, getAIChatApi, getAIChatSessionRequest, updateAIMessage } from '@/features/api/ai';
 import AIChatInput from '../aiChatInput';
-import { Button } from '@heroui/button';
-import { ClockIcon, ViewColumnsIcon } from '@heroicons/react/24/outline';
-import AvatarMenu from '../avatarMenu';
-import { useMediaQuery } from 'react-responsive';
-import { Square2StackIcon } from '@heroicons/react/24/outline';
-import { FolderIcon } from '@heroicons/react/24/outline';
-import FolderDrawer from '../drower/folderDrower';
 import {
     Avatar, AvatarGroup,
-    useDisclosure,
 } from '@heroui/react';
 import { useLingui } from '@lingui/react/macro';
 import AIChatToolset from '../aiChatToolset';
 import { responseCode } from '@/features/constant/response';
-import AIHistoryChats from '../aiHistoryChats';
 import { AIMessage } from '@/features/api/type';
 import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -135,30 +126,39 @@ const SourceCard = (props: any) => {
     )
 }
 
-const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setCollapsed?: (value: boolean) => void }) => {
+type AIChatProps = {
+    isCollapsed: boolean,
+    setCollapsed: (value: boolean) => void,
+}
+
+export type AIChatRef = {
+    updateSessionID: (sessionID: string | undefined) => void,
+    newSession: () => void,
+    setMessages: (messages: Message[]) => void,
+}
+
+const AIChat = forwardRef<AIChatRef, AIChatProps>((_, ref) => {
     var user = useSelector((state: RootState) => state.user);
     var { t } = useLingui();
     var [chatMessages, setChatMessages] = useState<Message[]>([]);
     var controller = useRef(new AbortController());
-    const { isOpen: isOpenFolderDrawer, onOpen: onOpenFolderDrawer, onOpenChange: onOpenChangeFolderDrawer } = useDisclosure();
     const [sessionID, setSessionID] = useState<string | undefined>();  // 会话ID
     const [mode] = useState<"bubble" | "noBubble" | "userBubble">('bubble');
     const [align] = useState<'leftRight' | 'leftAlign'>('leftRight');
     const showChat = useMemo(() => chatMessages.length != 0, [chatMessages.length]);
-    const onChatsChange = useCallback((chats: any) => {
-        setChatMessages(chats);
-    }, []);
     const navigate = useNavigate();
     const location = useLocation();
     const [isSearchInternet, setIsSearchInternet] = useState(false);  // 是否搜索互联网
-    const { isOpen: isOpenHistoryChats, onOpen: onOpenHistoryChats, onClose: onCloseHistoryChats } = useDisclosure();
-
+    const latestMessageID = useRef<string | undefined>(undefined);  // 最新消息ID，用于更新消息状态
     const isProcessing = useMemo(() => {
         var status = chatMessages[chatMessages.length - 1]?.status
         var role = chatMessages[chatMessages.length - 1]?.role;
         return role == "assistant" && controller.current && !controller.current.signal.aborted && (status === 'loading' || status === 'incomplete');
     }, [chatMessages]);  // 判断当前是否正在处理消息
-
+    const onChatsChange = useCallback((chats: any) => {
+        latestMessageID.current = chats[chats.length - 1]?.id;
+        setChatMessages(chats);
+    }, []);
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
 
@@ -172,6 +172,15 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
             replace: true,
         });
     }, [sessionID]);
+
+    useImperativeHandle(ref, () => ({
+        newSession: () => {
+            setSessionID(undefined);
+            setChatMessages([]);
+        },
+        updateSessionID: setSessionID,
+        setMessages: setChatMessages
+    }));
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -197,8 +206,6 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
             })
         }
     }, []);
-
-    const isDesktop = useMediaQuery({ minWidth: 1024 });
 
     const requestAIResponse = async ({
         userMessage,
@@ -262,17 +269,28 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
             onFinish(aiMessage, {});
         }
     };
+
+    const updateLastMessage = (data: Partial<Message>) => {
+        setChatMessages(prev => {
+            const updated = [...prev];
+            const last = updated.at(-1)!;
+            var newMessage = {
+                ...last,
+                ...data
+            };
+            return [...updated.slice(0, -1), newMessage];
+        });
+    }
+
+
+
     const onMessageSend = async (content: string) => {
         controller.current = new AbortController();
         const res = await createAIMessage(content, sessionID ? "insert" : "init", "complete", "user", sessionID);
         const tempSessionID = res.data.session_id;
         setSessionID(tempSessionID);
         const parentID = res.data.message_id;
-
-        let newMessage: Message = {
-            status: 'loading',
-        };
-
+        updateMessageByID(latestMessageID.current, { id: parentID })
         // 插入临时 assistant 消息
         setChatMessages(prev => [...prev, {
             role: 'assistant',
@@ -287,17 +305,15 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
             controller: controller.current,
             isSearchInternet,
             onStreamUpdate: (msg, parsed) => {
-                setChatMessages(prev => {
-                    const updated = [...prev];
-                    const last = updated.at(-1)!;
-                    newMessage = {
-                        ...last,
-                        content: msg,
-                        status: parsed.choices?.[0]?.finish_reason === "stop" ? "complete" : "incomplete",
-                        references: parsed.references ?? last.references,
-                    };
-                    return [...updated.slice(0, -1), newMessage];
-                });
+                var data: Message = {
+                    content: msg,
+                    status: parsed.choices?.[0]?.finish_reason === "stop" ? "complete" : "incomplete",
+                }
+
+                if (parsed.references) {
+                    data.references = parsed.references;
+                }
+                updateLastMessage(data)
             },
             onFinish: async (msg) => {
                 // 完成后创建 AI 消息
@@ -306,24 +322,14 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
                     msg, "insert", latestMessage?.status || "complete", "assistant", tempSessionID, parentID
                 );
                 if (result.code === responseCode.SUCCESS) {
-                    setChatMessages(prev => {
-                        const updated = [...prev];
-                        const last = updated.at(-1)!;
-                        newMessage = { ...last, id: result.data.message_id };
-                        return [...updated.slice(0, -1), newMessage];
-                    });
+                    updateLastMessage({ id: result.data.message_id })
                 }
             },
             onError: () => {
-                setChatMessages(prev => {
-                    const updated = [...prev];
-                    const last = updated.at(-1)!;
-                    return [...updated.slice(0, -1), {
-                        ...last,
-                        content: t`Oops, something went wrong!`,
-                        status: 'error'
-                    }];
-                });
+                updateLastMessage({
+                    content: t`Oops, something went wrong!`,
+                    status: 'error'
+                })
             }
         });
     };
@@ -362,12 +368,6 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
         controller.current.abort();
     };
 
-    const handleCloseCollapse = () => {
-        if (setCollapsed) {
-            setCollapsed(!isCollapsed);
-        }
-    }
-
     const updateMessageByID = (id: string | undefined, data: Partial<Message>) => {
         if (!id) {
             return;
@@ -388,7 +388,6 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
     }
 
     const handleReloadMessage = async (message: Message | undefined) => {
-        console.log("handleReloadMessage", message);
         if (!message?.parentId) {
             toast.error(t`Cannot reload message that has a parent message.`);
             if (message?.id) {
@@ -447,10 +446,6 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
         });
     }
 
-    const emptyMessages = () => {
-        setChatMessages([]);
-        setSessionID(undefined);
-    }
     const roleInfo = {
         user: {
             name: user.nickname || user.email,
@@ -466,63 +461,8 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
         }
     }
 
-    const LoadHistoryMessage = (messages: AIMessage[], sessionID: string) => {
-        setChatMessages(messages.map(
-            (msg) => ({
-                id: msg.id,
-                role: msg.role,
-                content: msg.content,
-                status: msg.status || 'complete',
-                createAt: new Date(msg.created_at).getTime() || Date.now(),
-                parentId: msg.parent_id,
-                // references: msg.references || [],
-            })
-        ))
-        setSessionID(sessionID);
-    }
-
     return (
         <>
-            <div className='p-2 '>
-                <div className='flex items-center justify-between'>
-                    <div className='flex'>
-                        {
-                            isDesktop ?
-                                (
-                                    <Button isIconOnly radius='full' size='sm' variant="light" onPress={handleCloseCollapse} >
-                                        <ViewColumnsIcon className='w-6' />
-                                    </Button>
-                                ) : (
-                                    <AvatarMenu>
-                                    </AvatarMenu>
-                                )
-                        }
-                    </div>
-                    <div className='flex'>
-                        <Button className='group gap-px px-2 min-w-0' radius='full' size='sm' variant="light" onPress={emptyMessages}>
-                            <Square2StackIcon className='w-6' />
-                            <span className='max-w-0 opacity-0 group-hover:opacity-100 group-hover:max-w-[300px] transition-all text-xs text-gray-500'>{t`New Chat`}</span>
-                        </Button>
-                        <Button className='group gap-px px-2 min-w-0' radius='full' size='sm' variant="light" onPress={onOpenHistoryChats}>
-                            <ClockIcon className='w-6' />
-                            <span className='max-w-0 opacity-0 group-hover:opacity-100 group-hover:max-w-[300px] transition-all text-xs text-gray-500'>{t`History`}</span>
-                        </Button>
-                        {
-                            isDesktop ? (<></>) : (
-                                <>
-                                    <Button className='group gap-px px-2 min-w-0' radius='full' size='sm' variant="light" onPress={onOpenFolderDrawer}>
-                                        <FolderIcon className='w-6' />
-                                        <span className='max-w-0 opacity-0 group-hover:opacity-100 group-hover:max-w-[300px] transition-all text-xs text-gray-500'>{t`Notes`}</span>
-                                    </Button>
-                                    <FolderDrawer isOpen={isOpenFolderDrawer} onOpenChange={onOpenChangeFolderDrawer}>
-                                    </FolderDrawer>
-                                </>
-                            )
-                        }
-                    </div>
-                </div>
-            </div>
-            <AIHistoryChats onSelect={LoadHistoryMessage} isOpen={isOpenHistoryChats} onClose={onCloseHistoryChats} />
             <Chat
                 key={align + mode}
                 align={align}
@@ -545,6 +485,6 @@ const AIChat = ({ isCollapsed, setCollapsed }: { isCollapsed?: boolean, setColla
             />
         </>
     );
-}
+})
 
 export default AIChat;
