@@ -1,41 +1,40 @@
 import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView } from "@blocknote/mantine";
-// import { filterSuggestionItems } from "@blocknote/core";
+import { BlockNoteSchema, defaultInlineContentSpecs, filterSuggestionItems } from "@blocknote/core";
 import "@blocknote/mantine/style.css";
-// import {
-//     AIMenuController,
-//     AIToolbarButton,
-//     createAIExtension,
-//     createBlockNoteAIClient,
-//     getAISlashMenuItems,
-// } from "@blocknote/xl-ai"
+import {
+    AIMenuController,
+    AIToolbarButton,
+    createAIExtension,
+    createBlockNoteAIClient,
+    getAIExtension,
+    getAISlashMenuItems,
+} from "@blocknote/xl-ai"
 // import { ComponentProps, useComponentsContext } from "@blocknote/react";
-
+import "@blocknote/xl-ai/style.css";
+// import {
+//     DefaultThreadStoreAuth,
+//     // YjsThreadStore,
+//     RESTYjsThreadStore
+// } from "@blocknote/core/comments";
+import { createDeepSeek } from "@ai-sdk/deepseek";
 import {
-    DefaultThreadStoreAuth,
-    // YjsThreadStore,
-    RESTYjsThreadStore
-} from "@blocknote/core/comments";
-import {
-    // FormattingToolbar,
-    // FormattingToolbarController,
-    // SuggestionMenuController,
-    // getDefaultReactSlashMenuItems,
-    // getFormattingToolbarItems,
+    FormattingToolbar,
+    FormattingToolbarController,
+    SuggestionMenuController,
+    getDefaultReactSlashMenuItems,
+    getFormattingToolbarItems,
     useCreateBlockNote,
 } from "@blocknote/react";
-import { useEffect, useRef } from "react";
-// import { en } from "@blocknote/core/locales";
-// import { en as aiEn } from "@blocknote/xl-ai/locales";
-// import { createDeepSeek } from "@ai-sdk/deepseek";
+import { i18n } from '@lingui/core';
+import { useEffect, useRef, useState } from "react";
+import { en as aiEn, zh as aiZh } from "@blocknote/xl-ai/locales";
+import { en, zh } from "@blocknote/core/locales";
 import { BASE_URL } from "@/lib/api/client";
-// import { aiChatApi } from "@/features/api/routes";
-import { YDocProvider, useYDoc } from "@y-sweet/react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { aiChatApi } from "@/features/api/routes";
+import { YDocProvider } from "@y-sweet/react";
 import type { User } from "@blocknote/core/comments";
-// import { getUserInfoByIDRequest } from "@/features/api/user";
-
+import { getUserInfoByIDRequest } from "@/features/api/user";
 export type MyUserType = User & {
     role: "editor" | "comment";
 };
@@ -53,22 +52,41 @@ const getRandomElement = (list: any[]) =>
     list[Math.floor(Math.random() * list.length)];
 export const getRandomColor = () => getRandomElement(colors);
 
-// async function resolveUsers(userIds: string[]) {
-//     var res = await getUserInfoByIDRequest(userIds[0])
-//     if (res) {
-//         return [{
-//             id: res.id,
-//             username: res.nickname || res.email,
-//             avatarUrl: res.avatar,
-//         }]
-//     } else {
-//         return [{
-//             id: "0",
-//             username: "Unknown User",
-//             avatarUrl: "https://placehold.co/100x100?text=Unknown",
-//         }]
-//     }
-// }
+const schema = BlockNoteSchema.create({
+    inlineContentSpecs: {
+        // Adds all default inline content.
+        ...defaultInlineContentSpecs,
+        // Adds the mention tag.
+        // comment: commentMark,
+    },
+
+});
+
+const localeMapping = {
+    zh_cn: {
+        ...zh, ai: aiZh
+    },
+    en: {
+        ...en, ai: aiEn
+    }
+}
+
+async function resolveUsers(userIds: string[]) {
+    var res = await getUserInfoByIDRequest(userIds[0])
+    if (res) {
+        return [{
+            id: res.id,
+            username: res.nickname || res.email,
+            avatarUrl: res.avatar,
+        }]
+    } else {
+        return [{
+            id: "0",
+            username: "Unknown User",
+            avatarUrl: "https://placehold.co/100x100?text=Unknown",
+        }]
+    }
+}
 
 const BlockNoteEditor = ({ noteID, content, onChange }: { noteID: string, content?: string, onChange?: (value: string) => void }) => {
     return (
@@ -81,64 +99,64 @@ const BlockNoteEditor = ({ noteID, content, onChange }: { noteID: string, conten
     )
 }
 
+function createMameosAIExtension() {
+    const client = createBlockNoteAIClient({
+        apiKey: "",
+        baseURL: BASE_URL + aiChatApi,
+    });
+
+    const model = createDeepSeek({
+        // call via our proxy client
+        ...client.getProviderSettings("openai"),
+        baseURL: BASE_URL + aiChatApi,
+        fetch: async (_: RequestInfo | URL, init?: RequestInit) => {
+            return fetch(`${BASE_URL}${aiChatApi}`, {
+                method: "POST",
+                credentials: "include",   // 关键！带上 Cookie
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "text/event-stream",
+                },
+                body: init?.body,
+                signal: init?.signal,
+            });
+        }
+    })("deepseek-r1-distill-llama-70b");
+    var plugin = createAIExtension({
+        model,
+        stream: true
+    })
+    return plugin;
+}
+
 const BlockNoteEditorInner = ({ noteID, content, onChange }: { noteID: string, content?: string, onChange?: (value: string) => void }) => {
     // const client = createBlockNoteAIClient({
     //     apiKey: "PLACEHOLDER",
     //     baseURL: BASE_URL + aiChatApi,
     // });
-    const currentUser = useSelector((state: RootState) => {
-        return {
-            id: state.user.id,
-            username: state.user.nickname || state.user.email,
-            avatarUrl: state.user.avatar || "https://placehold.co/100x100?text=User",
-            role: "editor" as const, // or "comment" based on your logic
-        }
-    });
+    const [aiRecommand, setAiRecommand] = useState<any>(null);
+
+    // const currentUser = useSelector((state: RootState) => {
+    //     return {
+    //         id: state.user.id,
+    //         username: state.user.nickname || state.user.email,
+    //         avatarUrl: state.user.avatar || "https://placehold.co/100x100?text=User",
+    //         role: "editor" as const, // or "comment" based on your logic
+    //     }
+    // });
 
     const prevNoteId = useRef("");
     const prevContent = useRef("");
-    // const provider = useYjsProvider();
-    const doc = useYDoc();
-    const threadStore = new RESTYjsThreadStore(
-        // currentUser.id,
-        BASE_URL + "/note/comments",
-        {},
-        doc.getMap("comments"),
-        new DefaultThreadStoreAuth(currentUser.id, "editor"),
-    );
-    threadStore.createThread = async (options) => {
-        const thread = {
-            threadId: crypto.randomUUID(),     // 唯一标识符
-            comments: [
-                {
-                    commentId: crypto.randomUUID(),
-                    body: options.initialComment.body,
-                    author: currentUser.id,
-                    createdAt: new Date().toISOString(),
-                }
-            ],
-        };
-        return thread;
-    }
-    // threadStore.addThreadToDocument = async (thread) => {
-    //     console.log("addThreadToDocument", thread);
-    //     return
-    // }
-    // const model = createDeepSeek({
-    //     // call via our proxy client
-    //     ...client.getProviderSettings("openai"),
-    // })("deepseek-r1-distill-llama-70b");
     const editor = useCreateBlockNote(
         {
-            // resolveUsers,
-            // comments: {
-            //     threadStore,
-            // },
-            // collaboration: {
-            //     provider,
-            //     fragment: doc.getXmlFragment("blocknote"),
-            //     user: { color: getRandomColor(), name: currentUser.username },
-            // },
+            dictionary: {
+                ...localeMapping[i18n.locale as keyof typeof localeMapping] || localeMapping.en
+            },
+            schema,
+            extensions: [
+                createMameosAIExtension(),
+            ],
+            resolveUsers,
         });
 
     const handleOnChange = async () => {
@@ -155,9 +173,15 @@ const BlockNoteEditorInner = ({ noteID, content, onChange }: { noteID: string, c
 
 
     useEffect(() => {
+        const unsubscribe = getAIExtension(editor).store.subscribe(() => {
+            setAiRecommand((getAIExtension(editor).store.getState().aiMenuState as any).status);
+        });
+        return () => unsubscribe();
+    }, [editor]);
+    useEffect(() => {
         const noteIdChanged = prevNoteId.current !== noteID;
         const contentChanged = prevContent.current !== content;
-        if (noteIdChanged || contentChanged) {
+        if ((noteIdChanged || contentChanged) && !aiRecommand) {
             loadInitialHTML();
             prevNoteId.current = noteID;
             prevContent.current = content || "";
@@ -165,47 +189,51 @@ const BlockNoteEditorInner = ({ noteID, content, onChange }: { noteID: string, c
     }, [content]);
 
 
-
-
     return (
         <>
-
             <BlockNoteView editor={editor}
                 className="h-full w-full"
                 onChange={handleOnChange}
+                formattingToolbar={false}
             >
 
-                {/* <AIMenuController /> */}
+                <AIMenuController />
 
                 {/* We disabled the default formatting toolbar with `formattingToolbar=false` 
         and replace it for one with an "AI button" (defined below). 
         (See "Formatting Toolbar" in docs)
         */}
-                {/* <FormattingToolbarController
+                <FormattingToolbarController
                     formattingToolbar={() => (
                         <FormattingToolbar>
                             {...getFormattingToolbarItems()}
                             <AIToolbarButton />
+                            {/* <Popover placement="bottom" showArrow={true}>
+                                <PopoverTrigger>
+                                    <Button className="rounded min-h-0 min-w-0" size="sm" variant="light" radius="sm" isIconOnly>
+                                        <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent>
+                                    <CommentInput editor={editor as any} schema={schema} />
+                                </PopoverContent>
+                            </Popover> */}
+
                         </FormattingToolbar>
                     )}
-                /> */}
-                {/* We disabled the default SlashMenu with `slashMenu=false` 
-        and replace it for one with an AI option (defined below). 
-        (See "Suggestion Menus" in docs)
-        */}
-                {/* <SuggestionMenuController
+                />
+                <SuggestionMenuController
                     triggerCharacter="/"
                     getItems={async (query) =>
                         filterSuggestionItems(
                             [
                                 ...getDefaultReactSlashMenuItems(editor),
-                                // add the default AI slash menu items, or define your own
                                 ...getAISlashMenuItems(editor),
                             ],
                             query,
                         )
                     }
-                /> */}
+                />
             </BlockNoteView>
         </>
     )

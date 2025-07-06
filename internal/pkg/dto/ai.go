@@ -1,14 +1,24 @@
 package dto
 
+type Tool struct {
+	Name        string                 `json:"name"`
+	Description string                 `json:"description"`
+	Parameters  map[string]interface{} `json:"parameters"`
+}
+
 type AIRequestDTO struct {
-	Messages         []map[string]any `json:"messages" validate:"required"`
-	IsSearchInternet bool             `json:"isSearchInternet"`
+	Messages         []map[string]any          `json:"messages" validate:"required"`
+	IsSearchInternet bool                      `json:"isSearchInternet"`
+	ToolChoice       *map[string]interface{}   `json:"tool_choice" validate:"omitempty"` // "auto" 或 "block_operations"
+	Tools            *[]map[string]interface{} `json:"tools" validate:"omitempty"`
 }
 
 type AIHttpRequestDTO struct {
-	Messages []map[string]any `json:"messages"`
-	Stream   bool             `json:"stream"`
-	Model    string           `json:"model"`
+	Messages   []map[string]any          `json:"messages"`
+	Stream     bool                      `json:"stream"`
+	Model      string                    `json:"model"`
+	Tools      *[]map[string]interface{} `json:"tools" validate:"omitempty"`
+	ToolChoice *map[string]interface{}   `json:"tool_choice" validate:"omitempty"` // "auto" 或 "block_operations"
 }
 
 type AISettingsDTO struct {
@@ -18,7 +28,7 @@ type AISettingsDTO struct {
 }
 
 type AIMessageParamsDTO struct {
-	SessionID *int64  `json:"session_id,string" validate:"omitempty"`
+	SessionID *int64  `json:"session_id,string" `
 	Content   string  `json:"content" validate:"required"`
 	Role      string  `json:"role" validate:"required,oneof=user assistant"`
 	Status    string  `json:"status" validate:"required,oneof=complete loading error incomplete"` // 状态: complete, loading, error

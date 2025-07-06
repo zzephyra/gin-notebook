@@ -434,6 +434,7 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((_, ref) => {
             },
             onError: () => {
                 setChatMessages(prev => {
+                    console.error("Error while reloading message", message);
                     const updated = [...prev];
                     const last = updated.at(-1)!;
                     return [...updated.slice(0, -1), {

@@ -8,6 +8,7 @@ import (
 	"gin-notebook/internal/service/aiService"
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/validator"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -33,6 +34,7 @@ func AIChatApi(c *gin.Context) {
 	c.Writer.Header().Set("Content-Type", "text/event-stream")
 	c.Writer.Header().Set("Cache-Control", "no-cache")
 	c.Writer.Header().Set("Connection", "keep-alive")
+	fmt.Println("upstream response status:", upRes.StatusCode)
 	c.Status(upRes.StatusCode)
 	if f, ok := c.Writer.(http.Flusher); ok {
 		f.Flush()
@@ -50,6 +52,9 @@ func AIChatApi(c *gin.Context) {
 			flusher.Flush()
 		}
 		if err != nil {
+			if err == io.EOF {
+				break
+			}
 			logger.LogError(err, "upstream read error:")
 			break
 		}

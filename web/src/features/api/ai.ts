@@ -28,8 +28,10 @@ export async function getAIChatApi(messages: Message[], controller?: AbortContro
                 signal: controller ? controller.signal : undefined,
             }
         );
+        console.log("getAIChatApi response:", res);
         return res
     } catch (err) {
+        console.error("Error in getAIChatApi:", err);
         return;
     }
 }

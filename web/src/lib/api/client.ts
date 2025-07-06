@@ -18,6 +18,7 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.response.use(
   (response) => {
+    console.log('Response:', response);
     if (response.data.code && response.data.code != responseCode.SUCCESS) {
       // 如果接口报错，则默认提示错误信息
       toast.error(response.data.error || 'Sorry, something went wrong');

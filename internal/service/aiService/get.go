@@ -24,7 +24,13 @@ func GetAIChatResponse(ctx context.Context, params *dto.AIRequestDTO) (*http.Res
 		Stream:   true,
 		Model:    aiSettings.Model,
 	}
+	if params.ToolChoice != nil {
+		payload.ToolChoice = params.ToolChoice
+	}
 
+	if params.Tools != nil {
+		payload.Tools = params.Tools
+	}
 	body, _ := json.Marshal(payload)
 
 	upReq, _ := http.NewRequestWithContext(ctx, "POST", aiSettings.ApiUrl, bytes.NewReader(body))

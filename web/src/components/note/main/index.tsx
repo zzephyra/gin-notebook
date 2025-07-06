@@ -214,6 +214,7 @@ function NoteSidebar() {
 export default function NotePage(props: NoteProps) {
     // const { t } = useLingui();
     const isDesktop = useMediaQuery({ minWidth: 1024 });
+    const isLaptop = useMediaQuery({ minWidth: 768 });
     const [content, _] = useState<string>(props.note.content);
     const [openSide, setOpenSide] = useState(false);
     const params = useParams();
@@ -261,7 +262,7 @@ export default function NotePage(props: NoteProps) {
     return (
         <>
             <div className="flex h-full w-full">
-                <div className="flex flex-1 w-min-0 flex-col h-screen">
+                <div className="flex flex-1 w-min-0 w-full flex-col h-screen">
                     <div className="h-11 flex items-center justify-between px-4">
                         <div className="flex items-center">
                             <span className="mr-2">
@@ -283,7 +284,7 @@ export default function NotePage(props: NoteProps) {
                             }
 
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className={`flex items-center ${isLaptop ? "gap-2" : "gap-1"}`}>
                             <Button variant="light" isIconOnly size="sm" className="px-2" onPress={handleStarNote} >
                                 {
                                     !props.note.is_favorite ? <StarIcon className=""></StarIcon> : <SolidStarIcon className="text-yellow-400"></SolidStarIcon>
@@ -313,7 +314,7 @@ export default function NotePage(props: NoteProps) {
                     </div>
                 </div>
                 <div
-                    className={`transition-all ${openSide ? "w-80 p-2" : "w-0 p-0"} overflow-hidden border-l  border-slate-200 duration-300 h-full`}
+                    className={`transition-all ${openSide ? "w-80 p-2 border-slate-200 border-l" : "w-0 p-0"} overflow-hidden   duration-300 h-full`}
                 >
                     <NoteSidebar></NoteSidebar>
                 </div>
