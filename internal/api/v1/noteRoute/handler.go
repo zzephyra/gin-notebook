@@ -75,3 +75,54 @@ func CreateNoteCommentApi(c *gin.Context) {
 	// responseCode, data := noteService.CreateNoteComment(params)
 	c.JSON(http.StatusCreated, nil)
 }
+
+func CreateTemplateNoteApi(c *gin.Context) {
+	params := &dto.CreateTemplateNoteDTO{
+		OwnerID: c.MustGet("userID").(int64),
+	}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		log.Printf("params %s", err)
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode, data := noteService.CreateTemplateNote(params)
+	if data == nil {
+		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.Response(responseCode, data))
+}
+
+func GetTemplateNotesApi(c *gin.Context) {
+	params := &dto.GetTemplateNotesDTO{
+		UserID: c.MustGet("userID").(int64),
+	}
+
+	if err := c.ShouldBindQuery(params); err != nil {
+		log.Printf("params %s", err)
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode, data := noteService.GetTemplateNotes(params)
+	if data == nil {
+		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
+		return
+	}
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}

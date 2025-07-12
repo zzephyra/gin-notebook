@@ -41,3 +41,10 @@ type UserDeviceListDTO struct {
 	Offset int   `form:"offset" validate:"omitempty,min=0"`
 	Limit  int   `form:"limit" validate:"omitempty,min=3,max=5"`
 }
+
+type UserBreifDTO struct {
+	ID       int64  `json:"id,string"`        // 用户ID
+	Nickname string `json:"nickname"`         // 用户昵称
+	Email    string `json:"email"`            // 用户邮箱
+	Avatar   string `json:"avatar,omitempty"` // 用户头像
+}

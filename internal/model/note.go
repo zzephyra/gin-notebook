@@ -22,6 +22,7 @@ type Note struct {
 	Status       NoteStatus `json:"status" gorm:"default:'private'; index:idx_status"`
 	AllowJoin    *bool      `json:"allow_join" gorm:"default:true"`
 	AllowInvite  *bool      `json:"allow_invite" gorm:"default:true"`
+	Cover        *string    `json:"cover" gorm:"default:NULL; type:text;"`
 }
 
 type NoteTag struct {
@@ -44,4 +45,13 @@ type FavoriteNote struct {
 	UserID     int64 `json:"user_id" gorm:"not null; uniqueIndex:uidx_note_user"`
 	IsFavorite *bool `json:"is_favorite" gorm:"default:true"`
 	Sep        int64 `json:"sep" gorm:"not null; default:0"` // 用于排序
+}
+
+type TemplateNote struct {
+	BaseModel
+	Content  string  `json:"content" gorm:"not null; type:text"`
+	Title    string  `json:"title" gorm:"not null; type:varchar(255); index:idx_title"`
+	OwnerID  int64   `json:"owner_id" gorm:"not null; index:idx_owner_id"`
+	IsPublic *bool   `json:"is_public" gorm:"default:false"`
+	Cover    *string `json:"cover" gorm:"default:NULL; type:text;"`
 }

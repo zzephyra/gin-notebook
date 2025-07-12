@@ -5,6 +5,12 @@ import * as React from 'react'
 import toast from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
 
+export interface UploadResult {
+    url: string;
+    key: string;
+    raw: any;
+}
+
 export enum Status {
     Ready, // 准备好了
     Processing, // 上传中
@@ -105,7 +111,28 @@ export function useUpload() {
         }
         return null
     }
+    const uploadAndGetUrl = async (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            replaceFile(file, (result) => {
+                if (!result) {
+                    reject(new Error("Upload failed"));
+                    return;
+                }
 
+                if (uploadSetting.storage_driver === 'qiniu') {
+                    try {
+                        const parseData = JSON.parse(result);
+                        const url = `${window.location.protocol}//${uploadSetting.qiniu_domain}/${parseData?.key}`;
+                        resolve(url);
+                    } catch (err) {
+                        reject(err);
+                    }
+                } else {
+                    reject(new Error("Unsupported storage driver"));
+                }
+            });
+        });
+    };
     // 停止上传文件
     const stop = () => {
         uploadTask?.cancel()
@@ -118,5 +145,47 @@ export function useUpload() {
         }
     }, [uploadFile])
 
-    return { start, stop, replaceFile, UploadSate, progress, error, completeInfo, getFileLink }
+    return { start, stop, replaceFile, UploadSate, progress, error, completeInfo, getFileLink, uploadAndGetUrl }
+}
+
+export async function uploadToQiniu(file: File, domain: string, forceDirect: boolean = false): Promise<UploadResult> {
+    const uploadConfig: qiniu.UploadConfig = {
+        apiServerUrl: "https://api.qiniu.com",
+        tokenProvider: async () => {
+            let res = await getUploadPolicy();
+            return res?.token;
+        }
+    }
+
+    const uuid = uuidv4(); // 生成 UUID
+    const extension = file.name.substring(file.name.lastIndexOf('.')); // 提取后缀名
+    const newFileName = `${uuid}${extension}`;
+    var file = new File([file], newFileName, {
+        type: file.type,
+        lastModified: file.lastModified
+    })
+
+    const fileData: qiniu.FileData = {
+        type: 'file',
+        data: file,
+    };
+
+    const uploadTask = forceDirect
+        ? qiniu.createDirectUploadTask(fileData, uploadConfig)
+        : qiniu.createMultipartUploadV2Task(fileData, uploadConfig);
+
+    return new Promise((resolve, reject) => {
+        uploadTask.onProgress(() => { }); // 你也可以传入回调处理进度
+        uploadTask.onError(err => reject(err));
+        uploadTask.onComplete(result => {
+            if (!result) {
+                reject(new Error("Upload failed"));
+                return;
+            }
+            const parsed = JSON.parse(result);
+            const url = `${window.location.protocol}//${domain}/${parsed?.key}`;
+            resolve({ url, key: parsed.key, raw: parsed });
+        });
+        uploadTask.start();
+    });
 }

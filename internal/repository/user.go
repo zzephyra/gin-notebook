@@ -70,6 +70,14 @@ func GetUserByID(id int64) (*model.User, int) {
 	return user, 0
 }
 
+func GetUserByIDs(id []int64) (*[]model.User, error) {
+	user := &[]model.User{}
+	if err := database.DB.Model(&model.User{}).Where("id in ?", id).Find(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 func UpdateUser(UserID int64, data map[string]interface{}) (err error) {
 	if data["password"] != nil {
 		data["password"] = string(algorithm.HashPassword(data["password"].(string)))

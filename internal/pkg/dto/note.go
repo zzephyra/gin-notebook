@@ -26,6 +26,7 @@ type WorkspaceNoteDTO struct {
 	CreatedAt    time.Time `json:"created_at" time_format:"2006-01-02"`
 	UpdatedAt    time.Time `json:"updated_at" time_format:"2006-01-02"`
 	CategoryName string    `json:"category_name"`
+	Cover        *string   `json:"cover"` // 笔记封面
 }
 
 type WorkspaceUpdateNoteCategoryDTO struct {
@@ -47,6 +48,7 @@ type UpdateWorkspaceNoteValidator struct {
 	Status       *string `json:"status"`
 	AllowJoin    *bool   `json:"allow_join"`
 	AllowInvite  *bool   `json:"allow_invite"`
+	Cover        *string `json:"cover" validate:"omitempty,url"` // 笔记封面
 }
 
 type CreateWorkspaceNoteDTO struct {
@@ -164,4 +166,31 @@ type FavoriteNoteListDTO struct {
 	CreatedAt      time.Time `json:"created_at" time_format:"2006-01-02"`
 	UpdatedAt      time.Time `json:"updated_at" time_format:"2006-01-02"`
 	IsFavorite     bool      `json:"is_favorite"` // 是否收藏
+}
+
+type CreateTemplateNoteDTO struct {
+	OwnerID  int64   `validate:"required,gt=0"`
+	Content  string  `json:"content" validate:"required,min=1"`
+	Title    string  `json:"title" validate:"required,min=1,max=100"`
+	IsPublic *bool   `json:"is_public" validate:"omitempty"`
+	Cover    *string `json:"cover" validate:"omitempty,url"`
+}
+
+type TemplateNote struct {
+	ID        int64        `json:"id,string"`
+	User      UserBreifDTO `json:"user"`
+	Content   string       `json:"content"`
+	Title     string       `json:"title"`
+	IsPublic  *bool        `json:"is_public"`
+	Cover     *string      `json:"cover"`
+	CreatedAt time.Time    `json:"created_at" time_format:"2006-01-02"`
+	UpdatedAt time.Time    `json:"updated_at" time_format:"2006-01-02"`
+}
+
+type GetTemplateNotesDTO struct {
+	UserID   int64   `validate:"required,gt=0"`
+	Keywords *string `form:"keywords" validate:"omitempty,min=1,max=100"`
+	OrderBy  *string `form:"order_by" validate:"omitempty,oneof=created_at updated_at title"`
+	Limit    *int    `form:"limit" validate:"omitempty,gt=0,lt=20"`
+	Offset   int     `form:"offset" validate:"omitempty,gte=0"`
 }

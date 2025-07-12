@@ -1,0 +1,9 @@
+.temlate-note-card-editor {
+    overflow: hidden;
+
+    .bn-editor {
+        padding: 5px;
+        font-size: 10px;
+    }
+
+}

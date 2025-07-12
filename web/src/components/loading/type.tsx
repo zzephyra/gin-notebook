@@ -3,4 +3,5 @@ export interface LoadingProps {
   text?: string;
   size?: string | number;
   className?: string;
+  textClassName?: string;
 } 

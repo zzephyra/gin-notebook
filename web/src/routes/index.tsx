@@ -14,6 +14,7 @@ import InviteWorkspacePage from "@/pages/workspace/invite";
 import SettingsPage from "@/pages/settings/main";
 import FavoritesPage from "@/pages/workspace/favorites";
 import TasksPage from "@/pages/workspace/tasks";
+import ProjectPage from "@/pages/workspace/project";
 export let router = createBrowserRouter([
   {
     path: "/",
@@ -39,8 +40,6 @@ export let router = createBrowserRouter([
         Component: FavoritesPage,
       },
       {
-      },
-      {
         path: "settings/:id",
         index: true,
         Component: SettingsPage,
@@ -48,7 +47,11 @@ export let router = createBrowserRouter([
         path: "tasks/:id",
         index: true,
         Component: TasksPage,
-      }
+      }, {
+        path: "project/:id",
+        index: true,
+        Component: ProjectPage, // Placeholder for project page
+      },
     ],
   },
   {

@@ -3,7 +3,7 @@ import { LoadingProps } from "../type"
 import React from "react";
 
 
-const ChaseLoading = ({ color = "#5b5b5b", text = "", className, size = "40px" }: LoadingProps) => {
+const ChaseLoading = ({ color = "#5b5b5b", text = "", className, textClassName, size = "40px" }: LoadingProps) => {
     var chaseSize = typeof size === "number" ? `${size}px` : size;
 
     return (
@@ -17,7 +17,7 @@ const ChaseLoading = ({ color = "#5b5b5b", text = "", className, size = "40px" }
                 <div className="sk-chase-dot"></div>
             </div>
             {text &&
-                <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                <div className={`mt-4 text-sm text-gray-500 dark:text-gray-400 ${textClassName}`} style={{ color: color }}>
                     {text}
                 </div>
             }

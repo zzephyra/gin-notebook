@@ -2,6 +2,7 @@ import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView } from "@blocknote/mantine";
 import { BlockNoteSchema, defaultInlineContentSpecs, filterSuggestionItems } from "@blocknote/core";
 import "@blocknote/mantine/style.css";
+import { BlockNoteOptions } from "./type";
 import {
     AIMenuController,
     AIToolbarButton,
@@ -88,14 +89,17 @@ async function resolveUsers(userIds: string[]) {
     }
 }
 
-const BlockNoteEditor = ({ noteID, content, onChange }: { noteID: string, content?: string, onChange?: (value: string) => void }) => {
+const BlockNoteEditor = ({ noteID, content, onChange, options, className }: { noteID: string, content?: string, className?: string, onChange?: (value: string) => void, options?: BlockNoteOptions }) => {
+
     return (
+
         <YDocProvider
             docId={noteID}
             authEndpoint="https://demos.y-sweet.dev/api/auth"
         >
-            <BlockNoteEditorInner noteID={noteID} content={content} onChange={onChange} />
+            <BlockNoteEditorInner options={options} noteID={noteID} content={content} onChange={onChange} className={className} />
         </YDocProvider>
+
     )
 }
 
@@ -129,13 +133,14 @@ function createMameosAIExtension() {
     return plugin;
 }
 
-const BlockNoteEditorInner = ({ noteID, content, onChange }: { noteID: string, content?: string, onChange?: (value: string) => void }) => {
+
+const BlockNoteEditorInner = ({ noteID, content, onChange, options, className }: { noteID: string, content?: string, onChange?: (value: string) => void, options?: BlockNoteOptions, className?: string }) => {
     // const client = createBlockNoteAIClient({
     //     apiKey: "PLACEHOLDER",
     //     baseURL: BASE_URL + aiChatApi,
     // });
-    const [aiRecommand, setAiRecommand] = useState<any>(null);
 
+    const [aiRecommand, setAiRecommand] = useState<any>(null);
     // const currentUser = useSelector((state: RootState) => {
     //     return {
     //         id: state.user.id,
@@ -192,9 +197,10 @@ const BlockNoteEditorInner = ({ noteID, content, onChange }: { noteID: string, c
     return (
         <>
             <BlockNoteView editor={editor}
-                className="h-full w-full"
+                className={`h-full w-full  ${className || ""}`}
                 onChange={handleOnChange}
                 formattingToolbar={false}
+                editable={options?.editable !== false}
             >
 
                 <AIMenuController />

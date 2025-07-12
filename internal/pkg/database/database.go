@@ -37,6 +37,7 @@ func Migrate(db *gorm.DB) {
 		&model.AISession{},
 		&model.AIMessage{},
 		&model.Event{},
+		&model.TemplateNote{},
 	)
 }
 

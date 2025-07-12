@@ -1,27 +1,30 @@
 import { NoteProps } from "./script";
 import { useLingui } from "@lingui/react/macro";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { debounce } from "lodash";
-import { AutoUpdateContent, SetFavoriteNoeRequest, UpdateNote } from "@/features/api/note";
+import { AutoUpdateContent, createTemplateNoteRequest, getTemplateListRequest, SetFavoriteNoeRequest, UpdateNote } from "@/features/api/note";
 import { useParams } from "react-router-dom";
 import { responseCode } from "@/features/constant/response";
 import {
     Modal,
+    ModalContent,
+    ModalBody,
+    useDisclosure,
     Button,
     ListboxSection,
-    ModalContent,
     Listbox,
-    ModalBody,
     ListboxItem,
-    useDisclosure,
     Switch,
     Select,
     SelectItem,
     SharedSelection,
-    Input
+    Input,
+    Image,
+    ModalHeader,
+    ModalFooter,
 } from "@heroui/react";
+import { useDroppable } from '@dnd-kit/react';
 import ShareIcon from "../../icons/share";
-import SettingIcon from "../../icons/setting";
 import "./style.css"
 import NotionIcon from "../../icons/notion";
 import WechatIcon from "../../icons/wechat";
@@ -36,17 +39,26 @@ import SquareIcon from "../../icons/square";
 import { store } from "@/store";
 import { UpdateNoteByID } from "@/store/features/workspace";
 import DeleteNoteModal from "@/components/modal/note/deleteModal";
-import { ChatBubbleLeftEllipsisIcon, SparklesIcon, StarIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
+import { CameraIcon, Cog8ToothIcon, CubeIcon, PlusIcon, SparklesIcon, StarIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
 import { StarIcon as SolidStarIcon } from "@heroicons/react/24/solid";
 import BlockNoteEditor from "@/components/third-party/BlockNoteEditor";
 import { Tabs, Tab } from "@heroui/tabs";
 import { useMediaQuery } from "react-responsive";
 import AvatarMenu from "@/components/avatarMenu";
+import AIChat from "@/components/aiChat";
+import { PanelGroup, Panel, PanelResizeHandle } from "react-resizable-panels";
+import { UploadFile } from "@/lib/upload";
+import TemplateCard from "@/components/template/card";
+import { TemplateNote } from "@/components/template/type";
+import { useDragDropMonitor } from '@dnd-kit/react';
+import Loading from "@/components/loading/Chase/loading";
+
 
 const iconSize = 14
 
 function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }: { isOpen: boolean, onOpenChange: (open: boolean) => void, activeKey?: string, note: Note, workspaceID: any }) {
     const { t } = useLingui();
+    const inputRef = useRef<HTMLInputElement>(null);
     const [selectedKey, setSelectedKey] = useState([activeKey || "permission"]);
     const { isOpen: isOpenDeleteModal, onOpen: onOpenDeleteModal, onOpenChange: onOpenDeleteModalChange } = useDisclosure();
     const state = store.getState()
@@ -101,6 +113,19 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
         }
     }
 
+    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) {
+            toast.error(t`Please select a file to upload.`);
+            return;
+        }
+        let url = await UploadFile({ file, method: "qiniu", domain: state.settings.system.qiniu_domain, accept: "image/*" })
+        let res = await UpdateNote(workspaceID, note.id, { cover: url })
+        if (res.code == responseCode.SUCCESS) {
+            store.dispatch(UpdateNoteByID({ id: note.id, changes: { cover: url } }))
+        }
+    }
+
     return (
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl" className="max-h-[715px] share-modal">
             <ModalContent >
@@ -132,6 +157,18 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                                                             <SelectItem key={category.id} className="text-slate-500">{category.category_name || t`No Category`}</SelectItem>
                                                         ))}
                                                     </Select>
+                                                </SettingsItem>
+                                                <SettingsItem label={t`Cover`}
+                                                    description={t`The cover image is displayed at the top of the note and in the template thumbnail. Leave it blank to use the first image in the note.`}>
+                                                    <Button size="sm" type="button" color="primary" onPress={() => { inputRef.current?.click() }} >
+                                                        {t`Upload`}
+                                                    </Button>
+                                                    <Input
+                                                        type="file"
+                                                        ref={inputRef}
+                                                        className="hidden"
+                                                        onChange={handleUpload}
+                                                    />
                                                 </SettingsItem>
                                             </SettingsWrapper>
                                             <SettingsWrapper title={t`Note Settings`}>
@@ -190,20 +227,104 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                     </>
                 )}
             </ModalContent>
-        </Modal>
+        </Modal >
     )
 }
 
-function NoteSidebar() {
+function Prologues() {
     return (
         <>
-            <div>
-                <Tabs size="sm">
-                    <Tab className="w-8" title={<SparklesIcon className="h-4 w-4"></SparklesIcon>}>
+            <div className="flex gap-5 flex-col mb-4 ">
+                <div className="text-lg font-medium text-center">
+                    What can I help you write?
+                </div>
+                <div className="flex gap-4 flex-col m-auto text-start">
+                    <div className="text-sm text-gray-500">
+                        🌍 Translate & summarize text
+                    </div>
+                    <div className="text-sm text-gray-500">
+                        📝 Outline with AI mind-map
+                    </div>
+                    <div className="text-sm text-gray-500">
+                        ✒️ Polish grammar & style
+                    </div>
+                    <div className="text-sm text-gray-500">
+                        💡 Brainstorm or extend drafts
+                    </div>
+                    <div className="text-sm text-gray-500">
+                        💬 Chat about any writing
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
 
+
+function NoteSidebar({ note }: { note: Note }) {
+    const { t } = useLingui();
+    const params = useRef({
+        limit: 10,
+        offset: 0,
+    })
+    const [total, setTotal] = useState(0);
+    const [data, setData] = useState<TemplateNote[]>([]);
+
+    function newTemplate() {
+        return (
+            <div className="cursor-pointer flex flex-1 items-center justify-center flex-col">
+                <PlusIcon className="h-8 w-8 text-gray-400 mx-auto"></PlusIcon>
+            </div>
+        )
+    }
+
+
+    async function handleCreateNewTemplate() {
+        let newNote = await createTemplateNoteRequest(note?.content || "", note?.title || t`New Template`, note?.cover)
+        if (newNote) {
+            setData((prev) => [newNote, ...prev]);
+        }
+    }
+    useEffect(() => {
+        getTemplateListRequest(params.current.limit, params.current.offset).then((res) => {
+            setTotal(res.data.total);
+            setData(res.data.data || []);
+        })
+    }, [])
+
+    return (
+        <>
+            <div className="flex-1 h-full flex flex-col min-w-52">
+                <Tabs classNames={
+                    {
+                        panel: "flex-1 overflow-y-auto",
+                    }
+                } size="sm">
+                    <Tab title={<SparklesIcon className="h-4 w-4"></SparklesIcon>}>
+                        <AIChat prologues={<Prologues />} className="!pb-0"></AIChat>
                     </Tab>
-                    <Tab className="w-8" title={<ChatBubbleLeftEllipsisIcon className="h-4 w-4"></ChatBubbleLeftEllipsisIcon>}>
+                    <Tab className="flex flex-col" title={<CubeIcon className="h-4 w-4"></CubeIcon>}>
+                        <div className="my-2">
+                            <h3 className="font-medium font-mono">
+                                {t`Templates`}
+                            </h3>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <TemplateCard empty onClick={handleCreateNewTemplate} emptyRender={
+                                newTemplate
+                            } />
+                            {data.map((note => (
+                                <TemplateCard draggable key={note.id} note={note} />
+                            )))}
 
+                        </div>
+                        {
+                            total <= data.length && (
+                                <div className="text-xs text-gray-400 text-center mt-4 select-none">
+                                    {t`No more templates to load.`}
+                                </div>
+                            )
+                        }
                     </Tab>
                 </Tabs>
             </div>
@@ -212,9 +333,17 @@ function NoteSidebar() {
 }
 
 export default function NotePage(props: NoteProps) {
-    // const { t } = useLingui();
+    const { t } = useLingui();
     const isDesktop = useMediaQuery({ minWidth: 1024 });
     const isLaptop = useMediaQuery({ minWidth: 768 });
+    const [isResizing, setIsResizing] = useState(false);
+    const { isDropTarget, ref } = useDroppable({
+        id: "note",
+    });
+    const [isTemplateApplying, setIsTemplateApplying] = useState(false);
+
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const [templateContent, setTemplateContent] = useState<any>({});
     const [content, _] = useState<string>(props.note.content);
     const [openSide, setOpenSide] = useState(false);
     const params = useParams();
@@ -230,7 +359,7 @@ export default function NotePage(props: NoteProps) {
         }
     }
     const handleChangeContent = debounce((newContent: string) => {
-        if (params.id == undefined) return;
+        if (params.id == undefined || isTemplateApplying) return;
         store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { content: newContent } }))
         if (content != newContent) {
             // setSaving(true);
@@ -259,11 +388,66 @@ export default function NotePage(props: NoteProps) {
         store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { title: inputRef.current ? inputRef.current.value : props.note.title } }))
     }
 
+    const handleResizeStart = (isDragging: boolean) => {
+        setIsResizing(isDragging);
+    };
+
+    const overwriteNoteContent = async (data: any) => {
+        if (!params.id || !content) return;
+        setIsTemplateApplying(true); // 设置为 true，表示正在应用模板
+        store.dispatch(UpdateNoteByID({ id: props.note.id, changes: data }))
+        UpdateNote(params.id, props.note.id, data)
+        setTemplateContent("");
+        if (isOpen) {
+            onOpenChange();
+        }
+        setTimeout(() => {
+            setIsTemplateApplying(false);
+        }, 600); // 下一轮事件循环，确保 setState 已完成
+    }
+
+    useDragDropMonitor({
+        onDragEnd(event) {
+            if (isDropTarget) {
+                const { source } = event.operation;
+                const templateNoteContent = source?.data
+                if (props.note.content.trim().length != 0) {
+                    setTemplateContent(templateNoteContent);
+                    onOpen();
+                } else {
+                    overwriteNoteContent(templateNoteContent);
+                }
+            }
+        }
+    })
+
     return (
         <>
-            <div className="flex h-full w-full">
-                <div className="flex flex-1 w-min-0 w-full flex-col h-screen">
-                    <div className="h-11 flex items-center justify-between px-4">
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className="z-[1100]" >
+                <ModalContent>
+                    <ModalHeader>
+                        <span>
+                            {t`Overwrite Note`}
+                        </span>
+                    </ModalHeader>
+                    <ModalBody>
+                        <div>
+                            {t`Existing content detected. Importing the template will overwrite it. Continue?`}
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button size="sm" variant="light" onPress={onOpenChange} className="mr-2">
+                            {t`Cancel`}
+                        </Button>
+                        <Button size="sm" color="primary" onPress={() => overwriteNoteContent(templateContent)}>
+                            {t`Confirm`}
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+            <PanelGroup direction="horizontal" className="flex h-full w-full">
+                <Panel className="flex flex-1 w-min-0 w-full flex-col h-screen">
+                    <div className="test h-11 flex items-center justify-between px-4">
                         <div className="flex items-center">
                             <span className="mr-2">
                                 {
@@ -289,13 +473,12 @@ export default function NotePage(props: NoteProps) {
                                 {
                                     !props.note.is_favorite ? <StarIcon className=""></StarIcon> : <SolidStarIcon className="text-yellow-400"></SolidStarIcon>
                                 }
-
                             </Button>
                             <Button variant="light" isIconOnly size="sm" className="px-2" onPress={onOpenSetting}>
                                 <ShareIcon></ShareIcon>
                             </Button>
                             <Button variant="light" isIconOnly size="sm" className="px-2" onPress={onOpenSetting}>
-                                <SettingIcon></SettingIcon>
+                                <Cog8ToothIcon className="w-5 h-5"></Cog8ToothIcon>
                             </Button>
                             <Button variant="light" isIconOnly size="sm" className="px-2" onPress={() => setOpenSide(!openSide)}>
                                 <IconSidebar className="rotate-180"></IconSidebar>
@@ -303,22 +486,53 @@ export default function NotePage(props: NoteProps) {
                             <NoteSettingModal isOpen={isOpenSetting} onOpenChange={onOpenSettingChange} note={props.note} workspaceID={params.id}></NoteSettingModal>
                         </div>
                     </div>
-                    <div>
-                        <div>
+                    <div ref={ref} className="flex-1 relative overflow-y-auto">
+                        {
+                            props.note.cover && (
+                                <>
+                                    <div className="relative group ">
+                                        <Image loading="lazy" width={`100%`} className="object-cover object-center" height={"30vh"} removeWrapper radius="none" src={props.note.cover} alt="Note Cover">
+                                        </Image>
+                                        <Button isIconOnly size="sm" radius="sm" className="z-50 absolute bottom-2 right-2 group-hover:opacity-100 opacity-0 transition-all duration-300">
+                                            <CameraIcon className="w-4 h-4 text-gray-500"></CameraIcon>
+                                        </Button>
+                                    </div>
+                                </>
+                            )
+                        }
+                        <div className=" flex-1 whitespace-normal transition-all duration-300 min-w-0 flex p-4">
+                            <BlockNoteEditor noteID={props.note.id} options={{
+                                editable: props.note.allow_edit,
+                            }} content={props.note.content} onChange={handleChangeContent} />
 
                         </div>
+                        {
+                            isTemplateApplying && (
+                                <>
+                                    <div className="absolute opacity-50 bottom-0 right-0 text-xs h-full z-[1001] w-full bg-gray-500 px-2 py-1">
+                                        <Loading color="#fff" text={t`Applying the template...`} textClassName="text-white dark:text-white" />
+                                    </div>
+                                </>
+                            )
+                        }
                     </div>
-                    <div className="flex-1 whitespace-normal transition-all duration-300 min-w-0 flex p-4">
-                        <BlockNoteEditor noteID={props.note.id} content={props.note.content} onChange={handleChangeContent} />
-
-                    </div>
-                </div>
-                <div
-                    className={`transition-all ${openSide ? "w-80 p-2 border-slate-200 border-l" : "w-0 p-0"} overflow-hidden   duration-300 h-full`}
+                </Panel>
+                <PanelResizeHandle
+                    onDragging={handleResizeStart}
+                    className={`relative px-1 ${openSide ? "" : "hidden"}`}>
+                    <div className="absolute top-0 bottom-0 left-1/2 transform -translate-x-1/2 border-l-[0.5px] border-gray-300"></div>
+                </PanelResizeHandle>
+                <Panel
+                    maxSize={35}
+                    minSize={25}
+                    className={`transition-all ${isResizing ? "duration-0" : "duration-300"} ease-in-out will-change-[flex] ${openSide ? "" : "!flex-[0_0_0%]"} overflow-hidden  h-full`}
                 >
-                    <NoteSidebar></NoteSidebar>
-                </div>
-            </div>
+                    <div className="p-2 h-full">
+                        <NoteSidebar note={props.note}></NoteSidebar>
+                    </div>
+                </Panel>
+            </PanelGroup>
+
         </>
     )
 }

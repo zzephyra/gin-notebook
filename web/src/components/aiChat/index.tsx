@@ -1,7 +1,7 @@
 import { RootState } from '@/store';
 import { Chat, MarkdownRender } from '@douyinfe/semi-ui';
 import "./style.css"
-import { useCallback, useMemo, useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useCallback, useMemo, useState, useRef, useEffect, forwardRef, useImperativeHandle, ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { Message, RenderActionProps, RenderContentProps } from '@douyinfe/semi-ui/lib/es/chat/interface';
@@ -20,6 +20,7 @@ import toast from 'react-hot-toast';
 const SourceCard = (props: any) => {
     const [open, setOpen] = useState(true);
     const [_, setShow] = useState(false);
+    const { t } = useLingui();
     const { source } = props;
     const onOpen = useCallback(() => {
         setOpen(false);
@@ -83,8 +84,7 @@ const SourceCard = (props: any) => {
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 padding: '5px 10px', columnGap: 10, color: 'var(--semi-color-text-1)'
             }}>
-                <span style={{ fontSize: 14, fontWeight: 500 }}>Source</span>
-                {/* <IconChevronUp /> */}
+                <span style={{ fontSize: 14, fontWeight: 500 }}>{t`Source`}</span>
             </span>
             <span style={{ display: 'flex', flexWrap: 'wrap', gap: 10, overflow: 'scroll', padding: '5px 10px' }}>
                 {source.map((s: any) => (
@@ -127,8 +127,10 @@ const SourceCard = (props: any) => {
 }
 
 type AIChatProps = {
-    isCollapsed: boolean,
-    setCollapsed: (value: boolean) => void,
+    isCollapsed?: boolean,
+    setCollapsed?: (value: boolean) => void,
+    className?: string,
+    prologues?: ReactNode,
 }
 
 export type AIChatRef = {
@@ -137,7 +139,7 @@ export type AIChatRef = {
     setMessages: (messages: Message[]) => void,
 }
 
-const AIChat = forwardRef<AIChatRef, AIChatProps>((_, ref) => {
+const AIChat = forwardRef<AIChatRef, AIChatProps>((props, ref) => {
     var user = useSelector((state: RootState) => state.user);
     var { t } = useLingui();
     var [chatMessages, setChatMessages] = useState<Message[]>([]);
@@ -234,10 +236,12 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((_, ref) => {
                     content: userMessage,
                 }
             ], controller, { isSearchInternet });
-
+            if (resp.data.code && resp.data.code !== responseCode.SUCCESS) {
+                onError();
+                return;
+            }
             const reader = resp.data?.getReader();
             const decoder = new TextDecoder("utf-8");
-
 
             if (!reader) {
                 onError();
@@ -291,6 +295,7 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((_, ref) => {
         setSessionID(tempSessionID);
         const parentID = res.data.message_id;
         updateMessageByID(latestMessageID.current, { id: parentID })
+
         // 插入临时 assistant 消息
         setChatMessages(prev => [...prev, {
             role: 'assistant',
@@ -317,15 +322,23 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((_, ref) => {
             },
             onFinish: async (msg) => {
                 // 完成后创建 AI 消息
-                let latestMessage = chatMessages[chatMessages.length - 1];
-                const result = await createAIMessage(
-                    msg, "insert", latestMessage?.status || "complete", "assistant", tempSessionID, parentID
-                );
-                if (result.code === responseCode.SUCCESS) {
-                    updateLastMessage({ id: result.data.message_id })
-                }
+                setChatMessages(prev => {
+                    const latestMessage = prev[prev.length - 1]; // 这里获取的是最新的消息
+                    createAIMessage(
+                        msg, "insert", latestMessage?.status || "complete", "assistant", tempSessionID, parentID
+                    ).then((result) => {
+                        if (result.code === responseCode.SUCCESS) {
+                            updateLastMessage({ id: result.data.message_id })
+                        }
+                        return prev; // 保持之前的消息状态不变
+                    });
+                    return prev
+                });
             },
-            onError: () => {
+            onError: async () => {
+                await createAIMessage(
+                    'Oops, something went wrong!', "insert", "error", "assistant", tempSessionID, parentID
+                );
                 updateLastMessage({
                     content: t`Oops, something went wrong!`,
                     status: 'error'
@@ -434,7 +447,6 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((_, ref) => {
             },
             onError: () => {
                 setChatMessages(prev => {
-                    console.error("Error while reloading message", message);
                     const updated = [...prev];
                     const last = updated.at(-1)!;
                     return [...updated.slice(0, -1), {
@@ -468,10 +480,10 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((_, ref) => {
                 key={align + mode}
                 align={align}
                 mode={mode}
-                className={`w-full !max-w-full ai-chat ${showChat ? "" : 'hide-chat'}`}
+                className={`w-full !max-w-full ai-chat ${props.className} ${showChat ? "" : 'hide-chat'}`}
                 // uploadProps={uploadProps}
                 renderInputArea={
-                    (props) => <AIChatInput onStop={onStopGenerator} onSeachChange={setIsSearchInternet} isProcessing={isProcessing} hidePrologue={!showChat} user={user} props={props} />
+                    (inputProps) => <AIChatInput prologues={props.prologues} onStop={onStopGenerator} onSeachChange={setIsSearchInternet} isProcessing={isProcessing} hidePrologue={!showChat} user={user} props={inputProps} />
                 }
                 chatBoxRenderConfig={{
                     renderChatBoxAction: chatToolset,

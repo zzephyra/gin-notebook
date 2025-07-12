@@ -56,3 +56,82 @@ func SetFavoriteNote(params *dto.FavoriteNoteDTO) (responseCode int, data any) {
 	responseCode = message.SUCCESS
 	return
 }
+
+func CreateTemplateNote(params *dto.CreateTemplateNoteDTO) (responseCode int, data *dto.TemplateNote) {
+	templateNote := model.TemplateNote{}
+	copier.Copy(&templateNote, params)
+
+	err := repository.CreateTemplateNote(database.DB, &templateNote)
+	if err != nil {
+		return message.ERROR_DATABASE, nil
+	}
+
+	responseCode = message.SUCCESS
+	data = &dto.TemplateNote{
+		ID:        templateNote.ID,
+		Title:     templateNote.Title,
+		Content:   templateNote.Content,
+		IsPublic:  templateNote.IsPublic,
+		Cover:     templateNote.Cover,
+		CreatedAt: templateNote.CreatedAt,
+		UpdatedAt: templateNote.UpdatedAt,
+	}
+	return
+}
+
+func GetTemplateNotes(params *dto.GetTemplateNotesDTO) (responseCode int, data *dto.ListResultDTO[dto.TemplateNote]) {
+	templateNotes, total, err := repository.GetTemplateNotes(database.DB, params.UserID, params.Limit, params.Offset)
+
+	if err != nil {
+		responseCode = database.IsError(err)
+		return
+	}
+
+	if templateNotes == nil {
+		return
+	}
+	userID := make([]int64, 0)
+
+	for note := range *templateNotes {
+		userID = append(userID, (*templateNotes)[note].OwnerID)
+	}
+
+	users, err := repository.GetUserByIDs(userID)
+	if err != nil {
+		logger.LogError(err, "获取用户信息失败")
+		responseCode = message.ERROR_DATABASE
+		return
+	}
+
+	userMap := make(map[int64]dto.UserBreifDTO, len(*users))
+
+	for _, user := range *users {
+		userMap[user.ID] = dto.UserBreifDTO{
+			ID:       user.ID,
+			Nickname: *user.Nickname,
+			Email:    user.Email,
+			Avatar:   user.Avatar,
+		}
+	}
+
+	notes := make([]dto.TemplateNote, 0, len(*templateNotes))
+	for note := range *templateNotes {
+		notes = append(notes, dto.TemplateNote{
+			ID:        (*templateNotes)[note].ID,
+			Title:     (*templateNotes)[note].Title,
+			Content:   (*templateNotes)[note].Content,
+			IsPublic:  (*templateNotes)[note].IsPublic,
+			Cover:     (*templateNotes)[note].Cover,
+			CreatedAt: (*templateNotes)[note].CreatedAt,
+			UpdatedAt: (*templateNotes)[note].UpdatedAt,
+			User:      userMap[(*templateNotes)[note].OwnerID],
+		})
+	}
+
+	data = &dto.ListResultDTO[dto.TemplateNote]{
+		Data:  notes,
+		Total: total,
+	}
+	responseCode = message.SUCCESS
+	return
+}

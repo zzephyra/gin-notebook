@@ -4,7 +4,7 @@ import { Button } from '@heroui/button';
 import { RenderInputAreaProps } from '@douyinfe/semi-ui/lib/es/chat/interface';
 import { UserState } from '@/store/features/user';
 import "./style.css"
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo, ReactNode } from 'react';
 import { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import toast from 'react-hot-toast';
 import { useLingui } from '@lingui/react/macro';
@@ -87,7 +87,7 @@ const SearchInternetButton = ({ onSelelctChange }: { onSelelctChange?: (isSelect
     )
 }
 
-const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue, isProcessing, onSeachChange, onStop }: { user: UserState, className?: string, props?: RenderInputAreaProps | undefined, onSendMessage?: (message: string) => void, hidePrologue: boolean, isProcessing: boolean, onSeachChange?: (isSearch: boolean) => void, onStop?: () => void }) => {
+const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue, isProcessing, prologues, onSeachChange, onStop }: { user: UserState, className?: string, props?: RenderInputAreaProps | undefined, prologues?: ReactNode, onSendMessage?: (message: string) => void, hidePrologue: boolean, isProcessing: boolean, onSeachChange?: (isSearch: boolean) => void, onStop?: () => void }) => {
     const prologueRef = useRef<HTMLDivElement>(null);
     const { i18n } = useLingui();
     const [messageContent, setMessageContent] = useState("");
@@ -136,17 +136,23 @@ const AIChatInput = ({ user, props, onSendMessage, className, hidePrologue, isPr
                 {hidePrologue && (
                     <>
                         <div className='text-xl text-center'>
-                            <TypeAnimation
-                                className={`font-semibold mb-6 mx-auto`}
-                                sequence={[
-                                    greet(user.nickname || user.email),
-                                    (el) => el?.classList.add(CURSOR_CLASS_NAME),
-                                ]}
-                            />
+                            {
+                                prologues ? (
+                                    prologues
+                                ) : (
+                                    <TypeAnimation
+                                        className={`font-semibold mb-6 mx-auto`}
+                                        sequence={[
+                                            greet(user.nickname || user.email),
+                                            (el) => el?.classList.add(CURSOR_CLASS_NAME),
+                                        ]}
+                                    />
+                                )
+                            }
                         </div>
                     </>
                 )}
-                <div className={`${hidePrologue ? "w-11/12 md:w-10/12 lg:w-[36rem]" : "w-10/12"} transition-all ease-in-out duration-200  bg-gray-100 m-2 p-2 mx-4 rounded-3xl`}>
+                <div className={`${hidePrologue ? "max-w-full w-11/12 md:w-10/12 lg:w-[36rem]" : "w-10/12"} transition-all ease-in-out duration-200  bg-gray-100 m-2 p-2 mx-4 rounded-3xl`}>
                     <Textarea minRows={3} maxRows={3} onKeyUp={handleKeyUp} value={messageContent} classNames={{ inputWrapper: "shadow-none" }} onValueChange={setMessageContent} />
                     <div className='flex items-center justify-between mt-2'>
                         <div>

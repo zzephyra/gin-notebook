@@ -21,3 +21,5 @@ export const aiChatMessageApi: string = "/ai/message";
 export const aiChatHistoryApi: string = "/ai/history";
 export const aiChatSessionApi: string = "/ai/session";
 export const eventApi: string = "/event";
+export const templateNotesApi: string = "/note/templates";
+export const templateNoteApi: string = "/note/template";

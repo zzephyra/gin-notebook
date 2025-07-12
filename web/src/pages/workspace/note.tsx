@@ -6,13 +6,13 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useLingui } from "@lingui/react/macro";
 import SearchIcon from "@/components/icons/search";
 import NotePage from "@/components/note/main";
 import { useSelector } from "react-redux";
 import { RootState, store } from "@/store";
-import { UpdateNoteCategoryList } from "@/store/features/workspace";
+import { UpdateNoteCategoryList, setSelectedNoteId } from "@/store/features/workspace";
 import NoteDropdown from "@/components/dropdown/note";
 import { notesSelectors } from "@/store/selectors";
 import AIChat, { AIChatRef } from "@/components/aiChat";
@@ -23,6 +23,7 @@ import { AIMessage } from "@/features/api/type";
 import { ClockIcon, FolderIcon, Square2StackIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
 import AvatarMenu from "@/components/avatarMenu";
 import FolderDrawer from "@/components/drower/folderDrower";
+import { DragDropProvider } from "@dnd-kit/react";
 
 export default function WorkspaceMain() {
   const [collapsed, setCollapsed] = useState(false);
@@ -43,7 +44,8 @@ export default function WorkspaceMain() {
     (state: RootState) => notesSelectors.selectById(state, selectedId || "")  // adapter 字典
   );
 
-
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const LoadHistoryMessage = (messages: AIMessage[], sessionID: string) => {
     chatRef.current?.setMessages(messages.map(
@@ -72,6 +74,9 @@ export default function WorkspaceMain() {
 
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const noteIDFromUrl = searchParams.get("note");
+    store.dispatch(setSelectedNoteId(noteIDFromUrl || null));
     Promise.all([GetNoteCategory(params.id, ''), GetNoteList(params.id, 0, 50)]).then((res) => {
       setLoading(false);
       store.dispatch(UpdateNoteCategoryList(res[0]))
@@ -80,9 +85,25 @@ export default function WorkspaceMain() {
   }, [])
 
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+
+    if (selectedId) {
+      searchParams.set("note", String(selectedId));
+    } else {
+      searchParams.delete("note");
+    }
+    navigate(`${location.pathname}?${searchParams.toString()}`, {
+      replace: true,
+    });
+  }, [selectedId]);
+
+
+
   if (loading) {
     return <ChaseLoading text={t`Loading notes...`} />;
   }
+
 
   return (
     <>
@@ -108,7 +129,9 @@ export default function WorkspaceMain() {
         {!collapsed && <Divider orientation="vertical"></Divider>}
         <div className="flex-1 flex flex-col w-0 ">
           {selectedId != null ?
-            <NotePage note={note} isCollapsed={collapsed} setCollapsed={setCollapsed} /> :
+            <DragDropProvider >
+              <NotePage note={note} isCollapsed={collapsed} setCollapsed={setCollapsed} />
+            </DragDropProvider> :
             (
               <>
                 <div className='p-2 '>

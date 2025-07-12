@@ -1,5 +1,5 @@
 import axiosClient from "@/lib/api/client";
-import { workspaceNotesApi, workspaceNoteCategoryApi, workspaceNoteDeleteApi, workspaceCategoryRecommandApi, favoriteNoteApi } from "./routes";
+import { workspaceNotesApi, workspaceNoteCategoryApi, workspaceNoteDeleteApi, workspaceCategoryRecommandApi, favoriteNoteApi, templateNotesApi, templateNoteApi } from "./routes";
 import { i18n } from "@lingui/core";
 import { responseCode } from "../constant/response";
 import { store } from "@/store";
@@ -180,5 +180,45 @@ export async function GetFavoriteNoteListRequest(params: FavoriteNoteListParams)
         return res.data.data || { notes: [], total: 0 }
     } catch (e) {
         return { notes: [], total: 0 }
+    }
+}
+
+export async function getTemplateListRequest(limit: number = 10, offset: number = 0) {
+    if (limit <= 0) {
+        limit = 10;
+    }
+    if (offset < 0) {
+        offset = 0;
+    }
+
+    var defaultResult = {
+        date: [],
+        total: 0
+    }
+    try {
+        const res = await axiosClient.get(templateNotesApi, { params: { limit, offset } });
+        if (res.data.code == responseCode.SUCCESS) {
+            return res.data || defaultResult;
+        }
+        return defaultResult;
+    } catch (err) {
+        return defaultResult;
+    }
+}
+
+export async function createTemplateNoteRequest(content: string, title: string, cover?: string) {
+    if (content.length < 1) {
+        toast.error(i18n._("Content cannot be empty"));
+        return null
+    }
+
+    try {
+        const res = await axiosClient.post(templateNoteApi, { content, title, cover });
+        if (res.data.code == responseCode.SUCCESS) {
+            return res.data.data;
+        }
+        return null
+    } catch (err) {
+        return null
     }
 }

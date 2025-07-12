@@ -10,6 +10,7 @@ import { getSystemLang } from "./utils/tools.ts";
 import { getUserInfoRequest, storageUserDeviceRequest } from "./features/api/user.ts";
 import { getSettingsRequest } from "./features/api/settings.ts";
 import { responseCode } from "./features/constant/response.ts";
+
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";

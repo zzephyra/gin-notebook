@@ -225,3 +225,30 @@ func GetFavoriteNoteCount(userID int64, workspaceID int64) (int64, error) {
 	}
 	return count, nil
 }
+
+func CreateTemplateNote(db *gorm.DB, templateNote *model.TemplateNote) error {
+	err := db.Create(&templateNote).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetTemplateNotes(db *gorm.DB, userID int64, limit *int, offset int) (*[]model.TemplateNote, int64, error) {
+	var templateNotes []model.TemplateNote
+	var count int64
+	sql := db.Model(&model.TemplateNote{}).
+		Where("owner_id = ?", userID).
+		Offset(offset)
+
+	if limit != nil {
+		sql = sql.Limit(*limit)
+	}
+	sql.Count(&count)
+	err := sql.Order("created_at DESC").Find(&templateNotes).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+	return &templateNotes, count, nil
+}

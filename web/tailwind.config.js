@@ -24,34 +24,34 @@ export default {
           foreground: 'hsl(var(--popover-foreground))'
         },
         muted: {
-        	DEFAULT: 'hsl(var(--muted))',
-        	foreground: 'hsl(var(--muted-foreground))'
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))'
         },
         accent: {
-        	DEFAULT: 'hsl(var(--accent))',
-        	foreground: 'hsl(var(--accent-foreground))'
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))'
         },
         destructive: {
-        	DEFAULT: 'hsl(var(--destructive))',
-        	foreground: 'hsl(var(--destructive-foreground))'
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))'
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         chart: {
-        	'1': 'hsl(var(--chart-1))',
-        	'2': 'hsl(var(--chart-2))',
-        	'3': 'hsl(var(--chart-3))',
-        	'4': 'hsl(var(--chart-4))',
-        	'5': 'hsl(var(--chart-5))'
+          '1': 'hsl(var(--chart-1))',
+          '2': 'hsl(var(--chart-2))',
+          '3': 'hsl(var(--chart-3))',
+          '4': 'hsl(var(--chart-4))',
+          '5': 'hsl(var(--chart-5))'
         },
         // brand: {
         // 	DEFAULT: 'hsl(var(--brand))',
         // 	foreground: 'hsl(var(--brand-foreground))'
         // },
         highlight: {
-        	DEFAULT: 'hsl(var(--highlight))',
-        	foreground: 'hsl(var(--highlight-foreground))'
+          DEFAULT: 'hsl(var(--highlight))',
+          foreground: 'hsl(var(--highlight-foreground))'
         }
       },
       fontFamily: {
@@ -92,6 +92,6 @@ export default {
       }
     }
   },
-  darkMode: ["class", "class"],
+  darkMode: ["class", '[data-mode="dark"]'],
   plugins: [heroui(), require("tailwindcss-animate"), require("tailwind-scrollbar-hide")],
 }
