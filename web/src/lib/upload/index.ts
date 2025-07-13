@@ -21,12 +21,29 @@ export async function UploadFile(options: UploadOptions) {
     }
 
     if (options.accept) {
-        const acceptedTypes = options.accept.split(',').map(type => type.trim());
-        const fileType = options.file.type;
-        if (!acceptedTypes.includes(fileType)) {
+        const acceptedTypes = options.accept
+            .split(",")
+            .map(t => t.trim().toLowerCase())
+            .filter(Boolean);          // 去掉空串
+
+        const fileType = options.file.type.toLowerCase();
+
+        const isAccepted = acceptedTypes.some(accepted => {
+            // 通配写法：image/*、audio/* …
+            if (accepted.endsWith("/*")) {
+                const prefix = accepted.slice(0, -1); // 得到 "image/"
+                return fileType.startsWith(prefix);
+            }
+
+            // 精确匹配：image/png、application/pdf …
+            return fileType === accepted;
+        });
+
+        if (!isAccepted) {
             toast.error(i18n._("File type {type} is not accepted", { type: fileType }));
-            return '';
+            return "";
         }
+
     }
 
     let url = '';
