@@ -229,7 +229,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
             before_id: arg.beforeId,
             order_hint: orderHint,
             client_temp_id: clientTempId,
-            project_id: projectId,
+            project_id: currentProject.id,
             payload: arg.payload,
         };
 
@@ -335,7 +335,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
             workspace_id: workspaceId,
             after_id: afterId,
             before_id: beforeId,
-            project_id: projectId,
+            project_id: currentProject.id,
             payload: {
                 title: found.task.title,
                 description: found.task.description,

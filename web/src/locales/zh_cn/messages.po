@@ -83,7 +83,7 @@ msgstr "请在输入需要发送的信息"
 
 #. placeholder {0}: option.label
 #. placeholder {0}: item.label
-#: src/components/todo/task/index.tsx:338
+#: src/components/todo/task/index.tsx:354
 #: src/components/avatarMenu/index.tsx:80
 msgid "{0}"
 msgstr "{0}"
@@ -598,13 +598,17 @@ msgstr "语言"
 msgid "Last Active"
 msgstr "最后活跃时间"
 
-#: src/components/todo/task/index.tsx:279
+#: src/components/todo/task/index.tsx:295
 msgid "Loading members..."
-msgstr ""
+msgstr "正在加载成员数据..."
 
 #: src/pages/workspace/note.tsx:104
 msgid "Loading notes..."
 msgstr "正在加载笔记..."
+
+#: src/pages/workspace/project.tsx:269
+msgid "Loading project..."
+msgstr "正在加载项目数据..."
 
 #: src/pages/workspace/select.tsx:59
 msgid "Loading Workspace..."
@@ -632,9 +636,9 @@ msgstr "登录失败"
 msgid "Login failed, please check your email and password"
 msgstr "登录失败，请检查您的电子邮件和密码"
 
-#: src/components/todo/task/index.tsx:271
+#: src/components/todo/task/index.tsx:287
 msgid "Look up a person..."
-msgstr ""
+msgstr "搜一搜"
 
 #: src/components/aiChat/index.tsx:468
 msgid "Mameos Robot"
@@ -700,9 +704,14 @@ msgstr "新文件夹"
 msgid "New Password"
 msgstr "新密码"
 
-#: src/components/todo/task/index.tsx:234
+#: src/components/todo/task/index.tsx:250
 msgid "New Project"
-msgstr ""
+msgstr "新建项目"
+
+#: src/components/todo/task/index.tsx:367
+#: src/components/todo/task/index.tsx:421
+msgid "New Task"
+msgstr "新建任务"
 
 #: src/components/note/main/index.tsx:283
 msgid "New Template"
@@ -862,9 +871,9 @@ msgstr "上一条笔记"
 msgid "Private"
 msgstr "私有"
 
-#: src/pages/workspace/project.tsx:464
+#: src/pages/workspace/project.tsx:292
 msgid "Progress"
-msgstr ""
+msgstr "进度"
 
 #: src/components/note/main/index.tsx:196
 msgid "Public"
@@ -964,9 +973,9 @@ msgstr "选择"
 msgid "Select a workspace to start using Mameos"
 msgstr "选择一个工作区开始使用备忘录"
 
-#: src/components/todo/task/index.tsx:261
+#: src/components/todo/task/index.tsx:277
 msgid "Select Assignee"
-msgstr ""
+msgstr "选择负责人"
 
 #: src/components/dropdown/note/index.tsx:126
 #: src/components/dropdown/note/index.tsx:133
@@ -977,9 +986,9 @@ msgstr "选择类别"
 msgid "Select note status"
 msgstr "选择笔记状态"
 
-#: src/components/todo/task/index.tsx:324
+#: src/components/todo/task/index.tsx:340
 msgid "Select Priority"
-msgstr ""
+msgstr "选择优先级"
 
 #: src/pages/workspace/favorites.tsx:258
 msgid "Select sorting field"

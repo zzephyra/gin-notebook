@@ -83,7 +83,7 @@ msgstr ""
 
 #. placeholder {0}: option.label
 #. placeholder {0}: item.label
-#: src/components/todo/task/index.tsx:338
+#: src/components/todo/task/index.tsx:354
 #: src/components/avatarMenu/index.tsx:80
 msgid "{0}"
 msgstr ""
@@ -598,13 +598,17 @@ msgstr "언어 Name"
 msgid "Last Active"
 msgstr ""
 
-#: src/components/todo/task/index.tsx:279
+#: src/components/todo/task/index.tsx:295
 msgid "Loading members..."
 msgstr ""
 
 #: src/pages/workspace/note.tsx:104
 msgid "Loading notes..."
 msgstr "노트 로드 중..."
+
+#: src/pages/workspace/project.tsx:269
+msgid "Loading project..."
+msgstr ""
 
 #: src/pages/workspace/select.tsx:59
 msgid "Loading Workspace..."
@@ -632,7 +636,7 @@ msgstr "로그인 실패"
 msgid "Login failed, please check your email and password"
 msgstr "로그인 실패. 이메일과 암호를 확인하십시오."
 
-#: src/components/todo/task/index.tsx:271
+#: src/components/todo/task/index.tsx:287
 msgid "Look up a person..."
 msgstr ""
 
@@ -700,8 +704,13 @@ msgstr "새 폴더"
 msgid "New Password"
 msgstr "새 암호"
 
-#: src/components/todo/task/index.tsx:234
+#: src/components/todo/task/index.tsx:250
 msgid "New Project"
+msgstr ""
+
+#: src/components/todo/task/index.tsx:367
+#: src/components/todo/task/index.tsx:421
+msgid "New Task"
 msgstr ""
 
 #: src/components/note/main/index.tsx:283
@@ -862,7 +871,7 @@ msgstr "이전 노트"
 msgid "Private"
 msgstr "Private (Private)"
 
-#: src/pages/workspace/project.tsx:464
+#: src/pages/workspace/project.tsx:292
 msgid "Progress"
 msgstr ""
 
@@ -964,7 +973,7 @@ msgstr "선택 하기"
 msgid "Select a workspace to start using Mameos"
 msgstr "Mameos 사용을 시작할 작업 영역 선택"
 
-#: src/components/todo/task/index.tsx:261
+#: src/components/todo/task/index.tsx:277
 msgid "Select Assignee"
 msgstr ""
 
@@ -977,7 +986,7 @@ msgstr "범주 선택"
 msgid "Select note status"
 msgstr "노트 상태 선택"
 
-#: src/components/todo/task/index.tsx:324
+#: src/components/todo/task/index.tsx:340
 msgid "Select Priority"
 msgstr ""
 
