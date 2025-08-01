@@ -7,6 +7,7 @@ const (
 	ERROR_INVALID_PARAMS     = 501
 	ERROR_DATABASE           = 502
 	ERROR_INTERNAL_SERVER    = 503
+	ERROR_REQUEST_BODY       = 504
 	ERROR_ASSERT_TYPE_FAILED = 600
 	ERROR_IP_NOT_FOUND       = 601
 
@@ -49,24 +50,26 @@ const (
 	ERROR_WORKSPACE_VALIDATE     = 4002
 	ERROR_WORKSPACE_CREATE       = 4003
 	ERROR_WORKSPACE_INVITE_EMAIL = 4004
+	ERROR_WORKSPACE_ID           = 4005
+	ERROR_EMPTY_WORKSPACE_ID     = 4006
 
 	// 工作区笔记模块的错误
-	ERROR_WORKSPACE_NOTE_VALIDATE              = 5001
-	ERROR_WORKSPACE_NOTE_CREATE                = 5002
-	ERROR_WORKSPACE_NOTE_UPDATE                = 5003
-	ERROR_WORKSPACE_NOTE_DELETE                = 5004
-	ERROR_WORKSPACE_NOTE_NOT_EXIST             = 5005
-	ERROR_WORKSPACE_NOTE_CATEGORY_NOT_EXIST    = 5006
-	ERROR_WORKSPACE_NOTE_CATEGORY_CREATE       = 5007
-	ERROR_WORKSPACE_NOTE_CATEGORY_UPDATE       = 5008
-	ERROR_WORKSPACE_NOTE_CATEGORY_DELETE       = 5009
-	ERROR_NO_PERMISSION_TO_UPDATE_WORKSPACE    = 5010
-	ERROR_WORKSPACE_INVITE_LINK_NOT_EXIST      = 5011
-	ERROR_WORKSPACE_INVITE_LINK_EXPIRED        = 5012
-	ERROR_WORKSPACE_MEMBER_NOT_EXIST           = 5013
-	ERROR_WORKSPACE_MEMBER_EXIST               = 5014
-	ERROR_WORKSPACE_INVITE_LINK_NOT_ALLOW_JOIN = 5015
-	ERROR_WORKSPACE_INVITE_LINK_NOT_MATCH      = 5016
+	ERROR_WORKSPACE_NOTE_VALIDATE                    = 5001
+	ERROR_WORKSPACE_NOTE_CREATE                      = 5002
+	ERROR_WORKSPACE_NOTE_UPDATE                      = 5003
+	ERROR_WORKSPACE_NOTE_DELETE                      = 5004
+	ERROR_WORKSPACE_NOTE_NOT_EXIST                   = 5005
+	ERROR_WORKSPACE_NOTE_CATEGORY_NOT_EXIST          = 5006
+	ERROR_WORKSPACE_NOTE_CATEGORY_CREATE             = 5007
+	ERROR_WORKSPACE_NOTE_CATEGORY_UPDATE             = 5008
+	ERROR_WORKSPACE_NOTE_CATEGORY_DELETE             = 5009
+	ERROR_NO_PERMISSION_TO_UPDATE_AND_VIEW_WORKSPACE = 5010
+	ERROR_WORKSPACE_INVITE_LINK_NOT_EXIST            = 5011
+	ERROR_WORKSPACE_INVITE_LINK_EXPIRED              = 5012
+	ERROR_WORKSPACE_MEMBER_NOT_EXIST                 = 5013
+	ERROR_WORKSPACE_MEMBER_EXIST                     = 5014
+	ERROR_WORKSPACE_INVITE_LINK_NOT_ALLOW_JOIN       = 5015
+	ERROR_WORKSPACE_INVITE_LINK_NOT_MATCH            = 5016
 
 	// 设置模块的错误
 	ERROR_USER_SETTING_NOT_EXIST    = 6001
@@ -102,70 +105,89 @@ const (
 	ERROR_EVENT_CREATE                  = 11001 // 创建事件失败
 	ERROR_NO_PERMISSION_TO_VIEW_EVENTS  = 11002 // 无权查看事件
 	ERROR_NO_PERMISSION_TO_MODIFY_EVENT = 11003 // 无权修改事件
+
+	// Project模块的错误
+	ERROR_PROJECT_CREATE     = 12001 // 创建项目失败
+	ERROR_PROJECT_NOT_EXIST  = 12002 // 项目不存在
+	ERROR_PROJECT_UPDATE     = 12003 // 更新项目失败
+	ERROR_PROJECT_DELETE     = 12004 // 删除项目失败
+	ERROR_GET_ORDER_INDEX    = 12005 // 获取项目任务顺序索引失败
+	ERROR_COLUMN_NOT_EXIST   = 12006 // 列不存在
+	ERROR_COLUMN_CREATE      = 12007 // 创建列失败
+	ERROR_COLUMN_UPDATE      = 12008 // 更新列失败
+	ERROR_EMPTY_PROJECT_ID   = 12009 // 项目ID不能为空
+	ERROR_INVALID_PROJECT_ID = 12010 // 无效的项目ID
+	ERROR_INVALID_TASK_ID    = 12011 // 无效的任务ID
 )
 
 var CodeMsg = map[int]string{
-	SUCCESS:                                    "OK",
-	ERROR:                                      "FAIL",
-	ERROR_USERNAME_USED:                        "用户名已存在！",
-	ERROR_FORBIDDEN:                            "没有权限",
-	ERROR_PASSWORD_WRONG:                       "密码错误",
-	ERROR_USER_NOT_EXIST:                       "用户不存在",
-	ERROR_INTERNAL_SERVER:                      "服务器内部错误",
-	ERROR_TOKEN_EXIST:                          "TOKEN不存在,请重新登陆",
-	ERROR_TOKEN_RUNTIME:                        "TOKEN已过期,请重新登陆",
-	ERROR_TOKEN_WRONG:                          "TOKEN不正确,请重新登陆",
-	ERROR_TOKEN_TYPE_WRONG:                     "TOKEN格式错误,请重新登陆",
-	ERROR_USER_NO_RIGHT:                        "该用户无权限",
-	ERROR_EMAIL_OR_PASSWORD:                    "邮箱或密码错误",
-	ERROR_PASSWORD_LENGTH_INVALID:              "密码长度不符合要求",
-	ERROR_VALIDATE_CODE_INVALID:                "验证码错误或已过期",
-	ERROR_CREATE_USER:                          "创建用户失败",
-	ERROR_GENERATE_TOKEN:                       "生成token失败",
-	ERROR_ART_NOT_EXIST:                        "文章不存在",
-	ERROR_INVALID_PARAMS:                       "请求参数错误",
-	ERROR_CATENAME_USED:                        "该分类已存在",
-	ERROR_CATE_NOT_EXIST:                       "该分类不存在",
-	ERROR_SEND_CAPTCHA:                         "发送验证码失败",
-	ERROR_DATABASE:                             "数据库操作失败",
-	ERROR_PASSWORD_INVALID:                     "密码错误",
-	ERROR_WORKSPACE_VALIDATE:                   "创建工作区数据验证失败",
-	ERROR_WORKSPACE_CREATE:                     "工作区创建失败",
-	ERROR_WORKSPACE_NOTE_CREATE:                "工作区笔记创建失败",
-	ERROR_WORKSPACE_NOTE_UPDATE:                "工作区笔记更新失败",
-	ERROR_WORKSPACE_NOTE_DELETE:                "工作区笔记删除失败",
-	ERROR_WORKSPACE_NOTE_NOT_EXIST:             "工作区笔记不存在",
-	ERROR_WORKSPACE_INVITE_EMAIL:               "工作区邀请邮件发送失败",
-	ERROR_WORKSPACE_NOTE_CATEGORY_NOT_EXIST:    "工作区笔记分类不存在",
-	ERROR_WORKSPACE_NOTE_CATEGORY_CREATE:       "工作区笔记分类创建失败",
-	ERROR_WORKSPACE_NOTE_CATEGORY_UPDATE:       "工作区笔记分类更新失败",
-	ERROR_WORKSPACE_NOTE_CATEGORY_DELETE:       "工作区笔记分类删除失败",
-	ERROR_STORAGE_DRIVER_NOT_SUPPORT:           "存储驱动不支持",
-	ERROR_QINIU_TOKEN:                          "获取七牛云token失败",
-	ERROR_USER_VALIDATE:                        "用户数据验证失败",
-	ERROR_USER_EMAIL_EXIST:                     "用户邮箱已存在",
-	ERROR_IP_NOT_FOUND:                         "IP地址未找到",
-	ERROR_GET_USER_DEVICE_LIST:                 "获取用户设备列表失败",
-	ERROR_NO_PERMISSION_TO_UPDATE_WORKSPACE:    "无权修改工作区",
-	ERROR_WORKSPACE_INVITE_LINK_EXPIRED:        "工作区邀请链接已过期",
-	ERROR_WORKSPACE_INVITE_LINK_NOT_EXIST:      "工作区邀请链接不存在",
-	ERROR_WORKSPACE_MEMBER_NOT_EXIST:           "工作区成员不存在",
-	ERROR_WORKSPACE_MEMBER_EXIST:               "工作区成员已存在",
-	ERROR_WORKSPACE_INVITE_LINK_NOT_ALLOW_JOIN: "工作区邀请链接不允许加入",
-	ERROR_WORKSPACE_INVITE_LINK_NOT_MATCH:      "工作区邀请链接与工作区不匹配",
-	ERROR_GOOGLE_OAUTH:                         "Google OAuth 认证失败",
-	ERROR_INVALID_CHANNEL:                      "无效的登录渠道",
-	ERROR_CREATE_GOOGLE_USER:                   "创建 Google 用户失败",
-	ERROR_AI_SESSION_CREATE:                    "AI 会话创建失败",
-	ERROR_AI_SESSION_NOT_EXIST:                 "AI 会话不存在",
-	ERROR_AI_MESSAGE_CREATE:                    "AI 消息创建失败",
-	ERROR_AI_MESSAGE_NOT_EXIST:                 "AI 消息不存在",
-	ERROR_AI_SESSION_UPDATE:                    "AI 会话更新失败",
-	ERROR_AI_SESSION_DELETE:                    "AI 会话删除失败",
-	ERROR_AI_MESSAGE_INDEX:                     "AI 消息索引错误",
-	ERROR_AI_MESSAGE_NOT_FOUND:                 "AI 消息未找到",
-	ERROR_AI_MESSAGE_UPDATE:                    "AI 消息更新失败",
-	ERROR_EVENT_CREATE:                         "活动创建失败",
-	ERROR_NO_PERMISSION_TO_VIEW_EVENTS:         "无权查看活动",
-	ERROR_NO_PERMISSION_TO_MODIFY_EVENT:        "无权修改活动",
+	SUCCESS:                                          "OK",
+	ERROR:                                            "FAIL",
+	ERROR_USERNAME_USED:                              "用户名已存在！",
+	ERROR_FORBIDDEN:                                  "没有权限",
+	ERROR_PASSWORD_WRONG:                             "密码错误",
+	ERROR_USER_NOT_EXIST:                             "用户不存在",
+	ERROR_INTERNAL_SERVER:                            "服务器内部错误",
+	ERROR_TOKEN_EXIST:                                "TOKEN不存在,请重新登陆",
+	ERROR_TOKEN_RUNTIME:                              "TOKEN已过期,请重新登陆",
+	ERROR_TOKEN_WRONG:                                "TOKEN不正确,请重新登陆",
+	ERROR_TOKEN_TYPE_WRONG:                           "TOKEN格式错误,请重新登陆",
+	ERROR_USER_NO_RIGHT:                              "该用户无权限",
+	ERROR_EMAIL_OR_PASSWORD:                          "邮箱或密码错误",
+	ERROR_PASSWORD_LENGTH_INVALID:                    "密码长度不符合要求",
+	ERROR_VALIDATE_CODE_INVALID:                      "验证码错误或已过期",
+	ERROR_CREATE_USER:                                "创建用户失败",
+	ERROR_GENERATE_TOKEN:                             "生成token失败",
+	ERROR_ART_NOT_EXIST:                              "文章不存在",
+	ERROR_INVALID_PARAMS:                             "请求参数错误",
+	ERROR_CATENAME_USED:                              "该分类已存在",
+	ERROR_CATE_NOT_EXIST:                             "该分类不存在",
+	ERROR_SEND_CAPTCHA:                               "发送验证码失败",
+	ERROR_DATABASE:                                   "数据库操作失败",
+	ERROR_PASSWORD_INVALID:                           "密码错误",
+	ERROR_WORKSPACE_VALIDATE:                         "创建工作区数据验证失败",
+	ERROR_WORKSPACE_CREATE:                           "工作区创建失败",
+	ERROR_WORKSPACE_NOTE_CREATE:                      "工作区笔记创建失败",
+	ERROR_WORKSPACE_NOTE_UPDATE:                      "工作区笔记更新失败",
+	ERROR_WORKSPACE_NOTE_DELETE:                      "工作区笔记删除失败",
+	ERROR_WORKSPACE_NOTE_NOT_EXIST:                   "工作区笔记不存在",
+	ERROR_WORKSPACE_INVITE_EMAIL:                     "工作区邀请邮件发送失败",
+	ERROR_WORKSPACE_NOTE_CATEGORY_NOT_EXIST:          "工作区笔记分类不存在",
+	ERROR_WORKSPACE_NOTE_CATEGORY_CREATE:             "工作区笔记分类创建失败",
+	ERROR_WORKSPACE_NOTE_CATEGORY_UPDATE:             "工作区笔记分类更新失败",
+	ERROR_WORKSPACE_NOTE_CATEGORY_DELETE:             "工作区笔记分类删除失败",
+	ERROR_STORAGE_DRIVER_NOT_SUPPORT:                 "存储驱动不支持",
+	ERROR_QINIU_TOKEN:                                "获取七牛云token失败",
+	ERROR_USER_VALIDATE:                              "用户数据验证失败",
+	ERROR_USER_EMAIL_EXIST:                           "用户邮箱已存在",
+	ERROR_IP_NOT_FOUND:                               "IP地址未找到",
+	ERROR_GET_USER_DEVICE_LIST:                       "获取用户设备列表失败",
+	ERROR_NO_PERMISSION_TO_UPDATE_AND_VIEW_WORKSPACE: "无权修改工作区",
+	ERROR_WORKSPACE_INVITE_LINK_EXPIRED:              "工作区邀请链接已过期",
+	ERROR_WORKSPACE_INVITE_LINK_NOT_EXIST:            "工作区邀请链接不存在",
+	ERROR_WORKSPACE_MEMBER_NOT_EXIST:                 "工作区成员不存在",
+	ERROR_WORKSPACE_MEMBER_EXIST:                     "工作区成员已存在",
+	ERROR_WORKSPACE_INVITE_LINK_NOT_ALLOW_JOIN:       "工作区邀请链接不允许加入",
+	ERROR_WORKSPACE_INVITE_LINK_NOT_MATCH:            "工作区邀请链接与工作区不匹配",
+	ERROR_GOOGLE_OAUTH:                               "Google OAuth 认证失败",
+	ERROR_INVALID_CHANNEL:                            "无效的登录渠道",
+	ERROR_CREATE_GOOGLE_USER:                         "创建 Google 用户失败",
+	ERROR_AI_SESSION_CREATE:                          "AI 会话创建失败",
+	ERROR_AI_SESSION_NOT_EXIST:                       "AI 会话不存在",
+	ERROR_AI_MESSAGE_CREATE:                          "AI 消息创建失败",
+	ERROR_AI_MESSAGE_NOT_EXIST:                       "AI 消息不存在",
+	ERROR_AI_SESSION_UPDATE:                          "AI 会话更新失败",
+	ERROR_AI_SESSION_DELETE:                          "AI 会话删除失败",
+	ERROR_AI_MESSAGE_INDEX:                           "AI 消息索引错误",
+	ERROR_AI_MESSAGE_NOT_FOUND:                       "AI 消息未找到",
+	ERROR_AI_MESSAGE_UPDATE:                          "AI 消息更新失败",
+	ERROR_EVENT_CREATE:                               "活动创建失败",
+	ERROR_NO_PERMISSION_TO_VIEW_EVENTS:               "无权查看活动",
+	ERROR_NO_PERMISSION_TO_MODIFY_EVENT:              "无权修改活动",
+	ERROR_WORKSPACE_ID:                               "工作区ID错误",
+	ERROR_EMPTY_WORKSPACE_ID:                         "工作区ID不能为空",
+	ERROR_EMPTY_PROJECT_ID:                           "项目ID不能为空",
+	ERROR_INVALID_PROJECT_ID:                         "无效的项目ID",
+	ERROR_PROJECT_NOT_EXIST:                          "项目不存在",
+	ERROR_INVALID_TASK_ID:                            "无效的任务ID",
 }

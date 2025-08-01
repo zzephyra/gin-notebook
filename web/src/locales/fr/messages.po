@@ -14,21 +14,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/lib/upload/index.ts:18
-msgid "File size exceeds the limit of {size} bytes"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/lib/upload/index.ts:27
-msgid "File type {type} is not accepted"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/features/api/note.ts:211
-msgid "Content cannot be empty"
-msgstr ""
-
-#. js-lingui-explicit-id
 #: src/pages/workspace/tasks.tsx:147
 #: src/components/modal/event/add/index.tsx:152
 msgid "Monthly on the {day}th"
@@ -38,6 +23,16 @@ msgstr ""
 #: src/pages/workspace/tasks.tsx:150
 #: src/components/modal/event/add/index.tsx:155
 msgid "Last {byDay} of the Month"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/lib/upload/index.ts:18
+msgid "File size exceeds the limit of {size} bytes"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/lib/upload/index.ts:43
+msgid "File type {type} is not accepted"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -62,6 +57,11 @@ msgid "Delete note failed"
 msgstr ""
 
 #. js-lingui-explicit-id
+#: src/features/api/note.ts:211
+msgid "Content cannot be empty"
+msgstr ""
+
+#. js-lingui-explicit-id
 #: src/features/api/ai.ts:65
 msgid "Message ID is required for update action"
 msgstr ""
@@ -81,7 +81,9 @@ msgstr ""
 msgid "Please enter a message before sending."
 msgstr ""
 
+#. placeholder {0}: option.label
 #. placeholder {0}: item.label
+#: src/components/todo/task/index.tsx:338
 #: src/components/avatarMenu/index.tsx:80
 msgid "{0}"
 msgstr ""
@@ -596,6 +598,10 @@ msgstr ""
 msgid "Last Active"
 msgstr ""
 
+#: src/components/todo/task/index.tsx:279
+msgid "Loading members..."
+msgstr ""
+
 #: src/pages/workspace/note.tsx:104
 msgid "Loading notes..."
 msgstr ""
@@ -624,6 +630,10 @@ msgstr ""
 
 #: src/pages/auth/login.tsx:46
 msgid "Login failed, please check your email and password"
+msgstr ""
+
+#: src/components/todo/task/index.tsx:271
+msgid "Look up a person..."
 msgstr ""
 
 #: src/components/aiChat/index.tsx:468
@@ -688,6 +698,10 @@ msgstr ""
 
 #: src/components/modal/user/modifyPassword/index.tsx:45
 msgid "New Password"
+msgstr ""
+
+#: src/components/todo/task/index.tsx:234
+msgid "New Project"
 msgstr ""
 
 #: src/components/note/main/index.tsx:283
@@ -848,6 +862,10 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
+#: src/pages/workspace/project.tsx:464
+msgid "Progress"
+msgstr ""
+
 #: src/components/note/main/index.tsx:196
 msgid "Public"
 msgstr ""
@@ -946,6 +964,10 @@ msgstr ""
 msgid "Select a workspace to start using Mameos"
 msgstr ""
 
+#: src/components/todo/task/index.tsx:261
+msgid "Select Assignee"
+msgstr ""
+
 #: src/components/dropdown/note/index.tsx:126
 #: src/components/dropdown/note/index.tsx:133
 msgid "Select Category"
@@ -953,6 +975,10 @@ msgstr ""
 
 #: src/components/dropdown/note/index.tsx:194
 msgid "Select note status"
+msgstr ""
+
+#: src/components/todo/task/index.tsx:324
+msgid "Select Priority"
 msgstr ""
 
 #: src/pages/workspace/favorites.tsx:258

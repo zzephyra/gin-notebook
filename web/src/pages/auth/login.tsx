@@ -86,7 +86,7 @@ export default function LoginPage() {
       <div className="flex">
 
         {
-          setGoogleClientId && (
+          setQQAppId && (
             <div className="flex-1 flex justify-center">
               <Button
                 variant="flat"
@@ -101,7 +101,7 @@ export default function LoginPage() {
           )
         }
         {
-          setQQAppId && (
+          setGoogleClientId && (
             <div className="flex-1 flex justify-center">
               <Button
                 variant="flat"

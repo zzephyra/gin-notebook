@@ -115,3 +115,21 @@ type CreateWorkspaceMemberDTO struct {
 	LinkUUID    string `json:"link_uuid" validate:"required"`                // 必须存在，并且大于0
 	UserID      int64  `json:"user_id,string" validate:"required,gt=0"`      // 必须存在，并且大于0
 }
+
+type GetWorkspaceMembersDTO struct {
+	WorkspaceID int64  `form:"workspace_id,string" validate:"required,gt=0"`
+	UserID      int64  `validate:"required,gt=0"`
+	Limit       int    `form:"limit" validate:"omitempty,gt=0"`
+	Offset      int    `form:"offset" validate:"omitempty,gt=0"`
+	Keywords    string `form:"keywords" validate:"omitempty,max=100"` // 搜索关键词
+}
+
+type WorkspaceMemberDTO struct {
+	ID                int64  `json:"id,string"`
+	UserID            int64  `json:"user_id,string"`
+	WorkspaceNickname string `json:"workspace_nickname"`
+	UserNickname      string `json:"user_nickname"`
+	Email             string `json:"email"`
+	Avatar            string `json:"avatar"`
+	Role              string `json:"role"` // 角色
+}

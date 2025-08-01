@@ -1,4 +1,4 @@
-import { workspaceLinkJoinApi, workspacesApi, workspacesLinkApi, workspacesListApi } from "@/features/api/routes";
+import { workspaceLinkJoinApi, workspaceMembersApi, workspacesApi, workspacesLinkApi, workspacesListApi } from "@/features/api/routes";
 import axiosClient from "@/lib/api/client";
 import { responseCode } from "../constant/response";
 import { ApiResponse, WorkspaceInviteLinkResponse } from "./type";
@@ -112,5 +112,18 @@ export async function joinWorkspaceByInviteLinkRequest(linkUUID: string, workspa
         return false
     } catch (err) {
         return false
+    }
+}
+
+
+export async function getWorkspaceMembersRequest(workspace_id: string, limit: number, offset: number = 0, keywords: string = "") {
+    try {
+        const res = await axiosClient.get(workspaceMembersApi, { params: { workspace_id, limit, offset, keywords } })
+        return res.data.data
+    } catch (err) {
+        return {
+            total: 0,
+            data: []
+        }
     }
 }

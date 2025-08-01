@@ -10,6 +10,10 @@ import { getSystemLang } from "./utils/tools.ts";
 import { getUserInfoRequest, storageUserDeviceRequest } from "./features/api/user.ts";
 import { getSettingsRequest } from "./features/api/settings.ts";
 import { responseCode } from "./features/constant/response.ts";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -38,19 +42,21 @@ function App() {
 
   return (
     <>
-      {googleClientId ? (
-        <GoogleOAuthProvider clientId={googleClientId}>
+      <QueryClientProvider client={queryClient}>
+        {googleClientId ? (
+          <GoogleOAuthProvider clientId={googleClientId}>
+            <I18nProvider i18n={i18n}>
+              <Toaster></Toaster>
+              <AppRouter />
+            </I18nProvider>
+          </GoogleOAuthProvider>
+        ) : (
           <I18nProvider i18n={i18n}>
             <Toaster></Toaster>
             <AppRouter />
           </I18nProvider>
-        </GoogleOAuthProvider>
-      ) : (
-        <I18nProvider i18n={i18n}>
-          <Toaster></Toaster>
-          <AppRouter />
-        </I18nProvider>
-      )}
+        )}
+      </QueryClientProvider>
     </>
   );
 }

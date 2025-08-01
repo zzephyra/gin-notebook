@@ -38,6 +38,10 @@ func Migrate(db *gorm.DB) {
 		&model.AIMessage{},
 		&model.Event{},
 		&model.TemplateNote{},
+		&model.Project{},
+		&model.ToDoColumn{},
+		&model.ToDoTask{},
+		&model.ToDoTaskAssignee{},
 	)
 }
 

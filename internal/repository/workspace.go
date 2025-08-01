@@ -104,6 +104,34 @@ func GetWorkspaceMember(userID int64, workspaceID int64) (*model.WorkspaceMember
 	return &workspaceMember, nil
 }
 
+func GetWorkspaceMembers(workspaceID int64, limit int, offset int, keywords string) (data *[]dto.WorkspaceMemberDTO, total int64, err error) {
+	var workspaceMembers []dto.WorkspaceMemberDTO
+	query := database.DB.Model(&model.WorkspaceMember{}).
+		Select("workspace_members.id, workspace_members.role, workspace_members.user_id, workspace_members.nickname as workspace_nickname, u.avatar, u.email, u.nickname as user_nickname").
+		Joins("LEFT JOIN users as u ON u.id = workspace_members.user_id").
+		Where("workspace_id = ?", workspaceID)
+
+	if keywords != "" {
+		query = query.Where("workspace_members.nickname LIKE ? OR email LIKE ? OR u.nickname LIKE ?", "%"+keywords+"%", "%"+keywords+"%", "%"+keywords+"%")
+	}
+
+	count := int64(0)
+	err = query.Count(&count).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	if limit > 0 {
+		query = query.Limit(limit).Offset(offset)
+	}
+
+	err = query.Find(&workspaceMembers).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	return &workspaceMembers, count, nil
+}
+
 func IsUserAllowedToModifyWorkspace(userID int64, workspaceID int64) bool {
 	workspaceMember, err := GetWorkspaceMember(userID, workspaceID)
 	if err != nil {

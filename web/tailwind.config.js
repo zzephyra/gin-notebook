@@ -92,6 +92,6 @@ export default {
       }
     }
   },
-  darkMode: ["class", '[data-mode="dark"]'],
+  darkMode: ["class"],
   plugins: [heroui(), require("tailwindcss-animate"), require("tailwind-scrollbar-hide")],
 }

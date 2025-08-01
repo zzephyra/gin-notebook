@@ -1,6 +1,6 @@
 import { MenuItem } from "@/components/menu/type";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
-import { Cog6ToothIcon, NewspaperIcon, StarIcon } from "@heroicons/react/24/solid";
+import { Cog6ToothIcon, NewspaperIcon, StarIcon, ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
 
 export type SiteConfig = typeof siteConfig;
 
@@ -84,6 +84,12 @@ export const getMenuItems = (id: string): MenuItem[] => [
     icon: StarIcon,
     key: "favorites",
     route: `/workspace/${id}/favorites`,
+  },
+  {
+    label: `Project`,
+    icon: ClipboardDocumentCheckIcon,
+    key: "project",
+    route: `/project/${id}`,
   },
   {
     label: `Tasks`,

@@ -69,6 +69,30 @@ func CreateWorkspace(workspace *dto.WorkspaceValidation) (responseCode int, data
 			return
 		}
 
+		// 创建默认的任务列表
+		project := &model.Project{
+			Name:        "Default Project",
+			WorkspaceID: workspaceModel.ID,
+			OwnerID:     workspace.Owner,
+		}
+		err = repository.CreateModel(tx, project)
+		if err != nil {
+			responseCode = message.ERROR_PROJECT_CREATE
+			return
+		}
+
+		columns := []model.ToDoColumn{
+			{ProjectID: project.ID, Name: "To Do", Order: "a", ProcessID: 0},
+			{ProjectID: project.ID, Name: "In Progress", Order: "b", ProcessID: 1},
+			{ProjectID: project.ID, Name: "Done", Order: "c", ProcessID: 2},
+		}
+
+		err = repository.BulkCreateModel(tx, &columns)
+		if err != nil {
+			responseCode = message.ERROR_COLUMN_CREATE
+			return
+		}
+
 		logger.LogInfo("workspace UUID: ", map[string]interface{}{})
 		// 创建邀请链接
 		if workspace.UUID != "" {
@@ -129,7 +153,7 @@ func GetWorkspace(workspaceID string, UserID int64) (responseCode int, data any)
 func CreateWorkspaceLinks(params *dto.CreateWorkspaceInviteLinkDTO) (responseCode int, data *model.WorkspaceInvite) {
 	isAllowed := repository.IsUserAllowedToModifyWorkspace(params.UserID, params.WorkspaceID)
 	if !isAllowed {
-		responseCode = message.ERROR_NO_PERMISSION_TO_UPDATE_WORKSPACE
+		responseCode = message.ERROR_NO_PERMISSION_TO_UPDATE_AND_VIEW_WORKSPACE
 		return
 	}
 	_, exist := tools.Find([]string{"", "1", "7", "14", "30"}, params.ExipiresAt)

@@ -17,7 +17,7 @@ const ChaseLoading = ({ color = "#5b5b5b", text = "", className, textClassName, 
                 <div className="sk-chase-dot"></div>
             </div>
             {text &&
-                <div className={`mt-4 text-sm text-gray-500 dark:text-gray-400 ${textClassName}`} style={{ color: color }}>
+                <div className={`mt-4 select-none text-sm text-gray-400 dark:text-white ${textClassName}`}>
                     {text}
                 </div>
             }

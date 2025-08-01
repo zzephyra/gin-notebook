@@ -14,21 +14,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/lib/upload/index.ts:18
-msgid "File size exceeds the limit of {size} bytes"
-msgstr "文件大小超过限制：{size} 字节"
-
-#. js-lingui-explicit-id
-#: src/lib/upload/index.ts:27
-msgid "File type {type} is not accepted"
-msgstr "不接受的文件类型：{type}"
-
-#. js-lingui-explicit-id
-#: src/features/api/note.ts:211
-msgid "Content cannot be empty"
-msgstr "内容不允许为空"
-
-#. js-lingui-explicit-id
 #: src/pages/workspace/tasks.tsx:147
 #: src/components/modal/event/add/index.tsx:152
 msgid "Monthly on the {day}th"
@@ -39,6 +24,16 @@ msgstr "每月的第 {day} 天"
 #: src/components/modal/event/add/index.tsx:155
 msgid "Last {byDay} of the Month"
 msgstr "每月的最后一个 {byDay}"
+
+#. js-lingui-explicit-id
+#: src/lib/upload/index.ts:18
+msgid "File size exceeds the limit of {size} bytes"
+msgstr "文件大小超过限制：{size} 字节"
+
+#. js-lingui-explicit-id
+#: src/lib/upload/index.ts:43
+msgid "File type {type} is not accepted"
+msgstr "不接受的文件类型：{type}"
 
 #. js-lingui-explicit-id
 #: src/features/api/note.ts:13
@@ -62,6 +57,11 @@ msgid "Delete note failed"
 msgstr "删除笔记失败"
 
 #. js-lingui-explicit-id
+#: src/features/api/note.ts:211
+msgid "Content cannot be empty"
+msgstr "内容不允许为空"
+
+#. js-lingui-explicit-id
 #: src/features/api/ai.ts:65
 msgid "Message ID is required for update action"
 msgstr "更新操作需要提供消息 ID"
@@ -81,7 +81,9 @@ msgstr "是否要将文件移动到\"{total}\\”文件夹？"
 msgid "Please enter a message before sending."
 msgstr "请在输入需要发送的信息"
 
+#. placeholder {0}: option.label
 #. placeholder {0}: item.label
+#: src/components/todo/task/index.tsx:338
 #: src/components/avatarMenu/index.tsx:80
 msgid "{0}"
 msgstr "{0}"
@@ -596,6 +598,10 @@ msgstr "语言"
 msgid "Last Active"
 msgstr "最后活跃时间"
 
+#: src/components/todo/task/index.tsx:279
+msgid "Loading members..."
+msgstr ""
+
 #: src/pages/workspace/note.tsx:104
 msgid "Loading notes..."
 msgstr "正在加载笔记..."
@@ -625,6 +631,10 @@ msgstr "登录失败"
 #: src/pages/auth/login.tsx:46
 msgid "Login failed, please check your email and password"
 msgstr "登录失败，请检查您的电子邮件和密码"
+
+#: src/components/todo/task/index.tsx:271
+msgid "Look up a person..."
+msgstr ""
 
 #: src/components/aiChat/index.tsx:468
 msgid "Mameos Robot"
@@ -689,6 +699,10 @@ msgstr "新文件夹"
 #: src/components/modal/user/modifyPassword/index.tsx:45
 msgid "New Password"
 msgstr "新密码"
+
+#: src/components/todo/task/index.tsx:234
+msgid "New Project"
+msgstr ""
 
 #: src/components/note/main/index.tsx:283
 msgid "New Template"
@@ -848,6 +862,10 @@ msgstr "上一条笔记"
 msgid "Private"
 msgstr "私有"
 
+#: src/pages/workspace/project.tsx:464
+msgid "Progress"
+msgstr ""
+
 #: src/components/note/main/index.tsx:196
 msgid "Public"
 msgstr "公共"
@@ -946,6 +964,10 @@ msgstr "选择"
 msgid "Select a workspace to start using Mameos"
 msgstr "选择一个工作区开始使用备忘录"
 
+#: src/components/todo/task/index.tsx:261
+msgid "Select Assignee"
+msgstr ""
+
 #: src/components/dropdown/note/index.tsx:126
 #: src/components/dropdown/note/index.tsx:133
 msgid "Select Category"
@@ -954,6 +976,10 @@ msgstr "选择类别"
 #: src/components/dropdown/note/index.tsx:194
 msgid "Select note status"
 msgstr "选择笔记状态"
+
+#: src/components/todo/task/index.tsx:324
+msgid "Select Priority"
+msgstr ""
 
 #: src/pages/workspace/favorites.tsx:258
 msgid "Select sorting field"

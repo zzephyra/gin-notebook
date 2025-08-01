@@ -5,6 +5,7 @@ import (
 	"gin-notebook/internal/api/v1/authRoute"
 	"gin-notebook/internal/api/v1/eventRoute"
 	"gin-notebook/internal/api/v1/noteRoute"
+	"gin-notebook/internal/api/v1/projectRouter"
 	"gin-notebook/internal/api/v1/settingsRoute"
 	"gin-notebook/internal/api/v1/uploadRoute"
 	"gin-notebook/internal/api/v1/userRoute"
@@ -23,4 +24,5 @@ func RegisterV1Routes(r *gin.RouterGroup) {
 	noteRoute.RegisterNoteRoutes(group)
 	aiRoute.RegisterAiRoutes(group)
 	eventRoute.RegisterEventRoutes(group)
+	projectRouter.ProjectRoutes(group)
 }

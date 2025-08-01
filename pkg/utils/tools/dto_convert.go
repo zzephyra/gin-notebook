@@ -7,6 +7,19 @@ import (
 	"strings"
 )
 
+func hasStringOption(tag string) bool {
+	if tag == "" {
+		return false
+	}
+	parts := strings.Split(tag, ",")
+	for _, part := range parts[1:] {
+		if part == "string" {
+			return true
+		}
+	}
+	return false
+}
+
 func StructToUpdateMap(input interface{}, override map[string]string, ignoreFields []string) map[string]interface{} {
 	result := make(map[string]interface{})
 	ignoreSet := make(map[string]struct{}, len(ignoreFields))
@@ -56,13 +69,25 @@ func StructToUpdateMap(input interface{}, override map[string]string, ignoreFiel
 			}
 
 			// 只取非 nil 的指针字段
+			// 在 result[jsonKey] = xxx 之前
 			if fieldVal.Kind() == reflect.Ptr {
 				if !fieldVal.IsNil() {
-					result[jsonKey] = fieldVal.Elem().Interface()
+					v := fieldVal.Elem().Interface()
+					if hasStringOption(field.Tag.Get("json")) {
+						result[jsonKey] = fmt.Sprintf("%v", v)
+					} else {
+						result[jsonKey] = v
+					}
 				}
 			} else {
-				result[jsonKey] = fieldVal.Interface()
+				v := fieldVal.Interface()
+				if hasStringOption(field.Tag.Get("json")) {
+					result[jsonKey] = fmt.Sprintf("%v", v)
+				} else {
+					result[jsonKey] = v
+				}
 			}
+
 		}
 	}
 
