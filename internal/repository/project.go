@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"fmt"
 	"gin-notebook/internal/model"
+	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 
 	"gorm.io/gorm"
@@ -23,7 +25,7 @@ func GetLatestOrderByColumnID(db *gorm.DB, columnID int64, withLock bool) (strin
 	}
 
 	err := sql.Where("column_id = ?", columnID).
-		Order(clause.OrderByColumn{Column: clause.Column{Name: "order"}, Desc: true}).
+		Order(clause.OrderByColumn{Column: clause.Column{Name: "order_index"}, Desc: true}).
 		Limit(1).
 		Select("order").
 		Scan(&maxOrder).Error
@@ -70,22 +72,28 @@ func GetProjectTasksByColumns(db *gorm.DB, columnIDs []int64, limitPerColumn int
 		limitPerColumn = 50 // 默认每列获取50条任务
 	}
 
-	var tasks []dto.ToDoTaskWithFlag
+	var orderTag string
+	if database.IsPostgres() {
+		orderTag = `order_index COLLATE "C"`
+	} else {
+		orderTag = "" // 使用默认排序，或者拓展其他数据库
+	}
 
-	query := `
+	var tasks []dto.ToDoTaskWithFlag
+	query := fmt.Sprintf(`
 		WITH ranked_tasks AS (
 			SELECT *,
-			       ROW_NUMBER() OVER (PARTITION BY column_id ORDER BY created_at DESC) AS rn,
-			       COUNT(*) OVER (PARTITION BY column_id) AS total_count
+				ROW_NUMBER() OVER (PARTITION BY column_id ORDER BY %s ASC) AS rn,
+				COUNT(*) OVER (PARTITION BY column_id) AS total_count
 			FROM to_do_tasks
-			WHERE column_id IN ?
+			WHERE column_id IN (?)
 		)
 		SELECT *
 		FROM ranked_tasks
-		WHERE rn <= ?
-	`
+		WHERE rn <= ?;
+	`, orderTag)
 
-	err := db.Raw(query, columnIDs, limitPerColumn).Scan(&tasks).Error
+	err := db.Debug().Raw(query, columnIDs, limitPerColumn).Scan(&tasks).Error
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +112,7 @@ func GetProjectTaskByID(db *gorm.DB, taskID int64) (*model.ToDoTask, error) {
 
 func GetProjectTaskByIDs(db *gorm.DB, taskID []int64, columnID int64, withLock bool) ([]model.ToDoTask, error) {
 	var task []model.ToDoTask
-	sql := db.Model(&model.ToDoTask{}).Where("id IN ? AND column_id = ?", taskID, columnID).Order(clause.OrderByColumn{Column: clause.Column{Name: "order"}})
+	sql := db.Model(&model.ToDoTask{}).Where("id IN ? AND column_id = ?", taskID, columnID).Order(clause.OrderByColumn{Column: clause.Column{Name: "order_index"}})
 
 	if withLock {
 		sql = sql.Clauses(clause.Locking{Strength: "UPDATE"})
@@ -119,7 +127,7 @@ func GetProjectTaskByIDs(db *gorm.DB, taskID []int64, columnID int64, withLock b
 func GetProjectTaskAssigneesByTaskIDs(db *gorm.DB, taskIDs []int64) ([]dto.ToDoTaskAssignee, error) {
 	var assignees []dto.ToDoTaskAssignee
 
-	err := db.Debug().Model(&model.ToDoTaskAssignee{}).
+	err := db.Model(&model.ToDoTaskAssignee{}).
 		Select("to_do_task_assignees.to_do_task_id, u.nickname, u.email AS email, u.id, u.avatar, wm.nickname as workspace_nickname").
 		Joins("JOIN users u ON to_do_task_assignees.assignee_id = u.id").
 		Joins("JOIN workspace_members wm ON wm.user_id = to_do_task_assignees.assignee_id").

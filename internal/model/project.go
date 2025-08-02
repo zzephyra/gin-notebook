@@ -18,7 +18,7 @@ type ToDoColumn struct {
 	ProjectID   int64  `json:"project_id,string" gorm:"not null; index:idx_project_id"`
 	Name        string `json:"name" gorm:"not null; type:varchar(100); index:idx_name"`
 	Description string `json:"description" gorm:"type:text"`
-	Order       string `json:"order" gorm:""`                          // 用于排序
+	OrderIndex  string `json:"order_index" gorm:""`                    // 用于排序
 	ProcessID   uint8  `json:"process_id" gorm:"index:idx_process_id"` // 用于流程管理，区分统计项目进度，释放名称自定义
 }
 
@@ -26,7 +26,7 @@ type ToDoTask struct {
 	BaseModel
 	ProjectID   int64      `json:"project_id,string" gorm:"not null; index:idx_project_id"`
 	Title       string     `json:"title" gorm:"not null; type:varchar(200); index:idx_title"`
-	Order       string     `json:"order" gorm:"index:uniq_column_order,priority:2"`
+	OrderIndex  string     `json:"order_index" gorm:"varchar(10),index:uniq_column_order,priority:2"`
 	ColumnID    int64      `json:"column_id,string" gorm:"index:uniq_column_order,priority:1"`
 	Creator     int64      `json:"creator,string" gorm:"not null; index:idx_creator"`
 	Priority    string     `json:"priority" gorm:"index:idx_priority"` // low, medium, high

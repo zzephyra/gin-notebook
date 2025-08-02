@@ -95,3 +95,7 @@ func IsError(err error) int {
 		return isPostgresError(err)
 	}
 }
+
+func IsPostgres() bool {
+	return Engine == "postgres"
+}

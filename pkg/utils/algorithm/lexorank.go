@@ -65,13 +65,7 @@ func RankPrev(a string) string {
 }
 
 func RankMin() lexorank.BucketKey {
-	bucket := GetBucket()
-
-	minValue, err := bucket.Initial()
-	if err != nil {
-		return lexorank.BucketKey(GenBucketKeyString(strings.Repeat(string(lexorank.DefaultCharacterSet.Min()), 6)))
-	}
-	return minValue
+	return lexorank.BucketKey(GenBucketKeyString(strings.Repeat(string(lexorank.DefaultCharacterSet.Min()), 6)))
 }
 
 func RankMax() lexorank.BucketKey {

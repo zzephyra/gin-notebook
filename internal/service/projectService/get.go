@@ -1,7 +1,6 @@
 package projectService
 
 import (
-	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
@@ -69,7 +68,6 @@ func GetProject(params *dto.GetProjectDTO) (responseCode int, data map[string]in
 			continue
 		}
 		parseTaks := tools.StructToUpdateMap(task.ToDoTask, nil, []string{"DeletedAt", "CreatedAt", "UpdatedAt"})
-		fmt.Println("assigneesMap", assigneesMap)
 		parseTaks["assignee"] = assigneesMap[task.ID] // 初始化分配人
 		(*column)["tasks"] = append((*column)["tasks"].([]map[string]interface{}), parseTaks)
 		(*column)["total"] = task.TotalCount

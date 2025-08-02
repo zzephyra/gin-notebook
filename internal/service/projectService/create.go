@@ -46,31 +46,29 @@ func CreateProjectTask(params *dto.CreateProjectTaskDTO) (responseCode int, data
 			}
 
 			var middleOrder string
-			fmt.Println(params.AfterID > 0, params.BeforeID, tasks)
 			if hasAfterTask && hasBeforeTask {
 				if len(tasks) != 2 {
 					responseCode = message.ERROR_INVALID_TASK_ID
 					return gorm.ErrInvalidData
 				}
-				middleOrder = algorithm.RankBetween(tasks[0].Order, tasks[1].Order)
+				middleOrder = algorithm.RankBetween(tasks[0].OrderIndex, tasks[1].OrderIndex)
 			} else if hasAfterTask || hasBeforeTask {
 				if len(tasks) != 1 {
 					responseCode = message.ERROR_INVALID_TASK_ID
 					return gorm.ErrInvalidData
 				}
-				fmt.Println("rank", lexorank.BucketKey(tasks[0].Order))
 				if hasAfterTask {
-					middleOrder = algorithm.RankBetweenBucket(lexorank.BucketKey(tasks[0].Order), algorithm.RankMax()).String()
+					middleOrder = algorithm.RankBetweenBucket(lexorank.BucketKey(tasks[0].OrderIndex), algorithm.RankMax()).String()
 				} else {
-					middleOrder = algorithm.RankBetweenBucket(algorithm.RankMin(), lexorank.BucketKey(tasks[0].Order)).String()
+					middleOrder = algorithm.RankBetweenBucket(algorithm.RankMin(), lexorank.BucketKey(tasks[0].OrderIndex)).String()
 				}
 
 				fmt.Println("middleOrder", middleOrder)
 			} else {
 				middleOrder = algorithm.RankBetweenBucket(algorithm.RankMin(), algorithm.RankMax()).String()
 			}
-
-			task.Order = middleOrder
+			fmt.Println(algorithm.RankBetweenBucket(algorithm.RankMin(), algorithm.RankMax()).String())
+			task.OrderIndex = middleOrder
 
 			if err := repository.CreateProjectTask(tx, &task); err != nil {
 				responseCode = database.IsError(err)
