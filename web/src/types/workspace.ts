@@ -1,9 +1,8 @@
 export type WorkspaceMember = {
     id: string;
     workspace_nickname: string; // The nickname of the user in the workspace
-    user_id: string; // The ID of the user
     user_nickname: string; // The nickname of the user in the system
     email: string;
     avatar: string;
-    role: string; // e.g., 'admin', 'member'
+    role: string[]; // e.g., 'admin', 'member'
 }

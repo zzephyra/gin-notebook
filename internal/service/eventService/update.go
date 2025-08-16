@@ -10,11 +10,6 @@ import (
 )
 
 func UpdateEvent(params *dto.UpdateEventParamsDTO) (responseCode int) {
-	hasPermission := repository.IsUserAllowedToModifyWorkspace(params.UserID, params.WorkspaceID)
-	if !hasPermission {
-		responseCode = message.ERROR_NO_PERMISSION_TO_MODIFY_EVENT
-		return
-	}
 	updateData := tools.StructToUpdateMap(params, nil, []string{"UserID", "WorkspaceID", "ID"})
 	logger.LogInfo("UpdateEventApi: updateData", updateData)
 	if err := repository.UpdateEvent(database.DB, params.ID, updateData); err != nil {

@@ -1,4 +1,4 @@
-import { TodoTask } from "../type"
+import { TodoPriorityOption, TodoTask } from "../type"
 
 export const isTaskData = (data: any): data is TodoTask => {
     return data.type == "item"
@@ -16,3 +16,9 @@ export function isShallowEqual(
     }
     return keys1.every((key1) => Object.is(obj1[key1], obj2[key1]));
 }
+
+export const PriorityOptions: TodoPriorityOption[] = [
+    { label: 'Low', value: 'low' },
+    { label: 'Medium', value: 'medium' },
+    { label: 'High', value: 'high' },
+];

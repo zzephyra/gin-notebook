@@ -44,7 +44,6 @@ func StructToUpdateMap(input interface{}, override map[string]string, ignoreFiel
 
 			// 处理匿名嵌套结构体（继承）
 			if field.Anonymous && fieldVal.Kind() == reflect.Struct {
-				fmt.Println("理匿名嵌套结构体（继承）", field.Name)
 				extractFields(fieldVal, fieldVal.Type())
 				continue
 			}

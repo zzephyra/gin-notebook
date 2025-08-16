@@ -119,7 +119,8 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
             toast.error(t`Please select a file to upload.`);
             return;
         }
-        let url = await UploadFile({ file, method: "qiniu", domain: state.settings.system.qiniu_domain, accept: "image/*" })
+        let controller = UploadFile({ file, accept: "image/*" })
+        const { url } = await controller.promise;
         let res = await UpdateNote(workspaceID, note.id, { cover: url })
         if (res.code == responseCode.SUCCESS) {
             store.dispatch(UpdateNoteByID({ id: note.id, changes: { cover: url } }))

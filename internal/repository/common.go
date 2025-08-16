@@ -2,7 +2,7 @@ package repository
 
 import "gorm.io/gorm"
 
-func CreateModel[T any](db *gorm.DB, model *T) error {
+func CreateModel[T any](db *gorm.DB, model T) error {
 	result := db.Create(model)
 	if result.Error != nil {
 		return result.Error
@@ -14,8 +14,8 @@ func CreateModel[T any](db *gorm.DB, model *T) error {
 	return nil
 }
 
-func BulkCreateModel[T any](db *gorm.DB, models *[]T) error {
-	result := db.Create(models)
+func DeleteModel[T any](db *gorm.DB, model T) error {
+	result := db.Delete(model)
 	if result.Error != nil {
 		return result.Error
 	}

@@ -26,14 +26,29 @@ msgid "Last {byDay} of the Month"
 msgstr "每月的最后一个 {byDay}"
 
 #. js-lingui-explicit-id
-#: src/lib/upload/index.ts:18
-msgid "File size exceeds the limit of {size} bytes"
-msgstr "文件大小超过限制：{size} 字节"
+#: src/lib/upload/index.ts:41
+msgid "File size exceeds the limit of {size} MB"
+msgstr "上传失败：文件大小不能超过 {size} MB"
 
 #. js-lingui-explicit-id
-#: src/lib/upload/index.ts:43
+#: src/lib/upload/index.ts:66
 msgid "File type {type} is not accepted"
 msgstr "不接受的文件类型：{type}"
+
+#. js-lingui-explicit-id
+#: src/lib/api/client.ts:25
+msgid "Sorry, something went wrong"
+msgstr "出错了，请稍后再试"
+
+#. js-lingui-explicit-id
+#: src/lib/api/client.ts:43
+msgid "You don't have permission to view or update this workspace."
+msgstr "权限不足，无法查看或更新工作区"
+
+#. js-lingui-explicit-id
+#: src/lib/api/client.ts:46
+msgid "Please log in to continue."
+msgstr "请登录以继续操作"
 
 #. js-lingui-explicit-id
 #: src/features/api/note.ts:13
@@ -81,9 +96,17 @@ msgstr "是否要将文件移动到\"{total}\\”文件夹？"
 msgid "Please enter a message before sending."
 msgstr "请在输入需要发送的信息"
 
+#. js-lingui-explicit-id
+#: src/lib/upload/index.ts:18
+#~ msgid "File size exceeds the limit of {size} bytes"
+#~ msgstr "文件大小超过限制：{size} 字节"
+
 #. placeholder {0}: option.label
+#. placeholder {0}: FilterMapping[props.filter?.order_by || "create"]
 #. placeholder {0}: item.label
-#: src/components/todo/task/index.tsx:354
+#: src/components/todo/task/index.tsx:375
+#: src/components/todo/task/index.tsx:476
+#: src/components/comment/main/index.tsx:131
 #: src/components/avatarMenu/index.tsx:80
 msgid "{0}"
 msgstr "{0}"
@@ -152,7 +175,7 @@ msgstr "允许评论"
 msgid "Allow editing"
 msgstr "允许编辑"
 
-#: src/components/note/main/index.tsx:178
+#: src/components/note/main/index.tsx:179
 msgid "Allow editing this note."
 msgstr "允许编辑此笔记。"
 
@@ -168,7 +191,7 @@ msgstr "允许加入"
 msgid "Allow sharing"
 msgstr "允许共享"
 
-#: src/components/note/main/index.tsx:175
+#: src/components/note/main/index.tsx:176
 msgid "Allow sharing this note with others or third-party applications."
 msgstr "允许与其他人或第三方应用程序共享此笔记。"
 
@@ -176,7 +199,7 @@ msgstr "允许与其他人或第三方应用程序共享此笔记。"
 msgid "Already have an account?"
 msgstr "已经有账户？"
 
-#: src/components/note/main/index.tsx:513
+#: src/components/note/main/index.tsx:514
 msgid "Applying the template..."
 msgstr "正在应用模板…"
 
@@ -188,6 +211,10 @@ msgstr "您确定要删除此邀请链接吗？"
 msgid "Are you sure you want to delete this note? This action cannot be undone."
 msgstr "是否确实要删除此便笺？此操作无法撤消。"
 
+#: src/components/todo/task/index.tsx:509
+msgid "Assignee"
+msgstr "负责人"
+
 #: src/pages/workspace/tasks.tsx:197
 msgid "Auto save failed, please try again later."
 msgstr "自动保存失败，请稍后重试"
@@ -196,7 +223,7 @@ msgstr "自动保存失败，请稍后重试"
 msgid "Back"
 msgstr "回来"
 
-#: src/components/note/main/index.tsx:150
+#: src/components/note/main/index.tsx:151
 msgid "Basic Information"
 msgstr "基本信息"
 
@@ -205,7 +232,7 @@ msgid "Bucket Name"
 msgstr "桶名称"
 
 #: src/pages/settings/workspaceSettings.tsx:194
-#: src/components/note/main/index.tsx:440
+#: src/components/note/main/index.tsx:441
 #: src/components/modal/user/modifyPassword/index.tsx:58
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/note/deleteModal/index.tsx:42
@@ -220,11 +247,11 @@ msgstr "取消"
 msgid "Cannot reload message that has a parent message."
 msgstr "无法重新加载已有父消息的内容。"
 
-#: src/components/note/main/index.tsx:154
+#: src/components/note/main/index.tsx:155
 msgid "Categorize the note by selecting an existing note category."
 msgstr "通过选择现有笔记类别对笔记进行分类。"
 
-#: src/components/note/main/index.tsx:154
+#: src/components/note/main/index.tsx:155
 msgid "Category"
 msgstr "类别"
 
@@ -260,7 +287,15 @@ msgstr "点击查看更多内容"
 msgid "Come up with a good name!"
 msgstr "想个好名字！"
 
-#: src/components/note/main/index.tsx:443
+#: src/components/comment/input/index.tsx:35
+msgid "Comment cannot be empty"
+msgstr "评论不能为空"
+
+#: src/components/comment/main/index.tsx:73
+msgid "Comment submitted successfully"
+msgstr "评论提交成功"
+
+#: src/components/note/main/index.tsx:444
 msgid "Confirm"
 msgstr "确认"
 
@@ -280,7 +315,7 @@ msgstr "复制链接"
 msgid "Copy successfully"
 msgstr "复制成功"
 
-#: src/components/note/main/index.tsx:161
+#: src/components/note/main/index.tsx:162
 msgid "Cover"
 msgstr "封面"
 
@@ -319,6 +354,7 @@ msgid "Created by:"
 msgstr "创建人："
 
 #: src/pages/workspace/favorites.tsx:266
+#: src/components/comment/main/index.tsx:136
 msgid "Created Time"
 msgstr "创建时间"
 
@@ -330,14 +366,19 @@ msgstr "正在创建工作区..."
 msgid "Current device"
 msgstr "当前设备"
 
-#: src/components/note/main/index.tsx:182
+#: src/components/note/main/index.tsx:183
 msgid "Danger Zone"
 msgstr "危险区"
+
+#: src/components/todo/task/index.tsx:499
+msgid "Deadline"
+msgstr "截止日期"
 
 #: src/pages/settings/workspaceSettings.tsx:195
 #: src/components/note/noteList/index.tsx:77
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
+#: src/components/comment/box/index.tsx:162
 msgid "Delete"
 msgstr "删除"
 
@@ -349,8 +390,8 @@ msgstr "删除失败"
 msgid "Delete Invite Link"
 msgstr "删除邀请链接"
 
-#: src/components/note/main/index.tsx:183
-#: src/components/note/main/index.tsx:185
+#: src/components/note/main/index.tsx:184
+#: src/components/note/main/index.tsx:186
 msgid "Delete Note"
 msgstr "删除笔记"
 
@@ -364,7 +405,7 @@ msgstr "删除笔记失败：{0}"
 msgid "Delete successfully"
 msgstr "删除成功"
 
-#: src/components/note/main/index.tsx:183
+#: src/components/note/main/index.tsx:184
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "删除此项目是永久性操作，无法撤消。请谨慎操作。"
 
@@ -389,6 +430,10 @@ msgstr "下载二维码"
 msgid "Download Qrcode"
 msgstr "下载二维码"
 
+#: src/components/comment/box/index.tsx:159
+msgid "Edit"
+msgstr "编辑"
+
 #: src/pages/settings/accountSettings.tsx:89
 msgid "Email"
 msgstr "电子邮件"
@@ -401,11 +446,11 @@ msgstr "电子邮件"
 msgid "Emails go here → one@example.com, two@example.com"
 msgstr "电子邮件地址：one@example.com，two@example.com"
 
-#: src/components/note/main/index.tsx:178
+#: src/components/note/main/index.tsx:179
 msgid "Enable Edit"
 msgstr "启用编辑"
 
-#: src/components/note/main/index.tsx:175
+#: src/components/note/main/index.tsx:176
 msgid "Enable Share"
 msgstr "Enable Share"
 
@@ -445,7 +490,7 @@ msgstr "每个工作日"
 msgid "Everyday"
 msgstr "每天"
 
-#: src/components/note/main/index.tsx:435
+#: src/components/note/main/index.tsx:436
 msgid "Existing content detected. Importing the template will overwrite it. Continue?"
 msgstr "检测到已有内容。导入模板将覆盖现有内容，是否继续？"
 
@@ -477,6 +522,11 @@ msgstr "无法生成邀请链接"
 msgid "Failed to load chat history"
 msgstr "加载聊天记录失败"
 
+#. placeholder {0}: res.message
+#: src/components/comment/main/index.tsx:75
+msgid "Failed to submit comment: {0}"
+msgstr "提交评论失败：{0}"
+
 #: src/pages/workspace/favorites.tsx:240
 msgid "Favorites"
 msgstr "收藏夹"
@@ -489,7 +539,7 @@ msgstr "文件移动"
 msgid "Frequent Used"
 msgstr "经常使用"
 
-#: src/components/note/main/index.tsx:137
+#: src/components/note/main/index.tsx:138
 msgid "General"
 msgstr "一般"
 
@@ -517,6 +567,10 @@ msgstr "转到选择其他工作区"
 #: src/pages/workspace/invite.tsx:104
 msgid "Go to Workspace"
 msgstr "转至工作空间"
+
+#: src/components/comment/main/index.tsx:157
+msgid "Has attachments"
+msgstr "含附件"
 
 #: src/components/aiChatInput/index.tsx:18
 msgid "Hello, {username}, how's your day going today?"
@@ -554,7 +608,7 @@ msgstr "忽略此登录的提示"
 msgid "Invite link"
 msgstr "邀请链接"
 
-#: src/components/note/main/index.tsx:142
+#: src/components/note/main/index.tsx:143
 msgid "Invite Link"
 msgstr "邀请链接"
 
@@ -598,7 +652,7 @@ msgstr "语言"
 msgid "Last Active"
 msgstr "最后活跃时间"
 
-#: src/components/todo/task/index.tsx:295
+#: src/components/dropdown/member/index.tsx:68
 msgid "Loading members..."
 msgstr "正在加载成员数据..."
 
@@ -606,7 +660,7 @@ msgstr "正在加载成员数据..."
 msgid "Loading notes..."
 msgstr "正在加载笔记..."
 
-#: src/pages/workspace/project.tsx:269
+#: src/pages/workspace/project.tsx:121
 msgid "Loading project..."
 msgstr "正在加载项目数据..."
 
@@ -636,7 +690,7 @@ msgstr "登录失败"
 msgid "Login failed, please check your email and password"
 msgstr "登录失败，请检查您的电子邮件和密码"
 
-#: src/components/todo/task/index.tsx:287
+#: src/components/dropdown/member/index.tsx:60
 msgid "Look up a person..."
 msgstr "搜一搜"
 
@@ -644,7 +698,7 @@ msgstr "搜一搜"
 msgid "Mameos Robot"
 msgstr "Mameos小机器人"
 
-#: src/components/note/main/index.tsx:138
+#: src/components/note/main/index.tsx:139
 msgid "Management"
 msgstr "管理"
 
@@ -655,6 +709,14 @@ msgstr "成员"
 #: src/components/menu/sidebar.tsx:75
 msgid "members"
 msgstr "成员"
+
+#: src/components/comment/content/index.tsx:277
+msgid "Members"
+msgstr "成员列表"
+
+#: src/components/comment/main/index.tsx:150
+msgid "Mention me"
+msgstr "提到我"
 
 #: src/pages/workspace/favorites.tsx:316
 msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
@@ -704,16 +766,16 @@ msgstr "新文件夹"
 msgid "New Password"
 msgstr "新密码"
 
-#: src/components/todo/task/index.tsx:250
+#: src/components/todo/task/index.tsx:340
 msgid "New Project"
 msgstr "新建项目"
 
-#: src/components/todo/task/index.tsx:367
-#: src/components/todo/task/index.tsx:421
+#: src/components/todo/task/index.tsx:388
+#: src/components/todo/task/index.tsx:445
 msgid "New Task"
 msgstr "新建任务"
 
-#: src/components/note/main/index.tsx:283
+#: src/components/note/main/index.tsx:284
 msgid "New Template"
 msgstr "新建模版"
 
@@ -721,17 +783,25 @@ msgstr "新建模版"
 msgid "Next Note"
 msgstr "下一条笔记"
 
-#: src/components/note/main/index.tsx:157
+#: src/components/note/main/index.tsx:158
 msgid "No Category"
 msgstr "无类别"
+
+#: src/components/comment/main/index.tsx:27
+msgid "No comments yet"
+msgstr "暂无评论"
 
 #: src/components/step/workspace/main.tsx:42
 msgid "No expiration"
 msgstr "没有到期"
 
-#: src/components/note/main/index.tsx:324
+#: src/components/note/main/index.tsx:325
 msgid "No more templates to load."
 msgstr "已全部加载完模板"
+
+#: src/components/todo/task/index.tsx:463
+msgid "No Priority"
+msgstr "无优先级"
 
 #: src/pages/workspace/tasks.tsx:132
 #: src/components/modal/event/add/index.tsx:137
@@ -746,7 +816,7 @@ msgstr "无标题事件"
 msgid "No Workspace"
 msgstr "无工作区"
 
-#: src/components/note/main/index.tsx:151
+#: src/components/note/main/index.tsx:152
 msgid "Note ID"
 msgstr "笔记ID"
 
@@ -754,12 +824,12 @@ msgstr "笔记ID"
 msgid "Note Name"
 msgstr "笔记名称"
 
-#: src/components/note/main/index.tsx:174
+#: src/components/note/main/index.tsx:175
 msgid "Note Settings"
 msgstr "笔记设置"
 
-#: src/components/note/main/index.tsx:194
-#: src/components/note/main/index.tsx:200
+#: src/components/note/main/index.tsx:195
+#: src/components/note/main/index.tsx:201
 msgid "Note Status"
 msgstr "笔记状态"
 
@@ -796,7 +866,7 @@ msgstr "或"
 msgid "Ordering"
 msgstr "排序"
 
-#: src/components/note/main/index.tsx:430
+#: src/components/note/main/index.tsx:431
 msgid "Overwrite Note"
 msgstr "覆盖笔记"
 
@@ -826,8 +896,8 @@ msgstr "每两周"
 msgid "Per Week"
 msgstr "每周"
 
-#: src/components/note/main/index.tsx:139
-#: src/components/note/main/index.tsx:193
+#: src/components/note/main/index.tsx:140
+#: src/components/note/main/index.tsx:194
 msgid "Permission"
 msgstr "许可"
 
@@ -863,19 +933,27 @@ msgstr "请选择类别"
 msgid "Please select a file to upload."
 msgstr "请选择要上传的文件"
 
+#: src/components/comment/input/index.tsx:39
+msgid "Please wait for attachments to finish uploading."
+msgstr "附件正在上传，请稍候"
+
 #: src/components/note/noteList/index.tsx:72
 msgid "Previous Note"
 msgstr "上一条笔记"
 
-#: src/components/note/main/index.tsx:197
+#: src/components/todo/task/index.tsx:451
+msgid "Priority"
+msgstr "优先级"
+
+#: src/components/note/main/index.tsx:198
 msgid "Private"
 msgstr "私有"
 
-#: src/pages/workspace/project.tsx:292
+#: src/pages/workspace/project.tsx:144
 msgid "Progress"
 msgstr "进度"
 
-#: src/components/note/main/index.tsx:196
+#: src/components/note/main/index.tsx:197
 msgid "Public"
 msgstr "公共"
 
@@ -938,7 +1016,6 @@ msgstr "从收藏夹中删除"
 
 #: src/pages/settings/storageSettings.tsx:104
 #: src/components/modal/user/modifyPassword/index.tsx:59
-#: src/components/comment/input/index.tsx:33
 msgid "Save"
 msgstr "保存"
 
@@ -973,7 +1050,7 @@ msgstr "选择"
 msgid "Select a workspace to start using Mameos"
 msgstr "选择一个工作区开始使用备忘录"
 
-#: src/components/todo/task/index.tsx:277
+#: src/components/dropdown/member/index.tsx:50
 msgid "Select Assignee"
 msgstr "选择负责人"
 
@@ -986,7 +1063,7 @@ msgstr "选择类别"
 msgid "Select note status"
 msgstr "选择笔记状态"
 
-#: src/components/todo/task/index.tsx:340
+#: src/components/todo/task/index.tsx:361
 msgid "Select Priority"
 msgstr "选择优先级"
 
@@ -1014,8 +1091,8 @@ msgstr "会话删除成功"
 msgid "Session updated successfully"
 msgstr "会话更新成功"
 
-#: src/components/note/main/index.tsx:194
-#: src/components/note/main/index.tsx:200
+#: src/components/note/main/index.tsx:195
+#: src/components/note/main/index.tsx:201
 msgid "Set the current note's status. When set to private, it will be invisible to others."
 msgstr "设置当前便笺的状态。当设置为私有时，其他人将看不到该便笺。"
 
@@ -1024,15 +1101,15 @@ msgstr "设置当前便笺的状态。当设置为私有时，其他人将看不
 #~ msgstr "设置"
 
 #: src/components/note/noteList/index.tsx:63
-#: src/components/note/main/index.tsx:141
+#: src/components/note/main/index.tsx:142
 msgid "Share"
 msgstr "分享"
 
-#: src/components/note/main/index.tsx:143
+#: src/components/note/main/index.tsx:144
 msgid "Share Notion"
 msgstr "分享至Notion"
 
-#: src/components/note/main/index.tsx:144
+#: src/components/note/main/index.tsx:145
 msgid "Share Wechat"
 msgstr "分享至微信"
 
@@ -1048,7 +1125,12 @@ msgstr "登录"
 msgid "Source"
 msgstr "来源"
 
+#: src/components/comment/main/index.tsx:28
+msgid "Start a conversation below"
+msgstr "在下方开始对话"
+
 #: src/pages/settings/workspaceSettings.tsx:139
+#: src/components/todo/task/index.tsx:488
 #: src/components/dropdown/note/index.tsx:194
 msgid "Status"
 msgstr "状态"
@@ -1077,11 +1159,11 @@ msgstr "切换"
 msgid "Switch Workspace"
 msgstr "更换工作区"
 
-#: src/components/note/main/index.tsx:309
+#: src/components/note/main/index.tsx:310
 msgid "Templates"
 msgstr "模版"
 
-#: src/components/note/main/index.tsx:162
+#: src/components/note/main/index.tsx:163
 msgid "The cover image is displayed at the top of the note and in the template thumbnail. Leave it blank to use the first image in the note."
 msgstr "封面图片将显示在笔记顶部以及模板缩略图中。如留空，则默认使用笔记中的第一张图片。"
 
@@ -1093,7 +1175,7 @@ msgstr "备注标题为必填项，长度不得超过100个字符。"
 msgid "The number of members who have joined the workspace using this link"
 msgstr "使用此链接加入工作区的成员数"
 
-#: src/components/note/main/index.tsx:151
+#: src/components/note/main/index.tsx:152
 msgid "The unique ID of the note."
 msgstr "笔记的唯一ID。"
 
@@ -1159,11 +1241,12 @@ msgid "Updated At"
 msgstr "更新于"
 
 #: src/pages/workspace/favorites.tsx:263
+#: src/components/comment/main/index.tsx:139
 msgid "Updated Time"
 msgstr "更新时间"
 
 #: src/pages/settings/accountSettings.tsx:77
-#: src/components/note/main/index.tsx:164
+#: src/components/note/main/index.tsx:165
 msgid "Upload"
 msgstr "上传"
 
@@ -1198,6 +1281,10 @@ msgstr "工作区名称"
 #: src/components/menu/sidebar.tsx:72
 msgid "Workspace: "
 msgstr "工作区："
+
+#: src/components/todo/task/index.tsx:515
+msgid "Write something about the task"
+msgstr "写点和任务相关的东西吧"
 
 #: src/pages/workspace/invite.tsx:128
 msgid "You are not allowed to join this workspace."

@@ -1,4 +1,5 @@
 import { getUploadPolicy } from '@/features/api/upload'
+import { UploadController, UploadEvent, UploadOptions } from '@/lib/upload/type';
 import { store } from '@/store'
 import * as qiniu from 'qiniu-js'
 import * as React from 'react'
@@ -148,44 +149,148 @@ export function useUpload() {
     return { start, stop, replaceFile, UploadSate, progress, error, completeInfo, getFileLink, uploadAndGetUrl }
 }
 
-export async function uploadToQiniu(file: File, domain: string, forceDirect: boolean = false): Promise<UploadResult> {
-    const uploadConfig: qiniu.UploadConfig = {
-        apiServerUrl: "https://api.qiniu.com",
-        tokenProvider: async () => {
-            let res = await getUploadPolicy();
-            return res?.token;
-        }
-    }
+// export async function uploadToQiniu(file: File, domain: string, forceDirect: boolean = false): Promise<UploadResult> {
+//     const uploadConfig: qiniu.UploadConfig = {
+//         apiServerUrl: "https://api.qiniu.com",
+//         tokenProvider: async () => {
+//             let res = await getUploadPolicy();
+//             return res?.token;
+//         }
+//     }
 
-    const uuid = uuidv4(); // 生成 UUID
-    const extension = file.name.substring(file.name.lastIndexOf('.')); // 提取后缀名
-    const newFileName = `${uuid}${extension}`;
-    var file = new File([file], newFileName, {
+//     const uuid = uuidv4(); // 生成 UUID
+//     const extension = file.name.substring(file.name.lastIndexOf('.')); // 提取后缀名
+//     const newFileName = `${uuid}${extension}`;
+//     var file = new File([file], newFileName, {
+//         type: file.type,
+//         lastModified: file.lastModified
+//     })
+
+//     const fileData: qiniu.FileData = {
+//         type: 'file',
+//         data: file,
+//     };
+
+//     const uploadTask = forceDirect
+//         ? qiniu.createDirectUploadTask(fileData, uploadConfig)
+//         : qiniu.createMultipartUploadV2Task(fileData, uploadConfig);
+
+//     return new Promise((resolve, reject) => {
+//         uploadTask.onProgress(() => { }); // 你也可以传入回调处理进度
+//         uploadTask.onError(err => reject(err));
+//         uploadTask.onComplete(result => {
+//             if (!result) {
+//                 reject(new Error("Upload failed"));
+//                 return;
+//             }
+//             const parsed = JSON.parse(result);
+//             const url = `${window.location.protocol}//${domain}/${parsed?.key}`;
+//             resolve({ url, key: parsed.key, raw: parsed });
+//         });
+//         uploadTask.start();
+//     });
+// }
+
+export function startQiniuUpload(
+    file: File,
+    domain: string,
+    opts: Pick<UploadOptions, 'forceDirect' | 'filename' | 'signal' | 'onProgress' | 'onError' | 'onComplete'>
+): UploadController {
+    const { forceDirect = false, filename, signal, onProgress, onError, onComplete } = opts;
+
+    const uploadConfig: qiniu.UploadConfig = {
+        apiServerUrl: 'https://api.qiniu.com',
+        tokenProvider: async () => {
+            const res = await getUploadPolicy();
+            return res?.token;
+        },
+    };
+
+    // 生成最终文件名（优先 filename，其次 UUID+原后缀）
+    const ext = (() => {
+        const idx = file.name.lastIndexOf('.');
+        return idx >= 0 ? file.name.substring(idx) : '';
+    })();
+    const finalName = filename ?? `${uuidv4()}${ext}`;
+
+    // 组装最终 File（改名）
+    const finalFile = new File([file], finalName, {
         type: file.type,
-        lastModified: file.lastModified
-    })
+        lastModified: file.lastModified,
+    });
 
     const fileData: qiniu.FileData = {
         type: 'file',
-        data: file,
+        data: finalFile,
     };
 
     const uploadTask = forceDirect
         ? qiniu.createDirectUploadTask(fileData, uploadConfig)
         : qiniu.createMultipartUploadV2Task(fileData, uploadConfig);
 
-    return new Promise((resolve, reject) => {
-        uploadTask.onProgress(() => { }); // 你也可以传入回调处理进度
-        uploadTask.onError(err => reject(err));
+    const subscribers = new Set<(e: UploadEvent) => void>();
+    const emit = (e: UploadEvent) => subscribers.forEach(fn => fn(e));
+
+    const promise = new Promise<UploadResult>((resolve, reject) => {
+        uploadTask.onProgress(progress => {
+            onProgress?.(progress);
+            emit({ type: 'progress', progress });
+        });
+
+        uploadTask.onError(err => {
+            onError?.(err);
+            emit({ type: 'error', error: err });
+            reject(err);
+        });
+
         uploadTask.onComplete(result => {
             if (!result) {
-                reject(new Error("Upload failed"));
+                const err = new Error('Upload failed');
+                onError?.(err);
+                emit({ type: 'error', error: err });
+                reject(err);
                 return;
             }
-            const parsed = JSON.parse(result);
-            const url = `${window.location.protocol}//${domain}/${parsed?.key}`;
-            resolve({ url, key: parsed.key, raw: parsed });
+            const parsed = typeof result === 'string' ? JSON.parse(result) : result;
+            const key = parsed?.key ?? finalName;
+            const url = `${window.location.protocol}//${domain}/${key}`;
+            const ok: UploadResult = { url, key, raw: parsed };
+            onComplete?.(ok);
+            emit({ type: 'complete', result: ok });
+            resolve(ok);
         });
+
+        // 外部取消
+        if (signal) {
+            if (signal.aborted) {
+                try { uploadTask.cancel?.(); } catch { }
+                const err = new DOMException('Aborted', 'AbortError');
+                onError?.(err);
+                emit({ type: 'error', error: err });
+                reject(err);
+                return;
+            }
+            const onAbort = () => {
+                try { uploadTask.cancel?.(); } catch { }
+                const err = new DOMException('Aborted', 'AbortError');
+                onError?.(err);
+                emit({ type: 'error', error: err });
+                reject(err);
+            };
+            signal.addEventListener('abort', onAbort, { once: true });
+        }
+
         uploadTask.start();
     });
+
+    return {
+        on: (handler) => {
+            subscribers.add(handler);
+            return () => subscribers.delete(handler);
+        },
+        cancel: () => {
+            try { uploadTask.cancel?.(); } catch { }
+        },
+        promise,
+    };
 }

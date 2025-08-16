@@ -1,9 +1,9 @@
 :root {
     --todo-pending-bg-light: #f8f8f7;
     --todo-pending-bg-dark: rgb(32, 32, 32);
-    --todo-processing-bg-light: rgba(91, 166, 209, 0.07);
+    --todo-processing-bg-light: rgba(91, 166, 209, 0.15);
     --todo-processing-bg-dark: rgb(32, 32, 32);
-    --todo-completed-bg-light: rgba(123, 183, 129, 0.07);
+    --todo-completed-bg-light: rgba(105, 165, 111, 0.15);
     --todo-completed-bg-dark: rgb(32, 32, 32);
 }
 

@@ -7,23 +7,19 @@ import (
 )
 
 type WorkspaceListDTO struct {
-	ID            int64     `json:"id"`
-	Name          string    `json:"name"`
-	Owner         int64     `json:"owner"`
-	OwnerAvatar   string    `json:"owner_avatar"`
-	OwnerNickname string    `json:"owner_name"`
-	OwnerEmail    string    `json:"owner_email"`
-	OwnerPhone    string    `json:"owner_phone"`
-	Description   string    `json:"description"`
-	AllowInvite   bool      `json:"allow_invite"`
-	AllowJoin     bool      `json:"allow_join"`
-	AllowPublic   bool      `json:"allow_public"`
-	AllowShare    bool      `json:"allow_share"`
-	AllowComment  bool      `json:"allow_comment"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
-	DeletedAt     time.Time `json:"deleted_at"`
-	Avatar        string    `json:"avatar"`
+	ID           int64     `json:"id"`
+	Name         string    `json:"name"`
+	MemberID     int64     `json:"member_id,string"` // 成员ID
+	Description  string    `json:"description"`
+	AllowInvite  bool      `json:"allow_invite"`
+	AllowJoin    bool      `json:"allow_join"`
+	AllowPublic  bool      `json:"allow_public"`
+	AllowShare   bool      `json:"allow_share"`
+	AllowComment bool      `json:"allow_comment"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	DeletedAt    time.Time `json:"deleted_at"`
+	Avatar       string    `json:"avatar"`
 }
 
 type WorkspaceValidation struct {
@@ -47,23 +43,19 @@ type WorkerMemberValidation struct {
 }
 
 type WorkspaceDTO struct {
-	ID            int64          `json:"id"`
-	Name          string         `json:"name"`
-	Owner         int64          `json:"owner"`
-	OwnerAvatar   string         `json:"owner_avatar"`
-	OwnerNickname string         `json:"owner_name"`
-	OwnerEmail    string         `json:"owner_email"`
-	OwnerPhone    string         `json:"owner_phone"`
-	Description   string         `json:"description"`
-	AllowInvite   bool           `json:"allow_invite"`
-	AllowJoin     bool           `json:"allow_join"`
-	AllowPublic   bool           `json:"allow_public"`
-	AllowShare    bool           `json:"allow_share"`
-	AllowComment  bool           `json:"allow_comment"`
-	Roles         datatypes.JSON `json:"roles"`
-	Editable      bool           `json:"editable"`
-	Avatar        string         `json:"avatar"`
-	MemberCount   int            `json:"member_count"` // 成员数量
+	ID           int64          `json:"id"`
+	Name         string         `json:"name"`
+	MemberID     int64          `json:"member_id"` // 成员ID
+	Description  string         `json:"description"`
+	AllowInvite  bool           `json:"allow_invite"`
+	AllowJoin    bool           `json:"allow_join"`
+	AllowPublic  bool           `json:"allow_public"`
+	AllowShare   bool           `json:"allow_share"`
+	AllowComment bool           `json:"allow_comment"`
+	Roles        datatypes.JSON `json:"roles"`
+	Editable     bool           `json:"editable"`
+	Avatar       string         `json:"avatar"`
+	MemberCount  int            `json:"member_count"` // 成员数量
 }
 
 type UpdateWorkspaceDTO struct {
@@ -125,11 +117,11 @@ type GetWorkspaceMembersDTO struct {
 }
 
 type WorkspaceMemberDTO struct {
-	ID                int64  `json:"id,string"`
-	UserID            int64  `json:"user_id,string"`
-	WorkspaceNickname string `json:"workspace_nickname"`
-	UserNickname      string `json:"user_nickname"`
-	Email             string `json:"email"`
-	Avatar            string `json:"avatar"`
-	Role              string `json:"role"` // 角色
+	ID                int64       `json:"id,string"`
+	UserID            int64       `json:"user_id,string"`
+	WorkspaceNickname string      `json:"workspace_nickname"`
+	UserNickname      string      `json:"user_nickname"`
+	Email             string      `json:"email"`
+	Avatar            string      `json:"avatar"`
+	Role              StringArray `json:"role"` // 角色
 }

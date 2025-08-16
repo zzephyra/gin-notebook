@@ -128,13 +128,38 @@ func GetProjectTaskAssigneesByTaskIDs(db *gorm.DB, taskIDs []int64) ([]dto.ToDoT
 	var assignees []dto.ToDoTaskAssignee
 
 	err := db.Model(&model.ToDoTaskAssignee{}).
-		Select("to_do_task_assignees.to_do_task_id, u.nickname, u.email AS email, u.id, u.avatar, wm.nickname as workspace_nickname").
-		Joins("JOIN users u ON to_do_task_assignees.assignee_id = u.id").
-		Joins("JOIN workspace_members wm ON wm.user_id = to_do_task_assignees.assignee_id").
+		Select("to_do_task_assignees.to_do_task_id, u.nickname, u.email AS email, wm.id, u.avatar, wm.nickname as workspace_nickname").
+		Joins("JOIN workspace_members wm ON wm.id = to_do_task_assignees.assignee_id").
+		Joins("JOIN users u ON u.id =  wm.user_id").
 		Where("to_do_task_assignees.to_do_task_id IN ?", taskIDs).Scan(&assignees).Error
 	if err != nil {
 		return nil, err
 	}
 
 	return assignees, nil
+}
+
+func UpdateTaskByTaskID(db *gorm.DB, taskID int64, data map[string]interface{}) error {
+	db.Model(&model.ToDoTask{}).
+		Where("id = ?", taskID).
+		Updates(data)
+	return db.Error
+}
+
+func RemoveTaskAssigneesByTaskIDAndUserIDs(db *gorm.DB, taskID int64, userIDs []int64) error {
+	if len(userIDs) == 0 {
+		return nil // 如果没有用户ID，直接返回
+	}
+	return db.Where("to_do_task_id = ? AND assignee_id IN ?", taskID, userIDs).Delete(&model.ToDoTaskAssignee{}).Error
+}
+
+func CheckWorkspaceMemberAuth(db *gorm.DB, workspaceID, userID, memberID int64) (bool, error) {
+	var count int64
+	err := db.Model(&model.WorkspaceMember{}).
+		Where("workspace_id = ? AND user_id = ? AND id = ?", workspaceID, userID, memberID).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }

@@ -42,6 +42,10 @@ func Migrate(db *gorm.DB) {
 		&model.ToDoColumn{},
 		&model.ToDoTask{},
 		&model.ToDoTaskAssignee{},
+		&model.ToDoTaskComment{},
+		&model.ToDoCommentMention{},
+		&model.ToDoCommentAttachment{},
+		&model.ToDoCommentLike{},
 	)
 }
 

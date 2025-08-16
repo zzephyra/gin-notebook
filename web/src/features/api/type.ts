@@ -1,9 +1,18 @@
+import { CommentAttachment, MentionPayload } from "@/components/comment/main/type";
+
 export interface ApiResponse<T = any> {
     code: number;
     data?: T;
     error?: string;
 }
 
+export interface ListBaseParams {
+    limit: number;
+    offset: number;
+    order_by?: string;
+    order?: "asc" | "desc" | undefined;
+    kw?: string;
+}
 
 export type WorkspaceDataType = {
     name: string;
@@ -96,4 +105,33 @@ export interface AIMessage {
     created_at: string
     references?: [];
     [x: string]: any;
+}
+
+export interface TaskCommentEditableData {
+    content: string;
+    mentions?: MentionPayload[];
+}
+
+export interface TaskCommentData extends TaskCommentEditableData {
+    id?: string;
+    member_id: string;
+    task_id: string | number;
+    attachments?: CommentAttachment[];
+    [x: string]: any;
+}
+
+
+export interface TaskCommentFilter {
+    mention_me?: boolean; // 是否只查询提及我的评论
+    has_attachment?: boolean; // 是否只查询有附件的评论
+    order_by?: string;
+    order?: "asc" | "desc" | undefined;
+}
+
+export interface TaskCommentParams extends ListBaseParams, TaskCommentFilter {
+    task_id: string;
+    workspace_id: string;
+    member_id: string;
+    // project_id: string;
+    [key: string]: any;
 }

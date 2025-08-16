@@ -15,7 +15,7 @@ type WorkspaceNoteDTO struct {
 	AllowEdit    bool      `json:"allow_edit"`
 	AllowComment bool      `json:"allow_comment"`
 	AllowShare   bool      `json:"allow_share"`
-	Status       string    `json:"status" validate:"omitempty, oneof=public private"`
+	Status       string    `json:"status" validate:"omitempty,oneof=public private"`
 	AllowJoin    bool      `json:"allow_join"`
 	AllowInvite  bool      `json:"allow_invite"`
 	OwnerID      int64     `json:"owner_id,string"`

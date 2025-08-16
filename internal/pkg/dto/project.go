@@ -5,28 +5,33 @@ import (
 	"time"
 )
 
-type TaskEditableDTO struct {
-	Title       *string         `json:"title" gorm:"not null; type:varchar(200); index:idx_title"`
-	Order       *string         `json:"order" gorm:"index:uniq_column_order,priority:2"`
-	ColumnID    *int64          `json:"column_id,string" gorm:"index:uniq_column_order,priority:1"`
-	Creator     *int64          `json:"creator" gorm:"not null; index:idx_creator"`
-	Priority    *string         `json:"priority" gorm:"default:'medium'; index:idx_priority"` // low, medium, high
-	Status      *string         `json:"status" gorm:"default:'pending'; index:idx_status"`    // pending, in_progress, completed
-	Description *string         `json:"description" gorm:"type:text"`                         // 任务描述
-	Deadline    *time.Time      `json:"deadline"`
-	Assignee    *[]UserBreifDTO `json:"assignee,omitempty"` // 任务负责人ID列表
+type UpdateAssigneeDTO struct {
+	ActionAdd    []string `json:"action_add"`
+	ActionRemove []string `json:"action_remove"` // 任务负责人ID列表
 }
 
-type CreateProjectTaskDTO struct {
-	ProjectID    int64           `json:"project_id,string" validate:"required,gt=0"`
-	ColumnID     int64           `json:"column_id,string" validate:"required,gt=0"` // 列ID
-	OrderHint    string          `json:"order_hint" validate:"omitempty"`
-	AfterID      int64           `json:"after_id,string" validate:"omitempty"`
-	BeforeID     int64           `json:"before_id,string" validate:"omitempty"`
-	ClientTempID string          `json:"client_temp_id" validate:"required"`
-	Payload      TaskEditableDTO `json:"payload" validate:"required"`
-	WorkspaceID  int64           `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
-	Creator      int64           `validate:"required,gt=0"`                            // 创建者ID
+type TaskEditableDTO struct {
+	Title           *string            `json:"title" gorm:"not null; type:varchar(200); index:idx_title"`
+	Order           *string            `json:"order" gorm:"index:uniq_column_order,priority:2"`
+	ColumnID        *int64             `json:"column_id,string" gorm:"index:uniq_column_order,priority:1"`
+	Creator         *int64             `json:"creator" gorm:"not null; index:idx_creator"`
+	Priority        *string            `json:"priority" gorm:"default:'medium'; index:idx_priority"` // low, medium, high
+	Status          *string            `json:"status" gorm:"default:'pending'; index:idx_status"`    // pending, in_progress, completed
+	Description     *string            `json:"description" gorm:"type:text"`                         // 任务描述
+	Deadline        *time.Time         `json:"deadline"`
+	AssigneeActions *UpdateAssigneeDTO `json:"assignee_actions,omitempty"` // 任务负责人变更操作
+}
+
+type ProjectTaskDTO struct {
+	ProjectID   int64           `json:"project_id,string" validate:"required,gt=0"`
+	ColumnID    int64           `json:"column_id,string" validate:"required,gt=0"` // 列ID
+	OrderHint   string          `json:"order_hint" validate:"omitempty"`
+	AfterID     int64           `json:"after_id,string" validate:"omitempty"`
+	BeforeID    int64           `json:"before_id,string" validate:"omitempty"`
+	TaskID      int64           `json:"-" validate:"omitempty"` // 任务ID
+	Payload     TaskEditableDTO `json:"payload" validate:"required"`
+	WorkspaceID int64           `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
+	Creator     int64           `validate:"required,gt=0"`                            // 创建者ID
 }
 
 type ListProjectsDTO struct {

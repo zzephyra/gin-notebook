@@ -9,6 +9,7 @@ import (
 func RegisterEventRoutes(r *gin.RouterGroup) {
 	evnetGroup := r.Group("/event")
 	evnetGroup.Use(middleware.JWTAuth())
+	evnetGroup.Use(middleware.RequireWorkspaceAccess())
 	evnetGroup.Use(middleware.RBACMiddleware())
 	{
 		evnetGroup.POST("", CreateEventApi)

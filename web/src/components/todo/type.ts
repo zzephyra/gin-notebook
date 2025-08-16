@@ -76,6 +76,15 @@ export type Project = {
 
 export type ProjectBoard = ToDoColumn[];
 
+export type TaksPayload = {
+    title?: string;
+    description?: string;
+    priority?: Priority;
+    assignee_actions?: Partial<AssigneeAction>;
+    deadline?: string | null;
+    [key: string]: any;
+}
+
 export type CreateTaskInput = {
     column_id: string;
     project_id: string;
@@ -84,7 +93,7 @@ export type CreateTaskInput = {
     before_id?: string;
     order_hint?: string;
     client_temp_id: string;
-    payload: Partial<TodoTask>;
+    payload: Partial<TaksPayload>;
 };
 
 
@@ -113,3 +122,13 @@ export type MoveTaskInput = {
     beforeId?: string;
     orderHint?: string;
 };
+
+export type AssigneeAction = {
+    action_add?: string[];
+    action_remove?: string[];
+}
+
+export type SubmitExtraParams = {
+    assignee_actions?: Partial<AssigneeAction>;
+    [key: string]: any;
+}

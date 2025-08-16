@@ -87,7 +87,7 @@ func CreateWorkspace(workspace *dto.WorkspaceValidation) (responseCode int, data
 			{ProjectID: project.ID, Name: "Done", OrderIndex: "c", ProcessID: 2},
 		}
 
-		err = repository.BulkCreateModel(tx, &columns)
+		err = repository.CreateModel(tx, &columns)
 		if err != nil {
 			responseCode = message.ERROR_COLUMN_CREATE
 			return
@@ -151,11 +151,6 @@ func GetWorkspace(workspaceID string, UserID int64) (responseCode int, data any)
 }
 
 func CreateWorkspaceLinks(params *dto.CreateWorkspaceInviteLinkDTO) (responseCode int, data *model.WorkspaceInvite) {
-	isAllowed := repository.IsUserAllowedToModifyWorkspace(params.UserID, params.WorkspaceID)
-	if !isAllowed {
-		responseCode = message.ERROR_NO_PERMISSION_TO_UPDATE_AND_VIEW_WORKSPACE
-		return
-	}
 	_, exist := tools.Find([]string{"", "1", "7", "14", "30"}, params.ExipiresAt)
 	var expireDate *time.Time = nil
 	if exist {

@@ -3,29 +3,39 @@ import {
     dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
-import { type HTMLAttributes, CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { type HTMLAttributes, CSSProperties, memo, useEffect, useRef, useState } from 'react';
 import invariant from 'tiny-invariant';
+import "@/components/todo/style.css"
 import {
     attachClosestEdge,
     type Edge,
     extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import { Priority, TaskState, TodoPriorityOption, TodoTask } from '../type';
-import { CardBody, Card, Avatar, Input, Dropdown, DropdownTrigger, Button, DropdownMenu, DropdownItem, DropdownSection, AvatarGroup, Drawer, DrawerContent, DrawerBody, useDisclosure, DrawerHeader } from '@heroui/react';
+import "./style.css"
+import { Priority, TaskState, ToDoColumn, TodoTask } from '../type';
+import { CardBody, Card, Avatar, Input, Dropdown, DropdownTrigger, Button, DropdownMenu, DropdownItem, Drawer, DrawerContent, DrawerBody, useDisclosure, DrawerHeader, Divider } from '@heroui/react';
 import { Tag } from '@douyinfe/semi-ui';
 import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
-import { ChartBarIcon, UserIcon } from '@heroicons/react/24/outline';
+import { ChartBarIcon } from '@heroicons/react/24/outline';
 import { useWorkspaceMembers } from '@/hooks/useWorkspaceMembers';
 import { useParams } from 'react-router-dom';
 import { WorkspaceMember } from '@/types/workspace';
-import { debounce, } from 'lodash';
-import ChaseLoading from '@/components/loading/Chase/loading';
+import { debounce } from 'lodash';
 import { FlagIcon } from '@heroicons/react/24/solid';
 import { capitalizeWord } from '@/utils/tools';
 import { useTodo } from '@/contexts/TodoContext';
+import { ToDoColumnClasses } from '../column/script';
+import { PriorityOptions } from './script';
+import MemberDropdown from '@/components/dropdown/member';
+import BlockNoteEditor from '@/components/third-party/BlockNoteEditor';
+import Comments from '@/components/comment/main';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
+import { TaskCommentFilter, TaskCommentParams } from '@/features/api/type';
+import { useTaskCommentsController } from '@/hooks/useComments';
+import { CommentActionsProvider } from '@/contexts/CommentContext';
 type Orientation = 'horizontal' | 'vertical';
-
 
 
 const edgeToOrientationMap: Record<Edge, Orientation> = {
@@ -87,11 +97,7 @@ export function DropIndicator({ edge, gap }: { edge: Edge; gap: string }) {
 
 const idle: TaskState = { type: 'idle' };
 
-const PriorityOptions: TodoPriorityOption[] = [
-    { label: 'Low', value: 'low' },
-    { label: 'Medium', value: 'medium' },
-    { label: 'High', value: 'high' },
-];
+
 
 const PriorityColorMap: Record<Priority, string> = {
     low: 'text-green-500',
@@ -99,7 +105,7 @@ const PriorityColorMap: Record<Priority, string> = {
     high: 'text-red-500',
 }
 
-export function Task({ task }: { task: TodoTask }) {
+function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
     const ref = useRef<HTMLDivElement | null>(null);
     const params = useParams();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -107,18 +113,49 @@ export function Task({ task }: { task: TodoTask }) {
     const [state, setState] = useState<TaskState>(idle);
     const { t } = useLingui();
     const [searchParams, setSearchParams] = useState({ limit: 10, keywords: "" });
-    const { data, isFetching } = useWorkspaceMembers(params.id || "", searchParams);
-    const members: WorkspaceMember[] = useMemo(
-        () => data?.pages.flatMap((p) => p.data) ?? [],
-        [data],
-    );
-    const { submitDraftTask, updateDraftTask } = useTodo();
+    const { data: members, isFetching } = useWorkspaceMembers(params.id || "", searchParams);
+    const titleRef = useRef<HTMLInputElement>(null);
+    const [isEdit, setIsEdit] = useState({
+        title: false,
+    })
+    const { submitDraftTask, updateDraftTask, activeOverlay } = useTodo();
     const taskRef = useRef<HTMLDivElement | null>(null);
     const assigneeRef = useRef<HTMLDivElement | null>(null);
     const priorityRef = useRef<HTMLDivElement | null>(null);
-    const selectedAssigneeIDs = useMemo(() => {
-        return (task.assignee || []).map((assignee) => assignee.id);
-    }, [task.assignee]);
+    const [selectedAssigneeIDs, setSelectedAssigneeIDs] = useState<Set<string>>(new Set(task.assignee?.map((assignee) => assignee.id) || []));
+    const selectedRef = useRef(selectedAssigneeIDs);
+    const currentUser: WorkspaceMember = useSelector((state: RootState) => {
+        return {
+            id: state.workspace.currentWorkspace?.member_id || "",
+            workspace_nickname: state.workspace.currentWorkspace?.member_nickname,
+            avatar: state.user.avatar,
+            email: state.user.email,
+            user_nickname: state.user.nickname || "",
+            role: state.workspace.currentWorkspace?.roles || [],
+        }
+    });
+    const [commentParams, setCommentParams] = useState<TaskCommentParams>({ task_id: task.id, member_id: currentUser.id, workspace_id: params.id || "", limit: 10, offset: 0 });
+
+    const commentsController = useTaskCommentsController(commentParams, { enabled: isOpen });
+    useEffect(() => { selectedRef.current = selectedAssigneeIDs; }, [selectedAssigneeIDs]);
+
+    useEffect(() => {
+        setSelectedAssigneeIDs(new Set((task.assignee || []).map((assignee) => assignee.id)));
+    }, [task.id])
+
+
+
+    // useEffect(() => {
+    //     if (!isOpen) {
+    //         return;
+    //     }
+    //     getTasksCommentRequest(commentParams).then((res) => {
+    //         if (res.code == responseCode.SUCCESS) {
+    //             setComments(res.data.comments || []);
+    //         }
+    //     })
+    // }, [commentParams, task, isOpen])
+
     useEffect(() => {
         const element = ref.current;
         invariant(element);
@@ -204,21 +241,16 @@ export function Task({ task }: { task: TodoTask }) {
         updateDraftTask(task.id, { title: value });
     }
 
-    const handleSelectAssignee = (assignee: WorkspaceMember) => {
-        var assignees = task.assignee || [];
-        var index = assignees.findIndex((a) => a.id === assignee.id);
-        if (index == -1) {
-            assignees = [...assignees, {
-                avatar: assignee.avatar,
-                id: assignee.user_id,
-                nickname: assignee.workspace_nickname || assignee.user_nickname || assignee.email,
-                email: assignee.email,
-            }]
-        } else {
-            assignees = assignees.filter((a) => a.id !== assignee.id);
-        }
-
-        updateDraftTask(task.id, { assignee: assignees });
+    const handleSelectAssignee = (keys: any) => {
+        setSelectedAssigneeIDs((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(keys)) {
+                newSet.delete(keys);
+            } else {
+                newSet.add(keys);
+            }
+            return newSet;
+        });
     }
 
     const handleClick = () => {
@@ -228,10 +260,67 @@ export function Task({ task }: { task: TodoTask }) {
         onOpen();
     }
 
+    // const handleSubmitComment = async (comment: Comment) => {
+    //     setComments((prev) => {
+    //         return [
+    //             comment,
+    //             ...prev
+    //         ]
+    //     })
+    // }
+
+    // const handleUpdateComment = (commentId: string, data: Partial<Comment>) => {
+    //     setComments((prev) => {
+    //         return prev.map((comment) => {
+    //             if (comment.id === commentId) {
+    //                 return {
+    //                     ...comment,
+    //                     ...data
+    //                 }
+    //             }
+    //             return comment;
+    //         })
+    //     })
+    // }
+
+    const switchEditStatus = (fields: keyof typeof isEdit) => {
+        setIsEdit((prev) => {
+            return {
+                ...prev,
+                [fields]: !prev[fields]
+            }
+        })
+    }
+
+    const updateFilter = (filter: Partial<TaskCommentFilter>) => {
+        setCommentParams((prev) => {
+            return {
+                ...prev,
+                ...filter,
+            }
+        });
+    }
+
+    // const updateTitle = () => {
+    //     // handleUpdateTitle(title); // 提交
+    //     setIsEdit((prev) => ({ ...prev, title: false }));
+    // };
+
+    useEffect(() => {
+        if (isEdit.title && titleRef.current) {
+            titleRef.current.focus();
+        }
+    }, [isEdit.title]);
+
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (task.isEdit && !(taskRef.current?.contains(e.target as Node) || assigneeRef.current?.contains(e.target as Node) || priorityRef.current?.contains(e.target as Node))) {
-                submitDraftTask(task.id)
+                let addAssignees = Array.from(selectedRef.current)
+                submitDraftTask(task.id, {
+                    assignee_actions: {
+                        action_add: addAssignees,
+                    },
+                })
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -240,164 +329,96 @@ export function Task({ task }: { task: TodoTask }) {
 
     return (
         <>
-            <div className="relative w-3xs" ref={taskRef} onClick={handleClick}>
-                <Card ref={ref} className={`shadow-none background-white ${task.isEdit ? "" : "cursor-pointer"}`}>
-                    <CardBody>
-                        {
-                            task.isEdit ? (
-                                <>
-                                    <div className='flex flex-col gap-2'>
-                                        <Input size='sm' classNames={{ input: 'text-xs' }} defaultValue={task.title || ''} onValueChange={handleUpdateTitle} placeholder={t`New Project`}></Input>
-                                        <div className='flex gap-1 items-center'>
-                                            <Dropdown closeOnSelect={false} backdrop="opaque">
+            <CommentActionsProvider value={commentsController}>
+                <div className="relative w-3xs" ref={taskRef} onClick={handleClick}>
+                    <Card ref={ref} className={`shadow-none background-white ${task.isEdit ? "" : "cursor-pointer"}`}>
+                        <CardBody>
+                            {
+                                task.isEdit ? (
+                                    <>
+                                        <div className='flex flex-col gap-2'>
+                                            <Input size='sm' classNames={{ input: 'text-xs' }} defaultValue={task.title || ''} onValueChange={handleUpdateTitle} placeholder={t`New Project`}></Input>
+                                            <div className='flex gap-1 items-center'>
+                                                <MemberDropdown members={members || []} menuRef={assigneeRef} isFetching={isFetching} onKeywordChange={onKeywordChange} selectedKeys={Array.from(selectedAssigneeIDs)} onAction={handleSelectAssignee} ref={assigneeRef} />
+                                            </div>
+                                            <Dropdown backdrop="blur">
                                                 <DropdownTrigger>
                                                     <Button size='sm' variant='light' className='w-full justify-start gap-1'>
-                                                        <UserIcon className='w-4 h-4 text-gray-400' />
-
                                                         {
-                                                            task.assignee?.length ? (
+                                                            task.priority ? (
                                                                 <>
-                                                                    <AvatarGroup className='ml-2'>
-                                                                        {
-                                                                            task.assignee.map((assignee) => (
-                                                                                <>
-                                                                                    <Avatar src={assignee.avatar} alt={assignee.avatar} className="w-6 h-6 text-tiny">
-                                                                                    </Avatar>
-                                                                                </>
-                                                                            ))
-                                                                        }
-                                                                    </AvatarGroup>
-                                                                    {/* <span className='text-xs ml-1 text-gray-500'>
-                                                                            {task.user.nickname}
-                                                                        </span> */}
+                                                                    <div className='flex gap-1 items-center'>
+                                                                        <FlagIcon className={`w-4 h-4 ${PriorityColorMap[task.priority]}`} />
+                                                                        <span className='text-xs text-gray-500 truncate'>
+                                                                            {i18n._(capitalizeWord(task.priority))}
+                                                                        </span>
+                                                                    </div>
                                                                 </>
                                                             ) : (
                                                                 <>
-                                                                    <span className='text-xs text-gray-500 truncate'>
-                                                                        {t`Select Assignee`}
+                                                                    <ChartBarIcon className='rotate-90 w-4 h-4 text-gray-400' />
+                                                                    <span className='text-xs  text-gray-500 truncate'>
+                                                                        {t`Select Priority`}
                                                                     </span>
                                                                 </>
                                                             )
                                                         }
                                                     </Button>
                                                 </DropdownTrigger>
-                                                <DropdownMenu selectionMode="multiple" selectedKeys={selectedAssigneeIDs} ref={assigneeRef}>
-                                                    <DropdownSection classNames={{ divider: "mt-0" }} showDivider aria-label="remote search members">
-                                                        <DropdownItem key="search member" isReadOnly className='!bg-transparent !px-0'>
-                                                            <Input size='sm' isDisabled={isFetching} onValueChange={onKeywordChange} placeholder={t`Look up a person...`} ></Input>
-                                                        </DropdownItem>
-                                                    </DropdownSection>
-                                                    <DropdownSection>
-                                                        {
-                                                            isFetching ? (
-                                                                <>
-                                                                    <DropdownItem key="loading" isReadOnly className='!bg-transparent cursor-default !px-0'>
-                                                                        <ChaseLoading size="24px" text={t`Loading members...`} textClassName='text-xs' />
-                                                                    </DropdownItem>
-                                                                </>
-                                                            ) : (members.map((member) => (
-                                                                <DropdownItem key={member.id} onPress={() => handleSelectAssignee(member)}>
-                                                                    <div className='flex gap-1 items-center'>
-                                                                        <Avatar src={member.avatar} alt={member.avatar} className="w-6 h-6 text-tiny">
-                                                                        </Avatar>
-                                                                        <span className='text-xs ml-1 text-gray-500'>
-                                                                            {member.workspace_nickname || member.user_nickname || member.email}
-                                                                        </span>
-                                                                        {
-                                                                            member.workspace_nickname && (
-                                                                                <>
-                                                                                    <span className='text-xs text-gray-500'>
-                                                                                        ({member.user_nickname || member.email})
-                                                                                    </span>
-                                                                                </>
-                                                                            )
-                                                                        }
-                                                                    </div>
-                                                                </DropdownItem>
-                                                            )))
-                                                        }
-                                                    </DropdownSection>
+                                                <DropdownMenu ref={priorityRef}>
+                                                    {
+                                                        PriorityOptions.map((option) => (
+                                                            <DropdownItem key={option.value} onPress={() => handleSelectPriority(option.value)} >
+                                                                <div className='flex gap-2 items-center'>
+                                                                    <FlagIcon className={`w-4 h-4 ${PriorityColorMap[option.value]}`} />
+                                                                    <span className='text-xs text-gray-500 truncate'>
+                                                                        {t`${option.label}`}
+                                                                    </span>
+                                                                </div>
+                                                            </DropdownItem>
+                                                        ))
+                                                    }
                                                 </DropdownMenu>
                                             </Dropdown>
                                         </div>
-                                        <Dropdown backdrop="blur">
-                                            <DropdownTrigger>
-                                                <Button size='sm' variant='light' className='w-full justify-start gap-1'>
-                                                    {
-                                                        task.priority ? (
-                                                            <>
-                                                                <div className='flex gap-1 items-center'>
-                                                                    <FlagIcon className={`w-4 h-4 ${PriorityColorMap[task.priority]}`} />
-                                                                    <span className='text-xs text-gray-500 truncate'>
-                                                                        {i18n._(capitalizeWord(task.priority))}
-                                                                    </span>
-                                                                </div>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <ChartBarIcon className='rotate-90 w-4 h-4 text-gray-400' />
-                                                                <span className='text-xs  text-gray-500 truncate'>
-                                                                    {t`Select Priority`}
-                                                                </span>
-                                                            </>
-                                                        )
-                                                    }
-                                                </Button>
-                                            </DropdownTrigger>
-                                            <DropdownMenu ref={priorityRef}>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className='text-sm text-gray-500 mb-2'>
+                                            {task.title || t`New Task`}
+                                        </div>
+                                        <div className='flex justify-between items-center'>
+                                            <div className='flex gap-2 items-end'>
                                                 {
-                                                    PriorityOptions.map((option) => (
-                                                        <DropdownItem key={option.value} onPress={() => handleSelectPriority(option.value)} >
-                                                            <div className='flex gap-2 items-center'>
-                                                                <FlagIcon className={`w-4 h-4 ${PriorityColorMap[option.value]}`} />
-                                                                <span className='text-xs text-gray-500 truncate'>
-                                                                    {t`${option.label}`}
-                                                                </span>
-                                                            </div>
-                                                        </DropdownItem>
-                                                    ))
+                                                    task.assignee && (
+                                                        <>
+                                                            {/* <AvatarGroup size='sm' max={3} > */}
+                                                            {
+                                                                task.assignee.map((assignee) => (
+                                                                    <Avatar key={assignee.id} src={assignee.avatar} alt={assignee.avatar} className="w-6 h-6 text-tiny">
+                                                                    </Avatar>
+                                                                ))
+                                                            }
+                                                            {/* </AvatarGroup> */}
+                                                        </>
+                                                    )
                                                 }
-                                            </DropdownMenu>
-                                        </Dropdown>
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    <div className='text-sm text-gray-500 mb-2'>
-                                        {task.title || t`New Task`}
-                                    </div>
-                                    <div className='flex justify-between items-center'>
-                                        <div className='flex gap-2 items-end'>
+                                            </div>
                                             {
-                                                task.assignee && (
-                                                    <>
-                                                        {/* <AvatarGroup size='sm' max={3} > */}
-                                                        {
-                                                            task.assignee.map((assignee) => (
-                                                                <Avatar key={assignee.id} src={assignee.avatar} alt={assignee.avatar} className="w-6 h-6 text-tiny">
-                                                                </Avatar>
-                                                            ))
-                                                        }
-                                                        {/* </AvatarGroup> */}
-                                                    </>
+                                                task.priority && (
+                                                    <Tag size="small" {...TagAttributesMap[task.priority]}>
+                                                        {i18n._(task.priority)}
+                                                    </Tag>
                                                 )
                                             }
                                         </div>
-                                        {
-                                            task.priority && (
-                                                <Tag size="small" {...TagAttributesMap[task.priority]}>
-                                                    {i18n._(task.priority)}
-                                                </Tag>
-                                            )
-                                        }
-                                    </div>
-                                </>
-                            )
-                        }
-                    </CardBody>
-                </Card>
+                                    </>
+                                )
+                            }
+                        </CardBody>
+                    </Card>
 
-                {/* <div
+                    {/* <div
                     data-task-id={task.id}
                     ref={ref}
                     className={`flex text-sm bg-white flex-row items-center border border-solid rounded p-2 pl-0 hover:bg-slate-100 hover:cursor-grab ${stateStyles[state.type] ?? ''}`}
@@ -407,22 +428,101 @@ export function Task({ task }: { task: TodoTask }) {
                     </div>
                     <span className="truncate flex-grow flex-shrink">{task.title}</span>
                 </div> */}
-                {state.type === 'is-dragging-over' && state.closestEdge ? (
-                    <DropIndicator edge={state.closestEdge} gap={'8px'} />
-                ) : null}
-            </div>
-            <Drawer isOpen={isOpen} backdrop='transparent' onOpenChange={onOpenChange} size="md" placement="right">
-                <DrawerContent>
-                    <DrawerHeader>
-
-                    </DrawerHeader>
-                    <DrawerBody>
-                        <div >
-                            <h1 className='text-2xl font-bold'>{task.title || t`New Task`}</h1>
-                        </div>
-                    </DrawerBody>
-                </DrawerContent>
-            </Drawer>
+                    {state.type === 'is-dragging-over' && state.closestEdge ? (
+                        <DropIndicator edge={state.closestEdge} gap={'8px'} />
+                    ) : null}
+                </div>
+                <Drawer isOpen={isOpen}
+                    isDismissable={!activeOverlay}
+                    isKeyboardDismissDisabled={activeOverlay}
+                    backdrop='transparent' onOpenChange={onOpenChange} size="md" placement="right">
+                    <DrawerContent>
+                        <DrawerHeader>
+                        </DrawerHeader>
+                        <DrawerBody>
+                            <div>
+                                {
+                                    <h1 contentEditable={isEdit.title} onClick={() => switchEditStatus("title")} className='text-2xl cursor-pointer px-2 py-1 rounded-xl hover:bg-gray-100 font-bold'>{task.title || t`New Task`}</h1>
+                                }
+                            </div>
+                            <div className='flex'>
+                                <div className='flex flex-1 items-center flex-col gap-1' >
+                                    <label className='font-bold text-sm'>
+                                        {t`Priority`}
+                                    </label>
+                                    <Dropdown>
+                                        <DropdownTrigger>
+                                            <Button size='sm' variant='light'>
+                                                {
+                                                    task.priority ? (
+                                                        <Tag size="small" {...TagAttributesMap[task.priority]}>
+                                                            {i18n._(task.priority)}
+                                                        </Tag>
+                                                    ) : (
+                                                        <span className='text-xs text-gray-500'>
+                                                            {t`No Priority`}
+                                                        </span>
+                                                    )
+                                                }
+                                            </Button>
+                                        </DropdownTrigger>
+                                        <DropdownMenu>
+                                            {
+                                                PriorityOptions.map((option) => (
+                                                    <DropdownItem key={option.value} onPress={() => handleSelectPriority(option.value)} >
+                                                        <div className='flex gap-2 items-center'>
+                                                            <FlagIcon className={`w-4 h-4 ${PriorityColorMap[option.value]}`} />
+                                                            <span className='text-xs text-gray-500 truncate'>
+                                                                {t`${option.label}`}
+                                                            </span>
+                                                        </div>
+                                                    </DropdownItem>
+                                                ))
+                                            }
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                </div>
+                                <Divider className='bg-gray-200' orientation='vertical'></Divider>
+                                <div className='flex flex-1 items-center flex-col gap-1'>
+                                    <label className='font-bold text-sm'>
+                                        {t`Status`}
+                                    </label>
+                                    <Button size='sm' variant='light'>
+                                        <Tag size="large" shape='circle' className={`${ToDoColumnClasses[column.process_id]} !p-2`} >
+                                            {column.name}
+                                        </Tag>
+                                    </Button>
+                                </div>
+                                <Divider className='bg-gray-200' orientation='vertical'></Divider>
+                                <div className='flex flex-1 items-center flex-col gap-1'>
+                                    <label className='font-bold text-sm'>
+                                        {t`Deadline`}
+                                    </label>
+                                    <Button size='sm' variant='light' className="text-gray-500">
+                                        2025-08-08
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className='flex flex-col gap-2'>
+                                <div className='flex gap-1 items-center'>
+                                    <label className='text-xs text-gray-500'>
+                                        {t`Assignee`}
+                                    </label>
+                                    <MemberDropdown members={members || []} isFetching={isFetching} onKeywordChange={onKeywordChange} selectedKeys={Array.from(selectedAssigneeIDs)} onAction={handleSelectAssignee} />
+                                </div>
+                            </div>
+                            <div>
+                                <BlockNoteEditor options={{ placeholder: { emptyDocument: t`Write something about the task` } }} className='task-editor' noteID={task.id} content={task.description}></BlockNoteEditor>
+                            </div>
+                            <div>
+                                <Comments onFilterChange={updateFilter} filter={commentParams} taskId={task.id} currentUser={currentUser}></Comments>
+                            </div>
+                        </DrawerBody>
+                    </DrawerContent>
+                </Drawer>
+            </CommentActionsProvider>
         </>
     );
 }
+
+export default memo(Task);

@@ -58,12 +58,13 @@ func RequireWorkspaceAccess() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, response.Response(message.ERROR_WORKSPACE_ID, nil))
 			return
 		}
-
-		if !repository.IsUserAllowedToModifyWorkspace(userID, workspaceID) {
+		workspaceMemberID, isAllowed := repository.IsUserAllowedToModifyWorkspace(userID, workspaceID)
+		if !isAllowed {
 			c.AbortWithStatusJSON(http.StatusForbidden, response.Response(message.ERROR_NO_PERMISSION_TO_UPDATE_AND_VIEW_WORKSPACE, nil))
 			return
 		}
-
+		c.Set("workspaceMemberID", workspaceMemberID)
+		c.Set("workspaceID", workspaceID)
 		c.Next()
 	}
 }

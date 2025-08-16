@@ -1,7 +1,6 @@
 package settingsRoute
 
 import (
-	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/http/response"
 	"gin-notebook/internal/pkg/dto"
@@ -47,7 +46,5 @@ func getSettings(c *gin.Context) {
 	}
 
 	responseCode, data := settingsService.GetSystemSettings(params)
-	fmt.Println("data", data)
-	SettingsSerializer(&data)
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }

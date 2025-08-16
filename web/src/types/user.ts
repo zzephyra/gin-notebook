@@ -3,4 +3,5 @@ export type UserBrief = {
     id: string;
     nickname?: string;
     email: string;
+    [key: string]: any; // Allow additional properties
 }

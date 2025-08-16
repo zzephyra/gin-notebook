@@ -2,7 +2,6 @@ package workspaceRoute
 
 import (
 	"encoding/json"
-	"fmt"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/dto"
 	"strconv"
@@ -12,23 +11,20 @@ import (
 )
 
 type WorkspaceDTO struct {
-	ID            int64     `json:"id,string"`
-	Name          string    `json:"name"`
-	Description   string    `json:"description"`
-	Owner         int64     `json:"owner,string"`
-	OwnerNickname string    `json:"owner_name" `
-	OwnerAvatar   string    `json:"owner_avatar"`
-	OwnerEmail    string    `json:"owner_email" `
-	AllowInvite   bool      `json:"allow_invite"`
-	AllowJoin     bool      `json:"allow_join"`
-	AllowPublic   bool      `json:"allow_public"`
-	AllowShare    bool      `json:"allow_share"`
-	AllowComment  bool      `json:"allow_comment"`
-	CreatedAt     time.Time `json:"created_at"`
-	Roles         []string  `json:"roles"`
-	Editable      bool      `json:"editable"`
-	Avatar        string    `json:"avatar"`
-	MemberCount   int       `json:"memberCount"`
+	ID           int64     `json:"id,string"`
+	Name         string    `json:"name"`
+	Description  string    `json:"description"`
+	MemberID     int64     `json:"member_id,string"`
+	AllowInvite  bool      `json:"allow_invite"`
+	AllowJoin    bool      `json:"allow_join"`
+	AllowPublic  bool      `json:"allow_public"`
+	AllowShare   bool      `json:"allow_share"`
+	AllowComment bool      `json:"allow_comment"`
+	CreatedAt    time.Time `json:"created_at"`
+	Roles        []string  `json:"roles"`
+	Editable     bool      `json:"editable"`
+	Avatar       string    `json:"avatar"`
+	MemberCount  int       `json:"memberCount"`
 }
 
 type RecommendNoteCategoryDTO struct {
@@ -40,19 +36,16 @@ func WorkspaceListSerializer(c *gin.Context, workspace *[]dto.WorkspaceListDTO) 
 	workspaces := make([]WorkspaceDTO, len(*workspace))
 	for i, w := range *workspace {
 		workspaces[i] = WorkspaceDTO{
-			ID:            w.ID,
-			Name:          w.Name,
-			Description:   w.Description,
-			Owner:         w.Owner,
-			OwnerNickname: w.OwnerNickname,
-			OwnerEmail:    w.OwnerEmail,
-			OwnerAvatar:   w.OwnerAvatar,
-			AllowInvite:   w.AllowInvite,
-			AllowJoin:     w.AllowJoin,
-			AllowPublic:   w.AllowPublic,
-			AllowShare:    w.AllowShare,
-			AllowComment:  w.AllowComment,
-			CreatedAt:     w.CreatedAt,
+			ID:           w.ID,
+			Name:         w.Name,
+			Description:  w.Description,
+			MemberID:     w.MemberID,
+			AllowInvite:  w.AllowInvite,
+			AllowJoin:    w.AllowJoin,
+			AllowPublic:  w.AllowPublic,
+			AllowShare:   w.AllowShare,
+			AllowComment: w.AllowComment,
+			CreatedAt:    w.CreatedAt,
 		}
 	}
 	return workspaces
@@ -63,27 +56,23 @@ func WorkspaceSerializer(c *gin.Context, workspace *dto.WorkspaceDTO) WorkspaceD
 	json.Unmarshal(workspace.Roles, &roles)
 
 	return WorkspaceDTO{
-		ID:            workspace.ID,
-		Name:          workspace.Name,
-		Description:   workspace.Description,
-		Owner:         workspace.Owner,
-		OwnerNickname: workspace.OwnerNickname,
-		OwnerEmail:    workspace.OwnerEmail,
-		OwnerAvatar:   workspace.OwnerAvatar,
-		AllowInvite:   workspace.AllowInvite,
-		AllowJoin:     workspace.AllowJoin,
-		AllowPublic:   workspace.AllowPublic,
-		AllowShare:    workspace.AllowShare,
-		AllowComment:  workspace.AllowComment,
-		Roles:         roles,
-		Editable:      workspace.Editable,
-		Avatar:        workspace.Avatar,
-		MemberCount:   workspace.MemberCount,
+		ID:           workspace.ID,
+		Name:         workspace.Name,
+		Description:  workspace.Description,
+		AllowInvite:  workspace.AllowInvite,
+		AllowJoin:    workspace.AllowJoin,
+		AllowPublic:  workspace.AllowPublic,
+		AllowShare:   workspace.AllowShare,
+		AllowComment: workspace.AllowComment,
+		Roles:        roles,
+		Editable:     workspace.Editable,
+		Avatar:       workspace.Avatar,
+		MemberCount:  workspace.MemberCount,
+		MemberID:     workspace.MemberID,
 	}
 }
 
 func WorkspaceNoteSerializer(c *gin.Context, note *dto.CreateWorkspaceNoteDTO) *dto.WorkspaceNoteDTO {
-	fmt.Println(note.Content)
 	return &dto.WorkspaceNoteDTO{
 		ID:           *note.ID,
 		Title:        note.Title,

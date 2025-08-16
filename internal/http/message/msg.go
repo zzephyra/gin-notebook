@@ -118,6 +118,8 @@ const (
 	ERROR_EMPTY_PROJECT_ID   = 12009 // 项目ID不能为空
 	ERROR_INVALID_PROJECT_ID = 12010 // 无效的项目ID
 	ERROR_INVALID_TASK_ID    = 12011 // 无效的任务ID
+	ERROR_EMPTY_COMMENT_ID   = 12012 // 评论ID不能为空
+	ERROR_INVALID_COMMENT_ID = 12013 // 无效的评论ID
 )
 
 var CodeMsg = map[int]string{
@@ -190,4 +192,6 @@ var CodeMsg = map[int]string{
 	ERROR_INVALID_PROJECT_ID:                         "无效的项目ID",
 	ERROR_PROJECT_NOT_EXIST:                          "项目不存在",
 	ERROR_INVALID_TASK_ID:                            "无效的任务ID",
+	ERROR_EMPTY_COMMENT_ID:                           "评论ID不能为空",
+	ERROR_INVALID_COMMENT_ID:                         "无效的评论ID",
 }

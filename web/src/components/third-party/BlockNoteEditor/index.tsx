@@ -90,9 +90,7 @@ async function resolveUsers(userIds: string[]) {
 }
 
 const BlockNoteEditor = ({ noteID, content, onChange, options, className }: { noteID: string, content?: string, className?: string, onChange?: (value: string) => void, options?: BlockNoteOptions }) => {
-
     return (
-
         <YDocProvider
             docId={noteID}
             authEndpoint="https://demos.y-sweet.dev/api/auth"
@@ -155,7 +153,16 @@ const BlockNoteEditorInner = ({ noteID, content, onChange, options, className }:
     const editor = useCreateBlockNote(
         {
             dictionary: {
-                ...localeMapping[i18n.locale as keyof typeof localeMapping] || localeMapping.en
+                ...localeMapping[i18n.locale as keyof typeof localeMapping] || localeMapping.en,
+                placeholders: {
+                    ...localeMapping[i18n.locale as keyof typeof localeMapping].placeholders,
+                    // We override the empty document placeholder
+                    emptyDocument: "Start typing..",
+                    // We override the default placeholder
+                    default: "Custom default placeholder",
+                    // We override the heading placeholder
+                    heading: "Custom heading placeholder",
+                },
             },
             schema,
             extensions: [
@@ -197,7 +204,7 @@ const BlockNoteEditorInner = ({ noteID, content, onChange, options, className }:
     return (
         <>
             <BlockNoteView editor={editor}
-                className={`h-full w-full  ${className || ""}`}
+                className={`h-full w-full ${className || ""}`}
                 onChange={handleOnChange}
                 formattingToolbar={false}
                 editable={options?.editable !== false}

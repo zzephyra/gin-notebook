@@ -1,3 +1,10 @@
+export type BlockNotePlaceholder = {
+    emptyDocument?: string;
+    default?: string;
+    heading?: string;
+}
+
 export type BlockNoteOptions = {
-    editable: boolean
+    editable?: boolean
+    placeholder?: Partial<BlockNotePlaceholder>;
 }

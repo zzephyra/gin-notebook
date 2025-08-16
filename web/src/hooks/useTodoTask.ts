@@ -1,4 +1,4 @@
-import { CreateTaskInput, Project, ProjectBoard, TodoTask } from '@/components/todo/type'
+import { CreateTaskInput, Project, ProjectBoard, SubmitExtraParams, TodoTask } from '@/components/todo/type'
 import { createTaskRequest, getProjectsListRequest, getProjectsRequest } from '@/features/api/project'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -14,6 +14,8 @@ export type StartDraftOptions = {
 
 export function useProjectTodo(projectId: string, workspaceId: string) {
     const queryClient = useQueryClient();
+    const [activeOverlay, setActiveOverlay] = useState(false);
+
     // 1) 项目列表
     const {
         data: projectList,
@@ -290,7 +292,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         return tempId;
     }
 
-    async function submitDraftTask(tempId: string) {
+    async function submitDraftTask(tempId: string, params?: SubmitExtraParams) {
         if (!currentProject || !board) return;
         const key = ['project-board', currentProject.id] as const;
 
@@ -321,12 +323,13 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         // }
 
         // 提交前：先退出编辑态，提升感知（可选）
-        queryClient.setQueryData<ProjectBoard>(key, (old = []) => {
-            let res = replaceTaskById(old, found.columnId, tempId, { isEdit: false, _optimistic: true })
-            return res;
-        },
-        );
-        console.log(found)
+        if (found.task.isEdit) {
+            queryClient.setQueryData<ProjectBoard>(key, (old = []) => {
+                let res = replaceTaskById(old, found.columnId, tempId, { isEdit: false, _optimistic: true })
+                return res;
+            },
+            );
+        }
 
         const input: CreateTaskInput = {
             column_id: found.columnId,
@@ -340,20 +343,20 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
                 title: found.task.title,
                 description: found.task.description,
                 priority: found.task.priority,
-                assignee: found.task.assignee || [],
                 deadline: found.task.deadline,
+                ...params,
             },
         };
         await createTaskMutation.mutateAsync(input);
     }
 
-    function updateDraftTask(tempId: string, patch: Partial<TodoTask>) {
+    function updateDraftTask(taskID: string, patch: Partial<TodoTask>) {
         if (!currentProject) return;
         const key = ['project-board', currentProject.id] as const;
         const current = queryClient.getQueryData<ProjectBoard>(key) ?? [];
-        const found = findTask(current, tempId);
+        const found = findTask(current, taskID);
         if (!found) return;
-        queryClient.setQueryData<ProjectBoard>(key, (old = []) => replaceTaskById(old, found.columnId, tempId, patch));
+        queryClient.setQueryData<ProjectBoard>(key, (old = []) => replaceTaskById(old, found.columnId, taskID, patch));
     }
 
     const createTaskMutation = useMutation({
@@ -388,15 +391,17 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
             );
         }
     });
-
+    const stableColumns = useMemo(() => board || [], [board]);
 
     return {
-        columns: board || [],
+        columns: stableColumns,
         projectList: projectList || [],
         createTask,
         updateDraftTask,
         startDraftTask,
         submitDraftTask,
+        activeOverlay,
+        setActiveOverlay,
         currentProject: currentProject,
         isLoading: isLoadingProjects || isLoadingBoard,
         ...rest,
