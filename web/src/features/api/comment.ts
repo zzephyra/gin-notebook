@@ -1,7 +1,8 @@
 import axiosClient from "@/lib/api/client";
-import { TaskCommentsApi, TaskCommentWithIDApi } from "./routes";
+import { TaskCommentAttachmentApi, TaskCommentsApi, TaskCommentWithIDApi } from "./routes";
 import { TaskCommentData, TaskCommentEditableData, TaskCommentParams } from "./type";
 import { responseCode } from "../constant/response";
+import { CommentAttachment } from "@/components/comment/main/type";
 
 export async function createTaskCommentRequest(data: TaskCommentData) {
     let res = await axiosClient.post(TaskCommentsApi(data.task_id), data);
@@ -46,7 +47,7 @@ export async function deleteTasksCommentRequest(taskID: string, commentID: strin
     }
 }
 
-export async function updateCommentRequest(taskID: string, commentID: string, data: Partial<TaskCommentEditableData>) {
+export async function updateCommentRequest(workspaceID: string, taskID: string, commentID: string, data: Partial<TaskCommentEditableData>) {
     if (!taskID || !commentID) {
         return {
             code: responseCode.ERROR,
@@ -55,7 +56,20 @@ export async function updateCommentRequest(taskID: string, commentID: string, da
     }
 
     try {
-        let res = await axiosClient.patch(TaskCommentsApi(taskID), { comment_id: commentID, ...data });
+        let res = await axiosClient.put(TaskCommentWithIDApi(taskID, commentID), { workspace_id: workspaceID, ...data });
+        return res.data;
+    } catch (err) {
+        return {
+            code: responseCode.ERROR,
+            data: {}
+        }
+    }
+}
+
+export async function createAttachmentRequest(taskID: string, commentID: string, attachment: CommentAttachment) {
+
+    try {
+        let res = await axiosClient.post(TaskCommentAttachmentApi(taskID, commentID), attachment);
         return res.data;
     } catch (err) {
         return {

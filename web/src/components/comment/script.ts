@@ -7,7 +7,6 @@ export const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (!sel || !sel.isCollapsed) return;
 
     let target: HTMLElement | null = null;
-    console.log(e.key)
     if (e.key === 'Backspace') {
         // 光标在 mention 尾部
         const prev = sel.anchorNode?.previousSibling as HTMLElement | null;

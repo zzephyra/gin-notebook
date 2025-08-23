@@ -287,7 +287,6 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
                 isDraft: true,
             }),
         );
-        console.log({ id: tempId, columnId, colIdx })
         setActiveDraft({ id: tempId, columnId, colIdx });
         return tempId;
     }

@@ -1,7 +1,11 @@
-import { Comment } from '@/components/comment/main/type';
-import { createTaskCommentRequest, deleteTasksCommentRequest, getTasksCommentRequest, updateCommentRequest } from '@/features/api/comment';
+import { getPercent } from '@/components/comment/input/script';
+import { Comment, CommentAttachment } from '@/components/comment/main/type';
+import { createAttachmentRequest, createTaskCommentRequest, deleteTasksCommentRequest, getTasksCommentRequest, updateCommentRequest } from '@/features/api/comment';
 import { TaskCommentData, TaskCommentEditableData, TaskCommentParams } from '@/features/api/type';
-import { useInfiniteQuery, useMutation, useQueryClient, UseMutationResult } from '@tanstack/react-query';
+import { UploadFile } from '@/lib/upload';
+import { UploadResult } from '@/lib/upload/type';
+import { hashFilesSHA256 } from '@/utils/hashFiles';
+import { useInfiniteQuery, useMutation, useQueryClient, UseMutationResult, UseMutateFunction } from '@tanstack/react-query';
 
 export interface TaskCommentsController {
     isLoading: boolean;
@@ -15,6 +19,7 @@ export interface TaskCommentsController {
     hasNextPage: boolean;
     deleteComment: UseMutationResult<void, unknown, string>;
     updateComment: UseMutationResult<Comment, unknown, { commentID: string; patch: Partial<TaskCommentEditableData> }>;
+    createCommentAttachment: UseMutationResult<UploadResult, Error, { file: File; commentID: string; opt?: { from: "input" | "box" } }, { prev: unknown; }>
 }
 
 type RawPage = {
@@ -115,8 +120,8 @@ export function useTaskCommentsController(params: TaskCommentParams, opts?: { en
             const pages = old.pages.map((p: any) => ({ ...p }));
             if (mode === 'replace') {
                 for (const p of pages) {
-                    const i = p.items.findIndex((x: Comment) => x.id === c.id);
-                    if (i >= 0) { p.items[i] = c; break; }
+                    const i = p.data.comments.findIndex((x: Comment) => x.id === c.id);
+                    if (i >= 0) { p.data.comments[i] = c; break; }
                 }
             } else {
                 pages[0] = { ...pages[0], items: [c, ...pages[0].items] };
@@ -135,23 +140,190 @@ export function useTaskCommentsController(params: TaskCommentParams, opts?: { en
 
 
     const updateComment = useMutation({
-        mutationFn: ({ commentID, patch }: { commentID: string; patch: Partial<TaskCommentEditableData> }) => updateCommentRequest(params.task_id, commentID, patch),
+        mutationFn: ({ commentID, patch }: { commentID: string; patch: Partial<TaskCommentEditableData> }) => updateCommentRequest(params.workspace_id, params.task_id, commentID, patch),
         onMutate: async ({ commentID, patch }) => {
             await qc.cancelQueries({ queryKey: qk });
             const prev = qc.getQueryData(qk);
             qc.setQueryData(qk, (old: any) => {
                 if (!old?.pages) return old;
-                const pages = old.pages.map((p: any) => ({
-                    ...p,
-                    items: p.items.map((c: Comment) => c.id === commentID ? { ...c, ...patch } : c),
-                }));
+
+                const pages = old.pages.map((p: RawPage) => {
+                    const idx = p.data.comments.findIndex((c) => c.id === commentID);
+                    if (idx < 0) return p;
+                    const next = [...p.data.comments];
+                    next[idx] = { ...next[idx], ...patch };
+                    return { ...p, data: { ...p.data, comments: next } };
+
+                });
                 return { ...old, pages };
             });
             return { prev };
         },
         onError: (_e, _v, ctx) => { if (ctx?.prev) qc.setQueryData(qk, ctx.prev); },
-        onSuccess: (server) => upsertToCache(server, 'replace'),
+        onSuccess: (server) => {
+            upsertToCache(server.data, 'replace');
+        },
     });
+
+    function updateAttachment(old: any, commentID: string, tmpId: string, patch: any) {
+        if (!old?.pages) return old;
+        return {
+            ...old,
+            pages: old.pages.map((page: any) => ({
+                ...page,
+                data: {
+                    ...page.data,
+                    comments: page.data.comments.map((c: any) =>
+                        c.id === commentID
+                            ? {
+                                ...c,
+                                attachments: c.attachments.map((a: any) =>
+                                    a.id === tmpId ? { ...a, ...patch } : a
+                                ),
+                            }
+                            : c
+                    ),
+                }
+            })),
+        };
+    }
+
+
+    const createCommentAttachment = useMutation<
+        any, // 返回值类型
+        Error, // 错误类型
+        { file: File; commentID: string, opt?: { from: "input" | "box" } }, // 外部调用变量
+        { prev: any; tmpId: string; controller: ReturnType<typeof UploadFile>; fileHash: string } // context
+    >({
+        // mutationFn 不做实际逻辑，只返回一个 promise 占位
+        mutationFn: async (_vars) => {
+            return new Promise((resolve) => resolve(null));
+        },
+
+        onMutate: async ({ file, commentID, opt }) => {
+            await qc.cancelQueries({ queryKey: qk });
+
+            const prev = qc.getQueryData(qk);
+            const tmpId = globalThis.crypto?.randomUUID?.() ?? `tmp_${Date.now()}_${Math.random()}`;
+
+            // ✅ 计算文件 hash
+            const fileHash = (await hashFilesSHA256([file]))[0].sha256;
+
+            // ✅ 创建上传 controller
+            const controller = UploadFile({ file });
+
+            // ✅ 绑定进度和错误事件
+            const off = controller.on((e) => {
+                if (e.type === "progress") {
+                    const p = getPercent(e.progress);
+                    qc.setQueryData(qk, (old: any) =>
+                        updateAttachment(old, commentID, tmpId, { progress: p })
+                    );
+                } else if (e.type === "error") {
+                    qc.setQueryData(qk, (old: any) =>
+                        updateAttachment(old, commentID, tmpId, {
+                            status: "failed",
+                            error: String(e.error),
+                        })
+                    );
+                    off();
+                }
+            });
+
+            // ✅ 乐观插入一条 uploading 附件
+            qc.setQueryData(qk, (old: any) => {
+                if (!old?.pages) return old;
+                return {
+                    ...old,
+                    pages: old.pages.map((page: any) => ({
+                        ...page,
+                        data: {
+                            ...page.data,
+                            comments: page.data.comments.map((c: any) =>
+                                c.id === commentID
+                                    ? {
+                                        ...c,
+                                        attachments: [
+                                            ...(c.attachments ?? []),
+                                            {
+                                                id: tmpId,
+                                                url: "",
+                                                name: file.name,
+                                                size: file.size,
+                                                type: file.type,
+                                                status: "uploading",
+                                                progress: 0,
+                                                sha256_hash: fileHash,
+                                                from: opt?.from || "box",
+                                            },
+                                        ],
+                                    }
+                                    : c
+                            ),
+                        },
+                    })),
+                };
+            });
+
+            // ✅ 返回 context
+            return { prev, tmpId, controller, fileHash };
+        },
+
+        onSuccess: async (_data, vars, ctx) => {
+            if (!ctx) return;
+            try {
+                // ✅ 等待上传完成
+                const result = await ctx.controller.promise;
+
+                // ✅ 调后端 API，传 ctx.fileHash，而不是 result.sha256
+                const attachment = await createAttachmentRequest(
+                    params.task_id,
+                    vars.commentID,
+                    {
+                        url: result.url,
+                        key: result.key,
+                        name: vars.file.name,
+                        size: vars.file.size,
+                        type: vars.file.type,
+                        sha256_hash: ctx.fileHash,
+                        workspace_id: params.workspace_id,
+                    }
+                );
+
+                // ✅ 替换临时附件
+                qc.setQueryData(qk, (old: any) =>
+                    updateAttachment(old, vars.commentID, ctx.tmpId, {
+                        ...attachment.data,
+                        status: "uploaded",
+                        progress: 100,
+                    })
+                );
+            } catch (err) {
+                qc.setQueryData(qk, (old: any) =>
+                    updateAttachment(old, vars.commentID, ctx.tmpId, {
+                        status: "failed",
+                        error: String(err),
+                    })
+                );
+            }
+        },
+
+        onError: (err, vars, ctx) => {
+            if (!ctx) return;
+            qc.setQueryData(qk, (old: any) =>
+                updateAttachment(old, vars.commentID, ctx.tmpId, {
+                    status: "failed",
+                    error: String(err),
+                })
+            );
+        },
+    });
+
+
+
+
+
+
 
     const deleteComment = useMutation({
         mutationFn: (commentID: string) => deleteTasksCommentRequest(params.task_id, commentID, params.workspace_id),
@@ -177,5 +349,6 @@ export function useTaskCommentsController(params: TaskCommentParams, opts?: { en
         hasNextPage: commentsQuery.hasNextPage,
         deleteComment,
         updateComment,
+        createCommentAttachment,
     }
 }

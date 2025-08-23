@@ -36,10 +36,8 @@ const MemberDropdown = forwardRef<HTMLDivElement, MemberDropdownProps>((props, _
                                 <AvatarGroup className='ml-2'>
                                     {
                                         selectUsers.map((assignee) => (
-                                            <>
-                                                <Avatar src={assignee.avatar} alt={assignee.avatar} className="w-6 h-6 text-tiny">
-                                                </Avatar>
-                                            </>
+                                            <Avatar key={assignee.id} src={assignee.avatar} alt={assignee.avatar} className="w-6 h-6 text-tiny">
+                                            </Avatar>
                                         ))
                                     }
                                 </AvatarGroup>

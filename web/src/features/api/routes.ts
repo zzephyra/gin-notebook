@@ -30,3 +30,5 @@ export const TaskCommentsApi = (taskID: string | number) =>
     `/project/task/${taskID}/comment`;
 export const TaskCommentWithIDApi = (taskID: string, commentID: string) =>
     `/project/task/${taskID}/comment/${commentID}`;
+export const TaskCommentAttachmentApi = (taskID: string, commentID: string) =>
+    `/project/task/${taskID}/comment/${commentID}/attachment`;

@@ -41,10 +41,10 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
             <div className="flex gap-4 overflow-y-auto w-full flex-1 p-2">
                 {
                     props.columns.map((column) => (
-                        <div className="max-h-full">
+                        <div key={column.id} className="max-h-full">
                             <Column key={column.id} column={column}>
                                 {column.tasks.map((task) => (
-                                    <Task column={column} task={task} />
+                                    <Task key={task.id} column={column} task={task} />
                                     // <ToDoTask key={task.id} index={index} task={task} indicator={props.indicator} />
                                 ))}
                             </Column>

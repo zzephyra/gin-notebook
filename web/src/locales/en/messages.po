@@ -106,7 +106,7 @@ msgstr "Please enter a message before sending."
 #. placeholder {0}: item.label
 #: src/components/todo/task/index.tsx:375
 #: src/components/todo/task/index.tsx:476
-#: src/components/comment/main/index.tsx:131
+#: src/components/comment/main/index.tsx:153
 #: src/components/avatarMenu/index.tsx:80
 msgid "{0}"
 msgstr "{0}"
@@ -287,13 +287,17 @@ msgstr "Click to see more events"
 msgid "Come up with a good name!"
 msgstr "Come up with a good name!"
 
-#: src/components/comment/input/index.tsx:35
+#: src/components/comment/input/index.tsx:41
 msgid "Comment cannot be empty"
 msgstr "Comment cannot be empty"
 
 #: src/components/comment/main/index.tsx:73
 msgid "Comment submitted successfully"
 msgstr "Comment submitted successfully"
+
+#: src/components/comment/main/index.tsx:100
+msgid "Comment updated successfully"
+msgstr "Comment updated successfully"
 
 #: src/components/note/main/index.tsx:444
 msgid "Confirm"
@@ -354,7 +358,7 @@ msgid "Created by:"
 msgstr "Created by:"
 
 #: src/pages/workspace/favorites.tsx:266
-#: src/components/comment/main/index.tsx:136
+#: src/components/comment/main/index.tsx:158
 msgid "Created Time"
 msgstr "Created Time"
 
@@ -378,7 +382,7 @@ msgstr "Deadline"
 #: src/components/note/noteList/index.tsx:77
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
-#: src/components/comment/box/index.tsx:162
+#: src/components/comment/box/index.tsx:124
 msgid "Delete"
 msgstr "Delete"
 
@@ -431,8 +435,8 @@ msgid "Download Qrcode"
 msgstr "Download Qrcode"
 
 #: src/components/comment/box/index.tsx:159
-msgid "Edit"
-msgstr "Edit"
+#~ msgid "Edit"
+#~ msgstr "Edit"
 
 #: src/pages/settings/accountSettings.tsx:89
 msgid "Email"
@@ -527,6 +531,11 @@ msgstr "Failed to load chat history"
 msgid "Failed to submit comment: {0}"
 msgstr "Failed to submit comment: {0}"
 
+#. placeholder {0}: res.message
+#: src/components/comment/main/index.tsx:102
+msgid "Failed to update comment: {0}"
+msgstr "Failed to update comment: {0}"
+
 #: src/pages/workspace/favorites.tsx:240
 msgid "Favorites"
 msgstr "Favorites"
@@ -568,7 +577,7 @@ msgstr "Go to select other Workspace"
 msgid "Go to Workspace"
 msgstr "Go to Workspace"
 
-#: src/components/comment/main/index.tsx:157
+#: src/components/comment/main/index.tsx:179
 msgid "Has attachments"
 msgstr "Has attachments"
 
@@ -652,7 +661,7 @@ msgstr "Languages"
 msgid "Last Active"
 msgstr "Last Active"
 
-#: src/components/dropdown/member/index.tsx:68
+#: src/components/dropdown/member/index.tsx:66
 msgid "Loading members..."
 msgstr "Loading members..."
 
@@ -690,7 +699,7 @@ msgstr "Login failed"
 msgid "Login failed, please check your email and password"
 msgstr "Login failed, please check your email and password"
 
-#: src/components/dropdown/member/index.tsx:60
+#: src/components/dropdown/member/index.tsx:58
 msgid "Look up a person..."
 msgstr "Look up a person..."
 
@@ -710,11 +719,11 @@ msgstr "member"
 msgid "members"
 msgstr "members"
 
-#: src/components/comment/content/index.tsx:277
+#: src/components/comment/content/index.tsx:351
 msgid "Members"
 msgstr "Members"
 
-#: src/components/comment/main/index.tsx:150
+#: src/components/comment/main/index.tsx:172
 msgid "Mention me"
 msgstr "Mention me"
 
@@ -933,7 +942,7 @@ msgstr "Please select a category"
 msgid "Please select a file to upload."
 msgstr "Please select a file to upload."
 
-#: src/components/comment/input/index.tsx:39
+#: src/components/comment/input/index.tsx:45
 msgid "Please wait for attachments to finish uploading."
 msgstr "Please wait for attachments to finish uploading."
 
@@ -1050,7 +1059,7 @@ msgstr "Select"
 msgid "Select a workspace to start using Mameos"
 msgstr "Select a workspace to start using Mameos"
 
-#: src/components/dropdown/member/index.tsx:50
+#: src/components/dropdown/member/index.tsx:48
 msgid "Select Assignee"
 msgstr "Select Assignee"
 
@@ -1245,7 +1254,7 @@ msgid "Updated At"
 msgstr "Updated At"
 
 #: src/pages/workspace/favorites.tsx:263
-#: src/components/comment/main/index.tsx:139
+#: src/components/comment/main/index.tsx:161
 msgid "Updated Time"
 msgstr "Updated Time"
 
@@ -1261,6 +1270,10 @@ msgstr "Upload Avatar"
 #: src/pages/settings/accountSettings.tsx:39
 msgid "Upload avatar failed"
 msgstr "Upload avatar failed"
+
+#: src/components/comment/box/index.tsx:121
+msgid "Upload File"
+msgstr "Upload File"
 
 #: src/components/form/register/form.tsx:74
 msgid "Verification code failed to send."

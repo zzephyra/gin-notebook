@@ -1,32 +1,50 @@
 import { useRef, forwardRef, useImperativeHandle, useState, useLayoutEffect, useEffect, useMemo } from "react";
 import { calcInContainer, extractCommentPayload, handleKeyDown, splitByMentions } from "../script";
-import { CommentContentHandle, CommentContentProps } from "./types";
-import { WorkspaceMember } from "@/types/workspace";
+import type { CommentContentHandle, CommentContentProps } from "./types";
+import type { WorkspaceMember } from "@/types/workspace";
 import { useWorkspaceMembers } from "@/hooks/useWorkspaceMembers";
 import { useParams } from "react-router-dom";
-import { Avatar, Listbox, ListboxItem, ListboxSection } from "@heroui/react";
+import { Avatar, Card, CardBody, Listbox, ListboxItem, ListboxSection } from "@heroui/react";
 import MemberCard from "@/components/card/member";
 import { useLingui } from "@lingui/react/macro";
 import { useTodo } from "@/contexts/TodoContext";
 import { createPortal } from "react-dom";
 
-
-
-
+const DROPDOWN_WIDTH = 180;
+const DROPDOWN_MARGIN = 8;
+const OFFSET_Y = 6; // 下拉与锚点的垂直间距
 
 const CommentContent = forwardRef<CommentContentHandle, CommentContentProps>((props, ref) => {
-    const [dropdown, setDropdown] = useState<{ visible: boolean; top: number; left: number; keyword: string; range: Range | null }>({ visible: false, top: 0, left: 0, keyword: '', range: null });
-    const dropdownRef = useRef<HTMLDivElement>(null); // 下拉列表容器
-    const popoverRef = useRef<HTMLDivElement>(null); // popover容器
-    const containerRef = useRef<HTMLDivElement>(null)
+    // 仅用 state 控制显隐/关键词/Range；位置用 DOM 写入避免渲染延迟
+    const [dropdown, setDropdown] = useState<{ visible: boolean; keyword: string; range: Range | null }>({
+        visible: false,
+        keyword: "",
+        range: null,
+    });
+
+    const dropdownRef = useRef<HTMLDivElement>(null); // 下拉根（Portal 到 props.portalContainer）
+    const popoverRef = useRef<HTMLDivElement>(null);  // mention popover 根
+    const localContainerRef = useRef<HTMLDivElement>(null); // 本地容器
+    const boxRef = useRef<HTMLDivElement>(null);      // contentEditable 容器
+
     const params = useParams();
     const { t } = useLingui();
+    const { setActiveOverlay } = useTodo();
+
+    const containerEl = props.container?.current ?? localContainerRef.current ?? null;
+
+    const [defaultPortalEl, setDefaultPortalEl] = useState<HTMLElement | null>(null);
+    useEffect(() => { setDefaultPortalEl(document.body); }, []);
+    const dropdownPortalTarget = props.portalContainer ?? defaultPortalEl;
+    const popoverPortalTarget = props.popoverContainer ?? containerEl;
+
     const [contentValue, setContentValue] = useState<any[]>([]);
     const [searchParams, setSearchParams] = useState({ limit: 10, keywords: "" });
     const { data: members } = useWorkspaceMembers(params.id || "", searchParams);
+
     const memberMap = useMemo(() => {
         const map: Record<string, WorkspaceMember> = {};
-        (members || []).forEach(m => { map[m.id] = m; });
+        (members || []).forEach((m) => (map[m.id] = m));
         return map;
     }, [members]);
 
@@ -37,84 +55,161 @@ const CommentContent = forwardRef<CommentContentHandle, CommentContentProps>((pr
         left?: number;
         top?: number;
     }>({ visible: false });
-    const { setActiveOverlay } = useTodo();
 
-    const boxRef = useRef<HTMLDivElement>(null);       // contentEditable 容器
+    // 给父组件暴露方法
     useImperativeHandle(ref, () => ({
         getContent: () => {
             const { text, mentions } = extractCommentPayload(boxRef.current!);
-            return {
-                content: text,
-                mentions: mentions
-            };
+            return { content: text, mentions };
+        },
+        inputRef: boxRef,
+        focus: (toEnd: boolean = true) => {
+            const el = boxRef.current;
+            if (!el) return;
+            el.focus();
+            if (toEnd) {
+                const range = document.createRange();
+                range.selectNodeContents(el);
+                range.collapse(false);
+                const sel = window.getSelection();
+                if (sel) {
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+            }
         },
     }));
 
+    // 默认内容 → 片段
+    useEffect(() => {
+        setContentValue(splitByMentions(props?.defaultValue?.content || "", props.defaultValue?.mentions || []));
+    }, [props.defaultValue]);
 
-    useEffect(
-        () => {
-            console.log(props?.defaultValue)
-            setContentValue(splitByMentions(props?.defaultValue?.content || '', props.defaultValue?.mentions || []))
-        },
-        [props.defaultValue]
-    );
+    // 进入编辑态自动聚焦到末尾
+    useEffect(() => {
+        if (!props.editable) return;
+        const id = requestAnimationFrame(() => {
+            const el = boxRef.current;
+            if (!el) return;
+            el.focus();
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            range.collapse(false);
+            const sel = window.getSelection();
+            if (sel) {
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        });
+        return () => cancelAnimationFrame(id);
+    }, [props.editable]);
 
+    // ================= 相对 portalContainer 的绝对定位（无拖拽）=================
+    /** 将下拉定位到光标 range 的下方，坐标相对 portalContainer 的 padding box */
+    const positionDropdownRelToPortal = (r: Range) => {
+        if (!dropdownPortalTarget || !dropdownRef.current) return;
+
+        // 1) 取锚点/光标矩形（视口坐标）
+        const rects = r.getClientRects();
+        const anchor = rects.item(rects.length - 1) ?? r.getBoundingClientRect();
+
+        // 2) 取 portal 容器矩形（视口坐标）
+        const portalRect = dropdownPortalTarget.getBoundingClientRect();
+
+        // 3) 计算相对 portal 的坐标（不放 state，直接 DOM 写入）
+        let left = anchor.left - portalRect.left;
+        const maxLeft = (dropdownPortalTarget.clientWidth ?? 0) - DROPDOWN_WIDTH - DROPDOWN_MARGIN;
+        left = Math.max(0, Math.min(left, Math.max(0, maxLeft)));
+
+        const top = anchor.bottom - portalRect.top + OFFSET_Y;
+
+        const el = dropdownRef.current!;
+        el.style.top = `${top}px`;
+        el.style.left = `${left}px`;
+    };
+
+    /** 结合当前 selection 更新 range + 位置 */
+    const recalcNow = () => {
+        if (!dropdown.range) return;
+        const sel = document.getSelection();
+        const r = dropdown.range.cloneRange();
+        if (sel && sel.rangeCount) {
+            const s = sel.getRangeAt(0);
+            r.setEnd(s.endContainer, s.endOffset);
+        }
+        positionDropdownRelToPortal(r);
+        // 保存最新 range（不触发重渲）
+        setDropdown(d => ({ ...d, range: r }));
+    };
+
+    // 监听滚动/尺寸/选区变化：实时重算
+    useEffect(() => {
+        if (!dropdown.visible) return;
+        const onScroll = () => recalcNow();
+        const onResize = () => recalcNow();
+        const onSel = () => recalcNow();
+
+        // 监听 window（包含文档滚动），以及 portalContainer 自身滚动
+        window.addEventListener("scroll", onScroll, { capture: true, passive: true });
+        window.addEventListener("resize", onResize);
+        document.addEventListener("selectionchange", onSel);
+
+        if (dropdownPortalTarget) {
+            dropdownPortalTarget.addEventListener("scroll", onScroll, { passive: true });
+        }
+
+        // 初次定位
+        recalcNow();
+
+        return () => {
+            window.removeEventListener("scroll", onScroll, { capture: true } as any);
+            window.removeEventListener("resize", onResize);
+            document.removeEventListener("selectionchange", onSel);
+            if (dropdownPortalTarget) {
+                dropdownPortalTarget.removeEventListener("scroll", onScroll as any);
+            }
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dropdown.visible, dropdownPortalTarget]);
+
+    // ================= 交互 =================
+    const closeDropdown = () => {
+        setDropdown(d => ({ ...d, visible: false, keyword: "", range: null }));
+        setActiveOverlay?.(false);
+    };
+
+    // 点击外部关闭 dropdown/popover（不负责提交）
     useEffect(() => {
         const handlePointerDown = (event: PointerEvent) => {
-            const target = event.target as Node;
-
-            const inDropdown = !!dropdownRef.current?.contains(target);
+            const target = event.target as HTMLElement;
+            const inDropdown = !!target.closest?.('[data-mention-dropdown="true"]');
             const inPopover = !!popoverRef.current?.contains(target);
 
-            // 点击不在下拉里 -> 关下拉
-            if (!inDropdown) {
-                setDropdown((d) => (d.visible ? { ...d, visible: false } : d));
-            }
-
-            // 点击不在 popover 里 -> 关 popover（不依赖闭包里的 popover.visible）
-            if (!inPopover) {
-                setPopover((p) => (p.visible ? { ...p, visible: false } : p));
-            }
-
-            // 两个都不是，就把全局遮罩也关了
-            if (!inDropdown && !inPopover) {
-                setActiveOverlay?.(false);
-            }
+            if (!inDropdown && dropdown.visible) closeDropdown();
+            if (!inPopover && popover.visible) setPopover(p => (p.visible ? { ...p, visible: false } : p));
+            if (!inDropdown && !inPopover) setActiveOverlay?.(false);
         };
-
-        // 用 pointerdown 更稳
         document.addEventListener("pointerdown", handlePointerDown, { capture: true });
-        return () => {
-            document.removeEventListener("pointerdown", handlePointerDown, { capture: true });
-        };
-    }, [setActiveOverlay]); // 不要把 popover/dropdown 放依赖里，避免重复绑定
+        return () => document.removeEventListener("pointerdown", handlePointerDown, { capture: true });
+    }, [dropdown.visible, popover.visible, setActiveOverlay]);
 
-
+    // Popover 定位（在本地 container 上）
     useLayoutEffect(() => {
-        if (!popover.visible || !popover.anchorEl) return;
+        const container = containerEl;
+        if (!popover.visible || !popover.anchorEl || !container) return;
         const pop = popoverRef.current;
-        const container = containerRef.current;
-        if (!pop || !container) return;
+        if (!pop) return;
 
-        // 读取最新 rect（避免过期）
         const anchorRect = popover.anchorEl.getBoundingClientRect();
         const size = { w: pop.offsetWidth, h: pop.offsetHeight };
-
         const { left, top } = calcInContainer(anchorRect, container, size, 6);
-        // 你需要的额外下移
         setPopover(p => ({ ...p, left, top: top + 16 }));
-    }, [popover.visible, popover.anchorEl, containerRef]);
-
+    }, [popover.visible, popover.anchorEl, containerEl]);
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         const el = e.target as HTMLElement;
-        console.log("uid:", el.dataset.uid)
         if (el.classList.contains("mention")) {
-            setPopover({
-                visible: true,
-                anchorEl: el, // 存元素
-                mention: memberMap[el.dataset.uid || ""],
-            });
+            setPopover({ visible: true, anchorEl: el, mention: memberMap[el.dataset.uid || ""], left: popover.left, top: popover.top });
             setActiveOverlay?.(true);
         } else {
             setPopover({ visible: false });
@@ -122,132 +217,106 @@ const CommentContent = forwardRef<CommentContentHandle, CommentContentProps>((pr
     };
 
     const handleMentionClick = (e: React.MouseEvent<HTMLSpanElement>, m: any) => {
-        setPopover({
-            visible: true,
-            anchorEl: e.currentTarget,  // 只存元素
-            mention: m.member,
-        });
+        setPopover({ visible: true, anchorEl: e.currentTarget, mention: m.member });
         setActiveOverlay?.(true);
     };
 
     // 插入 mention
     const insertMention = (m: WorkspaceMember) => {
         if (!dropdown.range) return;
+        const range = dropdown.range;
+        range.deleteContents();
 
-        const range = dropdown.range;          // 已经覆盖了 @keyword
-        range.deleteContents();                // 1) 删除 @keyword
-
-        // 2) 构造 mention 节点
-        const span = document.createElement('span');
-        span.className = 'mention';
+        const span = document.createElement("span");
+        span.className = "mention";
         span.dataset.uid = m.id;
         span.textContent = `@${m.workspace_nickname || m.user_nickname || m.email}`;
-        span.contentEditable = 'false';
+        span.contentEditable = "false";
 
-        // 3) 插进 DOM
         range.insertNode(span);
+        range.setStartAfter(span);
+        range.setEndAfter(span);
 
-        // 4) 把光标移动到 span 之后
-        range.setStartAfter(span);             // 起点到 span 后
-        range.setEndAfter(span);               // 终点也到 span 后
         const sel = window.getSelection();
-        if (sel) {
-            sel.removeAllRanges();
-            sel.addRange(range);                 // 更新 selection
-        }
+        if (sel) { sel.removeAllRanges(); sel.addRange(range); }
+        document.execCommand("insertText", false, " ");
 
-        // 5) 插入空格（此时在 span 后）
-        document.execCommand('insertText', false, ' ');
-
-        // 6) 关闭下拉
-        setDropdown(d => ({ ...d, visible: false }));
+        closeDropdown();
     };
-    // 输入触发 (@ 检测 & keyword 更新)
+
+    // 输入触发（@ 检测 + 关键字更新 + 位置即时刷新）
     const handleInput = () => {
         const sel = document.getSelection();
         if (!sel) return;
         const node = sel.anchorNode;
         if (!node) return;
 
-        const charBefore = sel.anchorOffset > 0 && node.textContent
-            ? node.textContent[sel.anchorOffset - 1]
-            : null;
-        // ① 刚输入 @ ：打开下拉
-        if (!dropdown.visible && charBefore === '@') {
+        const charBefore = sel.anchorOffset > 0 && node.textContent ? node.textContent[sel.anchorOffset - 1] : null;
+
+        // ① 首次输入 '@'：打开下拉，并立即定位（相对 portalContainer）
+        if (!dropdown.visible && charBefore === "@") {
             const range = sel.getRangeAt(0).cloneRange();
             range.setStart(node, sel.anchorOffset - 1);
-            const anchor = range.getClientRects().item(range.getClientRects().length - 1)!;
-            const size = {
-                w: dropdownRef.current?.offsetWidth ?? 200,
-                h: dropdownRef.current?.offsetHeight ?? 180,
-            };
-            const container = containerRef.current!;
-            const { left, top } = calcInContainer(anchor, container, size, 6);
-            setDropdown({
-                visible: true,
-                top: top + 30, // 30px为偏移高度
-                left,
-                keyword: '',
-                range,              // 记录插入位置
-            });
+
+            setDropdown({ visible: true, keyword: "", range });
             setActiveOverlay?.(true);
+
+            // 立刻定位一次（避免任何延迟）
+            positionDropdownRelToPortal(range);
             return;
         }
-        // ② 下拉已打开：实时更新 keyword / 自动关闭
-        if (dropdown.visible) {
-            const kwRange = dropdown.range!.cloneRange();
+
+        // ② 已打开：更新 keyword/range，并即时定位
+        if (dropdown.visible && dropdown.range) {
+            const kwRange = dropdown.range.cloneRange();
             kwRange.setEnd(sel.anchorNode!, sel.anchorOffset);
-            if (kwRange.toString() == "") {
-                console.log("handleInput", "empty range");
-                setDropdown(d => ({ ...d, visible: false }));
-                setActiveOverlay?.(false);
-                return;
-            }
-            const kw = kwRange.toString().replace(/^@/, '');
+
+            const raw = kwRange.toString();
+            if (!raw) { closeDropdown(); return; }
+
+            const kw = raw.replace(/^@/, "");
             if (/[\s@]/.test(kw)) {
-                setDropdown(d => ({ ...d, visible: false }));
-                setActiveOverlay?.(false);
+                closeDropdown();
             } else {
+                setDropdown(d => ({ ...d, keyword: kw, range: kwRange }));
                 setSearchParams(d => ({ ...d, keywords: kw }));
+                positionDropdownRelToPortal(kwRange); // 直接写 top/left
             }
         }
     };
+
+    // 阻断 pointerdown：避免父组件“点外提交”误伤
     useEffect(() => {
-        if (!popover.visible || !popover.anchorEl) return;
+        const stop = (e: PointerEvent) => e.preventDefault();
 
-        const rerender = () => {
-            // 触发上面的 useLayoutEffect 重新测量
-            setPopover(p => ({ ...p }));
-        };
+        const drop = dropdownRef.current;
+        if (drop) drop.addEventListener("pointerdown", stop, { capture: true });
 
-        const container = containerRef.current;
-        container?.addEventListener("scroll", rerender, { passive: true });
-        window.addEventListener("resize", rerender);
+        const pop = popoverRef.current;
+        if (pop) pop.addEventListener("pointerdown", stop, { capture: true });
 
-        // 如果容器外还有滚动父级，必要时也加监听（见下方可选增强）
         return () => {
-            container?.removeEventListener("scroll", rerender);
-            window.removeEventListener("resize", rerender);
+            if (drop) drop.removeEventListener("pointerdown", stop as any, { capture: true } as any);
+            if (pop) pop.removeEventListener("pointerdown", stop as any, { capture: true } as any);
         };
-    }, [popover.visible, popover.anchorEl, containerRef]);
+    }, [dropdown.visible, popover.visible]);
+
     return (
         <>
-            <div ref={containerRef} style={{ position: 'relative' }}>
-                {/* 输入框 */}
+            <div ref={localContainerRef} className={`relative ${dropdown.visible ? "z-[1000]" : ""}`} style={{ position: "relative" }}>
                 <div
                     ref={boxRef}
-                    contentEditable
-                    aria-placeholder="输入评论，可 @ 提及"
+                    contentEditable={props.editable ?? false}
+                    tabIndex={0}
+                    suppressContentEditableWarning
                     onInput={handleInput}
                     onKeyDown={handleKeyDown}
+                    onBlur={props.onBlur}
                     onClick={handleClick}
-                    style={{
-                        outline: 'none', whiteSpace: 'pre-wrap',
-                        ...(props.inputStyle || {})
-                    }}
+                    style={{ outline: "none", whiteSpace: "pre-wrap", ...(props.inputStyle || {}) }}
                 >
                     {contentValue.map((p, idx) =>
-                        p.type === 'text' ? (
+                        p.type === "text" ? (
                             <span key={`t-${idx}`}>{p.text}</span>
                         ) : (
                             <span
@@ -262,66 +331,76 @@ const CommentContent = forwardRef<CommentContentHandle, CommentContentProps>((pr
                             </span>
                         )
                     )}
-
                 </div>
 
-                {/* 下拉列表 */}
-                {dropdown.visible && (
-                    <Listbox className="border border-gray-200 bg-white dark:bg-black absolute overflow-y-auto z-20" ref={dropdownRef} aria-label="Listbox menu with sections" variant="flat"
-                        style={{
-                            top: dropdown.top + 4, left: dropdown.left,
-                            width: 160, maxHeight: 200,
-                            borderRadius: 4,
-                        }}
-                    >
-                        <ListboxSection title={t`Members`}>
-                            {
-                                (members || []).map(member => (
-                                    <>
-                                        <ListboxItem className="data-[focus-visible=true]:bg-default/40 data-[focus-visible=true]:dark:bg-default/40" key={member.id} onClick={e => { e.preventDefault(); insertMention(member); }}>
-                                            <div className="flex gap-2 items-center">
-                                                <Avatar className="w-5 h-5" src={member.avatar}></Avatar>
-                                                <span className="text-xs text-gray-500 dark:text-white">
-                                                    {member.workspace_nickname || member.user_nickname || member.email}
-                                                </span>
-                                            </div>
-                                        </ListboxItem>
-                                    </>
-                                ))
-                            }
-                        </ListboxSection>
-                    </Listbox>
-                )}
+                {/* 下拉：Portal 到父传的 portalContainer；position: absolute 相对它定位 */}
+                {dropdown.visible && dropdownPortalTarget &&
+                    createPortal(
+                        <Card
+                            data-mention-dropdown="true"
+                            ref={dropdownRef}
+                            className="absolute z-[100000] shadow-lg pointer-events-auto"
+                            style={{
+                                // top/left 由 JS 实时写入
+                                width: DROPDOWN_WIDTH,
+                                maxHeight: 220,
+                            }}
+                        >
+                            <CardBody className="p-0">
+                                <Listbox aria-label="Listbox menu with sections" variant="flat">
+                                    <ListboxSection title={t`Members`}>
+                                        {(members || []).map((member) => (
+                                            <ListboxItem
+                                                key={member.id}
+                                                className="data-[focus-visible=true]:bg-default/40 data-[focus-visible=true]:dark:bg-default/40"
+                                                onMouseDown={(e) => e.preventDefault()}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    insertMention(member);
+                                                }}
+                                            >
+                                                <div className="flex gap-2 items-center">
+                                                    <Avatar className="w-5 h-5" src={member.avatar} />
+                                                    <span className="text-xs text-gray-500 dark:text-white">
+                                                        {member.workspace_nickname || member.user_nickname || member.email}
+                                                    </span>
+                                                </div>
+                                            </ListboxItem>
+                                        ))}
+                                    </ListboxSection>
+                                </Listbox>
+                            </CardBody>
+                        </Card>,
+                        dropdownPortalTarget
+                    )}
 
-                {/* Popover */}
-                {popover.visible && popover.mention && containerRef.current &&
+                {/* Popover（默认挂在本地 container；也可通过 props.popoverContainer 外挂） */}
+                {popover.visible && popover.mention && popoverPortalTarget &&
                     createPortal(
                         <div ref={popoverRef} className="absolute z-30" style={{ left: popover.left, top: popover.top }}>
                             <MemberCard member={popover.mention} />
                         </div>,
-                        containerRef.current
-                    )
-                }
+                        popoverPortalTarget
+                    )}
 
-                {/* mention 样式 */}
                 <style>{`
-        .mention{
-          background:#eff6ff;
-          color:#1d4ed8;
-          padding:0 2px;
-          border-radius:3px;
-          cursor:pointer;
-          user-select:none;
-        }
-        .mention:hover{background:#dbeafe;}
-        [contenteditable]:empty:before{
-          content:attr(placeholder);
-          color:#aaa;
-        }
-      `}</style>
+          .mention{
+            background:#eff6ff;
+            color:#1d4ed8;
+            padding:0 2px;
+            border-radius:3px;
+            cursor:pointer;
+            user-select:none;
+          }
+          .mention:hover{background:#dbeafe;}
+          [contenteditable="true"]:empty:before{
+            content:attr(placeholder);
+            color:#9ca3af;
+          }
+        `}</style>
             </div>
         </>
-    )
-})
+    );
+});
 
 export default CommentContent;

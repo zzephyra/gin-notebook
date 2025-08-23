@@ -1,175 +1,164 @@
-import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
+import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
 import { CommentBoxProps } from "./type";
-import { PhotoProvider } from 'react-photo-view';
-import { EllipsisHorizontalIcon, HandThumbDownIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
+import { PhotoProvider } from "react-photo-view";
+import { CloudArrowUpIcon, EllipsisHorizontalIcon, HandThumbDownIcon, HandThumbUpIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useLingui } from "@lingui/react/macro";
 import CommentAttachment from "../attachment";
 import { useTodo } from "@/contexts/TodoContext";
 
-import { useRef, useState, useEffect } from 'react';
-import { handleKeyDown } from "../script";
+import { useRef, useState, useEffect, useCallback, useLayoutEffect } from "react";
 import CommentContent from "../content";
-import { CommentContentHandle } from "../content/types";
-import { MentionPayload } from "../main/type";
-// …其余 import 保持你的原样
-
-
-
-export function CommentBody({ comment }: {
-    comment: {
-        content: string;
-        attachments?: any[];
-        mentions?: MentionPayload[];
-    };
-}) {
-    const { setActiveOverlay } = useTodo();
-    const containerRef = useRef<HTMLDivElement>(null);
-    const popRef = useRef<HTMLDivElement>(null);
-    const contentRef = useRef<CommentContentHandle>(null);
-
-    const [popover, setPopover] = useState<{
-        visible: boolean;
-        left: number;
-        top: number;
-        member?: any;
-    }>({ visible: false, left: 0, top: 0 });
-
-    // 关闭 popover：点击外部
-    useEffect(() => {
-        const onDocClick = (e: MouseEvent) => {
-            if (!popover.visible) return;
-            if (!containerRef.current) return;
-            if (popRef.current?.contains(e.target as Node)) return;
-            // 若点到 mention 也会重新打开，这里先关
-            setPopover(p => ({ ...p, visible: false }));
-            setActiveOverlay?.(false);
-        };
-        document.addEventListener('mousedown', onDocClick);
-        return () => document.removeEventListener('mousedown', onDocClick);
-    }, [popover.visible, setActiveOverlay]);
-
-    return (
-        <div ref={containerRef} className="py-4 flex flex-col gap-1 text-sm text-gray-700 dark:text-white relative">
-            {/* 文本 + mention */}
-            <div contentEditable onKeyDown={handleKeyDown} className="whitespace-pre-wrap break-words">
-
-                <CommentContent container={containerRef} ref={contentRef} defaultValue={{ content: comment.content, mentions: comment.mentions || [] }} />
-            </div>
-
-            {/* Popover：显示 member 信息 */}
-            {popover.visible && popover.member && (
-                <div
-                    ref={popRef}
-                    style={{ position: 'absolute', left: popover.left, top: popover.top, zIndex: 30 }}
-                    className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg shadow-lg p-3 min-w-[220px]"
-                >
-                    <div className="flex items-center gap-2">
-                        <Avatar className="w-8 h-8" src={popover.member.avatar} />
-                        <div>
-                            <div className="font-semibold">
-                                {popover.member.workspace_nickname ||
-                                    popover.member.user_nickname ||
-                                    popover.member.email}
-                            </div>
-                            <div className="text-xs text-gray-500">{popover.member.email}</div>
-                        </div>
-                    </div>
-                    {!!popover.member.role?.length && (
-                        <div className="mt-2 text-xs text-gray-400">
-                            角色：{Array.isArray(popover.member.role) ? popover.member.role.join(', ') : String(popover.member.role)}
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* 附件列表（保持你原来的逻辑） */}
-            <PhotoProvider onVisibleChange={(open) => setActiveOverlay?.(open)}>
-                {(comment.attachments || [])?.map((attachment) => (
-                    <CommentAttachment key={attachment.id} attachment={attachment} />
-                ))}
-            </PhotoProvider>
-
-            {/* mention 的基础样式（如需） */}
-            <style>{`
-        .mention:focus { outline: none; }
-      `}</style>
-        </div>
-    );
-}
-
+import type { CommentContentHandle } from "../content/types";
 
 function CommentBox(props: CommentBoxProps) {
     const { t } = useLingui();
-    const ref = useRef<HTMLDivElement>(null);
+
+    // 根容器（卡片）
+    const rootRef = useRef<HTMLDivElement>(null);
+    const uploadRef = useRef<HTMLInputElement>(null);
+    // ✅ 专用 overlay 容器（relative + 高 z-index），用于承载浮层
+    const overlayRef = useRef<HTMLDivElement>(null);
+    const [overlayEl, setOverlayEl] = useState<HTMLElement | null>(null);
+    useLayoutEffect(() => {
+        setOverlayEl(overlayRef.current);
+    }, []);
+
     const [visible, setVisible] = useState(false);
+    const { setActiveOverlay } = useTodo();
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<CommentContentHandle>(null);
+
+    const [contentEditable, setContentEditable] = useState(false);
+
+    // 忽略进入编辑后的“下一次 pointerdown”
+    const ignoreNextPointerRef = useRef(false);
+
+    // 提交（父层统一收口）
+    const doSubmit = useCallback(() => {
+        if (!contentEditable) return;
+        const payload = contentRef.current?.getContent();
+        setContentEditable(false);
+        if (payload && props.onUpdate) {
+            const { content, mentions } = payload;
+            props.onUpdate(props.comment.id, content, mentions);
+        }
+    }, [contentEditable]);
+
+    const handleEditContent = () => {
+        if (!contentEditable) {
+            ignoreNextPointerRef.current = true;
+        }; // 已经在编辑状态了
+        // 进入编辑的这次点击忽略
+        setContentEditable(true);            // 子组件会自动 focus 到末尾
+    };
 
     const handleDeleteComment = () => {
-        if (props.onDelete) {
-            props.onDelete(props.comment.id);
+        props.onDelete?.(props.comment.id);
+    };
+
+    const handleUpdate = (e: any) => {
+        const files: File[] = Array.from(e.target.files ?? []);
+        if (!files.length) return;
+        if (props.onUpload) {
+            props.onUpload(files, props.comment.id);
         }
     }
 
-    useEffect(() => {
-        const el = ref.current;
-        if (!el) return;
 
+    // 入场动效（只在初次出现时做一次）
+    useEffect(() => {
+        const el = rootRef.current;
+        if (!el) return;
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         setVisible(true);
-                        observer.unobserve(entry.target); // 只触发一次
+                        observer.unobserve(entry.target);
                     }
                 });
             },
-            {
-                root: null, // 默认是 viewport
-                threshold: 0.1, // 显示 10% 就触发
-            }
+            { root: null, threshold: 0.1 }
         );
-
         observer.observe(el);
-        return () => {
-            observer.disconnect();
-        };
+        return () => observer.disconnect();
     }, []);
+
     return (
-        <div ref={ref} className="comment-box group flex gap-2 my-2"
+        <div
+            ref={rootRef}
+            className="comment-box group flex gap-2 my-2"
             style={{
-                transform: visible ? "translateY(0)" : "translateY(20px)",
+                // ⚠️ 可见后一定用 `transform: none`，避免生成不必要的 stacking context
+                transform: visible ? "none" : "translateY(20px)",
                 opacity: visible ? 1 : 0,
-                transition: "all 0.5s ease-out",
-            }}>
-            <Avatar className="h-8 w-8" src={props.comment.author.avatar}></Avatar>
+                transition: "opacity 0.5s ease-out, transform 0.5s ease-out",
+                position: "relative",
+            }}
+        >
+            <Avatar className="h-8 w-8" src={props.comment.author.avatar} />
             <div className="flex-1">
                 <div className="flex items-center justify-between text-gray-500 text-xs">
                     <div>
-                        <span className="font-semibold text-xs">{props.comment.author.workspace_nickname || props.comment.author.user_nickname || props.comment.author.email}</span>
-                        <span className="text-xs text-gray-500 ml-2">
-                            {new Date(props.comment.created_at).toLocaleString()}
+                        <span className="font-semibold text-xs">
+                            {props.comment.author.workspace_nickname || props.comment.author.user_nickname || props.comment.author.email}
                         </span>
+                        <span className="text-xs text-gray-500 ml-2">{new Date(props.comment.created_at).toLocaleString()}</span>
                     </div>
-                    <div>
-                        <Dropdown>
+                    <div className="flex items-center gap-1">
+                        <Button onPress={handleEditContent} isIconOnly variant="light" size="sm" className="p-1">
+                            <PencilSquareIcon className="w-4 h-4 text-gray-700 cursor-pointer opacity-0 group-hover:opacity-100 transition-colors" />
+                        </Button>
+                        <Dropdown className="!min-w-[140px]">
                             <DropdownTrigger>
-                                <EllipsisHorizontalIcon className="w-4 h-4 text-gray-700 cursor-pointer opacity-0 group-hover:opacity-100 transition-colors" />
+                                <Button isIconOnly variant="light" size="sm" className="p-1">
+                                    <EllipsisHorizontalIcon className="w-4 h-4 text-gray-700 cursor-pointer opacity-0 group-hover:opacity-100 transition-colors" />
+                                </Button>
                             </DropdownTrigger>
                             <DropdownMenu>
-                                <DropdownItem key="edit">
-                                    {t`Edit`}
+                                <DropdownItem key="upload" onPress={() => uploadRef.current?.click()} startContent={<CloudArrowUpIcon className="w-4 h-4" />}>
+                                    {t`Upload File`}
                                 </DropdownItem>
-                                <DropdownItem key="delete" onPress={handleDeleteComment}>
+                                <DropdownItem key="delete" color="danger" onPress={handleDeleteComment} startContent={<TrashIcon className="w-4 h-4" />}>
                                     {t`Delete`}
                                 </DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
+                        <input ref={uploadRef} multiple type="file" onChange={handleUpdate} className="hidden" />
                     </div>
                 </div>
+
                 <div className="py-4 flex flex-col gap-1 text-sm text-gray-700 dark:text-white break-all px-2">
-                    <CommentBody comment={props.comment} />
+                    <div ref={containerRef} className="py-4 flex flex-col gap-1 text-sm text-gray-700 dark:text-white relative">
+                        <CommentContent
+                            container={containerRef}
+                            // ✅ 这里传“稳定的” overlay DOM 节点，避免 ref.current 初次为 null
+                            portalContainer={overlayEl}
+                            ref={contentRef}
+                            onBlur={doSubmit}
+                            defaultValue={{ content: props.comment.content, mentions: props.comment.mentions || [] }}
+                            editable={contentEditable}
+                        />
+
+                        <PhotoProvider onVisibleChange={(open) => setActiveOverlay?.(open)}>
+                            {(props.comment.attachments || [])?.map((attachment) => (
+                                <CommentAttachment key={attachment.id} attachment={attachment} />
+                            ))}
+                        </PhotoProvider>
+
+                        <style>{`.mention:focus { outline: none; }`}</style>
+                    </div>
                 </div>
 
-                <div className="flex items-center gap-3 text-gray-500">
+                {/* ✅ 专用浮层容器：relative + 高 z-index。放在卡片末尾，绘制顺序在最上 */}
+                <div
+                    ref={overlayRef}
+                    style={{ position: "relative", zIndex: 200 }}
+                    className="pointer-events-none"
+                />
+
+                <div className="flex items-center gap-3 text-gray-500 mt-2">
                     <HandThumbUpIcon className="w-3 h-3" />
                     <HandThumbDownIcon className="w-3 h-3" />
                 </div>

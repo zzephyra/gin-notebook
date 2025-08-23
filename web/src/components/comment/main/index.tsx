@@ -36,7 +36,7 @@ function Comments(props: CommentProps) {
     const params = useParams();
 
     const workspaceId = params.id || "";
-    const { comments, createComment, deleteComment } = useCommentActions();
+    const { comments, createComment, deleteComment, updateComment, createCommentAttachment } = useCommentActions();
     const handleSubmit = async (text: string, mentions: MentionPayload[], attachments: CommentAttachment[]) => {
         const temp_id = crypto.randomUUID();
         var data = {
@@ -93,11 +93,33 @@ function Comments(props: CommentProps) {
         // })
     }
 
+    const handleUpdateComment = (commentID: string, content: string, mentions: MentionPayload[]) => {
+        updateComment.mutate({ commentID, patch: { content, mentions } }, {
+            onSuccess: (res) => {
+                if (res.code === responseCode.SUCCESS) {
+                    toast.success(t`Comment updated successfully`);
+                } else {
+                    toast.error(t`Failed to update comment: ${res.message}`);
+                }
+            },
+            onError: (error) => {
+                console.error("Error updating comment:", error);
+            },
+        });
+    }
+
     const updateFilter = (filter: Partial<TaskCommentFilter>) => {
         if (props.onFilterChange) {
             props.onFilterChange(filter);
         }
     }
+
+
+    const handleUpload = async (files: File[], commentID: string) => {
+        await Promise.all(
+            files.map((f) => createCommentAttachment.mutateAsync({ file: f, commentID }))
+        );
+    };
 
     const handleDeleteComment = (commentID: string) => {
         deleteComment.mutate(commentID, {})
@@ -164,10 +186,8 @@ function Comments(props: CommentProps) {
                             </div>
                             <AnimatePresence initial={false} mode="popLayout"> {/* 新增 mode */}
                                 {comments.map((c) => (
-                                    // 外层：只做高度折叠 + 位置过渡
                                     <motion.div
                                         key={c.id}
-                                        // style={{ overflow: "hidden" }}
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: "auto", opacity: 1 }}
                                         exit={{
@@ -182,12 +202,11 @@ function Comments(props: CommentProps) {
                                             height: { duration: 0.22 },
                                             opacity: { duration: 0.16 },
                                         }}
-                                        layout="position"                 // ← 替换原本的 layout: true
+                                        layout="position"
                                     >
-                                        {/* 内层：只做从上方进入 + 收缩消失 */}
                                         <motion.div
                                             style={{ transformOrigin: "top" }}
-                                            initial={{ opacity: 0, y: -12, scale: 0.98 }} // ← 从上方进入
+                                            initial={{ opacity: 0, y: -12, scale: 0.98 }}
                                             animate={{
                                                 opacity: 1,
                                                 y: 0,
@@ -199,7 +218,7 @@ function Comments(props: CommentProps) {
                                             }}
                                             exit={{ scale: 0.85, opacity: 0, transition: { duration: 0.18 } }}
                                         >
-                                            <CommentBox comment={c} onDelete={handleDeleteComment} />
+                                            <CommentBox onUpload={handleUpload} onUpdate={handleUpdateComment} comment={c} onDelete={handleDeleteComment} />
                                         </motion.div>
                                     </motion.div>
                                 ))}

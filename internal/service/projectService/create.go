@@ -221,3 +221,20 @@ func CreateTaskComment(params *dto.CreateToDoTaskCommentDTO) (responseCode int, 
 	responseCode = message.SUCCESS
 	return responseCode, data
 }
+
+func CreateCommentAttachment(params *dto.CreateTaskCommentAttachmentDTO) (responseCode int, data map[string]interface{}) {
+	attachment := model.ToDoCommentAttachment{}
+	copier.Copy(&attachment, params)
+
+	// 同步前端数据
+	attachment.UploaderID = params.MemberID
+
+	if err := repository.CreateModel(database.DB, &attachment); err != nil {
+		responseCode = database.IsError(err)
+		return
+	}
+
+	responseCode = message.SUCCESS
+	data = tools.StructToUpdateMap(&attachment, nil, []string{"DeletedAt", "CreatedAt", "UpdatedAt", "CommentID", "SHA256Hash", "UploaderID"})
+	return responseCode, data
+}

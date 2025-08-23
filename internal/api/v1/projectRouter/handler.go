@@ -231,3 +231,96 @@ func DeleteTaskCommentsApi(c *gin.Context) {
 	responseCode := projectService.DeleteTaskComment(params)
 	c.JSON(http.StatusOK, response.Response(responseCode, nil))
 }
+
+func UpdateTaskCommentsApi(c *gin.Context) {
+	taskID, isExist := c.Params.Get("taskID")
+	if !isExist {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
+		return
+	}
+
+	TaskID, err := strconv.ParseInt(taskID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PROJECT_ID, nil))
+		return
+	}
+
+	commentID, isExist := c.Params.Get("commentID")
+	if !isExist {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_COMMENT_ID, nil))
+		return
+	}
+
+	CommentID, err := strconv.ParseInt(commentID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_COMMENT_ID, nil))
+		return
+	}
+
+	params := &dto.UpdateTaskCommentDTO{
+		MemberID:  c.MustGet("workspaceMemberID").(int64),
+		TaskID:    TaskID,
+		CommentID: CommentID,
+	}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Failed to bind JSON parameters")
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Validation failed for DeleteTaskCommentDTO")
+		return
+	}
+	responseCode, data := projectService.UpdateTaskComment(params)
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func CreateTaskCommentAttachmentApi(c *gin.Context) {
+	taskID, isExist := c.Params.Get("taskID")
+	if !isExist {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
+		return
+	}
+
+	TaskID, err := strconv.ParseInt(taskID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PROJECT_ID, nil))
+		return
+	}
+
+	commentID, isExist := c.Params.Get("commentID")
+	if !isExist {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_COMMENT_ID, nil))
+		return
+	}
+
+	CommentID, err := strconv.ParseInt(commentID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_COMMENT_ID, nil))
+		return
+	}
+
+	params := &dto.CreateTaskCommentAttachmentDTO{
+		MemberID:  c.MustGet("workspaceMemberID").(int64),
+		TaskID:    TaskID,
+		CommentID: CommentID,
+	}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Failed to bind JSON parameters")
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Validation failed for DeleteTaskCommentDTO")
+		return
+	}
+
+	responseCode, data := projectService.CreateCommentAttachment(params)
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}

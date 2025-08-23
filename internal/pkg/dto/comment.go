@@ -3,23 +3,21 @@ package dto
 import "time"
 
 type EditableCommentMentionDTO struct {
-	Action    string `json:"action" validate:"required,oneof=create update"`                       // 操作列表
-	CommentID int64  `json:"comment_id,string" validate:"required_if=Action create,gt=0"`          // 评论ID
-	MemberID  int64  `json:"member_id,string" validate:"gt=0"`                                     // 成员ID
-	StartRune int    `json:"start_rune" validate:"required_if=Action create,gt=0"`                 // 提及开始位置
-	EndRune   int    `json:"end_rune" validate:"required_if=Action create,gt=0,gtfield=StartRune"` // 提及结束位置
+	CommentID int64 `json:"comment_id,string" validate:"gt=0"`                   // 评论ID
+	MemberID  int64 `json:"member_id,string" validate:"requiredgt=0"`            // 成员ID
+	StartRune int   `json:"start_rune" validate:"required,gt=0"`                 // 提及开始位置
+	EndRune   int   `json:"end_rune" validate:"required,gt=0,gtfield=StartRune"` // 提及结束位置
 }
 
 type ToDoCommentAttachmentDTO struct {
-	Actions       string `json:"actions" validate:"required,oneof=create update"`         // 附件操作列表
-	CommentID     int64  `json:"comment_id,string" validate:"gt=0"`                       // 评论ID
-	FileName      string `json:"name" validate:"required_if=Action create,min=1"`         // 附件文件名
-	FileURL       string `json:"url" validate:"required_if=Action create,min=1,max=255"`  // 附件文件URL
-	FileSize      int64  `json:"size" validate:"required_if=Action create,gt=0"`          // 附件文件大小
-	FileType      string `json:"type" validate:"required_if=Action create,min=1"`         // 附件文件类型
-	ThumbnailPath string `json:"thumbnail_path" validate:"omitempty,min=1,max=255"`       // 缩略图路径，图片附件可用
-	UploaderID    int64  `json:"uploader_id,string" validate:"required_if=Action create"` // 上传者ID
-	SHA256Hash    string `json:"sha256_hash" validate:"omitempty,sha256"`                 // 文件的SHA256哈希值，用于文件完整性校验
+	CommentID     int64  `json:"comment_id,string" validate:"gt=0"`                 // 评论ID
+	FileName      string `json:"name" validate:"required,min=1"`                    // 附件文件名
+	FileURL       string `json:"url" validate:"required,min=1,max=255"`             // 附件文件URL
+	FileSize      int64  `json:"size" validate:"required,gt=0"`                     // 附件文件大小
+	FileType      string `json:"type" validate:"required,min=1"`                    // 附件文件类型
+	ThumbnailPath string `json:"thumbnail_path" validate:"omitempty,min=1,max=255"` // 缩略图路径，图片附件可用
+	UploaderID    int64  `json:"uploader_id,string" validate:"required"`            // 上传者ID
+	SHA256Hash    string `json:"sha256_hash" validate:"omitempty,sha256"`           // 文件的SHA256哈希值，用于文件完整性校验
 }
 
 type CreateToDoTaskCommentDTO struct {
@@ -108,4 +106,26 @@ type DeleteTaskCommentDTO struct {
 	TaskID      int64 `validate:"required,gt=0"`                            // 任务ID
 	CommentID   int64 `validate:"required,gt=0"`                            // 评论ID
 	WorkspaceID int64 `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
+}
+
+type UpdateTaskCommentDTO struct {
+	MemberID    int64                       `validate:"required,gt=0"`                            // 用户ID
+	TaskID      int64                       `validate:"required,gt=0"`                            // 任务ID
+	CommentID   int64                       `validate:"required,gt=0"`                            // 评论ID
+	WorkspaceID int64                       `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
+	Content     string                      `json:"content" validate:"required,min=1,max=1000"`   // 评论内容
+	Mentions    []EditableCommentMentionDTO `json:"mentions" validate:"omitempty"`                // @提及的用户ID列表
+}
+
+type CreateTaskCommentAttachmentDTO struct {
+	MemberID    int64  `validate:"required,gt=0"`                                 // 用户ID
+	TaskID      int64  `validate:"required,gt=0"`                                 //	任务ID
+	CommentID   int64  `validate:"required,gt=0"`                                 // 评论ID
+	WorkspaceID int64  `json:"workspace_id,string" validate:"required,gt=0"`      // 工作空间ID
+	FileName    string `json:"name" validate:"required,min=1"`                    // 附件文件名
+	FileURL     string `json:"url" validate:"required,min=1,max=255"`             // 附件文件URL
+	FileSize    int64  `json:"size" validate:"required,gt=0"`                     // 附件文件大小
+	FileType    string `json:"type" validate:"required,min=1"`                    // 附件文件类型
+	Thumbnail   string `json:"thumbnail_path" validate:"omitempty,min=1,max=255"` // 缩略图路径，图片附件可用
+	SHA256Hash  string `json:"sha256_hash" validate:"omitempty,sha256"`           // 文件的SHA256哈希值，用于文件完整性校验
 }

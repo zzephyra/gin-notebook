@@ -123,3 +123,65 @@ func GetCommentAttachmentByIDs(db *gorm.DB, commentIDs []int64) ([]dto.Attachmen
 
 	return attachments, nil
 }
+
+func UpdateCommentByID(db *gorm.DB, commentID int64, data map[string]interface{}) error {
+	if len(data) == 0 {
+		return nil // 无需更新
+	}
+
+	sql := db.Model(&model.ToDoTaskComment{}).
+		Where("id = ?", commentID).
+		Updates(data)
+
+	if sql.Error != nil {
+		return sql.Error
+	}
+
+	if sql.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound // 如果没有记录被更新
+	}
+	return nil
+}
+
+func DeleteCommentMentionByCommentID(db *gorm.DB, commentID int64) error {
+	sql := db.Where("comment_id = ?", commentID).Delete(&model.ToDoCommentMention{})
+	return sql.Error
+}
+
+func GetCommentByID(db *gorm.DB, commentID, memberID int64) (*dto.CommentItem, error) {
+	var comment dto.CommentItem
+	sql := db.
+		Debug().
+		Model(&model.ToDoTaskComment{}).
+		Joins("LEFT JOIN to_do_comment_likes tdcl ON tdcl.comment_id = to_do_task_comments.id AND tdcl.member_id = ?", memberID).
+		Joins("LEFT JOIN workspace_members wm ON wm.id = to_do_task_comments.member_id").
+		Joins("LEFT JOIN users u ON u.id = wm.user_id").
+		Select(`
+			to_do_task_comments.*, 
+			COALESCE(tdcl.is_like, FALSE) AS liked_by_me, 
+			COALESCE(NOT tdcl.is_like, FALSE) AS disliked_by_me`).
+		Where("to_do_task_comments.id = ?", commentID).
+		First(&comment)
+
+	if sql.Error != nil {
+		if sql.Error == gorm.ErrRecordNotFound {
+			return nil, nil // 如果没有找到记录，返回nil
+		}
+		return nil, sql.Error // 返回其他错误
+	}
+	return &comment, nil
+}
+
+func GetCommentAttachmentByCommentID(db *gorm.DB, commentID int64) ([]dto.AttachmentResponse, error) {
+	var attachments []dto.AttachmentResponse
+
+	err := db.Model(&model.ToDoCommentAttachment{}).
+		Select("id, comment_id, file_name, file_url, file_size, file_type, thumbnail_path, uploader_id").
+		Where("comment_id = ?", commentID).
+		Scan(&attachments).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return attachments, nil
+}
