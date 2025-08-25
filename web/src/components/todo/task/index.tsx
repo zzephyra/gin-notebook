@@ -3,7 +3,7 @@ import {
     dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
-import { type HTMLAttributes, CSSProperties, memo, useEffect, useRef, useState } from 'react';
+import { type HTMLAttributes, CSSProperties, memo, useCallback, useEffect, useRef, useState } from 'react';
 import invariant from 'tiny-invariant';
 import "@/components/todo/style.css"
 import {
@@ -35,6 +35,8 @@ import { RootState } from '@/store';
 import { TaskCommentFilter, TaskCommentParams } from '@/features/api/type';
 import { useTaskCommentsController } from '@/hooks/useComments';
 import { CommentActionsProvider } from '@/contexts/CommentContext';
+import { IconBackTop, IconClose } from '@douyinfe/semi-icons';
+
 type Orientation = 'horizontal' | 'vertical';
 
 
@@ -118,6 +120,8 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
     const [isEdit, setIsEdit] = useState({
         title: false,
     })
+    const drawerBodyRef = useRef<HTMLDivElement | null>(null);
+    const [showBackTop, setShowBackTop] = useState(false);
     const { submitDraftTask, updateDraftTask, activeOverlay } = useTodo();
     const taskRef = useRef<HTMLDivElement | null>(null);
     const assigneeRef = useRef<HTMLDivElement | null>(null);
@@ -142,19 +146,6 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
     useEffect(() => {
         setSelectedAssigneeIDs(new Set((task.assignee || []).map((assignee) => assignee.id)));
     }, [task.id])
-
-
-
-    // useEffect(() => {
-    //     if (!isOpen) {
-    //         return;
-    //     }
-    //     getTasksCommentRequest(commentParams).then((res) => {
-    //         if (res.code == responseCode.SUCCESS) {
-    //             setComments(res.data.comments || []);
-    //         }
-    //     })
-    // }, [commentParams, task, isOpen])
 
     useEffect(() => {
         const element = ref.current;
@@ -232,9 +223,6 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
 
     const handleSelectPriority = (priority: Priority) => {
         updateDraftTask(task.id, { priority });
-        // if (onUpdate) {
-        //     onUpdate(task.id, task.columnId, { priority });
-        // }
     }
 
     const handleUpdateTitle = (value: string) => {
@@ -260,29 +248,30 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
         onOpen();
     }
 
-    // const handleSubmitComment = async (comment: Comment) => {
-    //     setComments((prev) => {
-    //         return [
-    //             comment,
-    //             ...prev
-    //         ]
-    //     })
-    // }
+    const scrollDrawerToTop = useCallback(() => {
+        const el = drawerBodyRef.current;
+        if (el) el.scrollTo({ top: 0, behavior: "smooth" });
+    }, []);
 
-    // const handleUpdateComment = (commentId: string, data: Partial<Comment>) => {
-    //     setComments((prev) => {
-    //         return prev.map((comment) => {
-    //             if (comment.id === commentId) {
-    //                 return {
-    //                     ...comment,
-    //                     ...data
-    //                 }
-    //             }
-    //             return comment;
-    //         })
-    //     })
-    // }
+    const handleBodyScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+        const el = e.currentTarget;
+        setShowBackTop(el.scrollTop > 100);
+    }, []);
 
+    useEffect(() => {
+        // Drawer 打开后再绑定滚动监听
+        const el = drawerBodyRef.current;
+        if (!el) return;
+
+        const onScroll = () => {
+            setShowBackTop(el.scrollTop > 100);
+        };
+
+        el.addEventListener("scroll", onScroll, { passive: true });
+        onScroll(); // 打开时立即计算一次
+
+        return () => el.removeEventListener("scroll", onScroll);
+    }, [isOpen]);
     const switchEditStatus = (fields: keyof typeof isEdit) => {
         setIsEdit((prev) => {
             return {
@@ -433,89 +422,111 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
                     ) : null}
                 </div>
                 <Drawer isOpen={isOpen}
+                    hideCloseButton
                     isDismissable={!activeOverlay}
                     isKeyboardDismissDisabled={activeOverlay}
                     backdrop='transparent' onOpenChange={onOpenChange} size="md" placement="right">
                     <DrawerContent>
-                        <DrawerHeader>
+                        <DrawerHeader className='pb-0 px-2 flex justify-between items-center'>
+                            <div></div>
+                            <div className='flex gap-1'>
+                                {showBackTop && (
+                                    <Button
+                                        radius='full'
+                                        variant='light'
+                                        size='sm'
+                                        isIconOnly
+                                        onPress={scrollDrawerToTop}
+                                    >
+                                        <IconBackTop className='text-gray-700' />
+                                    </Button>
+                                )}
+                                <Button radius='full' variant='light' size='sm' isIconOnly onPress={onOpenChange}><IconClose /></Button>
+                            </div>
                         </DrawerHeader>
-                        <DrawerBody>
-                            <div>
-                                {
-                                    <h1 contentEditable={isEdit.title} onClick={() => switchEditStatus("title")} className='text-2xl cursor-pointer px-2 py-1 rounded-xl hover:bg-gray-100 font-bold'>{task.title || t`New Task`}</h1>
-                                }
-                            </div>
-                            <div className='flex'>
-                                <div className='flex flex-1 items-center flex-col gap-1' >
-                                    <label className='font-bold text-sm'>
-                                        {t`Priority`}
-                                    </label>
-                                    <Dropdown>
-                                        <DropdownTrigger>
-                                            <Button size='sm' variant='light'>
-                                                {
-                                                    task.priority ? (
-                                                        <Tag size="small" {...TagAttributesMap[task.priority]}>
-                                                            {i18n._(task.priority)}
-                                                        </Tag>
-                                                    ) : (
-                                                        <span className='text-xs text-gray-500'>
-                                                            {t`No Priority`}
-                                                        </span>
-                                                    )
-                                                }
-                                            </Button>
-                                        </DropdownTrigger>
-                                        <DropdownMenu>
-                                            {
-                                                PriorityOptions.map((option) => (
-                                                    <DropdownItem key={option.value} onPress={() => handleSelectPriority(option.value)} >
-                                                        <div className='flex gap-2 items-center'>
-                                                            <FlagIcon className={`w-4 h-4 ${PriorityColorMap[option.value]}`} />
-                                                            <span className='text-xs text-gray-500 truncate'>
-                                                                {t`${option.label}`}
+                        <DrawerBody >
+                            <div
+                                ref={drawerBodyRef}
+                                onScroll={handleBodyScroll}
+                                className="overflow-y-auto max-h-[calc(100vh-120px)] px-2"
+                            >
+                                <div>
+                                    {
+                                        <h1 contentEditable={isEdit.title} onClick={() => switchEditStatus("title")} className='text-2xl cursor-pointer px-2 py-1 rounded-xl hover:bg-gray-100 font-bold'>{task.title || t`New Task`}</h1>
+                                    }
+                                </div>
+                                <div className='flex'>
+                                    <div className='flex flex-1 items-center flex-col gap-1' >
+                                        <label className='font-bold text-sm'>
+                                            {t`Priority`}
+                                        </label>
+                                        <Dropdown>
+                                            <DropdownTrigger>
+                                                <Button size='sm' variant='light'>
+                                                    {
+                                                        task.priority ? (
+                                                            <Tag size="small" {...TagAttributesMap[task.priority]}>
+                                                                {i18n._(task.priority)}
+                                                            </Tag>
+                                                        ) : (
+                                                            <span className='text-xs text-gray-500'>
+                                                                {t`No Priority`}
                                                             </span>
-                                                        </div>
-                                                    </DropdownItem>
-                                                ))
-                                            }
-                                        </DropdownMenu>
-                                    </Dropdown>
+                                                        )
+                                                    }
+                                                </Button>
+                                            </DropdownTrigger>
+                                            <DropdownMenu>
+                                                {
+                                                    PriorityOptions.map((option) => (
+                                                        <DropdownItem key={option.value} onPress={() => handleSelectPriority(option.value)} >
+                                                            <div className='flex gap-2 items-center'>
+                                                                <FlagIcon className={`w-4 h-4 ${PriorityColorMap[option.value]}`} />
+                                                                <span className='text-xs text-gray-500 truncate'>
+                                                                    {t`${option.label}`}
+                                                                </span>
+                                                            </div>
+                                                        </DropdownItem>
+                                                    ))
+                                                }
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    </div>
+                                    <Divider className='bg-gray-200' orientation='vertical'></Divider>
+                                    <div className='flex flex-1 items-center flex-col gap-1'>
+                                        <label className='font-bold text-sm'>
+                                            {t`Status`}
+                                        </label>
+                                        <Button size='sm' variant='light'>
+                                            <Tag size="large" shape='circle' className={`${ToDoColumnClasses[column.process_id]} !p-2`} >
+                                                {column.name}
+                                            </Tag>
+                                        </Button>
+                                    </div>
+                                    <Divider className='bg-gray-200' orientation='vertical'></Divider>
+                                    <div className='flex flex-1 items-center flex-col gap-1'>
+                                        <label className='font-bold text-sm'>
+                                            {t`Deadline`}
+                                        </label>
+                                        <Button size='sm' variant='light' className="text-gray-500">
+                                            2025-08-08
+                                        </Button>
+                                    </div>
                                 </div>
-                                <Divider className='bg-gray-200' orientation='vertical'></Divider>
-                                <div className='flex flex-1 items-center flex-col gap-1'>
-                                    <label className='font-bold text-sm'>
-                                        {t`Status`}
-                                    </label>
-                                    <Button size='sm' variant='light'>
-                                        <Tag size="large" shape='circle' className={`${ToDoColumnClasses[column.process_id]} !p-2`} >
-                                            {column.name}
-                                        </Tag>
-                                    </Button>
+                                <div className='flex flex-col gap-2'>
+                                    <div className='flex gap-1 items-center'>
+                                        <label className='text-xs text-gray-500'>
+                                            {t`Assignee`}
+                                        </label>
+                                        <MemberDropdown members={members || []} isFetching={isFetching} onKeywordChange={onKeywordChange} selectedKeys={Array.from(selectedAssigneeIDs)} onAction={handleSelectAssignee} />
+                                    </div>
                                 </div>
-                                <Divider className='bg-gray-200' orientation='vertical'></Divider>
-                                <div className='flex flex-1 items-center flex-col gap-1'>
-                                    <label className='font-bold text-sm'>
-                                        {t`Deadline`}
-                                    </label>
-                                    <Button size='sm' variant='light' className="text-gray-500">
-                                        2025-08-08
-                                    </Button>
+                                <div>
+                                    <BlockNoteEditor options={{ placeholder: { emptyDocument: t`Write something about the task` } }} className='task-editor' noteID={task.id} content={task.description}></BlockNoteEditor>
                                 </div>
-                            </div>
-                            <div className='flex flex-col gap-2'>
-                                <div className='flex gap-1 items-center'>
-                                    <label className='text-xs text-gray-500'>
-                                        {t`Assignee`}
-                                    </label>
-                                    <MemberDropdown members={members || []} isFetching={isFetching} onKeywordChange={onKeywordChange} selectedKeys={Array.from(selectedAssigneeIDs)} onAction={handleSelectAssignee} />
+                                <div>
+                                    <Comments onFilterChange={updateFilter} filter={commentParams} taskId={task.id} currentUser={currentUser}></Comments>
                                 </div>
-                            </div>
-                            <div>
-                                <BlockNoteEditor options={{ placeholder: { emptyDocument: t`Write something about the task` } }} className='task-editor' noteID={task.id} content={task.description}></BlockNoteEditor>
-                            </div>
-                            <div>
-                                <Comments onFilterChange={updateFilter} filter={commentParams} taskId={task.id} currentUser={currentUser}></Comments>
                             </div>
                         </DrawerBody>
                     </DrawerContent>

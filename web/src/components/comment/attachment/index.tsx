@@ -104,7 +104,7 @@ const FileAttachment = ({ attachment }: CommentAttachmentProps) => (
 );
 
 function CommentAttachmentFile(props: CommentAttachmentProps) {
-    const { attachment, onDelete } = props;
+    const { attachment } = props;
     const fileType = identifyAttachmentType(attachment.type);
     const p = Math.max(0, Math.min(100, Number(attachment.progress ?? 0)));
     const isUploading = attachment.status === "uploading";

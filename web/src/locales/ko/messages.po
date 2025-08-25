@@ -104,9 +104,9 @@ msgstr ""
 #. placeholder {0}: option.label
 #. placeholder {0}: FilterMapping[props.filter?.order_by || "create"]
 #. placeholder {0}: item.label
-#: src/components/todo/task/index.tsx:375
-#: src/components/todo/task/index.tsx:476
-#: src/components/comment/main/index.tsx:153
+#: src/components/todo/task/index.tsx:364
+#: src/components/todo/task/index.tsx:486
+#: src/components/comment/main/index.tsx:172
 #: src/components/avatarMenu/index.tsx:80
 msgid "{0}"
 msgstr ""
@@ -211,7 +211,7 @@ msgstr "이 초대 링크를 삭제하시겠습니까?"
 msgid "Are you sure you want to delete this note? This action cannot be undone."
 msgstr "이 노트를 삭제하시겠습니까? 이 작업은 실행 취소할 수 없습니다."
 
-#: src/components/todo/task/index.tsx:509
+#: src/components/todo/task/index.tsx:519
 msgid "Assignee"
 msgstr ""
 
@@ -291,11 +291,11 @@ msgstr "좋은 이름을 생각해 보세요!"
 msgid "Comment cannot be empty"
 msgstr ""
 
-#: src/components/comment/main/index.tsx:73
+#: src/components/comment/main/index.tsx:74
 msgid "Comment submitted successfully"
 msgstr ""
 
-#: src/components/comment/main/index.tsx:100
+#: src/components/comment/main/index.tsx:101
 msgid "Comment updated successfully"
 msgstr ""
 
@@ -358,7 +358,7 @@ msgid "Created by:"
 msgstr "만든 사람:"
 
 #: src/pages/workspace/favorites.tsx:266
-#: src/components/comment/main/index.tsx:158
+#: src/components/comment/main/index.tsx:177
 msgid "Created Time"
 msgstr ""
 
@@ -374,7 +374,7 @@ msgstr "현재 디바이스"
 msgid "Danger Zone"
 msgstr "위험지대 (Danger Zone)"
 
-#: src/components/todo/task/index.tsx:499
+#: src/components/todo/task/index.tsx:509
 msgid "Deadline"
 msgstr ""
 
@@ -527,12 +527,12 @@ msgid "Failed to load chat history"
 msgstr ""
 
 #. placeholder {0}: res.message
-#: src/components/comment/main/index.tsx:75
+#: src/components/comment/main/index.tsx:76
 msgid "Failed to submit comment: {0}"
 msgstr ""
 
 #. placeholder {0}: res.message
-#: src/components/comment/main/index.tsx:102
+#: src/components/comment/main/index.tsx:103
 msgid "Failed to update comment: {0}"
 msgstr ""
 
@@ -577,7 +577,7 @@ msgstr "다른 작업공간 선택으로 이동"
 msgid "Go to Workspace"
 msgstr "작업공간으로 이동"
 
-#: src/components/comment/main/index.tsx:179
+#: src/components/comment/main/index.tsx:198
 msgid "Has attachments"
 msgstr ""
 
@@ -661,8 +661,16 @@ msgstr "언어 Name"
 msgid "Last Active"
 msgstr ""
 
+#: src/components/comment/main/index.tsx:257
+msgid "Load more on scroll"
+msgstr ""
+
 #: src/components/dropdown/member/index.tsx:66
 msgid "Loading members..."
+msgstr ""
+
+#: src/components/comment/main/index.tsx:255
+msgid "Loading more comments..."
 msgstr ""
 
 #: src/pages/workspace/note.tsx:104
@@ -723,7 +731,7 @@ msgstr "구성원"
 msgid "Members"
 msgstr ""
 
-#: src/components/comment/main/index.tsx:172
+#: src/components/comment/main/index.tsx:191
 msgid "Mention me"
 msgstr ""
 
@@ -775,12 +783,12 @@ msgstr "새 폴더"
 msgid "New Password"
 msgstr "새 암호"
 
-#: src/components/todo/task/index.tsx:340
+#: src/components/todo/task/index.tsx:329
 msgid "New Project"
 msgstr ""
 
-#: src/components/todo/task/index.tsx:388
-#: src/components/todo/task/index.tsx:445
+#: src/components/todo/task/index.tsx:377
+#: src/components/todo/task/index.tsx:455
 msgid "New Task"
 msgstr ""
 
@@ -796,7 +804,7 @@ msgstr "다음 노트"
 msgid "No Category"
 msgstr "범주 없음"
 
-#: src/components/comment/main/index.tsx:27
+#: src/components/comment/main/index.tsx:28
 msgid "No comments yet"
 msgstr ""
 
@@ -804,11 +812,15 @@ msgstr ""
 msgid "No expiration"
 msgstr "만료 없음"
 
+#: src/components/comment/main/index.tsx:258
+msgid "No more comments"
+msgstr ""
+
 #: src/components/note/main/index.tsx:325
 msgid "No more templates to load."
 msgstr ""
 
-#: src/components/todo/task/index.tsx:463
+#: src/components/todo/task/index.tsx:473
 msgid "No Priority"
 msgstr ""
 
@@ -950,7 +962,7 @@ msgstr ""
 msgid "Previous Note"
 msgstr "이전 노트"
 
-#: src/components/todo/task/index.tsx:451
+#: src/components/todo/task/index.tsx:461
 msgid "Priority"
 msgstr ""
 
@@ -1072,7 +1084,7 @@ msgstr "범주 선택"
 msgid "Select note status"
 msgstr "노트 상태 선택"
 
-#: src/components/todo/task/index.tsx:361
+#: src/components/todo/task/index.tsx:350
 msgid "Select Priority"
 msgstr ""
 
@@ -1134,12 +1146,12 @@ msgstr "등록 하기"
 msgid "Source"
 msgstr ""
 
-#: src/components/comment/main/index.tsx:28
+#: src/components/comment/main/index.tsx:29
 msgid "Start a conversation below"
 msgstr ""
 
 #: src/pages/settings/workspaceSettings.tsx:139
-#: src/components/todo/task/index.tsx:488
+#: src/components/todo/task/index.tsx:498
 #: src/components/dropdown/note/index.tsx:194
 msgid "Status"
 msgstr "상태 (Status)"
@@ -1250,7 +1262,7 @@ msgid "Updated At"
 msgstr "업데이트 위치"
 
 #: src/pages/workspace/favorites.tsx:263
-#: src/components/comment/main/index.tsx:161
+#: src/components/comment/main/index.tsx:180
 msgid "Updated Time"
 msgstr ""
 
@@ -1299,7 +1311,7 @@ msgstr "작업공간 이름"
 msgid "Workspace: "
 msgstr "작업 공간:"
 
-#: src/components/todo/task/index.tsx:515
+#: src/components/todo/task/index.tsx:525
 msgid "Write something about the task"
 msgstr ""
 

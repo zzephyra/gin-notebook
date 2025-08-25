@@ -10,7 +10,8 @@ import { TaskCommentFilter } from "@/features/api/type";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCommentActions } from "@/contexts/CommentContext";
 import { responseCode } from "@/features/constant/response";
-
+import { useEffect, useRef } from "react";
+import ChaseLoading from "@/components/loading/Chase/loading";
 const FilterMapping: Record<string, string> = {
     create: "Created Time",
     update: "Updated Time",
@@ -34,9 +35,9 @@ function DefaultEmptyComment() {
 function Comments(props: CommentProps) {
     const { t } = useLingui();
     const params = useParams();
-
+    const loadMoreRef = useRef<HTMLDivElement>(null);
     const workspaceId = params.id || "";
-    const { comments, createComment, deleteComment, updateComment, createCommentAttachment } = useCommentActions();
+    const { comments, createComment, deleteComment, isFetchingNextPage, fetchNextPage, updateComment, createCommentAttachment, hasNextPage } = useCommentActions();
     const handleSubmit = async (text: string, mentions: MentionPayload[], attachments: CommentAttachment[]) => {
         const temp_id = crypto.randomUUID();
         var data = {
@@ -125,6 +126,24 @@ function Comments(props: CommentProps) {
         deleteComment.mutate(commentID, {})
     }
 
+    useEffect(() => {
+        if (!hasNextPage) return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    fetchNextPage();
+                }
+            },
+            { threshold: 0.1 }
+        );
+        const node = loadMoreRef.current;
+        if (node) observer.observe(node);
+
+        return () => {
+            if (node) observer.unobserve(node);
+        };
+    }, [hasNextPage, fetchNextPage]);
+
     return (
         <>
             <div className="flex gap-2">
@@ -132,7 +151,7 @@ function Comments(props: CommentProps) {
                 <CommentInput onSubmit={handleSubmit}>
                 </CommentInput>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" >
 
                 {
                     comments.length === 0 ? (
@@ -229,6 +248,16 @@ function Comments(props: CommentProps) {
                 }
 
             </div >
+            {/* 加载更多占位符 */}
+            {comments.length > 0 && (
+                <div ref={loadMoreRef} className="py-4 text-center text-gray-500 text-xs">
+                    {isFetchingNextPage
+                        ? <ChaseLoading text={t`Loading more comments...`}></ChaseLoading>
+                        : hasNextPage
+                            ? t`Load more on scroll`
+                            : <span>{t`No more comments`}</span>}
+                </div>
+            )}
         </>
     );
 }

@@ -123,7 +123,7 @@ function ProjectPage() {
                             ) : (
                                 <div className="flex items-center justify-between ">
                                     <Dropdown>
-                                        <DropdownTrigger>
+                                        <DropdownTrigger >
                                             <div className="py-1 px-2 flex text-lg items-center gap-1" >
                                                 <span>{currentProject && currentProject.name}</span>
                                                 <ChevronUpDownIcon className="w-4 h-4" />
