@@ -12,7 +12,7 @@ import {
     extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import "./style.css"
-import { Priority, TaskState, ToDoColumn, TodoTask } from '../type';
+import { Priority, TaksPayload, TaskState, ToDoColumn, TodoTask } from '../type';
 import { CardBody, Card, Avatar, Input, Dropdown, DropdownTrigger, Button, DropdownMenu, DropdownItem, Drawer, DrawerContent, DrawerBody, useDisclosure, DrawerHeader, Divider } from '@heroui/react';
 import { Tag } from '@douyinfe/semi-ui';
 import { i18n } from '@lingui/core';
@@ -117,12 +117,13 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
     const [searchParams, setSearchParams] = useState({ limit: 10, keywords: "" });
     const { data: members, isFetching } = useWorkspaceMembers(params.id || "", searchParams);
     const titleRef = useRef<HTMLInputElement>(null);
+    const composingRef = useRef(false);
     const [isEdit, setIsEdit] = useState({
         title: false,
     })
     const drawerBodyRef = useRef<HTMLDivElement | null>(null);
     const [showBackTop, setShowBackTop] = useState(false);
-    const { submitDraftTask, updateDraftTask, activeOverlay } = useTodo();
+    const { submitTask, updateTask, activeOverlay, setActiveOverlay } = useTodo();
     const taskRef = useRef<HTMLDivElement | null>(null);
     const assigneeRef = useRef<HTMLDivElement | null>(null);
     const priorityRef = useRef<HTMLDivElement | null>(null);
@@ -219,14 +220,10 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
                 keywords: value
             }));
         }, 500
-    )
+    );
 
-    const handleSelectPriority = (priority: Priority) => {
-        updateDraftTask(task.id, { priority });
-    }
-
-    const handleUpdateTitle = (value: string) => {
-        updateDraftTask(task.id, { title: value });
+    const handleUpdateTask = (payload: TaksPayload) => {
+        updateTask(task.id, payload);
     }
 
     const handleSelectAssignee = (keys: any) => {
@@ -290,10 +287,42 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
         });
     }
 
-    // const updateTitle = () => {
-    //     // handleUpdateTitle(title); // 提交
-    //     setIsEdit((prev) => ({ ...prev, title: false }));
-    // };
+
+
+    useEffect(() => {
+        if (isEdit.title) titleRef.current?.focus();
+    }, [isEdit.title]);
+
+    const startEditTitle = () => {
+        if (!isEdit.title) switchEditStatus("title");
+    };
+
+    const commitTitle = () => {
+        const next = (titleRef.current?.textContent || "").trim();
+        if (next !== (task.title || "")) handleUpdateTask({ title: next });
+        if (isEdit.title) switchEditStatus("title");
+    };
+
+    const cancelTitle = () => {
+        if (titleRef.current) titleRef.current.textContent = task.title || "";
+        if (isEdit.title) switchEditStatus("title");
+    };
+
+    const onTitleKeyDown: React.KeyboardEventHandler<HTMLHeadingElement> = (e) => {
+        if (e.key === "Escape") {
+            e.preventDefault();
+            e.stopPropagation();
+            e.nativeEvent?.stopImmediatePropagation?.();
+            cancelTitle();
+            return;
+        }
+        if (e.key === "Enter" && !composingRef.current) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.nativeEvent?.stopImmediatePropagation?.();
+            commitTitle();
+        }
+    };
 
     useEffect(() => {
         if (isEdit.title && titleRef.current) {
@@ -305,7 +334,7 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
         const handleClickOutside = (e: MouseEvent) => {
             if (task.isEdit && !(taskRef.current?.contains(e.target as Node) || assigneeRef.current?.contains(e.target as Node) || priorityRef.current?.contains(e.target as Node))) {
                 let addAssignees = Array.from(selectedRef.current)
-                submitDraftTask(task.id, {
+                submitTask(task.id, {
                     assignee_actions: {
                         action_add: addAssignees,
                     },
@@ -326,7 +355,7 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
                                 task.isEdit ? (
                                     <>
                                         <div className='flex flex-col gap-2'>
-                                            <Input size='sm' classNames={{ input: 'text-xs' }} defaultValue={task.title || ''} onValueChange={handleUpdateTitle} placeholder={t`New Project`}></Input>
+                                            <Input size='sm' classNames={{ input: 'text-xs' }} defaultValue={task.title || ''} onValueChange={(value) => handleUpdateTask({ title: value })} placeholder={t`New Project`}></Input>
                                             <div className='flex gap-1 items-center'>
                                                 <MemberDropdown members={members || []} menuRef={assigneeRef} isFetching={isFetching} onKeywordChange={onKeywordChange} selectedKeys={Array.from(selectedAssigneeIDs)} onAction={handleSelectAssignee} ref={assigneeRef} />
                                             </div>
@@ -357,7 +386,7 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
                                                 <DropdownMenu ref={priorityRef}>
                                                     {
                                                         PriorityOptions.map((option) => (
-                                                            <DropdownItem key={option.value} onPress={() => handleSelectPriority(option.value)} >
+                                                            <DropdownItem key={option.value} onPress={() => handleUpdateTask({ priority: option.value })} >
                                                                 <div className='flex gap-2 items-center'>
                                                                     <FlagIcon className={`w-4 h-4 ${PriorityColorMap[option.value]}`} />
                                                                     <span className='text-xs text-gray-500 truncate'>
@@ -451,9 +480,23 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
                                 className="overflow-y-auto max-h-[calc(100vh-120px)] px-2"
                             >
                                 <div>
-                                    {
-                                        <h1 contentEditable={isEdit.title} onClick={() => switchEditStatus("title")} className='text-2xl cursor-pointer px-2 py-1 rounded-xl hover:bg-gray-100 font-bold'>{task.title || t`New Task`}</h1>
-                                    }
+                                    <h1
+                                        ref={titleRef}
+                                        contentEditable={isEdit.title}
+                                        suppressContentEditableWarning
+                                        role="textbox"
+                                        aria-multiline="false"
+                                        onClick={startEditTitle}           // 点击进入编辑
+                                        onBlur={commitTitle}               // 失焦自动提交
+                                        onKeyDown={onTitleKeyDown}
+                                        onCompositionStart={() => (composingRef.current = true)} // 兼容中文输入法
+                                        onCompositionEnd={() => (composingRef.current = false)}
+                                        className={`text-2xl px-2 py-1 rounded-xl font-bold ${isEdit.title ? "cursor-text" : "cursor-pointer hover:bg-gray-100"
+                                            }`}
+                                    >
+                                        {task.title || t`New Task`}
+                                    </h1>
+
                                 </div>
                                 <div className='flex'>
                                     <div className='flex flex-1 items-center flex-col gap-1' >
@@ -479,7 +522,7 @@ function Task({ task, column }: { task: TodoTask, column: ToDoColumn }) {
                                             <DropdownMenu>
                                                 {
                                                     PriorityOptions.map((option) => (
-                                                        <DropdownItem key={option.value} onPress={() => handleSelectPriority(option.value)} >
+                                                        <DropdownItem key={option.value} onPress={() => handleUpdateTask({ priority: option.value })} >
                                                             <div className='flex gap-2 items-center'>
                                                                 <FlagIcon className={`w-4 h-4 ${PriorityColorMap[option.value]}`} />
                                                                 <span className='text-xs text-gray-500 truncate'>

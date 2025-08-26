@@ -16,10 +16,10 @@ func ProjectRoutes(r *gin.RouterGroup) {
 		projectGroup.GET("/:projectID", GetProjectApi)
 		projectGroup.POST("/task", CreateProjectTaskApi)
 		projectGroup.PUT("/task/:taskID", UpdateProjectTaskApi)
-		projectGroup.POST("/task/:taskID/comment", CreateProjectTaskCommentsApi)
-		projectGroup.GET("/task/:taskID/comment", GetProjectTaskCommentsApi)
-		projectGroup.DELETE("/task/:taskID/comment/:commentID", DeleteTaskCommentsApi)
-		projectGroup.PUT("/task/:taskID/comment/:commentID", UpdateTaskCommentsApi)
-		projectGroup.POST("/task/:taskID/comment/:commentID/attachment", CreateTaskCommentAttachmentApi)
+		projectGroup.POST("/task/:taskID/comment", CreateProjecttaskCommentsApi)
+		projectGroup.GET("/task/:taskID/comment", GetProjecttaskCommentsApi)
+		projectGroup.DELETE("/task/:taskID/comment/:commentID", DeletetaskCommentsApi)
+		projectGroup.PUT("/task/:taskID/comment/:commentID", UpdatetaskCommentsApi)
+		projectGroup.POST("/task/:taskID/comment/:commentID/attachment", CreatetaskCommentAttachmentApi)
 	}
 }

@@ -133,7 +133,6 @@ const CommentInput = (props: CommentInputProps) => {
                 container={containerRef}
                 inputStyle={{
                     minHeight: 80,
-                    width: 400,
                     padding: 8,
                     border: "1px solid #ddd",
                     borderRadius: 4,
@@ -147,9 +146,6 @@ const CommentInput = (props: CommentInputProps) => {
                         <IconPaperclip />
                     </Button>
                     <input type="file" className="hidden" ref={uploadRef} multiple onChange={uploadAttachment} />
-                    <Button size="sm" variant="light" isIconOnly>
-                        <IconAt />
-                    </Button>
                 </div>
                 <div>
                     <Button size="sm" variant="light" isIconOnly onPress={handleSubmit}>

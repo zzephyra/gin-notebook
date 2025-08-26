@@ -1,5 +1,5 @@
-import { CreateTaskInput, Project, ProjectBoard, SubmitExtraParams, TodoTask } from '@/components/todo/type'
-import { createTaskRequest, getProjectsListRequest, getProjectsRequest } from '@/features/api/project'
+import { CreateTaskInput, Project, ProjectBoard, SubmitExtraParams, TaskUpdatePayload, TodoTask } from '@/components/todo/type'
+import { createTaskRequest, getProjectsListRequest, getProjectsRequest, updateTaskRequest } from '@/features/api/project'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { LexoRank } from "lexorank";
@@ -264,7 +264,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
             if (single === 'submit') {
                 if (isDraftEmpty(active.task)) return active.id;
                 try {
-                    await submitDraftTask(active.id); // 成功会清指针
+                    await submitTask(active.id); // 成功会清指针
                 } catch {
                     // return active.id;
                 }
@@ -291,7 +291,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         return tempId;
     }
 
-    async function submitDraftTask(tempId: string, params?: SubmitExtraParams) {
+    async function submitTask(tempId: string, params?: SubmitExtraParams) {
         if (!currentProject || !board) return;
         const key = ['project-board', currentProject.id] as const;
 
@@ -349,13 +349,15 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         await createTaskMutation.mutateAsync(input);
     }
 
-    function updateDraftTask(taskID: string, patch: Partial<TodoTask>) {
+    function updateTask(taskID: string, patch: Partial<TaskUpdatePayload>) {
         if (!currentProject) return;
         const key = ['project-board', currentProject.id] as const;
         const current = queryClient.getQueryData<ProjectBoard>(key) ?? [];
         const found = findTask(current, taskID);
+
         if (!found) return;
         queryClient.setQueryData<ProjectBoard>(key, (old = []) => replaceTaskById(old, found.columnId, taskID, patch));
+        updateTaskRequest(taskID, workspaceId, found.columnId, currentProject.id, patch)
     }
 
     const createTaskMutation = useMutation({
@@ -396,9 +398,9 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         columns: stableColumns,
         projectList: projectList || [],
         createTask,
-        updateDraftTask,
+        updateTask,
         startDraftTask,
-        submitDraftTask,
+        submitTask,
         activeOverlay,
         setActiveOverlay,
         currentProject: currentProject,

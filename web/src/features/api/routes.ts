@@ -26,9 +26,11 @@ export const templateNotesApi: string = "/note/templates";
 export const templateNoteApi: string = "/note/template";
 export const todoTasksApi: string = "/project/task";
 export const projectsApi: string = "/project";
-export const TaskCommentsApi = (taskID: string | number) =>
-    `/project/task/${taskID}/comment`;
-export const TaskCommentWithIDApi = (taskID: string, commentID: string) =>
-    `/project/task/${taskID}/comment/${commentID}`;
-export const TaskCommentAttachmentApi = (taskID: string, commentID: string) =>
-    `/project/task/${taskID}/comment/${commentID}/attachment`;
+export const taskUpdateApi = (taskID: string | number) =>
+    `${todoTasksApi}/${taskID}`;
+export const taskCommentsApi = (taskID: string | number) =>
+    `${todoTasksApi}/${taskID}/comment`;
+export const taskCommentWithIDApi = (taskID: string, commentID: string) =>
+    `${todoTasksApi}/${taskID}/comment/${commentID}`;
+export const taskCommentAttachmentApi = (taskID: string, commentID: string) =>
+    `${todoTasksApi}/${taskID}/comment/${commentID}/attachment`;

@@ -10,8 +10,8 @@ export type TodoContextValue = {
     setActiveOverlay?: (open: boolean) => void;
     // 你在 useProjectTodo 暴露的能力（按你的实现填充）
     startDraftTask: (columnId: string, opts: StartDraftOptions) => Promise<string>;
-    updateDraftTask: (tempId: string, patch: Partial<TodoTask>) => void;
-    submitDraftTask: (tempId: string, params?: SubmitExtraParams) => Promise<any>;
+    updateTask: (tempId: string, patch: Partial<TodoTask>) => void;
+    submitTask: (tempId: string, params?: SubmitExtraParams) => Promise<any>;
     cancelDraftTask?: (tempId: string) => void;
 
     // 如果有移动/编辑等，也加上：

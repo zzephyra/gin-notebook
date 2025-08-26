@@ -119,7 +119,7 @@ func UpdateProjectTaskApi(c *gin.Context) {
 	c.JSON(http.StatusCreated, response.Response(responseCode, nil))
 }
 
-func CreateProjectTaskCommentsApi(c *gin.Context) {
+func CreateProjecttaskCommentsApi(c *gin.Context) {
 	taskID, isExist := c.Params.Get("taskID")
 	if !isExist {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
@@ -152,7 +152,7 @@ func CreateProjectTaskCommentsApi(c *gin.Context) {
 	c.JSON(http.StatusCreated, response.Response(responseCode, data))
 }
 
-func GetProjectTaskCommentsApi(c *gin.Context) {
+func GetProjecttaskCommentsApi(c *gin.Context) {
 	taskID, isExist := c.Params.Get("taskID")
 	if !isExist {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
@@ -186,7 +186,7 @@ func GetProjectTaskCommentsApi(c *gin.Context) {
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }
 
-func DeleteTaskCommentsApi(c *gin.Context) {
+func DeletetaskCommentsApi(c *gin.Context) {
 	taskID, isExist := c.Params.Get("taskID")
 	if !isExist {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
@@ -232,7 +232,7 @@ func DeleteTaskCommentsApi(c *gin.Context) {
 	c.JSON(http.StatusOK, response.Response(responseCode, nil))
 }
 
-func UpdateTaskCommentsApi(c *gin.Context) {
+func UpdatetaskCommentsApi(c *gin.Context) {
 	taskID, isExist := c.Params.Get("taskID")
 	if !isExist {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
@@ -278,7 +278,7 @@ func UpdateTaskCommentsApi(c *gin.Context) {
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }
 
-func CreateTaskCommentAttachmentApi(c *gin.Context) {
+func CreatetaskCommentAttachmentApi(c *gin.Context) {
 	taskID, isExist := c.Params.Get("taskID")
 	if !isExist {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))

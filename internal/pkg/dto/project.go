@@ -11,15 +11,15 @@ type UpdateAssigneeDTO struct {
 }
 
 type TaskEditableDTO struct {
-	Title           *string            `json:"title" gorm:"not null; type:varchar(200); index:idx_title"`
-	Order           *string            `json:"order" gorm:"index:uniq_column_order,priority:2"`
-	ColumnID        *int64             `json:"column_id,string" gorm:"index:uniq_column_order,priority:1"`
-	Creator         *int64             `json:"creator" gorm:"not null; index:idx_creator"`
-	Priority        *string            `json:"priority" gorm:"default:'medium'; index:idx_priority"` // low, medium, high
-	Status          *string            `json:"status" gorm:"default:'pending'; index:idx_status"`    // pending, in_progress, completed
-	Description     *string            `json:"description" gorm:"type:text"`                         // 任务描述
-	Deadline        *time.Time         `json:"deadline"`
-	AssigneeActions *UpdateAssigneeDTO `json:"assignee_actions,omitempty"` // 任务负责人变更操作
+	Title           *string            `json:"title" validate:"omitempty"`
+	Order           *string            `json:"order" validate:"omitempty"`
+	ColumnID        *int64             `json:"column_id,string" validate:"omitempty"`
+	Creator         *int64             `json:"creator" validate:"omitempty"`
+	Priority        *string            `json:"priority" validate:"omitempty"`    // low, medium, high
+	Status          *string            `json:"status" validate:"omitempty"`      // pending, in_progress, completed
+	Description     *string            `json:"description" validate:"omitempty"` // 任务描述
+	Deadline        *time.Time         `json:"deadline" validate:"omitempty"`
+	AssigneeActions *UpdateAssigneeDTO `json:"assignee_actions" validate:"omitempty"` // 任务负责人变更操作
 }
 
 type ProjectTaskDTO struct {
@@ -28,7 +28,7 @@ type ProjectTaskDTO struct {
 	OrderHint   string          `json:"order_hint" validate:"omitempty"`
 	AfterID     int64           `json:"after_id,string" validate:"omitempty"`
 	BeforeID    int64           `json:"before_id,string" validate:"omitempty"`
-	TaskID      int64           `json:"-" validate:"omitempty"` // 任务ID
+	TaskID      int64           `validate:"omitempty"` // 任务ID
 	Payload     TaskEditableDTO `json:"payload" validate:"required"`
 	WorkspaceID int64           `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
 	Creator     int64           `validate:"required,gt=0"`                            // 创建者ID

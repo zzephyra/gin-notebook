@@ -123,6 +123,14 @@ export type MoveTaskInput = {
     orderHint?: string;
 };
 
+export type TaskUpdatePayload = {
+    title?: string;
+    description?: string;
+    priority?: Priority;
+    assignee?: UserBrief[];
+    deadline?: string | null;
+};
+
 export type AssigneeAction = {
     action_add?: string[];
     action_remove?: string[];

@@ -1,11 +1,11 @@
 import axiosClient from "@/lib/api/client";
-import { TaskCommentAttachmentApi, TaskCommentsApi, TaskCommentWithIDApi } from "./routes";
+import { taskCommentAttachmentApi, taskCommentsApi, taskCommentWithIDApi } from "./routes";
 import { TaskCommentData, TaskCommentEditableData, TaskCommentParams } from "./type";
 import { responseCode } from "../constant/response";
 import { CommentAttachment } from "@/components/comment/main/type";
 
 export async function createTaskCommentRequest(data: TaskCommentData) {
-    let res = await axiosClient.post(TaskCommentsApi(data.task_id), data);
+    let res = await axiosClient.post(taskCommentsApi(data.task_id), data);
     return res.data;
 }
 
@@ -18,7 +18,7 @@ export async function getTasksCommentRequest(data: TaskCommentParams) {
     }
 
     try {
-        let res = await axiosClient.get(TaskCommentsApi(data.task_id), { params: data })
+        let res = await axiosClient.get(taskCommentsApi(data.task_id), { params: data })
         return res.data;
     } catch (err) {
         return {
@@ -37,7 +37,7 @@ export async function deleteTasksCommentRequest(taskID: string, commentID: strin
     }
 
     try {
-        let res = await axiosClient.delete(TaskCommentWithIDApi(taskID, commentID), { data: { workspace_id: workspaceID } })
+        let res = await axiosClient.delete(taskCommentWithIDApi(taskID, commentID), { data: { workspace_id: workspaceID } })
         return res.data;
     } catch (err) {
         return {
@@ -56,7 +56,7 @@ export async function updateCommentRequest(workspaceID: string, taskID: string, 
     }
 
     try {
-        let res = await axiosClient.put(TaskCommentWithIDApi(taskID, commentID), { workspace_id: workspaceID, ...data });
+        let res = await axiosClient.put(taskCommentWithIDApi(taskID, commentID), { workspace_id: workspaceID, ...data });
         return res.data;
     } catch (err) {
         return {
@@ -69,7 +69,7 @@ export async function updateCommentRequest(workspaceID: string, taskID: string, 
 export async function createAttachmentRequest(taskID: string, commentID: string, attachment: CommentAttachment) {
 
     try {
-        let res = await axiosClient.post(TaskCommentAttachmentApi(taskID, commentID), attachment);
+        let res = await axiosClient.post(taskCommentAttachmentApi(taskID, commentID), attachment);
         return res.data;
     } catch (err) {
         return {
