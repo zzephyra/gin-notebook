@@ -147,7 +147,7 @@ function Comments(props: CommentProps) {
     return (
         <>
             <div className="flex gap-2">
-                <Avatar src={props.currentUser.avatar} className="w-8 h-8"></Avatar>
+                {/* <Avatar src={props.currentUser.avatar} className="w-8 h-8"></Avatar> */}
                 <CommentInput onSubmit={handleSubmit}>
                 </CommentInput>
             </div>

@@ -32,13 +32,13 @@ type ToDoTask struct {
 	Priority    string     `json:"priority" gorm:"index:idx_priority"` // low, medium, high
 	Status      string     `json:"status" gorm:"index:idx_status"`     // pending, in_progress, completed
 	Description string     `json:"description" gorm:"type:text"`       // 任务描述
-	Deadline    *time.Time `json:"deadline"`                           // 任务截止时间
+	Deadline    *time.Time `json:"deadline" gorm:"type:date"`          // 任务截止时间
 }
 
 type ToDoTaskAssignee struct {
 	BaseModel
-	AssigneeID int64 `json:"assignee_id,string" gorm:"index:idx_assignee"`                // 任务负责人
-	ToDoTaskID int64 `json:"todo_task_id,string" gorm:"not null; index:idx_todo_task_id"` // 任务ID
+	AssigneeID int64 `json:"assignee_id,string" gorm:"not null;uniqueIndex:idx_task_assignee,priority:2"`  // 任务负责人
+	ToDoTaskID int64 `json:"todo_task_id,string" gorm:"not null;uniqueIndex:idx_task_assignee,priority:1"` // 任务ID
 }
 
 type ToDoTaskComment struct {

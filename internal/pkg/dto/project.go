@@ -2,7 +2,6 @@ package dto
 
 import (
 	"gin-notebook/internal/model"
-	"time"
 )
 
 type UpdateAssigneeDTO struct {
@@ -18,8 +17,23 @@ type TaskEditableDTO struct {
 	Priority        *string            `json:"priority" validate:"omitempty"`    // low, medium, high
 	Status          *string            `json:"status" validate:"omitempty"`      // pending, in_progress, completed
 	Description     *string            `json:"description" validate:"omitempty"` // 任务描述
-	Deadline        *time.Time         `json:"deadline" validate:"omitempty"`
+	Deadline        *Date              `json:"deadline" validate:"omitempty"`
 	AssigneeActions *UpdateAssigneeDTO `json:"assignee_actions" validate:"omitempty"` // 任务负责人变更操作
+}
+
+func (t TaskEditableDTO) HasTaskFieldUpdates() bool {
+	return t.Title != nil ||
+		t.Order != nil ||
+		t.ColumnID != nil ||
+		t.Creator != nil ||
+		t.Priority != nil ||
+		t.Status != nil ||
+		t.Description != nil ||
+		t.Deadline != nil
+}
+
+func (p ProjectTaskDTO) IsAssigneeOnlyUpdate() bool {
+	return p.Payload.AssigneeActions != nil && !p.Payload.HasTaskFieldUpdates()
 }
 
 type ProjectTaskDTO struct {

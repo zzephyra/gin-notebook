@@ -7,6 +7,7 @@ import (
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/repository"
+	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/algorithm"
 	"gin-notebook/pkg/utils/tools"
 	"strconv"
@@ -18,48 +19,50 @@ import (
 
 func UpdateProjectTask(params *dto.ProjectTaskDTO) (responseCode int) {
 
-	task := tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt"})
-
 	database.DB.Transaction(func(tx *gorm.DB) error {
-		var hasAfterTask, hasBeforeTask bool
-		var taskIDs []int64
-		if params.AfterID > 0 {
-			hasAfterTask = true
-			taskIDs = append(taskIDs, params.AfterID)
-		}
-
-		if params.BeforeID > 0 {
-			hasBeforeTask = true
-			taskIDs = append(taskIDs, params.BeforeID)
-		}
-
-		tasks, err := repository.GetProjectTaskByIDs(tx, taskIDs, params.ColumnID, true)
-		if err != nil {
-			return err
-		}
-
-		if hasAfterTask && hasBeforeTask {
-			if len(tasks) != 2 {
-				responseCode = message.ERROR_INVALID_TASK_ID
-				return gorm.ErrInvalidData
+		if params.Payload.HasTaskFieldUpdates() {
+			var hasAfterTask, hasBeforeTask bool
+			task := tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt", "AssigneeActions"})
+			var taskIDs []int64
+			if params.AfterID > 0 {
+				hasAfterTask = true
+				taskIDs = append(taskIDs, params.AfterID)
 			}
-			task["OrderIndex"] = algorithm.RankBetween(tasks[0].OrderIndex, tasks[1].OrderIndex)
-		} else if hasAfterTask || hasBeforeTask {
-			if len(tasks) != 1 {
-				responseCode = message.ERROR_INVALID_TASK_ID
-				return gorm.ErrInvalidData
-			}
-			if hasAfterTask {
-				task["OrderIndex"] = algorithm.RankBetweenBucket(lexorank.BucketKey(tasks[0].OrderIndex), algorithm.RankMax()).String()
-			} else {
-				task["OrderIndex"] = algorithm.RankBetweenBucket(algorithm.RankMin(), lexorank.BucketKey(tasks[0].OrderIndex)).String()
-			}
-		}
 
-		err = repository.UpdateTaskByTaskID(tx, params.TaskID, task)
-		if err != nil {
-			responseCode = database.IsError(err)
-			return err
+			if params.BeforeID > 0 {
+				hasBeforeTask = true
+				taskIDs = append(taskIDs, params.BeforeID)
+			}
+
+			tasks, err := repository.GetProjectTaskByIDs(tx, taskIDs, params.ColumnID, true)
+			if err != nil {
+				return err
+			}
+
+			if hasAfterTask && hasBeforeTask {
+				if len(tasks) != 2 {
+					responseCode = message.ERROR_INVALID_TASK_ID
+					return gorm.ErrInvalidData
+				}
+				task["OrderIndex"] = algorithm.RankBetween(tasks[0].OrderIndex, tasks[1].OrderIndex)
+			} else if hasAfterTask || hasBeforeTask {
+				if len(tasks) != 1 {
+					responseCode = message.ERROR_INVALID_TASK_ID
+					return gorm.ErrInvalidData
+				}
+				if hasAfterTask {
+					task["OrderIndex"] = algorithm.RankBetweenBucket(lexorank.BucketKey(tasks[0].OrderIndex), algorithm.RankMax()).String()
+				} else {
+					task["OrderIndex"] = algorithm.RankBetweenBucket(algorithm.RankMin(), lexorank.BucketKey(tasks[0].OrderIndex)).String()
+				}
+			}
+
+			err = repository.UpdateTaskByTaskID(tx, params.TaskID, task)
+			if err != nil {
+				logger.LogError(err, "Failed to update task")
+				responseCode = database.IsError(err)
+				return err
+			}
 		}
 
 		// 更新任务负责人
@@ -80,7 +83,7 @@ func UpdateProjectTask(params *dto.ProjectTaskDTO) (responseCode int) {
 			}
 
 			if len(addAssignees) > 0 {
-				err = repository.CreateModel(tx, &addAssignees)
+				err := repository.CreateModel(tx, &addAssignees)
 				if err != nil {
 					responseCode = database.IsError(err)
 					return err
@@ -96,7 +99,7 @@ func UpdateProjectTask(params *dto.ProjectTaskDTO) (responseCode int) {
 					removeAssignees = append(removeAssignees, parsedAssignee)
 				}
 
-				err = repository.RemoveTaskAssigneesByTaskIDAndUserIDs(tx, params.TaskID, removeAssignees)
+				err := repository.RemoveTaskAssigneesByTaskIDAndMemberIDs(tx, params.TaskID, removeAssignees)
 				if err != nil {
 					responseCode = database.IsError(err)
 					return err

@@ -88,7 +88,7 @@ function CommentBox(props: CommentBoxProps) {
     return (
         <div
             ref={rootRef}
-            className="comment-box group flex gap-2 my-2"
+            className="comment-box group gap-2 my-2"
             style={{
                 // ⚠️ 可见后一定用 `transform: none`，避免生成不必要的 stacking context
                 transform: visible ? "none" : "translateY(20px)",
@@ -97,14 +97,16 @@ function CommentBox(props: CommentBoxProps) {
                 position: "relative",
             }}
         >
-            <Avatar className="h-8 w-8" src={props.comment.author.avatar} />
-            <div className="flex-1">
+            <div>
                 <div className="flex items-center justify-between text-gray-500 text-xs">
-                    <div>
-                        <span className="font-semibold text-xs">
-                            {props.comment.author.workspace_nickname || props.comment.author.user_nickname || props.comment.author.email}
-                        </span>
-                        <span className="text-xs text-gray-500 ml-2">{new Date(props.comment.created_at).toLocaleString()}</span>
+                    <div className="flex items-center gap-2">
+                        <Avatar className="h-8 w-8" src={props.comment.author.avatar} />
+                        <div>
+                            <span className="font-semibold text-xs">
+                                {props.comment.author.workspace_nickname || props.comment.author.user_nickname || props.comment.author.email}
+                            </span>
+                            <span className="text-xs text-gray-500 ml-2">{new Date(props.comment.created_at).toLocaleString()}</span>
+                        </div>
                     </div>
                     <div className="flex items-center gap-1">
                         <Button onPress={handleEditContent} isIconOnly variant="light" size="sm" className="p-1">

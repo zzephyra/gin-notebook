@@ -112,7 +112,9 @@ func GetProjectTaskByID(db *gorm.DB, taskID int64) (*model.ToDoTask, error) {
 
 func GetProjectTaskByIDs(db *gorm.DB, taskID []int64, columnID int64, withLock bool) ([]model.ToDoTask, error) {
 	var task []model.ToDoTask
-	sql := db.Model(&model.ToDoTask{}).Where("id IN ? AND column_id = ?", taskID, columnID).Order(clause.OrderByColumn{Column: clause.Column{Name: "order_index"}})
+	sql := db.Model(&model.ToDoTask{}).
+		Where("id IN ? AND column_id = ?", taskID, columnID).
+		Order(clause.OrderByColumn{Column: clause.Column{Name: "order_index"}})
 
 	if withLock {
 		sql = sql.Clauses(clause.Locking{Strength: "UPDATE"})
@@ -146,11 +148,12 @@ func UpdateTaskByTaskID(db *gorm.DB, taskID int64, data map[string]interface{}) 
 	return db.Error
 }
 
-func RemoveTaskAssigneesByTaskIDAndUserIDs(db *gorm.DB, taskID int64, userIDs []int64) error {
-	if len(userIDs) == 0 {
+func RemoveTaskAssigneesByTaskIDAndMemberIDs(db *gorm.DB, taskID int64, memberIDs []int64) error {
+	// 由于设置了联合唯一索引，为了兼容MySQL和PostgreSQL，这里采用硬删除
+	if len(memberIDs) == 0 {
 		return nil // 如果没有用户ID，直接返回
 	}
-	return db.Where("to_do_task_id = ? AND assignee_id IN ?", taskID, userIDs).Delete(&model.ToDoTaskAssignee{}).Error
+	return db.Unscoped().Where("to_do_task_id = ? AND assignee_id IN ?", taskID, memberIDs).Delete(&model.ToDoTaskAssignee{}).Error
 }
 
 func CheckWorkspaceMemberAuth(db *gorm.DB, workspaceID, userID, memberID int64) (bool, error) {

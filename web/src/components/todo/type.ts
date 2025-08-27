@@ -17,7 +17,7 @@ export type TodoTask = {
     id: string;
     order?: string;
     title?: string;
-    columnId: string;
+    column_id?: string;
     priority?: Priority;
     assignee?: UserBrief[];
     deadline?: string | null;
