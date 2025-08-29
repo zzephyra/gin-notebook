@@ -386,7 +386,6 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         }
 
         const initialToken = found.task.updated_at || "";
-        console.log("initialToken", initialToken);
         const columnId = found.columnId;
         // const mutationId = globalThis.crypto?.randomUUID?.() ?? `m_${Date.now()}_${Math.random()}`;
 

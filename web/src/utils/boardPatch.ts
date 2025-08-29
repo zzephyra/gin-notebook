@@ -12,7 +12,6 @@ export function replaceTaskById(
     patch: Partial<TodoTask>,
     insertIndex?: number, // 目标插入位置；缺省则末尾
 ): ProjectBoard {
-    console.log(insertIndex)
     const fromColIdx = board.findIndex((c) => c.id === columnId);
     if (fromColIdx === -1) return board;
 
@@ -56,17 +55,16 @@ export function replaceTaskById(
             : // 同列重排：注意我们上面已经移除了该任务，目标列就是 nextFromTasks
             nextFromTasks;
 
-    const targetLen = toTasksBase.length;
     const pos =
         insertIndex === undefined
-            ? targetLen // 不传就末尾
-            : Math.max(0, Math.min(insertIndex, targetLen)); // 夹取边界
+            ? taskIdx
+            : Math.max(0, Math.min(insertIndex, toTasksBase.length)); // 夹取边界
 
     // 3) 插入到目标列
     const nextToTasks =
         pos === 0
             ? [updatedTask, ...toTasksBase]
-            : pos === targetLen
+            : pos === toTasksBase.length
                 ? [...toTasksBase, updatedTask]
                 : [...toTasksBase.slice(0, pos), updatedTask, ...toTasksBase.slice(pos)];
 
@@ -74,7 +72,6 @@ export function replaceTaskById(
 
     return next;
 }
-
 
 
 export function removeTaskById(board: ProjectBoard, columnId: string, id: string): ProjectBoard {

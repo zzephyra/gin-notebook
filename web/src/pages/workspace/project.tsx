@@ -112,6 +112,7 @@ function ProjectPage() {
                             (column) => column.id === dropTargetData.columnId,
                         );
                         const destination = columns[destinationColumnIndex];
+                        var isBlow = 0; // 如果目标任务和源任务在同一列，且源任务在目标任务前面，则插入时索引要-1
                         if (home === destination) {
                             const cardFinishIndex = home.tasks.findIndex(
                                 (task) => task.id === dropTargetData.task.id,
@@ -123,6 +124,7 @@ function ProjectPage() {
                             if (cardIndexInHome === cardFinishIndex) {
                                 return;
                             }
+                            isBlow = cardIndexInHome < cardFinishIndex ? 1 : 0;
                         }
 
                         if (!destination) {
@@ -136,16 +138,16 @@ function ProjectPage() {
                         if (closestEdge == "top") {
                             if (indexOfTarget == 0) {
                                 // 插到第一个前面
-                                updateTask(dragging.task.id, { column_id: destination.id, before_id: destination.tasks[0].id } as any, { insertIndex: indexOfTarget });
+                                updateTask(dragging.task.id, { column_id: destination.id, before_id: destination.tasks[0].id } as any, { insertIndex: indexOfTarget - isBlow });
                             } else {
-                                updateTask(dragging.task.id, { column_id: destination.id, before_id: destination.tasks[indexOfTarget].id, after_id: destination.tasks[indexOfTarget - 1].id } as any, { insertIndex: indexOfTarget });
+                                updateTask(dragging.task.id, { column_id: destination.id, before_id: destination.tasks[indexOfTarget].id, after_id: destination.tasks[indexOfTarget - 1].id } as any, { insertIndex: indexOfTarget - isBlow });
                             }
                         } else if (closestEdge == "bottom") {
                             if (indexOfTarget == destination.tasks.length - 1) {
                                 // 插到最后一个后面
-                                updateTask(dragging.task.id, { column_id: destination.id, after_id: destination.tasks[destination.tasks.length - 1].id } as any, { insertIndex: indexOfTarget + 1 });
+                                updateTask(dragging.task.id, { column_id: destination.id, after_id: destination.tasks[destination.tasks.length - 1].id } as any, { insertIndex: indexOfTarget + 1 - isBlow });
                             } else {
-                                updateTask(dragging.task.id, { column_id: destination.id, before_id: destination.tasks[indexOfTarget + 1].id, after_id: destination.tasks[indexOfTarget].id } as any, { insertIndex: indexOfTarget + 1 });
+                                updateTask(dragging.task.id, { column_id: destination.id, before_id: destination.tasks[indexOfTarget + 1].id, after_id: destination.tasks[indexOfTarget].id } as any, { insertIndex: indexOfTarget + 1 - isBlow });
                             }
                         } else {
                             return
