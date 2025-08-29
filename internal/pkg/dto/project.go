@@ -2,6 +2,7 @@ package dto
 
 import (
 	"gin-notebook/internal/model"
+	"time"
 )
 
 type UpdateAssigneeDTO struct {
@@ -19,6 +20,8 @@ type TaskEditableDTO struct {
 	Description     *string            `json:"description" validate:"omitempty"` // 任务描述
 	Deadline        *Date              `json:"deadline" validate:"omitempty"`
 	AssigneeActions *UpdateAssigneeDTO `json:"assignee_actions" validate:"omitempty"` // 任务负责人变更操作
+	AfterID         *int64             `json:"after_id,string" validate:"omitempty"`
+	BeforeID        *int64             `json:"before_id,string" validate:"omitempty"`
 }
 
 func (t TaskEditableDTO) HasTaskFieldUpdates() bool {
@@ -40,12 +43,11 @@ type ProjectTaskDTO struct {
 	ProjectID   int64           `json:"project_id,string" validate:"required,gt=0"`
 	ColumnID    int64           `json:"column_id,string" validate:"required,gt=0"` // 列ID
 	OrderHint   string          `json:"order_hint" validate:"omitempty"`
-	AfterID     int64           `json:"after_id,string" validate:"omitempty"`
-	BeforeID    int64           `json:"before_id,string" validate:"omitempty"`
 	TaskID      int64           `validate:"omitempty"` // 任务ID
 	Payload     TaskEditableDTO `json:"payload" validate:"required"`
 	WorkspaceID int64           `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
 	Creator     int64           `validate:"required,gt=0"`                            // 创建者ID
+	UpdatedAt   time.Time       `json:"updated_at" validate:"omitempty"`              // 用于乐观锁
 }
 
 type ListProjectsDTO struct {

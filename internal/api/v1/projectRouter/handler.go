@@ -115,8 +115,12 @@ func UpdateProjectTaskApi(c *gin.Context) {
 		logger.LogError(err, "Validation failed for ProjectTaskDTO")
 		return
 	}
-	responseCode := projectService.UpdateProjectTask(params)
-	c.JSON(http.StatusCreated, response.Response(responseCode, nil))
+	responseCode, data := projectService.UpdateProjectTask(params)
+	if data != nil {
+		c.JSON(http.StatusOK, response.Response(responseCode, data))
+		return
+	}
+	c.JSON(http.StatusOK, response.Response(responseCode, nil))
 }
 
 func CreateProjecttaskCommentsApi(c *gin.Context) {

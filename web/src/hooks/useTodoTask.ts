@@ -1,9 +1,10 @@
-import { CreateTaskInput, Project, ProjectBoard, SubmitExtraParams, TaskUpdatePayload, TodoTask } from '@/components/todo/type'
+import { CreateTaskInput, Project, ProjectBoard, SubmitExtraParams, TaskUpdatePayload, TodoTask, UpdateOptions } from '@/components/todo/type'
 import { createTaskRequest, getProjectsListRequest, getProjectsRequest, updateTaskRequest } from '@/features/api/project'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { LexoRank } from "lexorank";
 import { addTaskToColumnEnd, findTask, removeTaskById, replaceTaskById } from '@/utils/boardPatch'
+import { responseCode } from '@/features/constant/response';
 
 const genTempId = () => (globalThis.crypto?.randomUUID?.() ?? `tmp_${Date.now()}_${Math.random()}`);
 export type ActiveDraftPtr = { id: string; columnId: string; colIdx: number } | null;
@@ -15,6 +16,7 @@ export type StartDraftOptions = {
 export function useProjectTodo(projectId: string, workspaceId: string) {
     const queryClient = useQueryClient();
     const [activeOverlay, setActiveOverlay] = useState(false);
+    const chainsRef = useRef(new Map<string, Promise<any>>());
 
     // 1) 项目列表
     const {
@@ -87,6 +89,22 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         activeColumnTaskIndexRef.current = m;
     }, [board, activeDraftRef.current?.id]); // board 动了，或活跃草稿切换，重建索引
 
+    function canAutoMerge(patch: Partial<TaskUpdatePayload>) {
+        // 例：仅排序/指派自动重试；标题/描述等文本不自动重试
+        const keys = Object.keys(patch);
+        return keys.every(k => k === 'order' || k === 'assignees');
+    }
+
+    function enqueueTaskJob<T>(taskID: string, job: () => Promise<T>): Promise<T> {
+        const prev = chainsRef.current.get(taskID) || Promise.resolve();
+        const next = prev.finally(job);
+        chainsRef.current.set(taskID, next.finally(() => {
+            // 清理：链跑完了且还是当前引用，才删
+            if (chainsRef.current.get(taskID) === next) chainsRef.current.delete(taskID);
+        }));
+        // @ts-ignore
+        return next;
+    }
     // 6) 快速读取当前草稿（接近 O(1)）
     function getActiveDraftFast(): { id: string; columnId: string; task: TodoTask } | null {
         const ad = activeDraftRef.current;
@@ -349,16 +367,99 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         await createTaskMutation.mutateAsync(input);
     }
 
-    function updateTask(taskID: string, patch: Partial<TaskUpdatePayload>) {
+    async function updateTask(taskID: string, patch: Partial<TaskUpdatePayload>, opts?: UpdateOptions) {
         if (!currentProject) return;
         const key = ['project-board', currentProject.id] as const;
-        const current = queryClient.getQueryData<ProjectBoard>(key) ?? [];
-        const found = findTask(current, taskID);
 
+        // 读最新 board & 当前任务
+        const snapshot = queryClient.getQueryData<ProjectBoard>(key) ?? [];
+        const found = findTask(snapshot, taskID);
         if (!found) return;
-        queryClient.setQueryData<ProjectBoard>(key, (old = []) => replaceTaskById(old, found.columnId, taskID, patch));
-        updateTaskRequest(taskID, workspaceId, found.columnId, currentProject.id, patch)
+
+        // 乐观更新：先把 UI 改了（可在 onError 时回滚/或 invalidate）
+        queryClient.setQueryData<ProjectBoard>(key,
+            (old = []) => replaceTaskById(old, found.columnId, taskID, { ...patch, _optimistic: true }, opts?.insertIndex)
+        );
+        if (found.task.isDraft) {
+            // 创建仅更新本地，不发请求，等待submitTask提交
+            return;
+        }
+
+        const initialToken = found.task.updated_at || "";
+        console.log("initialToken", initialToken);
+        const columnId = found.columnId;
+        // const mutationId = globalThis.crypto?.randomUUID?.() ?? `m_${Date.now()}_${Math.random()}`;
+
+        // 同一任务的更新串行执行，避免本地并发导致 token 乱序
+        await enqueueTaskJob(taskID, async () => {
+            let token = initialToken;
+            let attempts = 0;
+
+            while (true) {
+                // —— 发请求：这里沿用你现有的 updateTaskRequest 签名 ——
+                // 👉 如果你能改 API 层，建议把 updated_at 放在 If-Match-Updated-At 头里，并把 mutationId 也作为头传下去
+                const res: any = await updateTaskRequest(taskID, workspaceId, columnId, currentProject.id, token, patch /*, mutationId 可在 request 层加 header*/);
+
+                const code = res?.code ?? res?.data?.code ?? res?.statusCode;
+                const data = res?.data ?? res;
+                // 成功：合并服务端返回（若无完整 task，就保持已有视图），并更新 token
+                if (code === responseCode?.SUCCESS || data?.code === responseCode?.SUCCESS) {
+                    const taskData = data?.task ?? {};
+                    const normalizedPatch: Partial<TodoTask> = {
+                        ...patch,
+                        ...taskData,
+                        // 字段映射（兼容后端 order_index）
+                        order: (taskData as any).order ?? (taskData as any).order_index ?? (patch as any).order,
+                        column_id: (taskData as any).column_id ?? (patch as any).column_id ?? columnId,
+                        _optimistic: undefined,
+                        _forceReplace: true, // 强制替换，避免“无变化提前返回”
+                    };
+                    queryClient.setQueryData<ProjectBoard>(key, (old = []) =>
+                        replaceTaskById(old, normalizedPatch.column_id ?? columnId, taskID, normalizedPatch, opts?.insertIndex),
+                    );
+                    // 这里如果你有单独的 token 存储，也更新它；否则 token 保存在 task.updated_at 里即可
+                    return;
+                }
+
+                // 冲突：拿最新 token 决定是否重试
+                if (
+                    code === responseCode?.ERROR_TASK_UPDATE_CONFLICTED ||
+                    data?.code === responseCode?.ERROR_TASK_UPDATE_CONFLICTED ||
+                    data?.data?.conflicted
+                ) {
+                    const latestAt =
+                        data?.data?.latest_updated_at ||
+                        data?.data?.lastest_updated_at ||
+                        data?.data?.updated_at;
+
+                    // 无 token → 无法重试，直接回滚/刷新
+                    if (!latestAt) break;
+
+                    // 不允许自动合并（同字段冲突）→ 回滚/提示
+                    if (!canAutoMerge(patch)) {
+                        // 简单处理：失效缓存让它从服务器刷最新（你也可以回滚到 snapshot）
+                        queryClient.invalidateQueries({ queryKey: key });
+                        return;
+                    }
+
+                    // 允许自动重试：换新 token 再试（可做次数限制 & 指数退避）
+                    token = latestAt;
+                    attempts++;
+                    if (attempts >= 2) {
+                        // 最多自动重试 2 次，避免打爆
+                        break;
+                    }
+                    await new Promise(r => setTimeout(r, 200 + Math.random() * 200));
+                    continue;
+                }
+
+                // 其它错误：退出循环由下面兜底
+                break;
+            }
+            // queryClient.invalidateQueries({ queryKey: key });
+        });
     }
+
 
     const createTaskMutation = useMutation({
         mutationFn: async (input: CreateTaskInput) => {

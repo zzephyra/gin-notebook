@@ -44,10 +44,33 @@ export async function createTaskRequest(input: CreateTaskInput) {
     return res.data.data || {};
 }
 
-export async function updateTaskRequest(taskID: string, workspace_id: string, column_id: string, project_id: string, payload: Partial<TaskUpdatePayload>) {
-    if (!taskID || !workspace_id || !column_id || !project_id) {
+export async function updateTaskRequest(taskID: string, workspace_id: string, column_id: string, project_id: string, updated_at: string, payload: Partial<TaskUpdatePayload>) {
+    if (!taskID || !workspace_id || !column_id || !project_id || !updated_at) {
         return {};
     }
-    let res = await axiosClient.put(taskUpdateApi(taskID), { workspace_id, column_id, project_id, payload })
-    return res.data.data || {};
+
+    const try_times = 3;
+
+    for (let i = 0; i < try_times; i++) {
+        try {
+            let res = await axiosClient.put(taskUpdateApi(taskID), { workspace_id, column_id, project_id, updated_at, payload }, { suppressToast: i < try_times - 1 });
+            if (res.data.code === responseCode.SUCCESS) {
+                return res.data || {};
+            }
+
+            if (res.data.code != responseCode.ERROR_TASK_UPDATE_CONFLICTED) {
+                return res.data || {};
+            }
+
+            updated_at = res.data.data?.updated_at;
+
+            if (updated_at === undefined || updated_at === "") {
+                return {};
+            }
+        } catch (err) {
+            continue;
+        }
+    }
+
+    return {};
 }

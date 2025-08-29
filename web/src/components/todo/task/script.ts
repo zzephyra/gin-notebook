@@ -1,4 +1,4 @@
-import { TodoPriorityOption, TodoTask } from "../type"
+import { TaskState, TodoPriorityOption, TodoTask } from "../type"
 
 export const isTaskData = (data: any): data is TodoTask => {
     return data.type == "item"
@@ -22,3 +22,7 @@ export const PriorityOptions: TodoPriorityOption[] = [
     { label: 'Medium', value: 'medium' },
     { label: 'High', value: 'high' },
 ];
+
+export const outerStyles: { [Key in TaskState['type']]?: string } = {
+    'is-dragging-and-left-self': 'hidden',
+};

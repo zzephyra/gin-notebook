@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { ProjectBoard, Project, SubmitExtraParams, TaksPayload } from '@/components/todo/type';
+import type { ProjectBoard, Project, SubmitExtraParams, TaksPayload, UpdateOptions } from '@/components/todo/type';
 import type { StartDraftOptions } from "@/hooks/useTodoTask"
 export type TodoContextValue = {
     columns: ProjectBoard;
@@ -10,7 +10,7 @@ export type TodoContextValue = {
     setActiveOverlay?: (open: boolean) => void;
     // 你在 useProjectTodo 暴露的能力（按你的实现填充）
     startDraftTask: (columnId: string, opts: StartDraftOptions) => Promise<string>;
-    updateTask: (tempId: string, patch: Partial<TaksPayload>) => void;
+    updateTask: (tempId: string, patch: Partial<TaksPayload>, opts?: UpdateOptions) => void;
     submitTask: (tempId: string, params?: SubmitExtraParams) => Promise<any>;
     cancelDraftTask?: (tempId: string) => void;
 

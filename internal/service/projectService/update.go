@@ -1,6 +1,7 @@
 package projectService
 
 import (
+	"errors"
 	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/model"
@@ -17,27 +18,27 @@ import (
 	"gorm.io/gorm"
 )
 
-func UpdateProjectTask(params *dto.ProjectTaskDTO) (responseCode int) {
-
-	database.DB.Transaction(func(tx *gorm.DB) error {
+func UpdateProjectTask(params *dto.ProjectTaskDTO) (responseCode int, data map[string]interface{}) {
+	err := database.DB.Transaction(func(tx *gorm.DB) error {
 		if params.Payload.HasTaskFieldUpdates() {
 			var hasAfterTask, hasBeforeTask bool
-			task := tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt", "AssigneeActions"})
+			task := tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt", "AssigneeActions", "BeforeID", "AfterID"})
 			var taskIDs []int64
-			if params.AfterID > 0 {
+			if params.Payload.AfterID != nil {
 				hasAfterTask = true
-				taskIDs = append(taskIDs, params.AfterID)
+				taskIDs = append(taskIDs, *params.Payload.AfterID)
 			}
 
-			if params.BeforeID > 0 {
+			if params.Payload.BeforeID != nil {
 				hasBeforeTask = true
-				taskIDs = append(taskIDs, params.BeforeID)
+				taskIDs = append(taskIDs, *params.Payload.BeforeID)
 			}
 
-			tasks, err := repository.GetProjectTaskByIDs(tx, taskIDs, params.ColumnID, true)
+			tasks, err := repository.GetProjectTaskByIDs(tx, taskIDs, true)
 			if err != nil {
 				return err
 			}
+			logger.LogInfo("Got tasks for ranking:", taskIDs)
 
 			if hasAfterTask && hasBeforeTask {
 				if len(tasks) != 2 {
@@ -57,10 +58,25 @@ func UpdateProjectTask(params *dto.ProjectTaskDTO) (responseCode int) {
 				}
 			}
 
-			err = repository.UpdateTaskByTaskID(tx, params.TaskID, task)
+			taskModel, err, isConflicted := repository.UpdateTaskByTaskID(tx, params.TaskID, params.UpdatedAt, task)
+			if data == nil {
+				data = make(map[string]interface{})
+			}
+
+			if taskModel != nil {
+				data["task"] = tools.StructToUpdateMap(*taskModel, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
+			}
+
+			if isConflicted {
+				responseCode = message.ERROR_TASK_UPDATE_CONFLICTED
+				data["conflicted"] = true
+				return errors.New("update conflicted")
+			}
+
 			if err != nil {
 				logger.LogError(err, "Failed to update task")
 				responseCode = database.IsError(err)
+				data["conflicted"] = isConflicted
 				return err
 			}
 		}
@@ -109,8 +125,11 @@ func UpdateProjectTask(params *dto.ProjectTaskDTO) (responseCode int) {
 		return nil
 	})
 
-	if responseCode != 0 {
-		return responseCode
+	if err != nil {
+		if responseCode == 0 {
+			responseCode = message.ERROR_TASK_UPDATE
+		}
+		return
 	}
 	responseCode = message.SUCCESS
 	return

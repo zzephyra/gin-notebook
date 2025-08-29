@@ -31,17 +31,17 @@ func CreateProjectTask(params *dto.ProjectTaskDTO) (responseCode int, data map[s
 		err := database.DB.Transaction(func(tx *gorm.DB) error {
 			var hasAfterTask, hasBeforeTask bool
 			var taskIDs []int64
-			if params.AfterID > 0 {
+			if params.Payload.AfterID != nil {
 				hasAfterTask = true
-				taskIDs = append(taskIDs, params.AfterID)
+				taskIDs = append(taskIDs, *params.Payload.AfterID)
 			}
 
-			if params.BeforeID > 0 {
+			if params.Payload.BeforeID != nil {
 				hasBeforeTask = true
-				taskIDs = append(taskIDs, params.BeforeID)
+				taskIDs = append(taskIDs, *params.Payload.BeforeID)
 			}
 
-			tasks, err := repository.GetProjectTaskByIDs(tx, taskIDs, params.ColumnID, true)
+			tasks, err := repository.GetProjectTaskByIDs(tx, taskIDs, true)
 			if err != nil {
 				return err
 			}
@@ -109,7 +109,7 @@ func CreateProjectTask(params *dto.ProjectTaskDTO) (responseCode int, data map[s
 	}
 
 	responseCode = message.SUCCESS
-	data = tools.StructToUpdateMap(&task, nil, []string{"DeletedAt", "CreatedAt", "UpdatedAt", "Creator"})
+	data = tools.StructToUpdateMap(&task, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
 	return
 }
 

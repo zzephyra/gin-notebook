@@ -12,6 +12,7 @@ import {
 } from "@heroui/react";
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import invariant from 'tiny-invariant';
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import {
     monitorForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
@@ -25,6 +26,7 @@ import { useProjectTodo } from "@/hooks/useTodoTask";
 import ChaseLoading from "@/components/loading/Chase/loading";
 import TodoContext from "@/contexts/TodoContext";
 import Column from "@/components/todo/column";
+import { isCardData, isCardDropTargetData } from "@/components/todo/script";
 
 
 export interface TodoListProps {
@@ -85,11 +87,74 @@ function ProjectPage() {
         invariant(element);
         return combine(
             monitorForElements({
+                canMonitor: ({ source }) => isCardData(source.data),
                 onDrop({ source, location }) {
-                    console.log("onDrop", source, location);
+                    const dragging = source.data;
+                    if (!isCardData(dragging)) {
+                        return;
+                    }
+                    const innerMost = location.current.dropTargets[0];
+                    if (!innerMost) {
+                        return;
+                    }
+                    const dropTargetData = innerMost.data;
+                    const homeColumnIndex = columns.findIndex(
+                        (column) => column.id === dragging.columnId,
+                    );
+                    const home: ToDoColumn | undefined = columns[homeColumnIndex];
+
+                    if (!home) {
+                        return;
+                    }
+                    const cardIndexInHome = home.tasks.findIndex((task) => task.id === dragging.task.id);
+                    if (isCardDropTargetData(dropTargetData)) {
+                        const destinationColumnIndex = columns.findIndex(
+                            (column) => column.id === dropTargetData.columnId,
+                        );
+                        const destination = columns[destinationColumnIndex];
+                        if (home === destination) {
+                            const cardFinishIndex = home.tasks.findIndex(
+                                (task) => task.id === dropTargetData.task.id,
+                            );
+                            if (cardIndexInHome === -1 || cardFinishIndex === -1) {
+                                return;
+                            }
+
+                            if (cardIndexInHome === cardFinishIndex) {
+                                return;
+                            }
+                        }
+
+                        if (!destination) {
+                            return;
+                        }
+                        const indexOfTarget = destination.tasks.findIndex(
+                            (task) => task.id === dropTargetData.task.id,
+                        );
+
+                        const closestEdge = extractClosestEdge(dropTargetData);
+                        if (closestEdge == "top") {
+                            if (indexOfTarget == 0) {
+                                // 插到第一个前面
+                                updateTask(dragging.task.id, { column_id: destination.id, before_id: destination.tasks[0].id } as any, { insertIndex: indexOfTarget });
+                            } else {
+                                updateTask(dragging.task.id, { column_id: destination.id, before_id: destination.tasks[indexOfTarget].id, after_id: destination.tasks[indexOfTarget - 1].id } as any, { insertIndex: indexOfTarget });
+                            }
+                        } else if (closestEdge == "bottom") {
+                            if (indexOfTarget == destination.tasks.length - 1) {
+                                // 插到最后一个后面
+                                updateTask(dragging.task.id, { column_id: destination.id, after_id: destination.tasks[destination.tasks.length - 1].id } as any, { insertIndex: indexOfTarget + 1 });
+                            } else {
+                                updateTask(dragging.task.id, { column_id: destination.id, before_id: destination.tasks[indexOfTarget + 1].id, after_id: destination.tasks[indexOfTarget].id } as any, { insertIndex: indexOfTarget + 1 });
+                            }
+                        } else {
+                            return
+                        }
+                    }
+
                 }
             }))
-    }, [])
+    }, [columns])
 
     function chooseProject(project_id: string) {
         const searchParams = new URLSearchParams(location.search);

@@ -20,7 +20,7 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.response.use(
   (response) => {
-    if (response.data.code && response.data.code != responseCode.SUCCESS) {
+    if (response.data.code && response.data.code != responseCode.SUCCESS && !response.config.suppressToast) {
       // 如果接口报错，则默认提示错误信息
       toast.error(response.data.error || i18n._('Sorry, something went wrong'));
     }

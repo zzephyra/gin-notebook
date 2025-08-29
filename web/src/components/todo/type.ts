@@ -25,8 +25,27 @@ export type TodoTask = {
     comments?: TaksComment[];
     user?: UserBrief;
     isEdit?: boolean;
+    updated_at?: string;
+    isDraft?: boolean; // 是否为草稿（刚创建，尚未保存到服务端）
     [key: string]: any;
 }
+
+export type ColumnState =
+    | {
+        type: 'is-card-over';
+        isOverChildCard: boolean;
+        dragging: DOMRect;
+    }
+    | {
+        type: 'is-column-over';
+        closestEdge: Edge | null;
+    }
+    | {
+        type: 'idle';
+    }
+    | {
+        type: 'is-dragging';
+    };
 
 export type TaskState =
     | {
@@ -39,12 +58,20 @@ export type TaskState =
         type: 'is-dragging';
     }
     | {
-        type: 'is-column-over';
-        closestEdge: Edge | null;
-    }
-    | {
         type: 'is-dragging-over';
         closestEdge: Edge | null;
+    } | {
+        type: 'is-dragging-and-left-self';
+    }
+    | {
+        type: 'is-over';
+        dragging: DOMRect;
+        closestEdge: Edge;
+    }
+    | {
+        type: 'preview';
+        container: HTMLElement;
+        dragging: DOMRect;
     };
 
 export type TodoPriorityOption = {
@@ -83,6 +110,11 @@ export type TaksPayload = {
     assignee_actions?: Partial<AssigneeAction>;
     deadline?: string | null;
     [key: string]: any;
+}
+
+export type UpdateOptions = {
+    onlyUpdateLocal?: boolean; // 仅更新本地状态，不调用接口
+    insertIndex?: number; // 插入到指定位置
 }
 
 export type CreateTaskInput = {
@@ -128,6 +160,8 @@ export type TaskUpdatePayload = {
     description?: string;
     priority?: Priority;
     assignee?: UserBrief[];
+    before_id?: string | null;
+    after_id?: string | null;
     deadline?: string | null;
 };
 
@@ -140,3 +174,21 @@ export type SubmitExtraParams = {
     assignee_actions?: Partial<AssigneeAction>;
     [key: string]: any;
 }
+
+
+export const cardKey = Symbol('card');
+
+
+export type TCardData = {
+    [cardKey]: true;
+    task: TodoTask;
+    columnId: string;
+    rect: DOMRect;
+};
+
+export const cardDropTargetKey = Symbol('card-drop-target');
+export type TCardDropTargetData = {
+    [cardDropTargetKey]: true;
+    task: TodoTask;
+    columnId: string;
+};

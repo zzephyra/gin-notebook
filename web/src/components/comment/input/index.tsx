@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react/macro";
-import { IconPaperclip, IconAt, IconSend } from "@douyinfe/semi-icons";
+import { IconPaperclip, IconSend } from "@douyinfe/semi-icons";
 import { Button } from "@heroui/button";
 import { CommentInputProps } from "./type";
 import { useRef, useState, useEffect } from "react";

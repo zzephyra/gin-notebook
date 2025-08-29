@@ -30,7 +30,7 @@ func GetProject(params *dto.GetProjectDTO) (responseCode int, data map[string]in
 	columnsMap := make(map[int64]*map[string]interface{})
 	columnsIDs := make([]int64, 0, len(columns))
 	for _, column := range columns {
-		parseColumn := tools.StructToUpdateMap(column, nil, []string{"DeletedAt", "CreatedAt", "UpdatedAt"})
+		parseColumn := tools.StructToUpdateMap(column, nil, []string{"DeletedAt", "CreatedAt"})
 		parseColumn["tasks"] = []map[string]interface{}{} // 初始化任务列表
 
 		columnsMap[column.ID] = &parseColumn
@@ -67,7 +67,7 @@ func GetProject(params *dto.GetProjectDTO) (responseCode int, data map[string]in
 		if !ok {
 			continue
 		}
-		parseTaks := tools.StructToUpdateMap(task.ToDoTask, nil, []string{"DeletedAt", "CreatedAt", "UpdatedAt"})
+		parseTaks := tools.StructToUpdateMap(task.ToDoTask, nil, []string{"DeletedAt", "CreatedAt"})
 		parseTaks["assignee"] = assigneesMap[task.ID] // 初始化分配人
 		(*column)["tasks"] = append((*column)["tasks"].([]map[string]interface{}), parseTaks)
 		(*column)["total"] = task.TotalCount

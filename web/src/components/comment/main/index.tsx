@@ -1,6 +1,6 @@
 import { Comment, CommentAttachment, CommentProps, MentionPayload } from "./type";
 import CommentInput from "../input";
-import { Avatar, Button, ButtonGroup, Card, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Tooltip } from "@heroui/react";
+import { Button, ButtonGroup, Card, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Tooltip } from "@heroui/react";
 import CommentBox from "../box";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";

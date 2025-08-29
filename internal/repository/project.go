@@ -5,6 +5,7 @@ import (
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
+	"time"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -110,10 +111,10 @@ func GetProjectTaskByID(db *gorm.DB, taskID int64) (*model.ToDoTask, error) {
 	return &task, nil
 }
 
-func GetProjectTaskByIDs(db *gorm.DB, taskID []int64, columnID int64, withLock bool) ([]model.ToDoTask, error) {
+func GetProjectTaskByIDs(db *gorm.DB, taskID []int64, withLock bool) ([]model.ToDoTask, error) {
 	var task []model.ToDoTask
 	sql := db.Model(&model.ToDoTask{}).
-		Where("id IN ? AND column_id = ?", taskID, columnID).
+		Where("id IN ?", taskID).
 		Order(clause.OrderByColumn{Column: clause.Column{Name: "order_index"}})
 
 	if withLock {
@@ -141,11 +142,30 @@ func GetProjectTaskAssigneesByTaskIDs(db *gorm.DB, taskIDs []int64) ([]dto.ToDoT
 	return assignees, nil
 }
 
-func UpdateTaskByTaskID(db *gorm.DB, taskID int64, data map[string]interface{}) error {
-	db.Model(&model.ToDoTask{}).
-		Where("id = ?", taskID).
+func UpdateTaskByTaskID(
+	db *gorm.DB, taskID int64, ifMatchUpdatedAt time.Time, data map[string]interface{},
+) (task *model.ToDoTask, err error, conflicted bool) {
+	data["updated_at"] = gorm.Expr("NOW()")
+
+	res := db.Model(&model.ToDoTask{}).
+		Where("id = ? AND updated_at = ?", taskID, ifMatchUpdatedAt).
 		Updates(data)
-	return db.Error
+
+	if res.Error != nil {
+		return nil, res.Error, false
+	}
+	if res.RowsAffected == 0 {
+		var t model.ToDoTask
+		if err := db.Select("id, updated_at").First(&t, taskID).Error; err != nil {
+			return nil, err, true
+		}
+		return &t, nil, true
+	}
+	var t model.ToDoTask
+	if err := db.First(&t, taskID).Error; err != nil {
+		return nil, err, false
+	}
+	return &t, nil, false
 }
 
 func RemoveTaskAssigneesByTaskIDAndMemberIDs(db *gorm.DB, taskID int64, memberIDs []int64) error {
