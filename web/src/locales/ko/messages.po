@@ -104,8 +104,8 @@ msgstr ""
 #. placeholder {0}: option.label
 #. placeholder {0}: FilterMapping[props.filter?.order_by || "create"]
 #. placeholder {0}: item.label
-#: src/components/todo/task/index.tsx:364
-#: src/components/todo/task/index.tsx:486
+#: src/components/todo/taskDetails/index.tsx:249
+#: src/components/todo/task/index.tsx:310
 #: src/components/comment/main/index.tsx:172
 #: src/components/avatarMenu/index.tsx:80
 msgid "{0}"
@@ -142,6 +142,10 @@ msgstr "액션 (Action)"
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Active"
 msgstr "활성 상태"
+
+#: src/components/todo/taskDetails/index.tsx:201
+msgid "Add Cover"
+msgstr ""
 
 #: src/components/modal/workspace/link/index.tsx:83
 msgid "Add Invite Link"
@@ -203,6 +207,14 @@ msgstr "이미 계정이 있습니까?"
 msgid "Applying the template..."
 msgstr ""
 
+#: src/components/todo/column/index.tsx:210
+#~ msgid "Are you sure you want to clean all tasks in this column?"
+#~ msgstr ""
+
+#: src/components/todo/column/index.tsx:327
+msgid "Are you sure you want to clear all tasks in this column?"
+msgstr ""
+
 #: src/pages/settings/workspaceSettings.tsx:190
 msgid "Are you sure you want to delete this invite link?"
 msgstr "이 초대 링크를 삭제하시겠습니까?"
@@ -211,7 +223,7 @@ msgstr "이 초대 링크를 삭제하시겠습니까?"
 msgid "Are you sure you want to delete this note? This action cannot be undone."
 msgstr "이 노트를 삭제하시겠습니까? 이 작업은 실행 취소할 수 없습니다."
 
-#: src/components/todo/task/index.tsx:519
+#: src/components/todo/taskDetails/index.tsx:312
 msgid "Assignee"
 msgstr ""
 
@@ -264,6 +276,10 @@ msgstr "범주 이름"
 msgid "Category name is required"
 msgstr "범주 이름이 필요합니다."
 
+#: src/components/todo/taskDetails/index.tsx:189
+msgid "Change Cover"
+msgstr ""
+
 #: src/pages/settings/accountSettings.tsx:91
 #: src/components/modal/user/changeEmail/index.tsx:24
 #: src/components/modal/user/changeEmail/index.tsx:31
@@ -278,6 +294,14 @@ msgstr "암호 변경"
 #: src/pages/settings/accountSettings.tsx:84
 msgid "Change your password"
 msgstr "암호 변경"
+
+#: src/components/todo/column/index.tsx:202
+#~ msgid "Clean Tasks"
+#~ msgstr ""
+
+#: src/components/todo/column/index.tsx:310
+msgid "Clear Tasks"
+msgstr ""
 
 #: src/components/fullCalendar/index.tsx:230
 msgid "Click to see more events"
@@ -374,7 +398,7 @@ msgstr "현재 디바이스"
 msgid "Danger Zone"
 msgstr "위험지대 (Danger Zone)"
 
-#: src/components/todo/task/index.tsx:509
+#: src/components/todo/taskDetails/index.tsx:290
 msgid "Deadline"
 msgstr ""
 
@@ -382,7 +406,7 @@ msgstr ""
 #: src/components/note/noteList/index.tsx:77
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
-#: src/components/comment/box/index.tsx:124
+#: src/components/comment/box/index.tsx:126
 msgid "Delete"
 msgstr "삭제 (Delete)"
 
@@ -421,6 +445,10 @@ msgstr ""
 #: src/pages/settings/storageSettings.tsx:85
 msgid "Domain Url"
 msgstr "도메인 URL"
+
+#: src/components/todo/column/index.tsx:337
+msgid "Don’t clear"
+msgstr ""
 
 #: src/pages/auth/login.tsx:80
 msgid "Don't have an account yet?"
@@ -597,12 +625,20 @@ msgstr ""
 msgid "Hi! Welcome to Mameos!"
 msgstr "안녕하세요! Mameos에 오신 것을 환영합니다!"
 
+#: src/components/todo/column/index.tsx:196
+#~ msgid "Hide Column"
+#~ msgstr ""
+
 #: src/pages/workspace/note.tsx:159
 msgid "History"
 msgstr ""
 
 #: src/components/aiHistoryChats/index.tsx:110
 msgid "History Chats"
+msgstr ""
+
+#: src/components/todo/column/index.tsx:347
+msgid "I'm sure"
 msgstr ""
 
 #: src/components/step/workspace/main.tsx:147
@@ -677,7 +713,7 @@ msgstr ""
 msgid "Loading notes..."
 msgstr "노트 로드 중..."
 
-#: src/pages/workspace/project.tsx:121
+#: src/pages/workspace/project.tsx:188
 msgid "Loading project..."
 msgstr ""
 
@@ -783,12 +819,13 @@ msgstr "새 폴더"
 msgid "New Password"
 msgstr "새 암호"
 
-#: src/components/todo/task/index.tsx:329
+#: src/components/todo/task/index.tsx:271
 msgid "New Project"
 msgstr ""
 
-#: src/components/todo/task/index.tsx:377
-#: src/components/todo/task/index.tsx:455
+#: src/components/todo/taskDetails/index.tsx:222
+#: src/components/todo/task/index.tsx:319
+#: src/components/todo/task/index.tsx:406
 msgid "New Task"
 msgstr ""
 
@@ -800,12 +837,20 @@ msgstr ""
 msgid "Next Note"
 msgstr "다음 노트"
 
+#: src/components/todo/column/index.tsx:214
+#~ msgid "No"
+#~ msgstr ""
+
 #: src/components/note/main/index.tsx:158
 msgid "No Category"
 msgstr "범주 없음"
 
 #: src/components/comment/main/index.tsx:28
 msgid "No comments yet"
+msgstr ""
+
+#: src/components/todo/taskDetails/index.tsx:294
+msgid "No Deadline"
 msgstr ""
 
 #: src/components/step/workspace/main.tsx:42
@@ -820,7 +865,7 @@ msgstr ""
 msgid "No more templates to load."
 msgstr ""
 
-#: src/components/todo/task/index.tsx:473
+#: src/components/todo/taskDetails/index.tsx:237
 msgid "No Priority"
 msgstr ""
 
@@ -962,7 +1007,7 @@ msgstr ""
 msgid "Previous Note"
 msgstr "이전 노트"
 
-#: src/components/todo/task/index.tsx:461
+#: src/components/todo/taskDetails/index.tsx:228
 msgid "Priority"
 msgstr ""
 
@@ -970,7 +1015,7 @@ msgstr ""
 msgid "Private"
 msgstr "Private (Private)"
 
-#: src/pages/workspace/project.tsx:144
+#: src/pages/workspace/project.tsx:211
 msgid "Progress"
 msgstr ""
 
@@ -1031,9 +1076,21 @@ msgstr "등록 성공, 이메일 확인"
 msgid "Remember me"
 msgstr "나를 기억해줘"
 
+#: src/components/todo/taskDetails/index.tsx:193
+msgid "Remove"
+msgstr ""
+
 #: src/components/note/categoryItem/index.tsx:61
 msgid "Remove from Favorites"
 msgstr "즐겨찾기에서 제거"
+
+#: src/components/todo/column/index.tsx:297
+msgid "Rename"
+msgstr ""
+
+#: src/components/todo/column/index.tsx:195
+#~ msgid "Rename Column"
+#~ msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:104
 #: src/components/modal/user/modifyPassword/index.tsx:59
@@ -1084,7 +1141,7 @@ msgstr "범주 선택"
 msgid "Select note status"
 msgstr "노트 상태 선택"
 
-#: src/components/todo/task/index.tsx:350
+#: src/components/todo/task/index.tsx:297
 msgid "Select Priority"
 msgstr ""
 
@@ -1151,7 +1208,7 @@ msgid "Start a conversation below"
 msgstr ""
 
 #: src/pages/settings/workspaceSettings.tsx:139
-#: src/components/todo/task/index.tsx:498
+#: src/components/todo/taskDetails/index.tsx:260
 #: src/components/dropdown/note/index.tsx:194
 msgid "Status"
 msgstr "상태 (Status)"
@@ -1207,6 +1264,10 @@ msgstr "작업공간 이름에 잘못된 문자가 있습니다."
 #: src/pages/workspace/invite.tsx:141
 msgid "This invitation link does not exist."
 msgstr "이 초대 링크가 존재하지 않습니다."
+
+#: src/components/todo/column/index.tsx:331
+msgid "This is a very dangerous action. Once confirmed, the data cannot be recovered."
+msgstr ""
 
 #: src/pages/settings/workspaceSettings.tsx:49
 msgid "This link is expired"
@@ -1279,7 +1340,11 @@ msgstr "아바타 업로드"
 msgid "Upload avatar failed"
 msgstr "아바타 업로드 실패"
 
-#: src/components/comment/box/index.tsx:121
+#: src/components/todo/taskDetails/index.tsx:125
+msgid "Upload failed"
+msgstr ""
+
+#: src/components/comment/box/index.tsx:123
 msgid "Upload File"
 msgstr ""
 
@@ -1311,7 +1376,7 @@ msgstr "작업공간 이름"
 msgid "Workspace: "
 msgstr "작업 공간:"
 
-#: src/components/todo/task/index.tsx:525
+#: src/components/todo/taskDetails/index.tsx:325
 msgid "Write something about the task"
 msgstr ""
 

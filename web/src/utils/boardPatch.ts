@@ -85,3 +85,7 @@ export function findTask(board: ProjectBoard, id: string): { columnId: string; i
     }
     return null;
 }
+
+export function replaceColumnById(board: ProjectBoard, columnId: string, patch: Partial<ToDoColumn>): ProjectBoard {
+    return board.map(col => col.id === columnId ? { ...col, ...patch } : col);
+}

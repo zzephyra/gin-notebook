@@ -47,7 +47,6 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
                             <Column key={column.id} column={column}>
                                 {column.tasks.map((task) => (
                                     <Task key={task.id} column={column} task={task} />
-                                    // <ToDoTask key={task.id} index={index} task={task} indicator={props.indicator} />
                                 ))}
                             </Column>
                         </div>
@@ -63,12 +62,11 @@ function ProjectPage() {
     const [searchParams] = useSearchParams();
     const params = useParams();
     const navigate = useNavigate();
-
     const workspaceID = params.id || "";
     const projectID = searchParams.get("project_id") || "";
     const boardRef = useRef<HTMLDivElement | null>(null);
     const isDesktop = useMediaQuery({ minWidth: 1024 });
-    const { columns, activeOverlay, setActiveOverlay, updateTask, submitTask, startDraftTask, projectList, currentProject, isLoading } = useProjectTodo(projectID, workspaceID)
+    const { columns, activeOverlay, updateColumn, cleanColumnTasks, setActiveOverlay, updateTask, submitTask, startDraftTask, projectList, currentProject, isLoading } = useProjectTodo(projectID, workspaceID)
 
     const providerValue = {
         columns,
@@ -80,6 +78,8 @@ function ProjectPage() {
         startDraftTask,
         updateTask,
         submitTask,
+        cleanColumnTasks,
+        updateColumn,
         // moveTask, updateTask, ...
     };
     useEffect(() => {
@@ -167,7 +167,7 @@ function ProjectPage() {
     return (
         <>
             <TodoContext.Provider value={providerValue}>
-                <div className="flex flex-col h-full w-full">
+                <div className="project-cls flex flex-col h-full w-full">
                     <div className="flex items-center px-2 py-1 justify-between ">
                         {/* 头部 */}
                         <div>
@@ -182,7 +182,7 @@ function ProjectPage() {
                             </Button>
                         </div>
                     </div>
-                    <div className="flex-1 flex flex-col max-w-full m-auto" ref={boardRef}>
+                    <div className="flex-1 flex flex-col max-w-full m-auto overflow-auto" ref={boardRef}>
                         {
                             isLoading ? (
                                 <ChaseLoading text={t`Loading project...`}>
@@ -216,7 +216,7 @@ function ProjectPage() {
                             )
                         }
 
-                        <TodoList columns={columns} ></TodoList>
+                        <TodoList columns={columns}></TodoList>
                     </div>
                 </div>
             </TodoContext.Provider>

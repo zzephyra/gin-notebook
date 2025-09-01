@@ -22,6 +22,7 @@ type TaskEditableDTO struct {
 	AssigneeActions *UpdateAssigneeDTO `json:"assignee_actions" validate:"omitempty"` // 任务负责人变更操作
 	AfterID         *int64             `json:"after_id,string" validate:"omitempty"`
 	BeforeID        *int64             `json:"before_id,string" validate:"omitempty"`
+	Cover           NullableString     `json:"cover" validate:"omitempty"` // 任务封面图片
 }
 
 func (t TaskEditableDTO) HasTaskFieldUpdates() bool {
@@ -32,7 +33,8 @@ func (t TaskEditableDTO) HasTaskFieldUpdates() bool {
 		t.Priority != nil ||
 		t.Status != nil ||
 		t.Description != nil ||
-		t.Deadline != nil
+		t.Deadline != nil ||
+		t.Cover.Set
 }
 
 func (p ProjectTaskDTO) IsAssigneeOnlyUpdate() bool {
@@ -48,6 +50,7 @@ type ProjectTaskDTO struct {
 	WorkspaceID int64           `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
 	Creator     int64           `validate:"required,gt=0"`                            // 创建者ID
 	UpdatedAt   time.Time       `json:"updated_at" validate:"omitempty"`              // 用于乐观锁
+	Cover       *string         `json:"cover" validate:"omitempty,max=255"`           // 任务封面图片
 }
 
 type ListProjectsDTO struct {
@@ -84,4 +87,27 @@ func (t ToDoTaskAssignee) UserBreif() UserBreifDTO {
 		Email:    t.Email,
 		Avatar:   t.Avatar,
 	}
+}
+
+type DeleteProjectColumnDTO struct {
+	MemberID    int64 `validate:"required,gt=0"`                            // 用户ID
+	WorkspaceID int64 `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
+	ColumnID    int64 `validate:"required,gt=0"`                            // 列ID
+	ProjectID   int64 `json:"project_id,string" validate:"required,gt=0"`   // 项目ID
+}
+
+type ColumnEditableDTO struct {
+	Name        *string `json:"name" validate:"omitempty"`
+	Description *string `json:"description" validate:"omitempty"`
+	OrderIndex  *string `json:"order_index" validate:"omitempty"`
+	ProcessID   *uint8  `json:"process_id" validate:"omitempty"`
+}
+
+type UpdateProjectColumnDTO struct {
+	MemberID    int64             `validate:"required,gt=0"`                            // 用户ID
+	WorkspaceID int64             `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
+	ColumnID    int64             `validate:"required,gt=0"`                            // 列ID
+	UpdateAt    time.Time         `json:"updated_at" validate:"required"`               // 用于乐观锁
+	ProjectID   int64             `json:"project_id,string" validate:"required,gt=0"`   // 项目ID
+	Payload     ColumnEditableDTO `json:"payload" validate:"required"`
 }

@@ -107,23 +107,24 @@ const (
 	ERROR_NO_PERMISSION_TO_MODIFY_EVENT = 11003 // 无权修改事件
 
 	// Project模块的错误
-	ERROR_PROJECT_CREATE         = 12001 // 创建项目失败
-	ERROR_PROJECT_NOT_EXIST      = 12002 // 项目不存在
-	ERROR_PROJECT_UPDATE         = 12003 // 更新项目失败
-	ERROR_PROJECT_DELETE         = 12004 // 删除项目失败
-	ERROR_GET_ORDER_INDEX        = 12005 // 获取项目任务顺序索引失败
-	ERROR_COLUMN_NOT_EXIST       = 12006 // 列不存在
-	ERROR_COLUMN_CREATE          = 12007 // 创建列失败
-	ERROR_COLUMN_UPDATE          = 12008 // 更新列失败
-	ERROR_EMPTY_PROJECT_ID       = 12009 // 项目ID不能为空
-	ERROR_INVALID_PROJECT_ID     = 12010 // 无效的项目ID
-	ERROR_INVALID_TASK_ID        = 12011 // 无效的任务ID
-	ERROR_EMPTY_COMMENT_ID       = 12012 // 评论ID不能为空
-	ERROR_INVALID_COMMENT_ID     = 12013 // 无效的评论ID
-	ERROR_MENTION_CREATE_FAILED  = 12014 // 创建评论提及失败
-	ERROR_TASK_UPDATE            = 12015 // 任务更新失败
-	ERROR_TASK_CREATE            = 12016 // 任务创建失败
-	ERROR_TASK_UPDATE_CONFLICTED = 12017 // 任务更新冲突
+	ERROR_PROJECT_CREATE                   = 12001 // 创建项目失败
+	ERROR_PROJECT_NOT_EXIST                = 12002 // 项目不存在
+	ERROR_PROJECT_UPDATE                   = 12003 // 更新项目失败
+	ERROR_PROJECT_DELETE                   = 12004 // 删除项目失败
+	ERROR_GET_ORDER_INDEX                  = 12005 // 获取项目任务顺序索引失败
+	ERROR_COLUMN_NOT_EXIST                 = 12006 // 列不存在
+	ERROR_COLUMN_CREATE                    = 12007 // 创建列失败
+	ERROR_COLUMN_UPDATE                    = 12008 // 更新列失败
+	ERROR_EMPTY_PROJECT_ID                 = 12009 // 项目ID不能为空
+	ERROR_INVALID_PROJECT_ID               = 12010 // 无效的项目ID
+	ERROR_INVALID_TASK_ID                  = 12011 // 无效的任务ID
+	ERROR_EMPTY_COMMENT_ID                 = 12012 // 评论ID不能为空
+	ERROR_INVALID_COMMENT_ID               = 12013 // 无效的评论ID
+	ERROR_MENTION_CREATE_FAILED            = 12014 // 创建评论提及失败
+	ERROR_TASK_UPDATE                      = 12015 // 任务更新失败
+	ERROR_TASK_CREATE                      = 12016 // 任务创建失败
+	ERROR_TASK_UPDATE_CONFLICTED           = 12017 // 任务更新冲突
+	ERROR_PROJECT_COLUMN_UPDATE_CONFLICTED = 12018 // 项目列更新冲突
 )
 
 var CodeMsg = map[int]string{
@@ -201,4 +202,5 @@ var CodeMsg = map[int]string{
 	ERROR_MENTION_CREATE_FAILED:                      "创建评论提及失败",
 	ERROR_TASK_UPDATE:                                "任务更新失败",
 	ERROR_TASK_UPDATE_CONFLICTED:                     "任务更新冲突，请刷新页面后重试",
+	ERROR_PROJECT_COLUMN_UPDATE_CONFLICTED:           "项目列更新冲突，请刷新页面后重试",
 }

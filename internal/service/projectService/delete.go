@@ -23,3 +23,14 @@ func DeleteTaskComment(params *dto.DeleteTaskCommentDTO) (responseCode int) {
 	}
 	return message.SUCCESS
 }
+
+func CleanColumnTasks(params *dto.DeleteProjectColumnDTO) (responseCode int) {
+	err := repository.DeleteProjectColumnTasksByID(database.DB, params.ColumnID, params.ProjectID, false)
+	if err != nil {
+		responseCode = database.IsError(err)
+		return
+	}
+
+	responseCode = message.SUCCESS
+	return
+}

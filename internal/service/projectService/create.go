@@ -29,45 +29,13 @@ func CreateProjectTask(params *dto.ProjectTaskDTO) (responseCode int, data map[s
 	var latestError error
 	for attempt := 0; attempt < maxRetry; attempt++ {
 		err := database.DB.Transaction(func(tx *gorm.DB) error {
-			var hasAfterTask, hasBeforeTask bool
-			var taskIDs []int64
-			if params.Payload.AfterID != nil {
-				hasAfterTask = true
-				taskIDs = append(taskIDs, *params.Payload.AfterID)
-			}
-
-			if params.Payload.BeforeID != nil {
-				hasBeforeTask = true
-				taskIDs = append(taskIDs, *params.Payload.BeforeID)
-			}
-
-			tasks, err := repository.GetProjectTaskByIDs(tx, taskIDs, true)
+			latestTask, err := repository.GetLastTask(tx, params.ColumnID, true)
 			if err != nil {
+				responseCode = database.IsError(err)
 				return err
 			}
 
-			var middleOrder string
-			if hasAfterTask && hasBeforeTask {
-				if len(tasks) != 2 {
-					responseCode = message.ERROR_INVALID_TASK_ID
-					return gorm.ErrInvalidData
-				}
-				middleOrder = algorithm.RankBetween(tasks[0].OrderIndex, tasks[1].OrderIndex)
-			} else if hasAfterTask || hasBeforeTask {
-				if len(tasks) != 1 {
-					responseCode = message.ERROR_INVALID_TASK_ID
-					return gorm.ErrInvalidData
-				}
-				if hasAfterTask {
-					middleOrder = algorithm.RankBetweenBucket(lexorank.BucketKey(tasks[0].OrderIndex), algorithm.RankMax()).String()
-				} else {
-					middleOrder = algorithm.RankBetweenBucket(algorithm.RankMin(), lexorank.BucketKey(tasks[0].OrderIndex)).String()
-				}
-
-			} else {
-				middleOrder = algorithm.RankBetweenBucket(algorithm.RankMin(), algorithm.RankMax()).String()
-			}
-			task.OrderIndex = middleOrder
+			task.OrderIndex = algorithm.RankBetweenBucket(lexorank.BucketKey(latestTask.OrderIndex), algorithm.RankMax()).String()
 
 			if err := repository.CreateProjectTask(tx, &task); err != nil {
 				responseCode = database.IsError(err)

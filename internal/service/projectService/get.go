@@ -37,7 +37,7 @@ func GetProject(params *dto.GetProjectDTO) (responseCode int, data map[string]in
 		columnsIDs = append(columnsIDs, column.ID)
 	}
 
-	tasks, err := repository.GetProjectTasksByColumns(database.DB, columnsIDs, 0)
+	tasks, err := repository.GetProjectTasksByColumns(database.DB, columnsIDs, 20, 0)
 	if err != nil {
 		responseCode = database.IsError(err)
 		return

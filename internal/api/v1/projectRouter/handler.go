@@ -328,3 +328,69 @@ func CreatetaskCommentAttachmentApi(c *gin.Context) {
 	responseCode, data := projectService.CreateCommentAttachment(params)
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }
+
+func DeleteProjectColumnApi(c *gin.Context) {
+	columnID, isExist := c.Params.Get("columnID")
+	if !isExist {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
+		return
+	}
+
+	ColumnID, err := strconv.ParseInt(columnID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PROJECT_ID, nil))
+		return
+	}
+
+	params := &dto.DeleteProjectColumnDTO{
+		MemberID: c.MustGet("workspaceMemberID").(int64),
+		ColumnID: ColumnID,
+	}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Failed to bind JSON parameters")
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Validation failed for DeleteProjectColumnDTO")
+		return
+	}
+	responseCode := projectService.CleanColumnTasks(params)
+	c.JSON(http.StatusOK, response.Response(responseCode, nil))
+}
+
+func UpdateProjectColumnApi(c *gin.Context) {
+	columnID, isExist := c.Params.Get("columnID")
+	if !isExist {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
+		return
+	}
+
+	ColumnID, err := strconv.ParseInt(columnID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PROJECT_ID, nil))
+		return
+	}
+
+	params := &dto.UpdateProjectColumnDTO{
+		MemberID: c.MustGet("workspaceMemberID").(int64),
+		ColumnID: ColumnID,
+	}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Failed to bind JSON parameters")
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Validation failed for DeleteProjectColumnDTO")
+		return
+	}
+	responseCode, data := projectService.UpdateColumn(params)
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}

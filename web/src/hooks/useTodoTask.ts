@@ -1,9 +1,9 @@
-import { CreateTaskInput, Project, ProjectBoard, SubmitExtraParams, TaskUpdatePayload, TodoTask, UpdateOptions } from '@/components/todo/type'
-import { createTaskRequest, getProjectsListRequest, getProjectsRequest, updateTaskRequest } from '@/features/api/project'
+import { ColumnUpdatePayload, CreateTaskInput, Project, ProjectBoard, SubmitExtraParams, TaskUpdatePayload, TodoTask, UpdateOptions } from '@/components/todo/type'
+import { cleanColumnTasksRequest, createTaskRequest, getProjectsListRequest, getProjectsRequest, updateProjectColumnRequest, updateTaskRequest } from '@/features/api/project'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { LexoRank } from "lexorank";
-import { addTaskToColumnEnd, findTask, removeTaskById, replaceTaskById } from '@/utils/boardPatch'
+import { addTaskToColumnEnd, findTask, removeTaskById, replaceColumnById, replaceTaskById } from '@/utils/boardPatch'
 import { responseCode } from '@/features/constant/response';
 
 const genTempId = () => (globalThis.crypto?.randomUUID?.() ?? `tmp_${Date.now()}_${Math.random()}`);
@@ -11,6 +11,8 @@ export type ActiveDraftPtr = { id: string; columnId: string; colIdx: number } | 
 export type StartDraftOptions = {
     single?: 'submit' | 'cancel' | 'block'; // 默认 block
 };
+
+const getBoardQueryKey = (projectId: string) => ['project-board', projectId] as const;
 
 
 export function useProjectTodo(projectId: string, workspaceId: string) {
@@ -266,7 +268,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
     async function startDraftTask(columnId: string, opts: StartDraftOptions = {}): Promise<string> {
         const single = opts.single ?? 'block';
         if (!currentProject) return '';
-        const key = ['project-board', currentProject.id] as const;
+        const key = getBoardQueryKey(currentProject.id);
 
         const active = getActiveDraftFast();
         if (active) {
@@ -311,7 +313,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
 
     async function submitTask(tempId: string, params?: SubmitExtraParams) {
         if (!currentProject || !board) return;
-        const key = ['project-board', currentProject.id] as const;
+        const key = getBoardQueryKey(currentProject.id);
 
         // 若指针失效，兜底全板找一次
         const current = queryClient.getQueryData<ProjectBoard>(key) ?? [];
@@ -369,7 +371,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
 
     async function updateTask(taskID: string, patch: Partial<TaskUpdatePayload>, opts?: UpdateOptions) {
         if (!currentProject) return;
-        const key = ['project-board', currentProject.id] as const;
+        const key = getBoardQueryKey(currentProject.id);
 
         // 读最新 board & 当前任务
         const snapshot = queryClient.getQueryData<ProjectBoard>(key) ?? [];
@@ -466,7 +468,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         },
         onSuccess: (res, input) => {
             if (!currentProject) return;
-            const key = ['project-board', currentProject.id] as const;
+            const key = getBoardQueryKey(currentProject.id);
             // 用服务端返回替换草稿（id / order / 去掉 isDraft,isEdit）
             queryClient.setQueryData<ProjectBoard>(key, (old = []) =>
                 replaceTaskById(old, input.column_id, input.client_temp_id, {
@@ -481,7 +483,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         },
         onError: (_err, input) => {
             if (!currentProject) return;
-            const key = ['project-board', currentProject.id] as const;
+            const key = getBoardQueryKey(currentProject.id);
             // 提交失败：保留草稿 & 维持编辑态，方便用户修正后再试
             queryClient.setQueryData<ProjectBoard>(key, (old = []) =>
                 replaceTaskById(old, input.column_id, input.client_temp_id, {
@@ -492,6 +494,40 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
             );
         }
     });
+
+    const cleanColumnTasks = (columnId: string) => {
+        if (!currentProject) return;
+        const key = getBoardQueryKey(currentProject.id);
+        queryClient.setQueryData<ProjectBoard>(key, (old = []) => {
+            const colIdx = columnIndex.get(columnId);
+            if (colIdx === undefined) return old;
+            const newBoard = old.slice();
+            newBoard[colIdx] = { ...newBoard[colIdx], tasks: [] };
+            return newBoard;
+        });
+        cleanColumnTasksRequest(columnId, workspaceId, currentProject.id);
+    }
+
+    const updateColumn = async (columnId: string, patch: Partial<ColumnUpdatePayload>) => {
+        if (!currentProject) return;
+        const colIdx = columnIndex.get(columnId) ?? -1;
+        if (colIdx === -1) return;
+
+        const col = board?.[colIdx];
+        if (!col) return;
+        queryClient.setQueryData<ProjectBoard>(getBoardQueryKey(currentProject.id), (old = []) =>
+            replaceColumnById(old, columnId, patch),
+        );
+        let res = await updateProjectColumnRequest(columnId, workspaceId, col.updated_at || "", currentProject.id, patch);
+
+        if (!res.conflicted && res.column) {
+            queryClient.setQueryData<ProjectBoard>(getBoardQueryKey(currentProject.id), (old = []) =>
+                replaceColumnById(old, columnId, res.column),
+            );
+        }
+        return
+    }
+
     const stableColumns = useMemo(() => board || [], [board]);
 
     return {
@@ -501,6 +537,8 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         updateTask,
         startDraftTask,
         submitTask,
+        cleanColumnTasks,
+        updateColumn,
         activeOverlay,
         setActiveOverlay,
         currentProject: currentProject,

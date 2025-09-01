@@ -17,6 +17,8 @@ func ProjectRoutes(r *gin.RouterGroup) {
 		projectGroup.POST("/task", CreateProjectTaskApi)
 		projectGroup.PUT("/task/:taskID", UpdateProjectTaskApi)
 		projectGroup.POST("/task/:taskID/comment", CreateProjecttaskCommentsApi)
+		projectGroup.DELETE("/column/:columnID", DeleteProjectColumnApi)
+		projectGroup.PUT("/column/:columnID", UpdateProjectColumnApi)
 		projectGroup.GET("/task/:taskID/comment", GetProjecttaskCommentsApi)
 		projectGroup.DELETE("/task/:taskID/comment/:commentID", DeletetaskCommentsApi)
 		projectGroup.PUT("/task/:taskID/comment/:commentID", UpdatetaskCommentsApi)

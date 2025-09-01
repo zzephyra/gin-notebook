@@ -34,3 +34,5 @@ export const taskCommentWithIDApi = (taskID: string, commentID: string) =>
     `${todoTasksApi}/${taskID}/comment/${commentID}`;
 export const taskCommentAttachmentApi = (taskID: string, commentID: string) =>
     `${todoTasksApi}/${taskID}/comment/${commentID}/attachment`;
+export const columnApiWithID = (columnID: string) =>
+    `/project/column/${columnID}`;

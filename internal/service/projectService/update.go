@@ -2,7 +2,6 @@ package projectService
 
 import (
 	"errors"
-	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
@@ -22,8 +21,13 @@ func UpdateProjectTask(params *dto.ProjectTaskDTO) (responseCode int, data map[s
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
 		if params.Payload.HasTaskFieldUpdates() {
 			var hasAfterTask, hasBeforeTask bool
-			task := tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt", "AssigneeActions", "BeforeID", "AfterID"})
+			task := tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt", "AssigneeActions", "BeforeID", "AfterID", "Cover"})
 			var taskIDs []int64
+
+			if params.Payload.Cover.Set {
+				task["Cover"] = params.Payload.Cover.Value
+			}
+
 			if params.Payload.AfterID != nil {
 				hasAfterTask = true
 				taskIDs = append(taskIDs, *params.Payload.AfterID)
@@ -176,8 +180,6 @@ func UpdateTaskComment(params *dto.UpdateTaskCommentDTO) (responseCode int, data
 					responseCode = message.ERROR_MENTION_CREATE_FAILED
 					return err
 				}
-				fmt.Println("Creating mention:", mentionModel)
-				fmt.Println("Comment ID:", params.Mentions[i])
 				Mentions = append(Mentions, *mentionModel)
 			}
 			if err := repository.CreateModel(tx, &Mentions); err != nil {
@@ -224,4 +226,30 @@ func UpdateTaskComment(params *dto.UpdateTaskCommentDTO) (responseCode int, data
 	responseCode = message.SUCCESS
 	return
 
+}
+
+func UpdateColumn(params *dto.UpdateProjectColumnDTO) (responseCode int, data map[string]interface{}) {
+	updateData := tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "ProjectID", "CreatedAt", "UpdatedAt", "DeletedAt"})
+	columnModel, err, conflicted := repository.UpdateProjectColumnByID(database.DB, params.ColumnID, params.UpdateAt, updateData)
+	if err != nil {
+		responseCode = database.IsError(err)
+		return
+	}
+
+	if data == nil {
+		data = make(map[string]interface{})
+	}
+
+	if columnModel != nil {
+		data["column"] = tools.StructToUpdateMap(*columnModel, nil, []string{"DeletedAt", "CreatedAt", "ProjectID"})
+	}
+
+	if conflicted {
+		responseCode = message.ERROR_PROJECT_COLUMN_UPDATE_CONFLICTED
+		data["conflicted"] = true
+		return
+	}
+
+	responseCode = message.SUCCESS
+	return
 }

@@ -103,3 +103,7 @@ func IsError(err error) int {
 func IsPostgres() bool {
 	return Engine == "postgres"
 }
+
+func IsMysql() bool {
+	return Engine == "mysql"
+}

@@ -4,3 +4,9 @@
         padding-top: 8px;
     }
 }
+
+.task-sidesheet {
+    .semi-sidesheet-inner {
+        box-shadow: none !important;
+    }
+}

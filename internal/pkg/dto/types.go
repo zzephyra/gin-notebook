@@ -2,6 +2,7 @@ package dto
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -66,4 +67,23 @@ func (d *Date) Scan(value any) error {
 	default:
 		return fmt.Errorf("unsupported Date Scan type %T", value)
 	}
+}
+
+type NullableString struct {
+	Set   bool    // 是否显式传过
+	Value *string // 值，可为 nil
+}
+
+func (ns *NullableString) UnmarshalJSON(b []byte) error {
+	ns.Set = true
+	if string(b) == "null" {
+		ns.Value = nil
+		return nil
+	}
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	ns.Value = &s
+	return nil
 }

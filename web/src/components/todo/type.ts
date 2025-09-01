@@ -27,6 +27,7 @@ export type TodoTask = {
     isEdit?: boolean;
     updated_at?: string;
     isDraft?: boolean; // 是否为草稿（刚创建，尚未保存到服务端）
+    cover?: string | null;
     [key: string]: any;
 }
 
@@ -109,6 +110,7 @@ export type TaksPayload = {
     priority?: Priority;
     assignee_actions?: Partial<AssigneeAction>;
     deadline?: string | null;
+    cover?: string | null;
     [key: string]: any;
 }
 
@@ -165,6 +167,15 @@ export type TaskUpdatePayload = {
     deadline?: string | null;
 };
 
+export type ColumnUpdatePayload = {
+    name?: string;
+    description?: string;
+    order?: string;
+    process_id?: number;
+    before_id?: string | null;
+    after_id?: string | null;
+}
+
 export type AssigneeAction = {
     action_add?: string[];
     action_remove?: string[];
@@ -191,4 +202,16 @@ export type TCardDropTargetData = {
     [cardDropTargetKey]: true;
     task: TodoTask;
     columnId: string;
+};
+
+export const TagAttributesMap: Record<Priority, any> = {
+    high: { type: "light", size: "small", color: "red" },
+    medium: { type: "light", size: "small", color: "amber" },
+    low: { type: "light", size: "small", color: "lime" },
+};
+
+export const PriorityColorMap: Record<Priority, string> = {
+    low: "text-green-500",
+    medium: "text-yellow-500",
+    high: "text-red-500",
 };

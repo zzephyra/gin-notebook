@@ -68,37 +68,48 @@ func GetProjectColumnsByProjectID(db *gorm.DB, projectID int64) ([]model.ToDoCol
 	return columns, nil
 }
 
-func GetProjectTasksByColumns(db *gorm.DB, columnIDs []int64, limitPerColumn int) ([]dto.ToDoTaskWithFlag, error) {
-	if limitPerColumn <= 0 {
-		limitPerColumn = 50 // 默认每列获取50条任务
+// 按列分页：每个 column_id 各自取 [offset, offset+limit) 这段
+func GetProjectTasksByColumns(db *gorm.DB, columnIDs []int64, limit, offset int) ([]dto.ToDoTaskWithFlag, error) {
+	if limit <= 0 {
+		limit = 20
+	}
+	if offset < 0 {
+		offset = 0
 	}
 
-	var orderTag string
-	if database.IsPostgres() {
-		orderTag = `order_index COLLATE "C"`
-	} else {
-		orderTag = "" // 使用默认排序，或者拓展其他数据库
+	// 统一生成 LexoRank 的排序表达式（按字节序 + id 兜底）
+	getOrderExpr := func() string {
+		switch {
+		case database.IsPostgres():
+			return `order_index COLLATE "C" ASC, id ASC`
+		case database.IsMysql():
+			return `order_index COLLATE ascii_bin ASC, id ASC` // 若列定义已是 *_bin，可简化为 order_index ASC, id ASC
+		default:
+			return `order_index ASC, id ASC`
+		}
 	}
 
-	var tasks []dto.ToDoTaskWithFlag
+	orderExpr := getOrderExpr()
+
 	query := fmt.Sprintf(`
-		WITH ranked_tasks AS (
-			SELECT *,
-				ROW_NUMBER() OVER (PARTITION BY column_id ORDER BY %s ASC) AS rn,
-				COUNT(*) OVER (PARTITION BY column_id) AS total_count
-			FROM to_do_tasks
-			WHERE column_id IN (?)
+		WITH ranked AS (
+			SELECT
+				t.*,
+				ROW_NUMBER() OVER (PARTITION BY t.column_id ORDER BY %s) AS rn,
+				COUNT(*)    OVER (PARTITION BY t.column_id) AS total_count
+			FROM to_do_tasks AS t
+			WHERE t.deleted_at IS NULL
+			  AND t.column_id IN (?)
 		)
 		SELECT *
-		FROM ranked_tasks
-		WHERE rn <= ?;
-	`, orderTag)
+		FROM ranked
+		WHERE rn > ? AND rn <= ?;
+	`, orderExpr)
 
-	err := db.Debug().Raw(query, columnIDs, limitPerColumn).Scan(&tasks).Error
-	if err != nil {
+	var tasks []dto.ToDoTaskWithFlag
+	if err := db.Raw(query, columnIDs, offset, offset+limit).Scan(&tasks).Error; err != nil {
 		return nil, err
 	}
-
 	return tasks, nil
 }
 
@@ -185,4 +196,74 @@ func CheckWorkspaceMemberAuth(db *gorm.DB, workspaceID, userID, memberID int64) 
 		return false, err
 	}
 	return count > 0, nil
+}
+
+func DeleteProjectColumnTasksByID(db *gorm.DB, columnID, projectID int64, hard bool) error {
+	sql := db.Where("column_id = ? AND project_id = ?", columnID, projectID).Delete(&model.ToDoTask{})
+
+	if hard {
+		sql = sql.Unscoped()
+	}
+
+	return sql.Error
+}
+
+func GetLastTask(db *gorm.DB, columnID int64, withLock bool) (*model.ToDoTask, error) {
+	var task model.ToDoTask
+	sql := db.Where("column_id = ?", columnID).
+		Order(GetLexoRankOrderExpr(true)).
+		Limit(1).
+		First(&task)
+
+	if withLock {
+		sql = sql.Clauses(clause.Locking{Strength: "UPDATE"})
+	}
+
+	if sql.Error != nil {
+		return nil, sql.Error
+	}
+	return &task, nil
+}
+
+func GetLexoRankOrderExpr(desc bool) string {
+	var dir string
+	if desc {
+		dir = "DESC"
+	} else {
+		dir = "ASC"
+	}
+
+	switch {
+	case database.IsPostgres():
+		return fmt.Sprintf(`order_index COLLATE "C" %s, id %s`, dir, dir)
+	case database.IsMysql():
+		// 如果列本身是 ascii_bin/utf8mb4_bin，可以直接 order_index %s
+		return fmt.Sprintf(`order_index COLLATE ascii_bin %s, id %s`, dir, dir)
+	default:
+		return fmt.Sprintf(`order_index %s, id %s`, dir, dir)
+	}
+}
+
+func UpdateProjectColumnByID(db *gorm.DB, columnID int64, ifMatchUpdatedAt time.Time, data map[string]interface{}) (column *model.ToDoColumn, err error, conflicted bool) {
+	data["updated_at"] = gorm.Expr("NOW()")
+
+	res := db.Model(&model.ToDoColumn{}).
+		Where("id = ? AND updated_at = ?", columnID, ifMatchUpdatedAt).
+		Updates(data)
+
+	if res.Error != nil {
+		return nil, res.Error, false
+	}
+	if res.RowsAffected == 0 {
+		var c model.ToDoColumn
+		if err := db.Select("id, updated_at").First(&c, columnID).Error; err != nil {
+			return nil, err, true
+		}
+		return &c, nil, true
+	}
+	var c model.ToDoColumn
+	if err := db.First(&c, columnID).Error; err != nil {
+		return nil, err, false
+	}
+	return &c, nil, false
 }

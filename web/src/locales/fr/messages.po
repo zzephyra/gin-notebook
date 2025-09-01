@@ -104,8 +104,8 @@ msgstr ""
 #. placeholder {0}: option.label
 #. placeholder {0}: FilterMapping[props.filter?.order_by || "create"]
 #. placeholder {0}: item.label
-#: src/components/todo/task/index.tsx:364
-#: src/components/todo/task/index.tsx:486
+#: src/components/todo/taskDetails/index.tsx:249
+#: src/components/todo/task/index.tsx:310
 #: src/components/comment/main/index.tsx:172
 #: src/components/avatarMenu/index.tsx:80
 msgid "{0}"
@@ -141,6 +141,10 @@ msgstr ""
 
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Active"
+msgstr ""
+
+#: src/components/todo/taskDetails/index.tsx:201
+msgid "Add Cover"
 msgstr ""
 
 #: src/components/modal/workspace/link/index.tsx:83
@@ -203,6 +207,14 @@ msgstr ""
 msgid "Applying the template..."
 msgstr ""
 
+#: src/components/todo/column/index.tsx:210
+#~ msgid "Are you sure you want to clean all tasks in this column?"
+#~ msgstr ""
+
+#: src/components/todo/column/index.tsx:327
+msgid "Are you sure you want to clear all tasks in this column?"
+msgstr ""
+
 #: src/pages/settings/workspaceSettings.tsx:190
 msgid "Are you sure you want to delete this invite link?"
 msgstr ""
@@ -211,7 +223,7 @@ msgstr ""
 msgid "Are you sure you want to delete this note? This action cannot be undone."
 msgstr ""
 
-#: src/components/todo/task/index.tsx:519
+#: src/components/todo/taskDetails/index.tsx:312
 msgid "Assignee"
 msgstr ""
 
@@ -264,6 +276,10 @@ msgstr ""
 msgid "Category name is required"
 msgstr ""
 
+#: src/components/todo/taskDetails/index.tsx:189
+msgid "Change Cover"
+msgstr ""
+
 #: src/pages/settings/accountSettings.tsx:91
 #: src/components/modal/user/changeEmail/index.tsx:24
 #: src/components/modal/user/changeEmail/index.tsx:31
@@ -277,6 +293,14 @@ msgstr ""
 
 #: src/pages/settings/accountSettings.tsx:84
 msgid "Change your password"
+msgstr ""
+
+#: src/components/todo/column/index.tsx:202
+#~ msgid "Clean Tasks"
+#~ msgstr ""
+
+#: src/components/todo/column/index.tsx:310
+msgid "Clear Tasks"
 msgstr ""
 
 #: src/components/fullCalendar/index.tsx:230
@@ -374,7 +398,7 @@ msgstr ""
 msgid "Danger Zone"
 msgstr ""
 
-#: src/components/todo/task/index.tsx:509
+#: src/components/todo/taskDetails/index.tsx:290
 msgid "Deadline"
 msgstr ""
 
@@ -382,7 +406,7 @@ msgstr ""
 #: src/components/note/noteList/index.tsx:77
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
-#: src/components/comment/box/index.tsx:124
+#: src/components/comment/box/index.tsx:126
 msgid "Delete"
 msgstr ""
 
@@ -420,6 +444,10 @@ msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:85
 msgid "Domain Url"
+msgstr ""
+
+#: src/components/todo/column/index.tsx:337
+msgid "Don’t clear"
 msgstr ""
 
 #: src/pages/auth/login.tsx:80
@@ -597,12 +625,20 @@ msgstr ""
 msgid "Hi! Welcome to Mameos!"
 msgstr ""
 
+#: src/components/todo/column/index.tsx:196
+#~ msgid "Hide Column"
+#~ msgstr ""
+
 #: src/pages/workspace/note.tsx:159
 msgid "History"
 msgstr ""
 
 #: src/components/aiHistoryChats/index.tsx:110
 msgid "History Chats"
+msgstr ""
+
+#: src/components/todo/column/index.tsx:347
+msgid "I'm sure"
 msgstr ""
 
 #: src/components/step/workspace/main.tsx:147
@@ -677,7 +713,7 @@ msgstr ""
 msgid "Loading notes..."
 msgstr ""
 
-#: src/pages/workspace/project.tsx:121
+#: src/pages/workspace/project.tsx:188
 msgid "Loading project..."
 msgstr ""
 
@@ -783,12 +819,13 @@ msgstr ""
 msgid "New Password"
 msgstr ""
 
-#: src/components/todo/task/index.tsx:329
+#: src/components/todo/task/index.tsx:271
 msgid "New Project"
 msgstr ""
 
-#: src/components/todo/task/index.tsx:377
-#: src/components/todo/task/index.tsx:455
+#: src/components/todo/taskDetails/index.tsx:222
+#: src/components/todo/task/index.tsx:319
+#: src/components/todo/task/index.tsx:406
 msgid "New Task"
 msgstr ""
 
@@ -800,12 +837,20 @@ msgstr ""
 msgid "Next Note"
 msgstr ""
 
+#: src/components/todo/column/index.tsx:214
+#~ msgid "No"
+#~ msgstr ""
+
 #: src/components/note/main/index.tsx:158
 msgid "No Category"
 msgstr ""
 
 #: src/components/comment/main/index.tsx:28
 msgid "No comments yet"
+msgstr ""
+
+#: src/components/todo/taskDetails/index.tsx:294
+msgid "No Deadline"
 msgstr ""
 
 #: src/components/step/workspace/main.tsx:42
@@ -820,7 +865,7 @@ msgstr ""
 msgid "No more templates to load."
 msgstr ""
 
-#: src/components/todo/task/index.tsx:473
+#: src/components/todo/taskDetails/index.tsx:237
 msgid "No Priority"
 msgstr ""
 
@@ -962,7 +1007,7 @@ msgstr ""
 msgid "Previous Note"
 msgstr ""
 
-#: src/components/todo/task/index.tsx:461
+#: src/components/todo/taskDetails/index.tsx:228
 msgid "Priority"
 msgstr ""
 
@@ -970,7 +1015,7 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
-#: src/pages/workspace/project.tsx:144
+#: src/pages/workspace/project.tsx:211
 msgid "Progress"
 msgstr ""
 
@@ -1031,9 +1076,21 @@ msgstr ""
 msgid "Remember me"
 msgstr ""
 
+#: src/components/todo/taskDetails/index.tsx:193
+msgid "Remove"
+msgstr ""
+
 #: src/components/note/categoryItem/index.tsx:61
 msgid "Remove from Favorites"
 msgstr ""
+
+#: src/components/todo/column/index.tsx:297
+msgid "Rename"
+msgstr ""
+
+#: src/components/todo/column/index.tsx:195
+#~ msgid "Rename Column"
+#~ msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:104
 #: src/components/modal/user/modifyPassword/index.tsx:59
@@ -1084,7 +1141,7 @@ msgstr ""
 msgid "Select note status"
 msgstr ""
 
-#: src/components/todo/task/index.tsx:350
+#: src/components/todo/task/index.tsx:297
 msgid "Select Priority"
 msgstr ""
 
@@ -1151,7 +1208,7 @@ msgid "Start a conversation below"
 msgstr ""
 
 #: src/pages/settings/workspaceSettings.tsx:139
-#: src/components/todo/task/index.tsx:498
+#: src/components/todo/taskDetails/index.tsx:260
 #: src/components/dropdown/note/index.tsx:194
 msgid "Status"
 msgstr ""
@@ -1206,6 +1263,10 @@ msgstr ""
 
 #: src/pages/workspace/invite.tsx:141
 msgid "This invitation link does not exist."
+msgstr ""
+
+#: src/components/todo/column/index.tsx:331
+msgid "This is a very dangerous action. Once confirmed, the data cannot be recovered."
 msgstr ""
 
 #: src/pages/settings/workspaceSettings.tsx:49
@@ -1279,7 +1340,11 @@ msgstr ""
 msgid "Upload avatar failed"
 msgstr ""
 
-#: src/components/comment/box/index.tsx:121
+#: src/components/todo/taskDetails/index.tsx:125
+msgid "Upload failed"
+msgstr ""
+
+#: src/components/comment/box/index.tsx:123
 msgid "Upload File"
 msgstr ""
 
@@ -1311,7 +1376,7 @@ msgstr ""
 msgid "Workspace: "
 msgstr ""
 
-#: src/components/todo/task/index.tsx:525
+#: src/components/todo/taskDetails/index.tsx:325
 msgid "Write something about the task"
 msgstr ""
 
