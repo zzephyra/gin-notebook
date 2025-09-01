@@ -371,7 +371,7 @@ function Task({ task, column }: { task: TodoTask; column: ToDoColumn }) {
                 mask={false}
                 onCancel={() => setOpenSideSheet(false)}
                 disableScroll={false}>
-                <TaskDetails task={task} column={column} onScroll={handleBodyScroll} />
+                <TaskDetails task={task} column={column} onScroll={handleBodyScroll} showBrief={!isFullWidth} />
             </SideSheet>
 
             {/* === 自定义原生拖拽预览：使用 Portal 渲染到 container === */}

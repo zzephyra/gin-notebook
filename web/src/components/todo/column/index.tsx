@@ -10,10 +10,8 @@ import { Button } from "@heroui/button";
 import { EllipsisHorizontalIcon, ExclamationCircleIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { isCardOver, ToDoColumnClasses } from "./script";
 import { isCardData } from "../script";
-import { Dropdown, HotKeys } from '@douyinfe/semi-ui';
-
+import { Dropdown } from '@douyinfe/semi-ui';
 import {
-
     Listbox,
     ListboxItem,
     ListboxSection,
@@ -22,14 +20,11 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
     useDisclosure,
 } from "@heroui/react";
 
 import { useLingui } from "@lingui/react/macro";
-import { IconDelete, IconEdit2Stroked, IconEyeClosedSolid } from "@douyinfe/semi-icons";
+import { IconDelete, IconEdit2Stroked } from "@douyinfe/semi-icons";
 
 /** 指示条：插在两个 task 之间 */
 function GapIndicator() {

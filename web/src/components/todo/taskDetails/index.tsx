@@ -46,7 +46,6 @@ const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, co
     const drawerBodyRef = useRef<HTMLDivElement | null>(null);
     const titleRef = useRef<HTMLInputElement>(null);
     const coverRef = useRef<HTMLInputElement>(null);
-    const [isBrief, setIsBrief] = useState(!!showBrief);
     const [isEdit, setIsEdit] = useState({ title: false });
     const params = useParams();
     const { updateTask, setActiveOverlay, columns } = useTodo();
@@ -124,10 +123,9 @@ const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, co
             if (event.type === "error") {
                 toast.error(t`Upload failed`);
                 off();
-            } else if (event.type == "complete") {
-                e.target.files = null;
             }
         });
+        e.target.files = null;
         const { url } = await controller.promise;
         handleUpdateTask({ cover: url } as any);
     }
