@@ -1,0 +1,6 @@
+FROM golang:1.24.3
+ENV GOPROXY https://goproxy.cn,direct
+WORKDIR /gnote-server
+COPY . .
+RUN go mod download
+ENTRYPOINT ["make","worker"]

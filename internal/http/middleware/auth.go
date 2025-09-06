@@ -3,6 +3,7 @@ package middleware
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/http/response"
 	"gin-notebook/internal/repository"
@@ -23,8 +24,9 @@ type WorkspaceAuthDto struct {
 
 func RequireWorkspaceAccess() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userID := c.GetInt64("userID")          // 假设已解码 JWT 拿到
-		workspaceIDStr := c.Param(workspaceKey) // 从 URL 参数获取 workspace ID
+		userID := c.GetInt64("userID")                        // 假设已解码 JWT 拿到
+		fmt.Println("RequireWorkspaceAccess userID:", userID) // 调试输出
+		workspaceIDStr := c.Param(workspaceKey)               // 从 URL 参数获取 workspace ID
 
 		if workspaceIDStr == "" {
 			workspaceIDStr = c.Query(workspaceKey)

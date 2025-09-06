@@ -15,7 +15,8 @@ import (
 
 func CreateProjectTaskApi(c *gin.Context) {
 	params := &dto.ProjectTaskDTO{
-		Creator: c.MustGet("userID").(int64),
+		Creator:  c.MustGet("userID").(int64),
+		MemberID: c.MustGet("workspaceMemberID").(int64),
 	}
 
 	if err := c.ShouldBindJSON(params); err != nil {
@@ -30,7 +31,7 @@ func CreateProjectTaskApi(c *gin.Context) {
 		return
 	}
 
-	responseCode, data := projectService.CreateProjectTask(params)
+	responseCode, data := projectService.CreateProjectTask(c.Request.Context(), params)
 	c.JSON(http.StatusCreated, response.Response(responseCode, data))
 }
 
@@ -70,6 +71,7 @@ func GetProjectApi(c *gin.Context) {
 	params := &dto.GetProjectDTO{
 		ProjectID: ProjectID,
 		UserID:    c.MustGet("userID").(int64),
+		MemberID:  c.MustGet("workspaceMemberID").(int64),
 	}
 
 	if err := c.ShouldBindQuery(params); err != nil {
@@ -101,8 +103,9 @@ func UpdateProjectTaskApi(c *gin.Context) {
 	}
 
 	params := &dto.ProjectTaskDTO{
-		Creator: c.MustGet("userID").(int64),
-		TaskID:  TaskID,
+		Creator:  c.MustGet("userID").(int64),
+		TaskID:   TaskID,
+		MemberID: c.MustGet("workspaceMemberID").(int64),
 	}
 	if err := c.ShouldBindJSON(params); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
@@ -115,7 +118,7 @@ func UpdateProjectTaskApi(c *gin.Context) {
 		logger.LogError(err, "Validation failed for ProjectTaskDTO")
 		return
 	}
-	responseCode, data := projectService.UpdateProjectTask(params)
+	responseCode, data := projectService.UpdateProjectTask(c.Request.Context(), params)
 	if data != nil {
 		c.JSON(http.StatusOK, response.Response(responseCode, data))
 		return
@@ -392,5 +395,39 @@ func UpdateProjectColumnApi(c *gin.Context) {
 		return
 	}
 	responseCode, data := projectService.UpdateColumn(params)
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func GetProjectTaskActivityApi(c *gin.Context) {
+	taskID, isExist := c.Params.Get("taskID")
+	if !isExist {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
+		return
+	}
+
+	TaskID, err := strconv.ParseInt(taskID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PROJECT_ID, nil))
+		return
+	}
+
+	params := &dto.GetProjectTaskActivityDTO{
+		UserID:   c.MustGet("userID").(int64),
+		TaskID:   TaskID,
+		MemberID: c.MustGet("workspaceMemberID").(int64),
+	}
+
+	if err := c.ShouldBindQuery(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Failed to bind JSON parameters")
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Validation failed for GetProjectTaskActivityDTO")
+		return
+	}
+	responseCode, data := projectService.GetProjectTaskActivity(c.Request.Context(), params)
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }

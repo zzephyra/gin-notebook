@@ -1,12 +1,15 @@
 package projectService
 
 import (
+	"context"
 	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/repository"
+	"gin-notebook/internal/tasks/asynq/enqueue"
+	"gin-notebook/internal/tasks/asynq/types"
 	"gin-notebook/pkg/utils/algorithm"
 	"gin-notebook/pkg/utils/tools"
 	"strconv"
@@ -16,7 +19,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateProjectTask(params *dto.ProjectTaskDTO) (responseCode int, data map[string]interface{}) {
+func CreateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (responseCode int, data map[string]interface{}) {
 	task := model.ToDoTask{}
 	copier.Copy(&task, params.Payload)
 
@@ -30,12 +33,13 @@ func CreateProjectTask(params *dto.ProjectTaskDTO) (responseCode int, data map[s
 	for attempt := 0; attempt < maxRetry; attempt++ {
 		err := database.DB.Transaction(func(tx *gorm.DB) error {
 			latestTask, err := repository.GetLastTask(tx, params.ColumnID, true)
-			if err != nil {
-				responseCode = database.IsError(err)
-				return err
+			var latestOrderIndex = algorithm.RankMin()
+			if err == nil {
+				// 当列内存在任务时，优先最后任务的OrderIndex，否则默认最小值
+				latestOrderIndex = lexorank.BucketKey(latestTask.OrderIndex)
 			}
 
-			task.OrderIndex = algorithm.RankBetweenBucket(lexorank.BucketKey(latestTask.OrderIndex), algorithm.RankMax()).String()
+			task.OrderIndex = algorithm.RankBetweenBucket(latestOrderIndex, algorithm.RankMax()).String()
 
 			if err := repository.CreateProjectTask(tx, &task); err != nil {
 				responseCode = database.IsError(err)
@@ -72,12 +76,27 @@ func CreateProjectTask(params *dto.ProjectTaskDTO) (responseCode int, data map[s
 		}
 	}
 
-	if latestError != nil {
-		return responseCode, nil
+	if latestError == nil {
+		responseCode = message.SUCCESS
+		data = tools.StructToUpdateMap(&task, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
 	}
 
-	responseCode = message.SUCCESS
-	data = tools.StructToUpdateMap(&task, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
+	isSuccess := latestError == nil
+	enqueue.KanbanActivityJob(ctx, types.KanbanActivityPayload{
+		MemberID:    params.MemberID,
+		ActorID:     params.Creator,
+		Success:     &isSuccess,
+		SuccessCode: &responseCode,
+		ProjectID:   &task.ProjectID,
+		TaskID:      &task.ID,
+		ColumnID:    &task.ColumnID,
+		WorkspaceID: params.WorkspaceID,
+		OriginData:  task,
+		Patch:       nil,
+		Action:      model.CreateAction,
+		TargetType:  model.TargetTask,
+		TargetID:    task.ID,
+	})
 	return
 }
 
@@ -187,6 +206,7 @@ func CreateTaskComment(params *dto.CreateToDoTaskCommentDTO) (responseCode int, 
 	}
 
 	responseCode = message.SUCCESS
+
 	return responseCode, data
 }
 

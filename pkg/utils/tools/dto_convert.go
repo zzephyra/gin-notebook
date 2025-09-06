@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -240,4 +241,72 @@ func ConvertCacheToModel(data map[string]string, modelInstance interface{}) erro
 	}
 
 	return nil
+}
+
+func GetField(obj any, fieldName string) (any, error) {
+	if obj == nil {
+		return nil, errors.New("nil object")
+	}
+
+	v := reflect.ValueOf(obj)
+
+	// 解引用指针
+	for v.Kind() == reflect.Ptr {
+		if v.IsNil() {
+			return nil, errors.New("nil pointer")
+		}
+		v = v.Elem()
+	}
+
+	switch v.Kind() {
+	case reflect.Map:
+		// 仅支持 string 作为 key
+		t := v.Type()
+		if t.Key().Kind() != reflect.String {
+			return nil, fmt.Errorf("map key must be string, got %s", t.Key())
+		}
+		val := v.MapIndex(reflect.ValueOf(fieldName))
+		if !val.IsValid() {
+			return nil, fmt.Errorf("no such key: %s", fieldName)
+		}
+		return val.Interface(), nil
+
+	case reflect.Struct:
+		// 1) 先按字段名直接找
+		if f := v.FieldByName(fieldName); f.IsValid() {
+			if !f.CanInterface() {
+				return nil, fmt.Errorf("field %q is unexported", fieldName)
+			}
+			return f.Interface(), nil
+		}
+
+		// 2) 再按 json tag 名找（兼容 `json:"foo,omitempty"`）
+		typ := v.Type()
+		for i := 0; i < typ.NumField(); i++ {
+			sf := typ.Field(i)
+
+			// 跳过未导出字段
+			if sf.PkgPath != "" {
+				continue
+			}
+
+			tag := sf.Tag.Get("json")
+			if tag == "" || tag == "-" {
+				continue
+			}
+			name := strings.Split(tag, ",")[0]
+			if name == fieldName {
+				fv := v.Field(i)
+				if !fv.CanInterface() {
+					return nil, fmt.Errorf("field %q is unexported", sf.Name)
+				}
+				return fv.Interface(), nil
+			}
+		}
+
+		return nil, fmt.Errorf("no such field or json tag: %s", fieldName)
+
+	default:
+		return nil, fmt.Errorf("unsupported type: %s", v.Kind())
+	}
 }

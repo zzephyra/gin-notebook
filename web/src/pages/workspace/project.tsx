@@ -150,6 +150,7 @@ function ProjectPage() {
                                 updateTask(dragging.task.id, { column_id: destination.id, before_id: destination.tasks[indexOfTarget + 1].id, after_id: destination.tasks[indexOfTarget].id } as any, { insertIndex: indexOfTarget + 1 - isBlow });
                             }
                         } else {
+
                             return
                         }
                     }

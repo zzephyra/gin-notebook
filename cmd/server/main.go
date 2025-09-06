@@ -10,6 +10,7 @@ import (
 	"gin-notebook/internal/pkg/google"
 	"gin-notebook/internal/pkg/queue"
 	"gin-notebook/internal/pkg/rbac"
+	asynqimpl "gin-notebook/internal/tasks/asynq"
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/algorithm"
 	"gin-notebook/pkg/utils/validator"
@@ -30,7 +31,7 @@ func main() {
 	logger.LogInfo("logger init success", nil)
 
 	// 连接数据库
-	database.ConnectDB(config)
+	database.ConnectDB(config, true)
 	logger.LogInfo("Database connect success", nil)
 
 	// 连接redis
@@ -60,6 +61,9 @@ func main() {
 
 	// 初始化mmdb
 	geoip.InitGeoIP(config.GeoIP.DBPath)
+
+	// 初始化asynq
+	asynqimpl.InitGlobal(config.Cache.Host, config.Cache.Port, config.Cache.Password, config.Cache.DB)
 
 	// 初始化Google OAuth2客户端
 	google.Init(config)

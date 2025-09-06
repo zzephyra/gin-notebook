@@ -1,8 +1,9 @@
 import axiosClient from "@/lib/api/client";
-import { columnApiWithID, projectsApi, taskUpdateApi, todoTasksApi } from "./routes";
+import { columnApiWithID, projectsApi, taskActivitiesApi, taskUpdateApi, todoTasksApi } from "./routes";
 import { responseCode } from "../constant/response";
 import { ColumnUpdatePayload, CreateTaskInput, TaskUpdatePayload, ToDoColumn } from "@/components/todo/type";
 import toast from "react-hot-toast";
+import { TaskActivityOptions } from "./type";
 export async function getProjectsRequest(projectID: string, workspaceID: string): Promise<{ code: number, data: { todo: ToDoColumn[] } }> {
     if (!projectID || !workspaceID) {
         return {
@@ -117,5 +118,30 @@ export async function updateProjectColumnRequest(column_id: string, workspace_id
         } catch (err) {
             continue;
         }
+    }
+}
+
+
+export async function getTaskActivitiesRequest(taskID: string, workspaceID: string, limit: number = 20, offset: number = 0, opt?: TaskActivityOptions) {
+    if (!taskID || !workspaceID) {
+        return {
+            code: responseCode.ERROR,
+            data: []
+        }
+    }
+
+    if (offset < 0) { offset = 0; }
+    if (limit <= 0 || limit > 100) { limit = 20; }
+
+    var defaultResp = {
+        activies: [],
+        total: 0
+    }
+
+    try {
+        let res = await axiosClient.get(taskActivitiesApi(taskID), { params: { workspace_id: workspaceID, limit, offset, ...opt } })
+        return res.data.data || defaultResp;
+    } catch (err) {
+        return defaultResp
     }
 }

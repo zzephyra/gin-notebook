@@ -20,9 +20,10 @@ type Config struct {
 		Https bool `toml:"https"`
 	} `toml:"server"`
 	Cache struct {
-		Host string `toml:"host"`
-		Port string `toml:"port"`
-		DB   int    `toml:"db"`
+		Host     string `toml:"host"`
+		Port     string `toml:"port"`
+		DB       int    `toml:"db"`
+		Password string `toml:"password"`
 	} `toml:"cache"`
 	Email struct {
 		Host     string `toml:"host"`

@@ -24,6 +24,8 @@ import {
     Image,
     ListboxItem,
     ButtonGroup,
+    Tabs,
+    Tab,
 } from "@heroui/react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import dayjs from "dayjs";
@@ -40,6 +42,8 @@ import { debounce } from "lodash";
 import { IconDelete, IconPlus, IconUpload } from '@douyinfe/semi-icons';
 import { UploadFile } from "@/lib/upload";
 import toast from "react-hot-toast";
+import useTaskActivity from "@/hooks/useActivity";
+import TaskActivity from "../activity";
 
 
 const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, column: ToDoColumn, onScroll?: (e: React.UIEvent<HTMLDivElement>) => void, showBrief?: boolean }) => {
@@ -52,7 +56,7 @@ const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, co
     const [searchParams, setSearchParams] = useState({ limit: 10, keywords: "" });
 
     const { data: members, isFetching } = useWorkspaceMembers(params.id || "", searchParams);
-
+    const { activities } = useTaskActivity(task.id, params.id || "");
     const [selectedAssigneeIDs, setSelectedAssigneeIDs] = useState<Set<string>>(
         new Set(task.assignee?.map((a) => a.id) || []),
     );
@@ -170,8 +174,8 @@ const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, co
 
     return (
         <CommentActionsProvider value={commentsController}>
-            <div ref={drawerBodyRef} onScroll={onScroll} className="overflow-y-auto h-full px-2">
-                <div >
+            <div ref={drawerBodyRef} onScroll={onScroll} className={`overflow-y-auto h-full px-2 `}>
+                <div className="mb-2">
                     {
                         task.cover ? (
                             <div className="relative group">
@@ -203,139 +207,277 @@ const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, co
                     }
                     <input className="hidden" onChange={handleUploadCover} accept="image/*" ref={coverRef} type="file" />
 
-                    <h1
-                        ref={titleRef as any}
-                        contentEditable={isEdit.title}
-                        suppressContentEditableWarning
-                        role="textbox"
-                        aria-multiline="false"
-                        onClick={startEditTitle}
-                        onBlur={commitTitle}
-                        onKeyDown={onTitleKeyDown}
-                        onCompositionStart={() => (composingRef.current = true)}
-                        onCompositionEnd={() => (composingRef.current = false)}
-                        className={`text-2xl px-2 pt-1 pb-2 rounded-xl font-bold ${isEdit.title ? "cursor-text" : "cursor-pointer hover:bg-gray-100"
-                            }`}
-                    >
-                        {task.title || t`New Task`}
-                    </h1>
-                </div>
 
-                <div className="flex">
-                    <div className={`flex flex-1 items-center ${showBrief ? "flex-col" : ""} gap-1`}>
-                        <label className="font-bold text-sm">{t`Priority`}</label>
-                        <Dropdown>
-                            <DropdownTrigger>
-                                <Button size="sm" variant="light">
-                                    {task.priority ? (
-                                        <Tag size="small" {...TagAttributesMap[task.priority]}>
-                                            {i18n._(task.priority)}
-                                        </Tag>
-                                    ) : (
-                                        <span className="text-xs text-gray-500">{t`No Priority`}</span>
-                                    )}
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu>
-                                {PriorityOptions.map((option) => (
-                                    <DropdownItem
-                                        key={option.value}
-                                        onPress={() => handleUpdateTask({ priority: option.value } as any)}
-                                    >
-                                        <div className="flex gap-2 items-center">
-                                            <FlagIcon className={`w-4 h-4 ${PriorityColorMap[option.value]}`} />
-                                            <span className="text-xs text-gray-500 truncate">{t`${option.label}`}</span>
+                </div>
+                <div className={`${showBrief ? "" : "flex gap-2"}`}>
+                    <div className="flex-1">
+                        <h1
+                            ref={titleRef as any}
+                            contentEditable={isEdit.title}
+                            suppressContentEditableWarning
+                            role="textbox"
+                            aria-multiline="false"
+                            onClick={startEditTitle}
+                            onBlur={commitTitle}
+                            onKeyDown={onTitleKeyDown}
+                            onCompositionStart={() => (composingRef.current = true)}
+                            onCompositionEnd={() => (composingRef.current = false)}
+                            className={`text-2xl px-2 pt-1 pb-2 rounded-xl font-bold ${isEdit.title ? "cursor-text" : "cursor-pointer hover:bg-gray-100"
+                                }`}
+                        >
+                            {task.title || t`New Task`}
+                        </h1>
+                        <div className="grid gap-3">
+                            {showBrief ? (
+                                <>
+                                    {/* 第一行三列：Priority / Status / Deadline */}
+                                    <div className="grid grid-cols-3 gap-3">
+                                        {/* Priority */}
+                                        <div className={`flex flex-1 items-center ${showBrief ? "flex-col" : ""} gap-1`}>
+                                            <label className={`${showBrief ? "font-bold text-sm" : "text-xs text-gray-500"}`}>
+                                                {t`Priority`}
+                                            </label>
+                                            <Dropdown>
+                                                <DropdownTrigger>
+                                                    <Button size="sm" variant="light" className="flex-1 justify-start">
+                                                        {task?.priority ? (
+                                                            <Tag size="small" {...TagAttributesMap[task.priority]}>
+                                                                {i18n._(task.priority)}
+                                                            </Tag>
+                                                        ) : (
+                                                            <span className="text-xs text-gray-500">{t`No Priority`}</span>
+                                                        )}
+                                                    </Button>
+                                                </DropdownTrigger>
+                                                <DropdownMenu>
+                                                    {PriorityOptions.map((option) => (
+                                                        <DropdownItem
+                                                            key={option.value}
+                                                            onPress={() => handleUpdateTask({ priority: option.value })}
+                                                        >
+                                                            <div className="flex gap-2 items-center">
+                                                                <FlagIcon className={`w-4 h-4 ${PriorityColorMap[option.value]}`} />
+                                                                <span className="text-xs text-gray-500 truncate">{t`${option.label}`}</span>
+                                                            </div>
+                                                        </DropdownItem>
+                                                    ))}
+                                                </DropdownMenu>
+                                            </Dropdown>
                                         </div>
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
+
+                                        {/* Status */}
+                                        <div className={`flex flex-1 items-center ${showBrief ? "flex-col" : ""} gap-1`}>
+                                            <label className={`${showBrief ? "font-bold text-sm" : "text-xs text-gray-500"}`}>
+                                                {t`Status`}
+                                            </label>
+                                            <Popover>
+                                                <PopoverTrigger>
+                                                    <Button size="sm" variant="light" className="flex-1 justify-start">
+                                                        <Tag size="large" className={`${ToDoColumnClasses[column.process_id]} !p-2`}>
+                                                            {column.name}
+                                                        </Tag>
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent>
+                                                    <Listbox>
+                                                        {columns.map((col) => (
+                                                            <ListboxItem
+                                                                key={col.id}
+                                                                onClick={() => {
+                                                                    if (col.id !== column.id) handleUpdateTask({ column_id: col.id });
+                                                                }}
+                                                            >
+                                                                {col.name}
+                                                            </ListboxItem>
+                                                        ))}
+                                                    </Listbox>
+                                                </PopoverContent>
+                                            </Popover>
+                                        </div>
+
+                                        {/* Deadline */}
+                                        <div className={`flex flex-1 items-center ${showBrief ? "flex-col" : ""} gap-1`}>
+                                            <label className={`${showBrief ? "font-bold text-sm" : "text-xs text-gray-500"}`}>
+                                                {t`Deadline`}
+                                            </label>
+                                            <Popover isOpen={openDeadlinePopover} onOpenChange={setOpenDeadlinePopover}>
+                                                <PopoverTrigger>
+                                                    <Button size="sm" variant="light" className="flex-1 justify-start text-gray-500">
+                                                        {task?.deadline ? new Date(task.deadline)?.toLocaleDateString() : t`No Deadline`}
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent>
+                                                    <DateCalendar
+                                                        onChange={handleSelectDeadline}
+                                                        value={task?.deadline ? new Date(task.deadline) : undefined}
+                                                        shadow={false}
+                                                        className="!border-none"
+                                                        highlightToday={false}
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
+                                        </div>
+                                    </div>
+
+                                    {/* 其他行：一列 */}
+                                    <div className="flex gap-1 items-center">
+                                        <label className="text-xs text-gray-500">{t`Assignee`}</label>
+                                        <MemberDropdown
+                                            members={members || []}
+                                            isFetching={isFetching}
+                                            onKeywordChange={onKeywordChange}
+                                            selectedKeys={
+                                                Array.isArray(selectedAssigneeIDs)
+                                                    ? selectedAssigneeIDs
+                                                    : Array.from(selectedAssigneeIDs)
+                                            }
+                                            onAction={handleSelectAssignee}
+                                        />
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className={`flex flex-1 items-center ${showBrief ? "flex-col" : ""} gap-1`}>
+                                        <label className={`${showBrief ? "font-bold text-sm" : "text-xs text-gray-500"}`}>
+                                            {t`Priority`}
+                                        </label>
+                                        <Dropdown>
+                                            <DropdownTrigger>
+                                                <Button size="sm" variant="light" className="flex-1 justify-start">
+                                                    {task?.priority ? (
+                                                        <Tag size="small" {...TagAttributesMap[task.priority]}>
+                                                            {i18n._(task.priority)}
+                                                        </Tag>
+                                                    ) : (
+                                                        <span className="text-xs text-gray-500">{t`No Priority`}</span>
+                                                    )}
+                                                </Button>
+                                            </DropdownTrigger>
+                                            <DropdownMenu>
+                                                {PriorityOptions.map((option) => (
+                                                    <DropdownItem
+                                                        key={option.value}
+                                                        onPress={() => handleUpdateTask({ priority: option.value })}
+                                                    >
+                                                        <div className="flex gap-2 items-center">
+                                                            <FlagIcon className={`w-4 h-4 ${PriorityColorMap[option.value]}`} />
+                                                            <span className="text-xs text-gray-500 truncate">{t`${option.label}`}</span>
+                                                        </div>
+                                                    </DropdownItem>
+                                                ))}
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    </div>
+
+                                    {/* Status */}
+                                    <div className={`flex flex-1 items-center ${showBrief ? "flex-col" : ""} gap-1`}>
+                                        <label className={`${showBrief ? "font-bold text-sm" : "text-xs text-gray-500"}`}>
+                                            {t`Status`}
+                                        </label>
+                                        <Popover>
+                                            <PopoverTrigger>
+                                                <Button size="sm" variant="light" className="flex-1 justify-start">
+                                                    <Tag size="large" className={`${ToDoColumnClasses[column.process_id]} !p-2`}>
+                                                        {column.name}
+                                                    </Tag>
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent>
+                                                <Listbox>
+                                                    {columns.map((col) => (
+                                                        <ListboxItem
+                                                            key={col.id}
+                                                            onClick={() => {
+                                                                if (col.id !== column.id) handleUpdateTask({ column_id: col.id });
+                                                            }}
+                                                        >
+                                                            {col.name}
+                                                        </ListboxItem>
+                                                    ))}
+                                                </Listbox>
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+
+                                    {/* Deadline */}
+                                    <div className={`flex flex-1 items-center ${showBrief ? "flex-col" : ""} gap-1`}>
+                                        <label className={`${showBrief ? "font-bold text-sm" : "text-xs text-gray-500"}`}>
+                                            {t`Deadline`}
+                                        </label>
+                                        <Popover isOpen={openDeadlinePopover} onOpenChange={setOpenDeadlinePopover}>
+                                            <PopoverTrigger>
+                                                <Button size="sm" variant="light" className="flex-1 justify-start text-gray-500">
+                                                    {task?.deadline ? new Date(task.deadline)?.toLocaleDateString() : t`No Deadline`}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent>
+                                                <DateCalendar
+                                                    onChange={handleSelectDeadline}
+                                                    value={task?.deadline ? new Date(task.deadline) : undefined}
+                                                    shadow={false}
+                                                    className="!border-none"
+                                                    highlightToday={false}
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+
+                                    {/* Assignee */}
+                                    <div className="flex gap-1 items-center">
+                                        <label className="text-xs text-gray-500">{t`Assignee`}</label>
+                                        <MemberDropdown
+                                            members={members || []}
+                                            isFetching={isFetching}
+                                            onKeywordChange={onKeywordChange}
+                                            selectedKeys={
+                                                Array.isArray(selectedAssigneeIDs)
+                                                    ? selectedAssigneeIDs
+                                                    : Array.from(selectedAssigneeIDs)
+                                            }
+                                            onAction={handleSelectAssignee}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                        <div>
+                            <BlockNoteEditor
+                                options={{ placeholder: { emptyDocument: t`Write something about the task` } }}
+                                className="task-editor"
+                                noteID={task.id}
+                                content={task.description}
+                            />
+                        </div>
+
+                        <Divider className="my-2 bg-gray-200" />
                     </div>
 
-                    <Divider className="bg-gray-200" orientation="vertical" />
-
-                    <div className="flex flex-1 items-center flex-col gap-1">
-                        <label className="font-bold text-sm">{t`Status`}</label>
-                        <Popover>
-                            <PopoverTrigger>
-                                <Button size="sm" variant="light">
-                                    <Tag size="large" shape="circle" className={`${ToDoColumnClasses[column.process_id]} !p-2`}>
-                                        {column.name}
-                                    </Tag>
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent>
-                                <Listbox>
-                                    {columns.map((col) => (
-                                        <ListboxItem
-                                            key={col.id}
-                                            onClick={() => {
-                                                if (col.id !== column.id) handleUpdateTask({ column_id: col.id } as any);
-                                                setOpenDeadlinePopover(false);
-                                            }}
-                                        >
-                                            {col.name}
-                                        </ListboxItem>
-                                    ))}
-                                </Listbox>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-
-                    <Divider className="bg-gray-200" orientation="vertical" />
-
-                    <div className="flex flex-1 items-center flex-col gap-1">
-                        <label className="font-bold text-sm">{t`Deadline`}</label>
-                        <Popover isOpen={openDeadlinePopover} onOpenChange={setOpenDeadlinePopover}>
-                            <PopoverTrigger>
-                                <Button size="sm" variant="light" className="text-gray-500">
-                                    {task.deadline ? new Date(task.deadline)?.toLocaleDateString() : t`No Deadline`}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent>
-                                <DateCalendar
-                                    onChange={handleSelectDeadline}
-                                    value={task.deadline ? new Date(task.deadline) : undefined}
-                                    shadow={false}
-                                    className="!border-none"
-                                    highlightToday={false}
+                    <div className="flex-1">
+                        {
+                            !showBrief ? (
+                                <Tabs>
+                                    <Tab title={t`Comments`}>
+                                        <Comments
+                                            onFilterChange={(filter) => setCommentParams((prev) => ({ ...prev, ...filter }))}
+                                            filter={commentParams}
+                                            taskId={task.id}
+                                            currentUser={currentUser}
+                                        />
+                                    </Tab>
+                                    <Tab title={t`Activity`}>
+                                        <TaskActivity activities={activities} />
+                                    </Tab>
+                                </Tabs>
+                            ) : (
+                                <Comments
+                                    onFilterChange={(filter) => setCommentParams((prev) => ({ ...prev, ...filter }))}
+                                    filter={commentParams}
+                                    taskId={task.id}
+                                    currentUser={currentUser}
                                 />
-                            </PopoverContent>
-                        </Popover>
+                            )
+                        }
                     </div>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <div className="flex gap-1 items-center">
-                        <label className="text-xs text-gray-500">{t`Assignee`}</label>
-                        <MemberDropdown
-                            members={members || []}
-                            isFetching={isFetching}
-                            onKeywordChange={onKeywordChange}
-                            selectedKeys={Array.from(selectedAssigneeIDs)}
-                            onAction={handleSelectAssignee}
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <BlockNoteEditor
-                        options={{ placeholder: { emptyDocument: t`Write something about the task` } }}
-                        className="task-editor"
-                        noteID={task.id}
-                        content={task.description}
-                    />
-                </div>
-
-                <Divider className="my-2 bg-gray-200" />
-
-                <div>
-                    <Comments
-                        onFilterChange={(filter) => setCommentParams((prev) => ({ ...prev, ...filter }))}
-                        filter={commentParams}
-                        taskId={task.id}
-                        currentUser={currentUser}
-                    />
                 </div>
             </div>
         </CommentActionsProvider>

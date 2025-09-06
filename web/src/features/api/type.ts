@@ -135,3 +135,8 @@ export interface TaskCommentParams extends ListBaseParams, TaskCommentFilter {
     // project_id: string;
     [key: string]: any;
 }
+
+export interface TaskActivityOptions {
+    Start: string; // 开始时间，ISO 8601 格式
+    End: string;   // 结束时间，ISO 8601 格式
+}

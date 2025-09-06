@@ -11,7 +11,9 @@ import (
 func DeleteTaskComment(params *dto.DeleteTaskCommentDTO) (responseCode int) {
 	comment := &model.ToDoTaskComment{
 		BaseModel: model.BaseModel{
-			ID: params.CommentID,
+			ImmutableBaseModel: model.ImmutableBaseModel{
+				ID: params.CommentID,
+			},
 		},
 		ToDoTaskID: params.TaskID,
 		MemberID:   params.MemberID,

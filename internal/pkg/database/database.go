@@ -46,10 +46,11 @@ func Migrate(db *gorm.DB) {
 		&model.ToDoCommentMention{},
 		&model.ToDoCommentAttachment{},
 		&model.ToDoCommentLike{},
+		&model.KanbanActivity{},
 	)
 }
 
-func ConnectDB(c *configs.Config) {
+func ConnectDB(c *configs.Config, migrateDB bool) {
 	var db Database
 	Engine = c.Database.Engine
 	if c.Database.Engine == "postgres" {
@@ -68,7 +69,11 @@ func ConnectDB(c *configs.Config) {
 	if err != nil {
 		panic(err)
 	}
-	Migrate(conn)
+
+	if migrateDB {
+		Migrate(conn)
+	}
+
 	DB = conn
 }
 

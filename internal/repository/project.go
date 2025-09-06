@@ -113,10 +113,15 @@ func GetProjectTasksByColumns(db *gorm.DB, columnIDs []int64, limit, offset int)
 	return tasks, nil
 }
 
-func GetProjectTaskByID(db *gorm.DB, taskID int64) (*model.ToDoTask, error) {
+func GetProjectTaskByID(db *gorm.DB, taskID int64, withLock bool) (*model.ToDoTask, error) {
 	var task model.ToDoTask
-	err := db.Where("id = ?", taskID).First(&task).Error
-	if err != nil {
+	sql := db.Where("id = ?", taskID)
+
+	if withLock {
+		sql = sql.Clauses(clause.Locking{Strength: "UPDATE"})
+	}
+
+	if err := sql.First(&task).Error; err != nil {
 		return nil, err
 	}
 	return &task, nil
@@ -266,4 +271,43 @@ func UpdateProjectColumnByID(db *gorm.DB, columnID int64, ifMatchUpdatedAt time.
 		return nil, err, false
 	}
 	return &c, nil, false
+}
+
+func GetProjectTaskActivitiesByTaskID(db *gorm.DB, taskID int64, limit, offset int, start, end *time.Time) ([]dto.KanbanActivityDTO, int64, error) {
+	var activities []dto.KanbanActivityDTO
+
+	if offset < 0 {
+		offset = 0
+	}
+	if limit <= 0 || limit > 30 {
+		limit = 20
+	}
+
+	sql := db.
+		Model(&model.KanbanActivity{}).
+		Debug().
+		Where("task_id = ? AND success = true", taskID).
+		Joins("LEFT JOIN workspace_members wm ON wm.id = kanban_activity.member_id").
+		Joins("LEFT JOIN users u ON u.id = wm.user_id").
+		Select("kanban_activity.*, u.nickname AS user_nickname, wm.nickname AS member__nickname, u.avatar as avatar, u.email as email").
+		Order("created_at DESC")
+
+	if start != nil {
+		sql = sql.Where("kanban_activity.created_at >= ?", start.UTC())
+	}
+	if end != nil {
+		sql = sql.Where("kanban_activity.created_at <= ?", end.UTC())
+	}
+
+	var total int64
+	if err := sql.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	sql = sql.Offset(offset).Limit(limit)
+
+	if err := sql.Find(&activities).Error; err != nil {
+		return nil, 0, err
+	}
+	return activities, total, nil
 }

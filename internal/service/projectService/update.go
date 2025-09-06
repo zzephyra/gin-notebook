@@ -1,12 +1,15 @@
 package projectService
 
 import (
+	"context"
 	"errors"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/repository"
+	"gin-notebook/internal/tasks/asynq/enqueue"
+	"gin-notebook/internal/tasks/asynq/types"
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/algorithm"
 	"gin-notebook/pkg/utils/tools"
@@ -17,15 +20,18 @@ import (
 	"gorm.io/gorm"
 )
 
-func UpdateProjectTask(params *dto.ProjectTaskDTO) (responseCode int, data map[string]interface{}) {
+func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (responseCode int, data map[string]interface{}) {
+	var task map[string]interface{}
+	var originModel *model.ToDoTask
+
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
 		if params.Payload.HasTaskFieldUpdates() {
 			var hasAfterTask, hasBeforeTask bool
-			task := tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt", "AssigneeActions", "BeforeID", "AfterID", "Cover"})
+			task = tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt", "AssigneeActions", "BeforeID", "AfterID", "Cover"})
 			var taskIDs []int64
 
 			if params.Payload.Cover.Set {
-				task["Cover"] = params.Payload.Cover.Value
+				task["cover"] = params.Payload.Cover.Value
 			}
 
 			if params.Payload.AfterID != nil {
@@ -62,27 +68,53 @@ func UpdateProjectTask(params *dto.ProjectTaskDTO) (responseCode int, data map[s
 				}
 			}
 
-			taskModel, err, isConflicted := repository.UpdateTaskByTaskID(tx, params.TaskID, params.UpdatedAt, task)
-			if data == nil {
-				data = make(map[string]interface{})
-			}
-
-			if taskModel != nil {
-				data["task"] = tools.StructToUpdateMap(*taskModel, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
-			}
-
-			if isConflicted {
-				responseCode = message.ERROR_TASK_UPDATE_CONFLICTED
-				data["conflicted"] = true
-				return errors.New("update conflicted")
-			}
-
+			originModel, err = repository.GetProjectTaskByID(tx, params.TaskID, true)
 			if err != nil {
-				logger.LogError(err, "Failed to update task")
-				responseCode = database.IsError(err)
-				data["conflicted"] = isConflicted
 				return err
 			}
+
+			isDiff := false
+
+			for k, v := range task {
+				// 如果值没有变化，就不更新
+				originValue, err := tools.GetField(originModel, k)
+				if err != nil {
+					logger.LogError(err, "Get field value error:")
+					continue
+				}
+				if originValue == v {
+					delete(task, k)
+					continue
+				}
+				isDiff = true
+			}
+
+			if isDiff {
+				taskModel, err, isConflicted := repository.UpdateTaskByTaskID(tx, params.TaskID, params.UpdatedAt, task)
+				if data == nil {
+					data = make(map[string]interface{})
+				}
+
+				if taskModel != nil {
+					data["task"] = tools.StructToUpdateMap(*taskModel, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
+				}
+
+				if isConflicted {
+					responseCode = message.ERROR_TASK_UPDATE_CONFLICTED
+					data["conflicted"] = true
+					return errors.New("update conflicted")
+				}
+
+				if err != nil {
+					logger.LogError(err, "Failed to update task")
+					responseCode = database.IsError(err)
+					data["conflicted"] = isConflicted
+					return err
+				}
+			} else {
+				data["task"] = tools.StructToUpdateMap(*originModel, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
+			}
+
 		}
 
 		// 更新任务负责人
@@ -129,13 +161,32 @@ func UpdateProjectTask(params *dto.ProjectTaskDTO) (responseCode int, data map[s
 		return nil
 	})
 
+	isSuccess := err == nil
+
 	if err != nil {
 		if responseCode == 0 {
 			responseCode = message.ERROR_TASK_UPDATE
 		}
 		return
 	}
+
 	responseCode = message.SUCCESS
+
+	enqueue.KanbanActivityJob(ctx, types.KanbanActivityPayload{
+		MemberID:    params.MemberID,
+		ActorID:     params.Creator,
+		Success:     &isSuccess,
+		SuccessCode: &responseCode,
+		ProjectID:   &params.ProjectID,
+		TaskID:      &params.TaskID,
+		ColumnID:    &params.ColumnID,
+		WorkspaceID: params.WorkspaceID,
+		OriginData:  originModel,
+		Patch:       task,
+		Action:      model.UpdateAction,
+		TargetType:  model.TargetTask,
+		TargetID:    params.TaskID,
+	})
 	return
 }
 

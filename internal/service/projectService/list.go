@@ -1,6 +1,8 @@
 package projectService
 
 import (
+	"context"
+	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
@@ -105,6 +107,39 @@ func GetTaskComment(params *dto.GetProjectTaskCommentsDTO) (responseCode int, da
 		data["comments"] = append(data["comments"].([]map[string]interface{}), parsedData)
 	}
 
+	responseCode = message.SUCCESS
+	return
+}
+
+func GetProjectTaskActivity(ctx context.Context, params *dto.GetProjectTaskActivityDTO) (responseCode int, data map[string]interface{}) {
+	activities, total, err := repository.GetProjectTaskActivitiesByTaskID(database.DB, params.TaskID, params.Limit, params.Offset, params.Start, params.End)
+	if err != nil {
+		logger.LogError(err, "获取任务活动失败")
+		responseCode = database.IsError(err)
+		return
+	}
+
+	for i := range activities {
+		nickname := activities[i].UserNickname
+		fmt.Println("avatar:", activities[i].Avatar)
+		if activities[i].MemberNickname != "" {
+			nickname = activities[i].MemberNickname
+		}
+
+		activities[i].Member = dto.UserBreifDTO{
+			ID:       activities[i].MemberID,
+			Nickname: nickname,
+			Avatar:   activities[i].Avatar,
+			Email:    activities[i].Email,
+		}
+	}
+
+	// 标记为已读
+
+	data = map[string]interface{}{
+		"activities": activities,
+		"total":      total,
+	}
 	responseCode = message.SUCCESS
 	return
 }
