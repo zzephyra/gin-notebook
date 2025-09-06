@@ -4,7 +4,7 @@ import {
     dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
 import { createPortal } from "react-dom";
@@ -22,7 +22,7 @@ import {
     DropdownMenu,
     DropdownItem,
 } from "@heroui/react";
-import { SideSheet, Tag } from "@douyinfe/semi-ui";
+import { Tag } from "@douyinfe/semi-ui";
 import { i18n } from "@lingui/core";
 import { useLingui } from "@lingui/react/macro";
 import { ChartBarIcon } from "@heroicons/react/24/outline";
@@ -34,14 +34,12 @@ import { capitalizeWord } from "@/utils/tools";
 import { useTodo } from "@/contexts/TodoContext";
 import { PriorityOptions } from "./script";
 import MemberDropdown from "@/components/dropdown/member";
-import { IconBackTop, IconClose, IconMaximize, IconMinimize } from "@douyinfe/semi-icons";
 
 import {
     attachClosestEdge,
     extractClosestEdge,
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { getCardData, getCardDropTargetData, isCardData } from "../script";
-import TaskDetails from "../taskDetails";
 
 const idle: TaskState = { type: "idle" };
 
@@ -50,24 +48,20 @@ type PreviewState =
     | { type: "idle" }
     | { type: "preview"; container: HTMLElement; rect: DOMRect };
 
-function Task({ task, column }: { task: TodoTask; column: ToDoColumn }) {
+function Task({ task, column, onClick }: { task: TodoTask; column: ToDoColumn, onClick?: (task: TodoTask, column: ToDoColumn) => void }) {
     // wrapper 作为 drop target 容器
     const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     const params = useParams();
-    const [openSideSheet, setOpenSideSheet] = useState(false);
     const [state, setState] = useState<TaskState>(idle);
-    const [isFullWidth, setIsFullWidth] = useState(false);
     // 新增：拖拽预览状态
     const [preview, setPreview] = useState<PreviewState>({ type: "idle" });
-    const [showBackTop, setShowBackTop] = useState(false);
 
     const { t } = useLingui();
     const [searchParams, setSearchParams] = useState({ limit: 10, keywords: "" });
     const { data: members, isFetching } = useWorkspaceMembers(params.id || "", searchParams);
 
-    const drawerBodyRef = useRef<HTMLDivElement | null>(null);
-    const { submitTask, updateTask, activeOverlay } = useTodo();
+    const { submitTask, updateTask } = useTodo();
     // 被拖拽的实际元素（必须是 draggable 绑定的盒子）
     const taskRootRef = useRef<HTMLDivElement | null>(null);
     const assigneeRef = useRef<HTMLDivElement | null>(null);
@@ -77,14 +71,6 @@ function Task({ task, column }: { task: TodoTask; column: ToDoColumn }) {
         new Set(task.assignee?.map((a) => a.id) || []),
     );
     const selectedRef = useRef(selectedAssigneeIDs);
-
-
-
-    const getContainer = () => {
-        return document.querySelector('.project-cls') as HTMLElement || document.body;
-    };
-
-
 
     useEffect(() => {
         selectedRef.current = selectedAssigneeIDs;
@@ -216,38 +202,10 @@ function Task({ task, column }: { task: TodoTask; column: ToDoColumn }) {
     };
 
     const handleClick = () => {
-        if (task.isEdit) return;
-        if (!openSideSheet) {
-            setOpenSideSheet(true);
-        }
-    };
-
-    const scrollDrawerToTop = useCallback(() => {
-        const el = drawerBodyRef.current;
-        if (el) el.scrollTo({ top: 0, behavior: "smooth" });
-    }, []);
-
-
-
-    useEffect(() => {
-        const el = drawerBodyRef.current;
-        if (!el) return;
-        const onScroll = () => setShowBackTop(el.scrollTop > 100);
-        el.addEventListener("scroll", onScroll, { passive: true });
-        onScroll();
-        return () => el.removeEventListener("scroll", onScroll);
-    }, [openSideSheet]);
-
-
-
-    const handleBodyScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-        const el = e.currentTarget;
-        setShowBackTop(el.scrollTop > 100);
-    }, []);
-
+        onClick?.(task, column);
+    }
 
     const draggingClass = state.type === "is-dragging" ? "opacity-40" : "";
-
     return (
         <>
 
@@ -340,40 +298,6 @@ function Task({ task, column }: { task: TodoTask; column: ToDoColumn }) {
                     </CardBody>
                 </Card>
             </div>
-
-            {/* Drawer 保持不变 */}
-            <SideSheet
-                visible={openSideSheet}
-                width={isFullWidth ? getContainer().clientWidth : 520}
-                closable={false}
-                closeOnEsc={!activeOverlay}
-                className={`!transition-all ${isFullWidth ? "!shadow-none task-sidesheet" : ""}`}
-                title={
-                    <div className="pb-0 px-2 flex justify-between items-center">
-                        <div></div>
-                        <div className="flex gap-1">
-                            {showBackTop && (
-                                <Button radius="full" variant="light" size="sm" isIconOnly onPress={scrollDrawerToTop}>
-                                    <IconBackTop className="text-gray-700" />
-                                </Button>
-                            )}
-                            <Button radius="full" variant="light" size="sm" isIconOnly onPress={() => setIsFullWidth((v) => !v)}>
-                                {
-                                    isFullWidth ? <IconMinimize className="text-gray-700" /> : <IconMaximize className="text-gray-700 rotate-90" />
-                                }
-                            </Button>
-                            <Button radius="full" variant="light" size="sm" isIconOnly onPress={() => openSideSheet && setOpenSideSheet(false)}>
-                                <IconClose />
-                            </Button>
-                        </div>
-                    </div>
-                }
-                mask={false}
-                onCancel={() => setOpenSideSheet(false)}
-                disableScroll={false}>
-                <TaskDetails task={task} column={column} onScroll={handleBodyScroll} showBrief={!isFullWidth} />
-            </SideSheet>
-
             {/* === 自定义原生拖拽预览：使用 Portal 渲染到 container === */}
             {preview.type === "preview" &&
                 createPortal(

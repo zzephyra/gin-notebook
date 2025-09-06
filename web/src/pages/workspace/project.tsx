@@ -1,7 +1,7 @@
 import AvatarMenu from "@/components/avatarMenu";
 import { ChartBarIcon, ChevronUpDownIcon, EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { Button } from "@heroui/button";
-import { forwardRef, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 // import { DragLocationHistory, DropTargetRecord } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 
 import {
@@ -16,7 +16,6 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import {
     monitorForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import Task from "@/components/todo/task";
 import { ToDoColumn } from "@/components/todo/type";
 import "@/components/todo/style.css"
 import { useMediaQuery } from "react-responsive";
@@ -25,37 +24,8 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useProjectTodo } from "@/hooks/useTodoTask";
 import ChaseLoading from "@/components/loading/Chase/loading";
 import TodoContext from "@/contexts/TodoContext";
-import Column from "@/components/todo/column";
 import { isCardData, isCardDropTargetData } from "@/components/todo/script";
-
-
-export interface TodoListProps {
-    columns: ToDoColumn[]
-}
-
-export interface TodoListRef {
-
-}
-
-const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
-    return (
-        <>
-            <div className="flex gap-4 overflow-y-auto w-full flex-1 p-2">
-                {
-                    props.columns.map((column) => (
-                        <div key={column.id} className="max-h-full">
-                            <Column key={column.id} column={column}>
-                                {column.tasks.map((task) => (
-                                    <Task key={task.id} column={column} task={task} />
-                                ))}
-                            </Column>
-                        </div>
-                    ))
-                }
-            </div>
-        </>
-    )
-});
+import TodoList from "@/components/todo/main";
 
 function ProjectPage() {
     const { t } = useLingui();
