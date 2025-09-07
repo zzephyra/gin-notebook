@@ -12,6 +12,7 @@ import { useCommentActions } from "@/contexts/CommentContext";
 import { responseCode } from "@/features/constant/response";
 import { useEffect, useRef } from "react";
 import ChaseLoading from "@/components/loading/Chase/loading";
+import { CommentInputRef } from "../input/type";
 const FilterMapping: Record<string, string> = {
     create: "Created Time",
     update: "Updated Time",
@@ -37,7 +38,8 @@ function Comments(props: CommentProps) {
     const params = useParams();
     const loadMoreRef = useRef<HTMLDivElement>(null);
     const workspaceId = params.id || "";
-    const { comments, createComment, deleteComment, isFetchingNextPage, fetchNextPage, updateComment, createCommentAttachment, hasNextPage } = useCommentActions();
+    const commentInputRef = useRef<CommentInputRef>(null);
+    const { comments, createComment, toggleCommentReaction, deleteComment, isFetchingNextPage, fetchNextPage, updateComment, createCommentAttachment, hasNextPage } = useCommentActions();
     const handleSubmit = async (text: string, mentions: MentionPayload[], attachments: CommentAttachment[]) => {
         const temp_id = crypto.randomUUID();
         var data = {
@@ -72,6 +74,7 @@ function Comments(props: CommentProps) {
             onSuccess: (res) => {
                 if (res.code === responseCode.SUCCESS) {
                     toast.success(t`Comment submitted successfully`);
+                    commentInputRef.current?.clear();
                 } else {
                     toast.error(t`Failed to submit comment: ${res.message}`);
                 }
@@ -105,6 +108,21 @@ function Comments(props: CommentProps) {
             },
             onError: (error) => {
                 console.error("Error updating comment:", error);
+            },
+        });
+    }
+
+    const handleLikeComment = (commentID: string, like?: boolean) => {
+        toggleCommentReaction.mutate({ commentID, like }, {
+            onSuccess: (res) => {
+                if (res.code === responseCode.SUCCESS) {
+                    toast.success(like ? t`Liked the comment` : t`Disliked the comment`);
+                } else {
+                    toast.error(t`Failed to react to comment: ${res.message}`);
+                }
+            },
+            onError: (error) => {
+                console.error("Error reacting to comment:", error);
             },
         });
     }
@@ -148,7 +166,7 @@ function Comments(props: CommentProps) {
         <>
             <div className="flex gap-2">
                 {/* <Avatar src={props.currentUser.avatar} className="w-8 h-8"></Avatar> */}
-                <CommentInput onSubmit={handleSubmit}>
+                <CommentInput ref={commentInputRef} onSubmit={handleSubmit}>
                 </CommentInput>
             </div>
             <div className="flex flex-col gap-2" >
@@ -237,7 +255,7 @@ function Comments(props: CommentProps) {
                                             }}
                                             exit={{ scale: 0.85, opacity: 0, transition: { duration: 0.18 } }}
                                         >
-                                            <CommentBox onUpload={handleUpload} onUpdate={handleUpdateComment} comment={c} onDelete={handleDeleteComment} />
+                                            <CommentBox onUpload={handleUpload} onUpdate={handleUpdateComment} onLikeComment={handleLikeComment} comment={c} onDelete={handleDeleteComment} />
                                         </motion.div>
                                     </motion.div>
                                 ))}

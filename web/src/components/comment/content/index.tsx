@@ -78,6 +78,12 @@ const CommentContent = forwardRef<CommentContentHandle, CommentContentProps>((pr
                 }
             }
         },
+        clear: () => {
+            if (boxRef.current) {
+                boxRef.current.innerHTML = "";
+                setContentValue([]);
+            }
+        }
     }));
 
     // 默认内容 → 片段

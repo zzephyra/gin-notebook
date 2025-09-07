@@ -6,6 +6,7 @@ import (
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/service/projectService"
 	"gin-notebook/pkg/logger"
+	"gin-notebook/pkg/utils/tools"
 	"gin-notebook/pkg/utils/validator"
 	"net/http"
 	"strconv"
@@ -430,4 +431,75 @@ func GetProjectTaskActivityApi(c *gin.Context) {
 	}
 	responseCode, data := projectService.GetProjectTaskActivity(c.Request.Context(), params)
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func LikeTaskCommentApi(c *gin.Context) {
+	TaskID, isOk := tools.GetValueFromParams(c.Params, "taskID", "int64")
+
+	if !isOk {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PROJECT_ID, nil))
+		return
+	}
+
+	CommentID, isOk := tools.GetValueFromParams(c.Params, "commentID", "int64")
+	if !isOk {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_COMMENT_ID, nil))
+		return
+	}
+
+	params := &dto.CreateLikeTaskCommentDTO{
+		UserID:    c.MustGet("userID").(int64),
+		MemberID:  c.MustGet("workspaceMemberID").(int64),
+		TaskID:    TaskID.(int64),
+		CommentID: CommentID.(int64),
+	}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Failed to bind JSON parameters")
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Validation failed for LikeTaskCommentDTO")
+		return
+	}
+	responseCode, data := projectService.CreateLikeTaskComment(params)
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func DeleteLikeTaskCommentApi(c *gin.Context) {
+	TaskID, isOk := tools.GetValueFromParams(c.Params, "taskID", "int64")
+
+	if !isOk {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PROJECT_ID, nil))
+		return
+	}
+
+	CommentID, isOk := tools.GetValueFromParams(c.Params, "commentID", "int64")
+	if !isOk {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_COMMENT_ID, nil))
+		return
+	}
+
+	params := &dto.DeleteLikeTaskCommentDTO{
+		MemberID:  c.MustGet("workspaceMemberID").(int64),
+		TaskID:    TaskID.(int64),
+		CommentID: CommentID.(int64),
+	}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Failed to bind JSON parameters")
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Validation failed for DeleteLikeTaskCommentDTO")
+		return
+	}
+	responseCode := projectService.DeleteTaskCommentLike(params)
+	c.JSON(http.StatusOK, response.Response(responseCode, nil))
 }

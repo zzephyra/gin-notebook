@@ -39,3 +39,6 @@ export const columnApiWithID = (columnID: string) =>
 
 export const taskActivitiesApi = (taskID: string | number) =>
     `/project/task/${taskID}/activities`;
+
+export const taskCommentLikeApi = (taskID: string, commentID: string) =>
+    `/project/task/${taskID}/comment/${commentID}/like`

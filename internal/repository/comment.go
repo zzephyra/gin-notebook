@@ -48,14 +48,14 @@ func GetProjectTaskCommentsByTaskID(db *gorm.DB, taskID int64, limit, offset int
 	sql := db.
 		Debug().
 		Model(&model.ToDoTaskComment{}).
-		Joins("LEFT JOIN to_do_comment_likes tdcl ON tdcl.comment_id = to_do_task_comments.id AND tdcl.member_id = ?", memberID).
+		Joins("LEFT JOIN to_do_comment_likes tdcl ON tdcl.comment_id = to_do_task_comments.id AND tdcl.member_id = ? AND tdcl.deleted_at is NULL", memberID).
 		Joins("LEFT JOIN workspace_members wm ON wm.id = to_do_task_comments.member_id").
 		Joins("LEFT JOIN users u ON u.id = wm.user_id").
 		Select(`
 			to_do_task_comments.*, 
 			COALESCE(tdcl.is_like, FALSE) AS liked_by_me, 
 			COALESCE(NOT tdcl.is_like, FALSE) AS disliked_by_me`).
-		Where("to_do_task_id = ?", taskID).
+		Where("to_do_task_id = ? ", taskID).
 		Offset(offset).Limit(limit).
 		Order(clause.OrderBy{
 			Columns: []clause.OrderByColumn{
@@ -148,7 +148,12 @@ func DeleteCommentMentionByCommentID(db *gorm.DB, commentID int64) error {
 	return sql.Error
 }
 
-func GetCommentByID(db *gorm.DB, commentID, memberID int64) (*dto.CommentItem, error) {
+func GetCommentByID(db *gorm.DB, commentID, memberID int64, opts ...DatabaseExtraOpt) (*dto.CommentItem, error) {
+	option := &DatabaseExtraOptions{}
+	for _, o := range opts {
+		o(option)
+	}
+
 	var comment dto.CommentItem
 	sql := db.
 		Debug().
@@ -160,10 +165,13 @@ func GetCommentByID(db *gorm.DB, commentID, memberID int64) (*dto.CommentItem, e
 			to_do_task_comments.*, 
 			COALESCE(tdcl.is_like, FALSE) AS liked_by_me, 
 			COALESCE(NOT tdcl.is_like, FALSE) AS disliked_by_me`).
-		Where("to_do_task_comments.id = ?", commentID).
-		First(&comment)
+		Where("to_do_task_comments.id = ?", commentID)
 
-	if sql.Error != nil {
+	if option.WithLock {
+		sql = sql.Clauses(clause.Locking{Strength: "UPDATE"})
+	}
+
+	if sql.First(&comment).Error != nil {
 		if sql.Error == gorm.ErrRecordNotFound {
 			return nil, nil // 如果没有找到记录，返回nil
 		}

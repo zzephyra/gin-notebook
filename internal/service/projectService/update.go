@@ -44,7 +44,7 @@ func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 				taskIDs = append(taskIDs, *params.Payload.BeforeID)
 			}
 
-			tasks, err := repository.GetProjectTaskByIDs(tx, taskIDs, true)
+			tasks, err := repository.GetProjectTaskByIDs(tx, taskIDs, repository.WithLock())
 			if err != nil {
 				return err
 			}
@@ -68,7 +68,7 @@ func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 				}
 			}
 
-			originModel, err = repository.GetProjectTaskByID(tx, params.TaskID, true)
+			originModel, err = repository.GetProjectTaskByID(tx, params.TaskID, repository.WithLock())
 			if err != nil {
 				return err
 			}

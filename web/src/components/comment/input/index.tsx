@@ -1,8 +1,8 @@
 import { useLingui } from "@lingui/react/macro";
 import { IconPaperclip, IconSend } from "@douyinfe/semi-icons";
 import { Button } from "@heroui/button";
-import { CommentInputProps } from "./type";
-import { useRef, useState, useEffect } from "react";
+import { CommentInputProps, CommentInputRef } from "./type";
+import { useRef, useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { useTodo } from "@/contexts/TodoContext";
 import { CommentAttachment } from "../main/type";
 import { UploadFile } from "@/lib/upload";
@@ -15,7 +15,7 @@ import { hashFilesSHA256 } from "@/utils/hashFiles";
 import CommentContent from "../content";
 import { CommentContentHandle } from "../content/types";
 
-const CommentInput = (props: CommentInputProps) => {
+const CommentInput = forwardRef<CommentInputRef, CommentInputProps>((props, ref) => {
     const { t } = useLingui();
     const { setActiveOverlay } = useTodo();
 
@@ -126,6 +126,48 @@ const CommentInput = (props: CommentInputProps) => {
         controllersRef.current.delete(String(attachment_id));
     };
 
+    useImperativeHandle(
+        ref,
+        (): CommentInputRef => ({
+            focus: (moveToEnd = true) => {
+                contextRef.current?.focus?.(moveToEnd);
+            },
+            getValue: () => {
+                const { content, mentions } = contextRef.current?.getContent() ?? {
+                    content: "",
+                    mentions: [],
+                };
+                return { content, mentions, attachments: attachmentFiles };
+            },
+            clear: () => {
+                // 清空文本（如果 CommentContent 支持 setContent，更优雅）
+                contextRef.current?.clear?.();
+                // 取消上传并清空附件
+                controllersRef.current.clear();
+                setAttachmentFiles([]);
+            },
+            openFileDialog: () => {
+                uploadRef.current?.click();
+            },
+            addFiles: (files: File[]) => {
+                files.forEach((f) => startOneUpload(f));
+            }, cancelAllUploads: () => {
+                controllersRef.current.clear();
+                setAttachmentFiles((prev) =>
+                    prev.map((a) =>
+                        a.status === "uploading"
+                            ? { ...a, status: "error", error: "canceled" }
+                            : a,
+                    ),
+                );
+            },
+            removeAttachment: (id: string | number) => {
+                handleDeleteAttachment(id);
+            },
+        }),
+        [attachmentFiles],
+    )
+
     return (
         <div ref={containerRef} className={`flex-1 ${props.className || ""}`}>
             <CommentContent
@@ -167,6 +209,6 @@ const CommentInput = (props: CommentInputProps) => {
             </div>
         </div>
     );
-};
+});
 
 export default CommentInput;

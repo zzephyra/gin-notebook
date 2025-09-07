@@ -19,6 +19,10 @@ export type Comment = {
     updated_at: string;
     attachments?: CommentAttachment[];
     mentions?: MentionPayload[];
+    liked_by_me?: boolean; // Whether the current user liked this comment
+    disliked_by_me?: boolean; // Whether the current user disliked this comment
+    likes?: number;         // Number of likes
+    dislikes?: number;      // Number of dislikes
     [key: string]: any; // Allow additional properties
 }
 

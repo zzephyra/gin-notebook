@@ -22,4 +22,5 @@ export type CommentContentHandle = {
     getContent: () => CommentContentType;
     inputRef: React.RefObject<HTMLDivElement>;
     focus: (toEnd: boolean) => void;
+    clear: () => void;
 };

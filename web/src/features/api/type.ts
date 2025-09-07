@@ -108,8 +108,12 @@ export interface AIMessage {
 }
 
 export interface TaskCommentEditableData {
-    content: string;
+    content?: string;
     mentions?: MentionPayload[];
+    likes?: number;
+    dislikes?: number;
+    liked_by_me?: boolean;
+    disliked_by_me?: boolean;
 }
 
 export interface TaskCommentData extends TaskCommentEditableData {

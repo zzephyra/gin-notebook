@@ -149,47 +149,6 @@ export function useUpload() {
     return { start, stop, replaceFile, UploadSate, progress, error, completeInfo, getFileLink, uploadAndGetUrl }
 }
 
-// export async function uploadToQiniu(file: File, domain: string, forceDirect: boolean = false): Promise<UploadResult> {
-//     const uploadConfig: qiniu.UploadConfig = {
-//         apiServerUrl: "https://api.qiniu.com",
-//         tokenProvider: async () => {
-//             let res = await getUploadPolicy();
-//             return res?.token;
-//         }
-//     }
-
-//     const uuid = uuidv4(); // 生成 UUID
-//     const extension = file.name.substring(file.name.lastIndexOf('.')); // 提取后缀名
-//     const newFileName = `${uuid}${extension}`;
-//     var file = new File([file], newFileName, {
-//         type: file.type,
-//         lastModified: file.lastModified
-//     })
-
-//     const fileData: qiniu.FileData = {
-//         type: 'file',
-//         data: file,
-//     };
-
-//     const uploadTask = forceDirect
-//         ? qiniu.createDirectUploadTask(fileData, uploadConfig)
-//         : qiniu.createMultipartUploadV2Task(fileData, uploadConfig);
-
-//     return new Promise((resolve, reject) => {
-//         uploadTask.onProgress(() => { }); // 你也可以传入回调处理进度
-//         uploadTask.onError(err => reject(err));
-//         uploadTask.onComplete(result => {
-//             if (!result) {
-//                 reject(new Error("Upload failed"));
-//                 return;
-//             }
-//             const parsed = JSON.parse(result);
-//             const url = `${window.location.protocol}//${domain}/${parsed?.key}`;
-//             resolve({ url, key: parsed.key, raw: parsed });
-//         });
-//         uploadTask.start();
-//     });
-// }
 
 export function startQiniuUpload(
     file: File,

@@ -129,3 +129,27 @@ type CreateTaskCommentAttachmentDTO struct {
 	Thumbnail   string `json:"thumbnail_path" validate:"omitempty,min=1,max=255"` // 缩略图路径，图片附件可用
 	SHA256Hash  string `json:"sha256_hash" validate:"omitempty,sha256"`           // 文件的SHA256哈希值，用于文件完整性校验
 }
+
+type CreateLikeTaskCommentDTO struct {
+	UserID      int64 `validate:"required,gt=0"`                            // 用户ID
+	MemberID    int64 `validate:"required,gt=0"`                            // 成员
+	CommentID   int64 `validate:"required,gt=0"`                            // 评论ID
+	TaskID      int64 `validate:"required,gt=0"`                            // 任务ID
+	WorkspaceID int64 `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
+	Like        bool  `json:"like"`                                         // true 点赞， false 点踩
+}
+
+type DeleteLikeTaskCommentDTO struct {
+	CommentID   int64 `validate:"required,gt=0"`                            // 评论ID
+	TaskID      int64 `validate:"required,gt=0"`                            // 任务ID
+	WorkspaceID int64 `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
+	MemberID    int64 `validate:"required,gt=0"`                            // 成员
+}
+
+type LikeCommentDTO struct {
+	Likes        int64     `json:"likes"`
+	Dislikes     int64     `json:"dislikes"`
+	LikedByMe    bool      `json:"liked_by_me"`
+	DislikedByMe bool      `json:"disliked_by_me"`
+	UpdatedAt    time.Time `json:"updated_at"`
+}

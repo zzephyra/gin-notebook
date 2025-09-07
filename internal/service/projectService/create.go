@@ -32,7 +32,7 @@ func CreateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 	var latestError error
 	for attempt := 0; attempt < maxRetry; attempt++ {
 		err := database.DB.Transaction(func(tx *gorm.DB) error {
-			latestTask, err := repository.GetLastTask(tx, params.ColumnID, true)
+			latestTask, err := repository.GetLastTask(tx, params.ColumnID, repository.WithLock())
 			var latestOrderIndex = algorithm.RankMin()
 			if err == nil {
 				// 当列内存在任务时，优先最后任务的OrderIndex，否则默认最小值
@@ -225,4 +225,66 @@ func CreateCommentAttachment(params *dto.CreateTaskCommentAttachmentDTO) (respon
 	responseCode = message.SUCCESS
 	data = tools.StructToUpdateMap(&attachment, nil, []string{"DeletedAt", "CreatedAt", "UpdatedAt", "CommentID", "SHA256Hash", "UploaderID"})
 	return responseCode, data
+}
+
+func CreateLikeTaskComment(params *dto.CreateLikeTaskCommentDTO) (responseCode int, data map[string]interface{}) {
+	err := database.DB.Transaction(func(tx *gorm.DB) error {
+		// 查询在此之前是否已经点赞或点踩
+		action, err := repository.CreateOrUpdateCommentLike(tx, &model.ToDoCommentLike{
+			CommentID: params.CommentID,
+			MemberID:  params.MemberID,
+			IsLike:    params.Like,
+		})
+		if err != nil {
+			responseCode = database.IsError(err)
+			return err
+		}
+
+		var dLikes, dDislikes int
+		switch action {
+		case repository.CommentLikeActionInsert:
+			if params.Like {
+				dLikes = 1
+			} else {
+				dDislikes = 1
+			}
+		case repository.CommentLikeActionSwitch:
+			if params.Like {
+				dLikes, dDislikes = 1, -1
+			} else {
+				dLikes, dDislikes = -1, 1
+			}
+		case repository.CommentLikeActionNoop:
+			responseCode = message.ERROR_COMMENT_ALREADY_LIKED_OR_DISLIKED
+			return fmt.Errorf("You’ve already reacted, you can’t like or dislike again.")
+		default:
+			responseCode = message.ERROR
+			return fmt.Errorf("unknown like action: %s", action)
+		}
+
+		commentData, err := repository.IncCommentCounters(tx, params.CommentID, dLikes, dDislikes)
+		if err != nil {
+			responseCode = database.IsError(err)
+			return err
+		}
+
+		if params.Like {
+			commentData.LikedByMe = true
+		} else {
+			commentData.DislikedByMe = true
+		}
+
+		data = tools.StructToUpdateMap(commentData, nil, nil)
+		return nil
+	})
+
+	if err != nil {
+		if responseCode == 0 {
+			responseCode = message.ERROR
+		}
+		return
+	}
+
+	responseCode = message.SUCCESS
+	return
 }

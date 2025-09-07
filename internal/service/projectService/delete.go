@@ -6,6 +6,8 @@ import (
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/repository"
+
+	"gorm.io/gorm"
 )
 
 func DeleteTaskComment(params *dto.DeleteTaskCommentDTO) (responseCode int) {
@@ -35,4 +37,29 @@ func CleanColumnTasks(params *dto.DeleteProjectColumnDTO) (responseCode int) {
 
 	responseCode = message.SUCCESS
 	return
+}
+
+func DeleteTaskCommentLike(params *dto.DeleteLikeTaskCommentDTO) (responseCode int) {
+	err := database.DB.Transaction(func(tx *gorm.DB) error {
+		action, err := repository.DeleteCommentLike(tx, params.CommentID, params.MemberID)
+		if err != nil {
+			return err
+		}
+
+		dLikes, dDislikes := 0, 0
+		if action == "unlike" {
+			dLikes = -1
+		} else if action == "undislike" {
+			dDislikes = -1
+		}
+
+		_, err = repository.IncCommentCounters(tx, params.CommentID, dLikes, dDislikes)
+		return err
+	})
+
+	if err != nil {
+		responseCode = database.IsError(err)
+		return
+	}
+	return message.SUCCESS
 }

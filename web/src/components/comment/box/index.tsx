@@ -1,7 +1,8 @@
 import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
 import { CommentBoxProps } from "./type";
 import { PhotoProvider } from "react-photo-view";
-import { CloudArrowUpIcon, EllipsisHorizontalIcon, HandThumbDownIcon, HandThumbUpIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { HandThumbDownIcon, HandThumbUpIcon } from "@heroicons/react/24/solid";
+import { CloudArrowUpIcon, EllipsisHorizontalIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useLingui } from "@lingui/react/macro";
 import CommentAttachment from "../attachment";
 import { useTodo } from "@/contexts/TodoContext";
@@ -63,6 +64,27 @@ function CommentBox(props: CommentBoxProps) {
         if (props.onUpload) {
             props.onUpload(files, props.comment.id);
         }
+    }
+
+    const likeOrDislikeComment = (like: boolean, disliked: boolean) => {
+        if (like && props.comment.liked_by_me === true || disliked && props.comment.disliked_by_me === true) {
+            props.onLikeComment?.(props.comment.id);
+        } else {
+            props.onLikeComment?.(props.comment.id, like);
+        }
+        // if (like) {
+        //     if (props.comment.liked_by_me === true) {
+        //         props.onLikeComment?.(props.comment.id);
+        //     } else {
+        //         props.onLikeComment?.(props.comment.id, true);
+        //     }
+        // } else {
+        //     if (props.comment.disliked_by_me === false) {
+        //         props.onLikeComment?.(props.comment.id);
+        //     } else {
+        //         props.onLikeComment?.(props.comment.id, false);
+        //     }
+        // }
     }
 
 
@@ -160,9 +182,14 @@ function CommentBox(props: CommentBoxProps) {
                     className="pointer-events-none"
                 />
 
-                <div className="flex items-center gap-3 text-gray-500 mt-2">
-                    <HandThumbUpIcon className="w-3 h-3" />
-                    <HandThumbDownIcon className="w-3 h-3" />
+                <div className="px-2 flex items-center gap-3 text-gray-500 mt-2">
+                    <div className="flex items-center">
+                        <HandThumbUpIcon className="w-3 h-3 cursor-pointer " style={{
+                            color: `${props.comment.liked_by_me === true ? '#2563eb' : ''}`
+                        }} onClick={() => likeOrDislikeComment(true, false)} />
+                        {(props.comment?.likes || 0) > 0 && (<span className="ml-1 text-xs">{props.comment.likes}</span>)}
+                    </div> {/* 点赞 */}
+                    <HandThumbDownIcon className="w-3 h-3 cursor-pointer" style={{ color: `${props.comment.disliked_by_me === true ? '#2563eb' : ''}` }} onClick={() => likeOrDislikeComment(false, true)} /> {/* 点踩 */}
                 </div>
             </div>
         </div>

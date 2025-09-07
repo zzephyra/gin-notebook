@@ -1,5 +1,5 @@
 import axiosClient from "@/lib/api/client";
-import { taskCommentAttachmentApi, taskCommentsApi, taskCommentWithIDApi } from "./routes";
+import { taskCommentAttachmentApi, taskCommentLikeApi, taskCommentsApi, taskCommentWithIDApi } from "./routes";
 import { TaskCommentData, TaskCommentEditableData, TaskCommentParams } from "./type";
 import { responseCode } from "../constant/response";
 import { CommentAttachment } from "@/components/comment/main/type";
@@ -67,9 +67,32 @@ export async function updateCommentRequest(workspaceID: string, taskID: string, 
 }
 
 export async function createAttachmentRequest(taskID: string, commentID: string, attachment: CommentAttachment) {
-
     try {
         let res = await axiosClient.post(taskCommentAttachmentApi(taskID, commentID), attachment);
+        return res.data;
+    } catch (err) {
+        return {
+            code: responseCode.ERROR,
+            data: {}
+        }
+    }
+}
+
+export async function createOrUpdateCommentLikeRequest(taskID: string, commentID: string, workspace_id: string, like: boolean) {
+    try {
+        let res = await axiosClient.post(taskCommentLikeApi(taskID, commentID), { workspace_id, like });
+        return res.data;
+    } catch (err) {
+        return {
+            code: responseCode.ERROR,
+            data: {}
+        }
+    }
+}
+
+export async function deleteCommentLikeRequest(taskID: string, commentID: string, workspace_id: string) {
+    try {
+        let res = await axiosClient.delete(taskCommentLikeApi(taskID, commentID), { data: { workspace_id } });
         return res.data;
     } catch (err) {
         return {

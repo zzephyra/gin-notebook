@@ -48,7 +48,7 @@ type ToDoTaskComment struct {
 	MemberID   int64  `json:"member_id,string" gorm:"not null; index:idx_author_id"`       // 评论作者ID
 	Content    string `json:"content" gorm:"not null; type:text"`                          // 评论内容
 	Likes      int64  `json:"likes" gorm:"default:0"`                                      // 点赞数
-	DisLikes   int64  `json:"dislikes" gorm:"default:0"`                                   // 点踩数
+	Dislikes   int64  `json:"dislikes" gorm:"default:0"`                                   // 点踩数
 	ParentID   int64  `json:"parent_id,string" gorm:"default:0; index:idx_parent_id"`      // 父评论ID，0表示顶级评论
 	ReplyCount int64  `json:"reply_count" gorm:"default:0"`                                // 回复数
 	Status     string `json:"status" gorm:"default:'published'; index:idx_status"`         // 评论状态，active, deleted
@@ -68,8 +68,8 @@ type ToDoCommentAttachment struct {
 
 type ToDoCommentLike struct {
 	BaseModel
-	CommentID int64 `json:"comment_id,string" gorm:"index"`
-	MemberID  int64 `json:"member_id,string" gorm:"index"`
+	CommentID int64 `json:"comment_id,string" gorm:"not null;index:idx_comment_member,unique"`
+	MemberID  int64 `json:"member_id,string" gorm:"not null;index:idx_comment_member,unique"`
 	IsLike    bool  `json:"is_like"` // true: 点赞, false: 点踩
 }
 

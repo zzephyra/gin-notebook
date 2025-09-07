@@ -11,17 +11,26 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+const (
+	CommentLikeActionInsert = "insert"
+	CommentLikeActionSwitch = "switch"
+	CommentLikeActionNoop   = "noop"
+)
+
 func CreateProjectTask(db *gorm.DB, taskModel *model.ToDoTask) error {
 	err := db.Create(taskModel).Error
 	return err
 }
 
-func GetLatestOrderByColumnID(db *gorm.DB, columnID int64, withLock bool) (string, error) {
+func GetLatestOrderByColumnID(db *gorm.DB, columnID int64, opts ...DatabaseExtraOpt) (string, error) {
 	var maxOrder string
-
+	option := &DatabaseExtraOptions{}
+	for _, o := range opts {
+		o(option)
+	}
 	sql := db.Model(&model.ToDoTask{})
 
-	if withLock {
+	if option.WithLock {
 		sql = sql.Clauses(clause.Locking{Strength: "UPDATE"})
 	}
 
@@ -113,11 +122,16 @@ func GetProjectTasksByColumns(db *gorm.DB, columnIDs []int64, limit, offset int)
 	return tasks, nil
 }
 
-func GetProjectTaskByID(db *gorm.DB, taskID int64, withLock bool) (*model.ToDoTask, error) {
+func GetProjectTaskByID(db *gorm.DB, taskID int64, opts ...DatabaseExtraOpt) (*model.ToDoTask, error) {
+	option := &DatabaseExtraOptions{}
+	for _, o := range opts {
+		o(option)
+	}
+
 	var task model.ToDoTask
 	sql := db.Where("id = ?", taskID)
 
-	if withLock {
+	if option.WithLock {
 		sql = sql.Clauses(clause.Locking{Strength: "UPDATE"})
 	}
 
@@ -127,13 +141,18 @@ func GetProjectTaskByID(db *gorm.DB, taskID int64, withLock bool) (*model.ToDoTa
 	return &task, nil
 }
 
-func GetProjectTaskByIDs(db *gorm.DB, taskID []int64, withLock bool) ([]model.ToDoTask, error) {
+func GetProjectTaskByIDs(db *gorm.DB, taskID []int64, opts ...DatabaseExtraOpt) ([]model.ToDoTask, error) {
+	option := &DatabaseExtraOptions{}
+	for _, o := range opts {
+		o(option)
+	}
+
 	var task []model.ToDoTask
 	sql := db.Model(&model.ToDoTask{}).
 		Where("id IN ?", taskID).
 		Order(clause.OrderByColumn{Column: clause.Column{Name: "order_index"}})
 
-	if withLock {
+	if option.WithLock {
 		sql = sql.Clauses(clause.Locking{Strength: "UPDATE"})
 	}
 	err := sql.Scan(&task).Error
@@ -213,14 +232,19 @@ func DeleteProjectColumnTasksByID(db *gorm.DB, columnID, projectID int64, hard b
 	return sql.Error
 }
 
-func GetLastTask(db *gorm.DB, columnID int64, withLock bool) (*model.ToDoTask, error) {
+func GetLastTask(db *gorm.DB, columnID int64, opts ...DatabaseExtraOpt) (*model.ToDoTask, error) {
+	option := &DatabaseExtraOptions{}
+	for _, o := range opts {
+		o(option)
+	}
+
 	var task model.ToDoTask
 	sql := db.Where("column_id = ?", columnID).
 		Order(GetLexoRankOrderExpr(true)).
 		Limit(1).
 		First(&task)
 
-	if withLock {
+	if option.WithLock {
 		sql = sql.Clauses(clause.Locking{Strength: "UPDATE"})
 	}
 
@@ -310,4 +334,90 @@ func GetProjectTaskActivitiesByTaskID(db *gorm.DB, taskID int64, limit, offset i
 		return nil, 0, err
 	}
 	return activities, total, nil
+}
+
+func GetTaskCommentLikeByMemberID(db *gorm.DB, commentID, memberID int64) *model.ToDoCommentLike {
+	var memberLikeModel = model.ToDoCommentLike{}
+	err := db.Model(&model.ToDoCommentLike{}).
+		Where("comment_id = ? AND member_id = ?", commentID, memberID).
+		Find(&memberLikeModel).Error
+	if err != nil {
+		return nil
+	}
+	return &memberLikeModel
+}
+
+func CreateOrUpdateCommentLike(db *gorm.DB, likeModel *model.ToDoCommentLike) (string, error) {
+	// Step 1: 尝试插入（冲突则 DoNothing）
+	res := db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "comment_id"}, {Name: "member_id"}},
+		DoNothing: true,
+	}).Create(likeModel)
+
+	if res.Error != nil {
+		return "", res.Error
+	}
+	if res.RowsAffected == 1 {
+		return CommentLikeActionInsert, nil
+	}
+
+	// Step 2: 尝试恢复软删记录
+	restore := db.Model(&model.ToDoCommentLike{}).
+		Unscoped().
+		Where("comment_id = ? AND member_id = ? AND (deleted_at IS NOT NULL OR is_like <> ?)", likeModel.CommentID, likeModel.MemberID, likeModel.IsLike).
+		Updates(map[string]any{
+			"is_like":    likeModel.IsLike,
+			"deleted_at": nil,
+			"updated_at": gorm.Expr("NOW()"),
+		})
+
+	if restore.Error != nil {
+		return "", restore.Error
+	}
+	if restore.RowsAffected == 1 {
+		return CommentLikeActionSwitch, nil
+	}
+
+	// Step 4: 同值重复点击 → noop
+	return CommentLikeActionNoop, nil
+}
+
+func IncCommentCounters(db *gorm.DB, commentID int64, dLikes, dDislikes int) (data *dto.LikeCommentDTO, err error) {
+	out := dto.LikeCommentDTO{}
+	err = db.Model(&model.ToDoTaskComment{}).
+		Where("id = ?", commentID).
+		Updates(map[string]any{
+			"likes":      gorm.Expr("GREATEST(likes + ?, 0)", dLikes),
+			"dislikes":   gorm.Expr("GREATEST(dislikes + ?, 0)", dDislikes),
+			"updated_at": gorm.Expr("NOW()"),
+		}).Error
+
+	if err == nil {
+		err = db.Model(&model.ToDoTaskComment{}).
+			Select("likes", "dislikes").
+			Where("id = ?", commentID).
+			Scan(&out).Error
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func DeleteCommentLike(db *gorm.DB, commentID, memberID int64) (string, error) {
+	var like model.ToDoCommentLike
+	if err := db.Where("comment_id = ? AND member_id = ?", commentID, memberID).First(&like).Error; err != nil {
+		return "", err
+	}
+
+	// 软删除
+	if err := db.Delete(&like).Error; err != nil {
+		return "", err
+	}
+
+	// 返回动作类型，方便调用层更新计数
+	if like.IsLike {
+		return "unlike", nil
+	}
+	return "undislike", nil
 }

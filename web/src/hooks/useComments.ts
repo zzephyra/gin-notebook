@@ -3,7 +3,9 @@ import { getPercent } from '@/components/comment/input/script';
 import { Comment } from '@/components/comment/main/type';
 import {
     createAttachmentRequest,
+    createOrUpdateCommentLikeRequest,
     createTaskCommentRequest,
+    deleteCommentLikeRequest,
     deleteTasksCommentRequest,
     getTasksCommentRequest,
     updateCommentRequest
@@ -32,6 +34,7 @@ export interface TaskCommentsController {
         { file: File; commentID: string; opt?: { from: "input" | "box" } },
         { prev: any; tmpId: string; controller: ReturnType<typeof UploadFile>; fileHash: string }
     >;
+    toggleCommentReaction: UseMutationResult<{ code: number; data: Comment; message: string }, unknown, { commentID: string; like?: boolean }>;
 }
 
 type RawPage = {
@@ -68,10 +71,10 @@ export function useTaskCommentsController(params: TaskCommentParams & { offset?:
         initialPageParam: 0 as number,
         getNextPageParam: (lastPage: RawPage, allPages: RawPage[]) => {
             const limit = params.limit ?? 20;
-            const total = allPages[0]?.data.total ?? Infinity;
-            const loaded = allPages.reduce((acc, p) => acc + p.data.comments.length, 0);
+            const total = allPages[0]?.data?.total ?? Infinity;
+            const loaded = allPages.reduce((acc, p) => acc + (p.data?.comments || []).length, 0);
             if (loaded >= total) return undefined;               // 全部加载完
-            if (lastPage.data.comments.length < limit) return undefined; // 后端返回小于 pageSize，也视为没有下一页
+            if ((lastPage.data?.comments || []).length < limit) return undefined; // 后端返回小于 pageSize，也视为没有下一页
             return loaded; // 下一次的 offset = 已加载的条数
         },
     });
@@ -195,6 +198,97 @@ export function useTaskCommentsController(params: TaskCommentParams & { offset?:
         onError: (_e, _v, ctx) => { if (ctx?.prev) qc.setQueryData(qk, ctx.prev); },
         onSuccess: (server) => { upsertToCache(server.data, 'replace'); },
     });
+
+    const toggleCommentReaction = useMutation({
+        // 并发：序列化/去重
+        retry: 0,
+        mutationFn: ({ commentID, like }: { commentID: string; like?: boolean }) => {
+            return like === undefined
+                ? deleteCommentLikeRequest(params.task_id, commentID, params.workspace_id)
+                : createOrUpdateCommentLikeRequest(params.task_id, commentID, params.workspace_id, like);
+        },
+
+        onMutate: async ({ commentID, like }) => {
+            // 1) 取消在途查询避免覆盖
+            await qc.cancelQueries({ queryKey: qk, exact: true });
+
+            const prev = qc.getQueryData(qk);
+            qc.setQueryData(qk, (old: any) => {
+                if (!old?.pages) return old;
+
+                const pages = old.pages.map((p: RawPage) => {
+                    const comments = p?.data?.comments ?? [];
+                    const idx = comments.findIndex((c: any) => c.id === commentID);
+                    if (idx < 0) return p;
+
+                    const nextComments = [...comments];
+                    const cur = nextComments[idx];
+
+                    const likedByMe = !!cur.liked_by_me;
+                    const dislikedByMe = !!cur.disliked_by_me;
+
+                    const toNum = (v: any) => (Number.isFinite(Number(v)) ? Number(v) : 0);
+                    let likesCount = toNum(cur.likes);
+                    let dislikesCount = toNum(cur.dislikes);
+
+                    if (like === undefined) {
+                        // 取消赞或踩
+                        if (likedByMe) likesCount -= 1;
+                        if (dislikedByMe) dislikesCount -= 1;
+
+                        nextComments[idx] = {
+                            ...cur,
+                            likes: Math.max(0, likesCount),
+                            dislikes: Math.max(0, dislikesCount),
+                            liked_by_me: false,
+                            disliked_by_me: false,
+                        };
+                    } else if (like) {
+                        // 踩->赞 或 无->赞
+                        if (!likedByMe) likesCount += 1;
+                        if (dislikedByMe) dislikesCount -= 1;
+
+                        nextComments[idx] = {
+                            ...cur,
+                            likes: Math.max(0, likesCount),
+                            dislikes: Math.max(0, dislikesCount),
+                            liked_by_me: true,
+                            disliked_by_me: false,
+                        };
+                    } else {
+                        // 赞->踩 或 无->踩
+                        if (!dislikedByMe) dislikesCount += 1;
+                        if (likedByMe) likesCount -= 1;
+
+                        nextComments[idx] = {
+                            ...cur,
+                            likes: Math.max(0, likesCount),
+                            dislikes: Math.max(0, dislikesCount),
+                            liked_by_me: false,
+                            disliked_by_me: true,
+                        };
+                    }
+
+                    return { ...p, data: { ...p.data, comments: nextComments } };
+                });
+
+                return { ...old, pages };
+            });
+
+            return { prev };
+        },
+
+        onError: (_e, _vars, ctx) => {
+            if (ctx?.prev) qc.setQueryData(qk, ctx.prev);
+        },
+
+        onSuccess: (server) => {
+            // 用服务端返回兜底（确保结构匹配你的 upsertToCache）
+            if (server?.data) upsertToCache(server.data, 'replace');
+        },
+
+    });
+
 
     // —— 上传附件时在缓存里更新某条附件
     function updateAttachment(old: any, commentID: string, tmpId: string, patch: any) {
@@ -347,10 +441,10 @@ export function useTaskCommentsController(params: TaskCommentParams & { offset?:
 
     // —— 扁平化一次，外部直接使用
     const comments = useMemo(
-        () => commentsQuery.data?.pages.flatMap(p => p.data.comments) ?? [],
+        () => commentsQuery.data?.pages.flatMap(p => (p.data?.comments || [])) ?? [],
         [commentsQuery.data]
     );
-    const total = commentsQuery.data?.pages?.[0]?.data.total ?? 0;
+    const total = commentsQuery.data?.pages?.[0]?.data?.total ?? 0;
 
     return {
         isLoading: commentsQuery.isLoading,
@@ -364,6 +458,7 @@ export function useTaskCommentsController(params: TaskCommentParams & { offset?:
         hasNextPage: !!commentsQuery.hasNextPage,
         deleteComment,
         updateComment,
+        toggleCommentReaction,
         createCommentAttachment,
     };
 }
