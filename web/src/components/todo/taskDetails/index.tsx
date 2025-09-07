@@ -46,7 +46,7 @@ import useTaskActivity from "@/hooks/useActivity";
 import TaskActivity from "../activity";
 
 
-const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, column: ToDoColumn, onScroll?: (e: React.UIEvent<HTMLDivElement>) => void, showBrief?: boolean }) => {
+const TaskDetails = ({ task, column, onScroll, showBrief, onChange }: { task: TodoTask, column: ToDoColumn, onScroll?: (e: React.UIEvent<HTMLDivElement>) => void, showBrief?: boolean, onChange?: (taskID: string, columnID: string) => void }) => {
     const drawerBodyRef = useRef<HTMLDivElement | null>(null);
     const titleRef = useRef<HTMLInputElement>(null);
     const coverRef = useRef<HTMLInputElement>(null);
@@ -174,8 +174,8 @@ const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, co
 
     return (
         <CommentActionsProvider value={commentsController}>
-            <div ref={drawerBodyRef} onScroll={onScroll} className={`overflow-y-auto h-full px-2 `}>
-                <div className="mb-2">
+            <div ref={drawerBodyRef} onScroll={onScroll} className={`overflow-y-auto h-full px-2 flex flex-col `}>
+                <div className="mb-2 transition-[height] ease-in-out duration-300">
                     {
                         task.cover ? (
                             <div className="relative group">
@@ -198,7 +198,7 @@ const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, co
                             </div>
                         ) : (
                             <div className="group">
-                                <Button variant="light" onPress={() => coverRef.current?.click()} radius="sm" className="group-hover:opacity-100 opacity-0 text-xs text-gray-400 px-[6px] !h-[26px] w-auto gap-[2px]">
+                                <Button variant="light" onPress={() => coverRef.current?.click()} radius="sm" className="group-hover:opacity-100 bg-gray-100 opacity-0 text-xs text-gray-400 px-[6px] !h-[26px] w-auto gap-[2px]">
                                     <IconPlus size="small" />
                                     {t`Add Cover`}
                                 </Button>
@@ -209,7 +209,7 @@ const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, co
 
 
                 </div>
-                <div className={`${showBrief ? "" : "flex gap-2"}`}>
+                <div className={`${showBrief ? "" : "flex gap-2 flex-1 overflow-hidden"}`}>
                     <div className="flex-1">
                         <h1
                             ref={titleRef as any}
@@ -284,7 +284,10 @@ const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, co
                                                             <ListboxItem
                                                                 key={col.id}
                                                                 onClick={() => {
-                                                                    if (col.id !== column.id) handleUpdateTask({ column_id: col.id });
+                                                                    if (col.id !== column.id) {
+                                                                        handleUpdateTask({ column_id: col.id });
+                                                                        onChange?.(task.id, col.id);
+                                                                    };
                                                                 }}
                                                             >
                                                                 {col.name}
@@ -388,7 +391,12 @@ const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, co
                                                         <ListboxItem
                                                             key={col.id}
                                                             onClick={() => {
-                                                                if (col.id !== column.id) handleUpdateTask({ column_id: col.id });
+                                                                console.log("onChange", task.id, col.id);
+
+                                                                if (col.id !== column.id) {
+                                                                    handleUpdateTask({ column_id: col.id });
+                                                                    onChange?.(task.id, col.id);
+                                                                };
                                                             }}
                                                         >
                                                             {col.name}
@@ -452,10 +460,10 @@ const TaskDetails = ({ task, column, onScroll, showBrief }: { task: TodoTask, co
                         <Divider className="my-2 bg-gray-200" />
                     </div>
 
-                    <div className="flex-1">
+                    <div className="flex-1 flex flex-col">
                         {
                             !showBrief ? (
-                                <Tabs>
+                                <Tabs size="sm" classNames={{ panel: "overflow-auto" }}>
                                     <Tab title={t`Comments`}>
                                         <Comments
                                             onFilterChange={(filter) => setCommentParams((prev) => ({ ...prev, ...filter }))}

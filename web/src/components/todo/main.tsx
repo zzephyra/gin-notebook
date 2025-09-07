@@ -28,6 +28,7 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
     const task = column?.tasks.find(t => t.id === activeTaskID);
 
     const handleClick = (task: TodoTask, column: ToDoColumn) => {
+        if (task.isEdit) return;
         setActiveTaskID(task.id);
         setActiveColumnID(column.id);
         setOpenSideSheet(true);
@@ -45,6 +46,11 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
     const getContainer = () => {
         return document.querySelector('.project-cls') as HTMLElement || document.body;
     };
+    const handleChange = (taskID: string, columnID: string) => {
+        setActiveTaskID(taskID);
+        setActiveColumnID(columnID);
+    }
+
 
     useEffect(() => {
         const el = drawerBodyRef.current;
@@ -99,11 +105,10 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
                 }
                 mask={false}
                 onCancel={() => {
-                    console.log("onCancel");
                     setOpenSideSheet(false);
                 }}
                 disableScroll={false}>
-                {task && column && <TaskDetails task={task} column={column} onScroll={handleBodyScroll} showBrief={!isFullWidth} />
+                {task && column && <TaskDetails onChange={handleChange} task={task} column={column} onScroll={handleBodyScroll} showBrief={!isFullWidth} />
                 }
             </SideSheet>
         </>

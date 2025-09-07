@@ -131,7 +131,7 @@ function CommentBox(props: CommentBoxProps) {
                     </div>
                 </div>
 
-                <div className="py-4 flex flex-col gap-1 text-sm text-gray-700 dark:text-white break-all px-2">
+                <div className=" flex flex-col gap-1 text-sm text-gray-700 dark:text-white break-all px-2">
                     <div ref={containerRef} className="py-4 flex flex-col gap-1 text-sm text-gray-700 dark:text-white relative">
                         <CommentContent
                             container={containerRef}
