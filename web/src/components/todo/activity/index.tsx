@@ -7,26 +7,23 @@ import { Trans, useLingui } from '@lingui/react';
 
 
 const TimelineIcon: Record<string, JSX.Element> = {
-    create: <IconPlusCircle />
+    create: <IconPlusCircle style={{
+        color: "rgba(59,179,70,1)"
+    }} />
 };
-
-const TimelineColor: Record<string, string> = {
-    create: 'green'
-}
 
 const TaskActivity = (props: TaskActivityProps) => {
     const { i18n } = useLingui();
     function getTimelineAttr(action: string, summary_key: string, summary_params: { to: string | null, from: string | null, field: string }) {
         return {
             dot: TimelineIcon[action],
-            color: TimelineColor[action] || '#32D6FB',
             extra: <div className="flex flex-wrap items-center gap-1">
                 <Trans
                     id={summary_key}
                     values={{
-                        field: i18n._(summary_params.field),
-                        from: summary_params.from,
-                        to: summary_params.to,
+                        field: summary_params?.field ? i18n._(summary_params?.field) : "",
+                        from: summary_params?.from,
+                        to: summary_params?.to,
                     }}
                     components={{
                         from: <Tag type='solid' color='light-blue' size="small" shape='circle' />,
@@ -52,7 +49,6 @@ const TaskActivity = (props: TaskActivityProps) => {
             }
         })
     }, [props.activities]);
-    console.log("props.activities", activities);
 
     return (
         <>

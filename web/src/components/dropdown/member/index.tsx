@@ -27,7 +27,7 @@ const MemberDropdown = forwardRef<HTMLDivElement, MemberDropdownProps>((props, _
     return (
         <Dropdown closeOnSelect={false} backdrop="opaque">
             <DropdownTrigger>
-                <Button size='sm' variant='light' className='w-full justify-start gap-1'>
+                <Button size='sm' variant='light' className='w-full flex-1 justify-start gap-1'>
                     <UserIcon className='w-4 h-4 text-gray-400' />
 
                     {
