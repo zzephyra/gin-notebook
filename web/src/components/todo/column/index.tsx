@@ -1,6 +1,6 @@
 // column.tsx
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { TaskState, ToDoColumn } from "../type";
+import { columnKey, TaskState, TColumnData, ToDoColumn } from "../type";
 import { useTodo } from "@/contexts/TodoContext";
 import invariant from "tiny-invariant";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
@@ -25,7 +25,10 @@ import {
 
 import { useLingui } from "@lingui/react/macro";
 import { IconDelete, IconEdit2Stroked } from "@douyinfe/semi-icons";
-
+import {
+    attachClosestEdge,
+    extractClosestEdge,
+} from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 /** 指示条：插在两个 task 之间 */
 function GapIndicator() {
     return (
@@ -35,11 +38,13 @@ function GapIndicator() {
     );
 }
 
+
 const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn }) => {
     const idle = { type: "idle" } as TaskState;
     const { t } = useLingui();
     const outerRef = useRef<HTMLDivElement | null>(null);
     const innerRef = useRef<HTMLDivElement | null>(null);
+    const headerRef = useRef<HTMLDivElement | null>(null);
     const columnNameRef = useRef<HTMLSpanElement | null>(null);
 
     const [isOpenPopover, setIsOpenPopover] = useState(false);
@@ -133,9 +138,14 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
             dropTargetForElements({
                 element: outer,
                 getIsSticky: () => true,
-                getData: () => column,
-                canDrop({ source }) {
-                    return isCardData(source.data);
+                // getHitbox: () => inner.getBoundingClientRect(),
+                getData: ({ input }) =>
+                    attachClosestEdge(
+                        { column, [columnKey]: true },
+                        { element: inner, input, allowedEdges: ["top", "bottom"] }
+                    ),
+                canDrop: ({ source }) => {
+                    return isCardData(source.data)
                 },
 
                 onDrag: ({ location }) => {
@@ -160,21 +170,11 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
                     const idx = computeDropIndex(y);
                     setDropIndex(idx);
                 },
-                onDrop: ({ source, location }) => {
+                onDrop: () => {
                     setState(idle);
-
-                    if (source?.data?.type !== "item") {
-                        setDropIndex(null);
-                        return;
-                    }
-                    // 确保使用最终落点的 index
-                    const y = location.current.input.clientY;
-                    const idx = computeDropIndex(y);
-
-                    commitInsert(source.data.id as string, idx);
                     setDropIndex(null);
                 },
-            })
+            }),
         );
     }, [column.id, updateTask]);
 
@@ -231,7 +231,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
         <>
             <div ref={outerRef} className="group h-full">
                 {/* 头部 */}
-                <div className="sticky rounded-b-none py-[15px] px-[20px] z-[25] min-w-[280px] top-[-8px] items-center">
+                <div ref={headerRef} className="sticky rounded-b-none py-[15px] px-[20px] z-[25] min-w-[280px] top-[-8px] items-center">
                     <div className="flex items-center justify-between">
                         <Tag type="ghost" shape="circle" className="z-[130] cursor-pointer text-base font-semibold">
                             <span
@@ -358,7 +358,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
 
                 {/* 列体（列表区域是唯一 drop target） */}
                 <div
-                    className={`${ToDoColumnClasses[column.process_id]} w-full z-[-3] rounded-b-lg pb-[15px] px-[20px] min-w-[280px] gap-2 flex flex-col`}
+                    className={`${ToDoColumnClasses[column.process_id]} w-full z-[-3] rounded-b-lg pb-[15px]  min-w-[280px] gap-2 flex flex-col`}
                 >
                     <div ref={innerRef} className="flex flex-col relative gap-2 w-full">
                         {childrenWithIndicator}

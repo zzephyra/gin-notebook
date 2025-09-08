@@ -391,8 +391,6 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange }: { task: To
                                                         <ListboxItem
                                                             key={col.id}
                                                             onClick={() => {
-                                                                console.log("onChange", task.id, col.id);
-
                                                                 if (col.id !== column.id) {
                                                                     handleUpdateTask({ column_id: col.id });
                                                                     onChange?.(task.id, col.id);
@@ -460,7 +458,7 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange }: { task: To
                         <Divider className="my-2 bg-gray-200" />
                     </div>
 
-                    <div className="flex-1 flex flex-col">
+                    <div className={`flex-1 flex flex-col ${showBrief ? "" : "max-w-[50%]"}`}>
                         {
                             !showBrief ? (
                                 <Tabs size="sm" classNames={{ panel: "overflow-auto" }}>

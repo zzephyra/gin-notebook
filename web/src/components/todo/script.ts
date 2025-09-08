@@ -1,4 +1,4 @@
-import { cardDropTargetKey, cardKey, TCardData, TCardDropTargetData, TodoTask } from "./type";
+import { cardDropTargetKey, cardKey, columnKey, TCardData, TCardDropTargetData, TColumnData, TodoTask } from "./type";
 
 
 export function getCardData({
@@ -23,6 +23,11 @@ export function isCardDropTargetData(
 ): value is TCardDropTargetData {
     return Boolean(value[cardDropTargetKey]);
 }
+
+export function isColumnData(value: Record<string | symbol, unknown>): value is TColumnData {
+    return Boolean(value[columnKey]);
+}
+
 
 
 export function getCardDropTargetData({

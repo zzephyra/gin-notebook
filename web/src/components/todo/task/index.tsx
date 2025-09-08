@@ -208,12 +208,11 @@ function Task({ task, column, onClick }: { task: TodoTask; column: ToDoColumn, o
     const draggingClass = state.type === "is-dragging" ? "opacity-40" : "";
     return (
         <>
-
             {/* wrapper：作为 drop target 容器 */}
             <div
                 ref={wrapperRef}
                 data-task-id={task.id}
-                className={`relative w-3xs ${draggingClass} `}
+                className={`relative w-full px-[20px] ${draggingClass} `}
                 onClick={handleClick}
             >
                 {/* inner：真正的 draggable 元素 */}

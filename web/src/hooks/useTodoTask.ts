@@ -530,6 +530,8 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
 
     const stableColumns = useMemo(() => board || [], [board]);
 
+
+
     return {
         columns: stableColumns,
         projectList: projectList || [],

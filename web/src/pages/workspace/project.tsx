@@ -24,7 +24,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useProjectTodo } from "@/hooks/useTodoTask";
 import ChaseLoading from "@/components/loading/Chase/loading";
 import TodoContext from "@/contexts/TodoContext";
-import { isCardData, isCardDropTargetData } from "@/components/todo/script";
+import { isCardData, isCardDropTargetData, isColumnData } from "@/components/todo/script";
 import TodoList from "@/components/todo/main";
 
 function ProjectPage() {
@@ -59,6 +59,7 @@ function ProjectPage() {
             monitorForElements({
                 canMonitor: ({ source }) => isCardData(source.data),
                 onDrop({ source, location }) {
+                    console.log('onDrop', { source, location })
                     const dragging = source.data;
                     if (!isCardData(dragging)) {
                         return;
@@ -76,6 +77,7 @@ function ProjectPage() {
                     if (!home) {
                         return;
                     }
+
                     const cardIndexInHome = home.tasks.findIndex((task) => task.id === dragging.task.id);
                     if (isCardDropTargetData(dropTargetData)) {
                         const destinationColumnIndex = columns.findIndex(
@@ -123,6 +125,46 @@ function ProjectPage() {
 
                             return
                         }
+                    }
+                    if (isColumnData(dropTargetData)) {
+                        console.log('列数据', dropTargetData)
+                        const destinationColumnIndex = columns.findIndex(
+                            (column) => column.id === dropTargetData.column.id,
+                        );
+                        const destination = columns[destinationColumnIndex];
+
+                        if (!destination) {
+                            return;
+                        }
+                        const closestEdge = extractClosestEdge(dropTargetData);
+                        if (home.id === destination.id) {
+                            if (closestEdge == "top") {
+                                if (cardIndexInHome === 0) {
+                                    return;
+                                }
+                                updateTask(dragging.task.id, { column_id: destination.id, before_id: home.tasks[0].id } as any, { insertIndex: 0 });
+                            } else if (closestEdge == "bottom") {
+                                if (cardIndexInHome === home.tasks.length - 1) {
+                                    return;
+                                }
+                                updateTask(dragging.task.id, { column_id: destination.id, after_id: home.tasks[home.tasks.length - 1].id } as any, { insertIndex: home.tasks.length - 1 });
+                            }
+                            return;
+                        }
+                        if (closestEdge == "top") {
+                            if (destination.tasks.length == 0) {
+                                updateTask(dragging.task.id, { column_id: destination.id } as any, { insertIndex: 0 });
+                            } else {
+                                updateTask(dragging.task.id, { column_id: destination.id, before_id: destination.tasks[0].id } as any, { insertIndex: 0 });
+                            }
+                        } else if (closestEdge == "bottom") {
+                            if (destination.tasks.length == 0) {
+                                updateTask(dragging.task.id, { column_id: destination.id } as any, { insertIndex: 0 });
+                            } else {
+                                updateTask(dragging.task.id, { column_id: destination.id, after_id: destination.tasks[destination.tasks.length - 1].id } as any, { insertIndex: destination.tasks.length });
+                            }
+                        }
+                        return
                     }
 
                 }

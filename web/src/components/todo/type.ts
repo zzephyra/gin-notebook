@@ -73,6 +73,8 @@ export type TaskState =
         type: 'preview';
         container: HTMLElement;
         dragging: DOMRect;
+    } | {
+        type: "is-card-header";
     };
 
 export type TodoPriorityOption = {
@@ -189,7 +191,6 @@ export type SubmitExtraParams = {
 
 export const cardKey = Symbol('card');
 
-
 export type TCardData = {
     [cardKey]: true;
     task: TodoTask;
@@ -203,6 +204,13 @@ export type TCardDropTargetData = {
     task: TodoTask;
     columnId: string;
 };
+
+export const columnKey = Symbol('column');
+export type TColumnData = {
+    [columnKey]: true;
+    column: ToDoColumn;
+};
+
 
 export const TagAttributesMap: Record<Priority, any> = {
     high: { type: "light", size: "small", color: "red" },
