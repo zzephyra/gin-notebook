@@ -23,7 +23,7 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
     const [activeColumnID, setActiveColumnID] = useState<string>();
     const [showBackTop, setShowBackTop] = useState(false);
     const drawerBodyRef = useRef<HTMLDivElement | null>(null);
-    const { activeOverlay } = useTodo();
+    const { activeOverlay, focusTask, blurTask } = useTodo();
     const column = props.columns.find(c => c.id === activeColumnID);
     const task = column?.tasks.find(t => t.id === activeTaskID);
 
@@ -53,12 +53,16 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
 
 
     useEffect(() => {
-        const el = drawerBodyRef.current;
-        if (!el) return;
-        const onScroll = () => setShowBackTop(el.scrollTop > 100);
-        el.addEventListener("scroll", onScroll, { passive: true });
-        onScroll();
-        return () => el.removeEventListener("scroll", onScroll);
+        if (openSideSheet && task) {
+            console.log('openSideSheet', task.id);
+            focusTask && focusTask(task.id);
+        } else {
+            if (task) {
+                blurTask && blurTask(task.id);
+            }
+            setActiveTaskID(undefined);
+            setActiveColumnID(undefined);
+        }
     }, [openSideSheet]);
 
 

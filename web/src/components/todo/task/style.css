@@ -10,3 +10,25 @@
         box-shadow: none !important;
     }
 }
+
+.online-active::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    /* 根据你的布局：wrapper 里有 padding: 20px，Card 在里面
+     我们让边框包住 Card 并向外留一条“缝” */
+    inset: 10px;
+    /* 先把范围缩进到接近 Card 边缘 */
+    border-radius: 14px;
+    /* 与 Card 圆角接近或略大一点 */
+    border: 2px solid #22c55e;
+    /* 颜色可替换（这里是绿色） */
+    /* 与 Card 保持“有一点点距离”的关键：再往外扩一点 */
+    transform: translate(-4px, -4px);
+    width: calc(100% + 8px);
+    height: calc(100% + 8px);
+    z-index: 0;
+    /* 在内容下方；如需在上层可调大 */
+    box-shadow: 0 0 0 0 transparent;
+    /* 防止某些主题额外阴影 */
+}

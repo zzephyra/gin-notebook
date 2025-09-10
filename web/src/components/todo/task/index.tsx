@@ -10,6 +10,7 @@ import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/el
 import { createPortal } from "react-dom";
 import "@/components/todo/style.css";
 import "./style.css";
+import { AnimatePresence, motion } from "framer-motion";
 import { PriorityColorMap, TagAttributesMap, TaksPayload, TaskState, ToDoColumn, TodoTask } from "../type";
 import {
     CardBody,
@@ -42,7 +43,11 @@ import {
 import { getCardData, getCardDropTargetData, isCardData } from "../script";
 
 const idle: TaskState = { type: "idle" };
-
+const avatarVariants = {
+    initial: { opacity: 0, y: 12 },                  // 从底部“升上来”
+    animate: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 500, damping: 30 } },
+    exit: { opacity: 0, x: 12, transition: { duration: 0.18 } }, // 向右侧“滑走”
+};
 // 预览状态（与原 TaskState 分离，避免互相干扰）
 type PreviewState =
     | { type: "idle" }
@@ -61,12 +66,11 @@ function Task({ task, column, onClick }: { task: TodoTask; column: ToDoColumn, o
     const [searchParams, setSearchParams] = useState({ limit: 10, keywords: "" });
     const { data: members, isFetching } = useWorkspaceMembers(params.id || "", searchParams);
 
-    const { submitTask, updateTask } = useTodo();
+    const { submitTask, updateTask, onlineMap } = useTodo();
     // 被拖拽的实际元素（必须是 draggable 绑定的盒子）
     const taskRootRef = useRef<HTMLDivElement | null>(null);
     const assigneeRef = useRef<HTMLDivElement | null>(null);
     const priorityRef = useRef<HTMLDivElement | null>(null);
-
     const [selectedAssigneeIDs, setSelectedAssigneeIDs] = useState<Set<string>>(
         new Set(task.assignee?.map((a) => a.id) || []),
     );
@@ -205,6 +209,8 @@ function Task({ task, column, onClick }: { task: TodoTask; column: ToDoColumn, o
         onClick?.(task, column);
     }
 
+    const hasOnline = !!onlineMap?.[task.id]?.length;
+
     const draggingClass = state.type === "is-dragging" ? "opacity-40" : "";
     return (
         <>
@@ -212,11 +218,11 @@ function Task({ task, column, onClick }: { task: TodoTask; column: ToDoColumn, o
             <div
                 ref={wrapperRef}
                 data-task-id={task.id}
-                className={`relative w-full px-[20px] ${draggingClass} `}
+                className={`relative w-full px-[20px]  ${draggingClass} `}
                 onClick={handleClick}
             >
                 {/* inner：真正的 draggable 元素 */}
-                <Card ref={taskRootRef} className={`shadow-none background-white ${task.isEdit ? "" : "cursor-pointer"}`}>
+                <Card ref={taskRootRef} className={` shadow-none background-white ${task.isEdit ? "" : "cursor-pointer"} `}>
                     <CardBody>
                         {task.isEdit ? (
                             <div className="flex flex-col gap-2">
@@ -296,7 +302,39 @@ function Task({ task, column, onClick }: { task: TodoTask; column: ToDoColumn, o
                         )}
                     </CardBody>
                 </Card>
+
+                {/* 协同工作：显示正在操作用户的头像 */}
+                <div className="absolute right-0 top-0">
+                    <motion.div
+                        layout
+                        className="flex flex-col-reverse items-end gap-1" // 底部对齐、从下往上堆
+                        transition={{ layout: { duration: 0.18 } }}
+                    >
+                        <AnimatePresence initial={false}>
+                            {hasOnline &&
+                                onlineMap[task.id].map((u) => (
+                                    <motion.div
+                                        key={u.user_id}
+                                        layout
+                                        variants={avatarVariants}
+                                        initial="initial"
+                                        animate="animate"
+                                        exit="exit"
+                                    >
+                                        <Avatar
+                                            src={u.avatar}
+                                            alt={u.name}
+                                            className="w-5 h-5 border-2 border-white"
+                                        />
+                                    </motion.div>
+                                ))}
+                        </AnimatePresence>
+                    </motion.div>
+                </div>
             </div>
+
+
+
             {/* === 自定义原生拖拽预览：使用 Portal 渲染到 container === */}
             {preview.type === "preview" &&
                 createPortal(

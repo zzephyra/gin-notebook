@@ -6,10 +6,12 @@ import (
 	"gin-notebook/internal/api/v1/eventRoute"
 	"gin-notebook/internal/api/v1/noteRoute"
 	"gin-notebook/internal/api/v1/projectRouter"
+	"gin-notebook/internal/api/v1/realtimeRoute"
 	"gin-notebook/internal/api/v1/settingsRoute"
 	"gin-notebook/internal/api/v1/uploadRoute"
 	"gin-notebook/internal/api/v1/userRoute"
 	"gin-notebook/internal/api/v1/workspaceRoute"
+	"gin-notebook/internal/pkg/realtime/bus"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,4 +27,8 @@ func RegisterV1Routes(r *gin.RouterGroup) {
 	aiRoute.RegisterAiRoutes(group)
 	eventRoute.RegisterEventRoutes(group)
 	projectRouter.ProjectRoutes(group)
+
+	if broker := bus.Default(); broker != nil {
+		realtimeRoute.RealTimeRoute(group, realtimeRoute.New(broker))
+	}
 }

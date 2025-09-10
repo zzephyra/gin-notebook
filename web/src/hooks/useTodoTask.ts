@@ -5,6 +5,9 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { LexoRank } from "lexorank";
 import { addTaskToColumnEnd, findTask, removeTaskById, replaceColumnById, replaceTaskById } from '@/utils/boardPatch'
 import { responseCode } from '@/features/constant/response';
+import { getRealtime, Incoming, OnlineMap, RealtimeOptions, roomProject } from '@/lib/realtime';
+import { websocketApi } from '@/features/api/routes';
+import { BASE_URL } from '@/lib/api/client';
 
 const genTempId = () => (globalThis.crypto?.randomUUID?.() ?? `tmp_${Date.now()}_${Math.random()}`);
 export type ActiveDraftPtr = { id: string; columnId: string; colIdx: number } | null;
@@ -530,6 +533,39 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
 
     const stableColumns = useMemo(() => board || [], [board]);
 
+    // === Presence 集成：state + 连接 ===
+    const [onlineMap, setOnlineMap] = useState<OnlineMap>({});
+    // 你的 API base（与 axios 一致）
+    const API_BASE = import.meta.env.VITE_API_BASE_URL || location.origin;
+    // 如果是跨站且 Cookie 不带，可选地从 localStorage 取 token（联调用；生产建议 Cookie）
+    const wsOpt: RealtimeOptions = { api: websocketApi(BASE_URL), defaultQuery: { workspace_id: workspaceId } }
+    // 在“当前项目变化”时订阅对应房间
+    useEffect(() => {
+        if (!currentProject?.id) return;
+        const rt = getRealtime(wsOpt);
+        const room = roomProject(currentProject.id);
+
+        const onMsg = (msg: Incoming) => {
+            if (msg.type === 'presence_state' && msg.room === room) {
+                setOnlineMap(msg.payload?.online ?? {});
+            }
+        };
+
+        rt.on(onMsg);
+        rt.subscribe(room);
+        // 初次进入可能还没消息，等服务端推第一帧；无需手动请求
+
+        return () => { rt.unsubscribe(room); rt.off(onMsg); };
+    }, [API_BASE, workspaceId, currentProject?.id]);
+
+    // 对外暴露的 presence API
+    const getTaskViewers = (taskId: string) => onlineMap[taskId] ?? [];
+    const focusTask = (taskId: string) => {
+        console.log('focusTask-hook', taskId);
+        console.log('currentProject', currentProject?.id);
+        currentProject?.id && getRealtime(wsOpt).focusTask(currentProject.id, taskId)
+    };
+    const blurTask = (taskId: string) => currentProject?.id && getRealtime(wsOpt).blurTask(currentProject.id, taskId);
 
 
     return {
@@ -546,5 +582,10 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         currentProject: currentProject,
         isLoading: isLoadingProjects || isLoadingBoard,
         ...rest,
+
+        getTaskViewers, // (taskId) => UserPresence[]
+        focusTask,      // (taskId) => void
+        blurTask,       // (taskId) => void
+        onlineMap,      // 如需整张表渲染也可用
     };
 }

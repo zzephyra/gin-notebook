@@ -31,7 +31,15 @@ func LoginAuthApi(c *gin.Context) {
 	}
 	responseCode, accessToken := authService.UserLogin(params)
 
-	token.StorageTokenInCookie(c, accessToken, "access_token", 3600*24, "/", "")
+	token.StorageTokenInCookie(c, accessToken, token.CookieOpts{
+		Name:           "access_token",
+		MaxAge:         3600 * 24, // 7 days
+		HTTPS:          false,     // 本地 http
+		CrossSite:      false,     // 前端和后端都在 localhost/127.0.0.1 视为同站
+		UsePartitioned: false,
+		Path:           "/",
+		Domain:         "",
+	})
 	c.JSON(http.StatusOK, response.Response(responseCode, nil))
 }
 

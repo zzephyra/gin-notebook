@@ -3,7 +3,6 @@ package middleware
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/http/response"
 	"gin-notebook/internal/repository"
@@ -24,9 +23,8 @@ type WorkspaceAuthDto struct {
 
 func RequireWorkspaceAccess() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userID := c.GetInt64("userID")                        // 假设已解码 JWT 拿到
-		fmt.Println("RequireWorkspaceAccess userID:", userID) // 调试输出
-		workspaceIDStr := c.Param(workspaceKey)               // 从 URL 参数获取 workspace ID
+		userID := c.GetInt64("userID")          // 假设已解码 JWT 拿到
+		workspaceIDStr := c.Param(workspaceKey) // 从 URL 参数获取 workspace ID
 
 		if workspaceIDStr == "" {
 			workspaceIDStr = c.Query(workspaceKey)
@@ -60,13 +58,19 @@ func RequireWorkspaceAccess() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, response.Response(message.ERROR_WORKSPACE_ID, nil))
 			return
 		}
-		workspaceMemberID, isAllowed := repository.IsUserAllowedToModifyWorkspace(userID, workspaceID)
-		if !isAllowed {
+		workspaceMember, isAllowed := repository.IsUserAllowedToModifyWorkspace(userID, workspaceID)
+		if !isAllowed || workspaceMember == nil {
 			c.AbortWithStatusJSON(http.StatusForbidden, response.Response(message.ERROR_NO_PERMISSION_TO_UPDATE_AND_VIEW_WORKSPACE, nil))
 			return
 		}
-		c.Set("workspaceMemberID", workspaceMemberID)
-		c.Set("workspaceID", workspaceID)
+
+		if workspaceMember != nil {
+			c.Set("workspaceMemberID", workspaceMember.ID)
+			c.Set("workspaceID", workspaceID)
+			if workspaceMember.Nickname != "" {
+				c.Set("nickname", workspaceMember.Nickname)
+			}
+		}
 		c.Next()
 	}
 }

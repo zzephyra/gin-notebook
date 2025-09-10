@@ -4,11 +4,17 @@ import (
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
+	"gin-notebook/internal/pkg/realtime/bus"
 	"gin-notebook/internal/repository"
 	"gin-notebook/pkg/utils/tools"
+	"strconv"
 )
 
 func GetProject(params *dto.GetProjectDTO) (responseCode int, data map[string]interface{}) {
+	bus.BroadcastToProject(strconv.FormatInt(params.ProjectID, 10), "project_update", map[string]interface{}{
+		"action": "viewed",
+		"by":     params.MemberID,
+	})
 	isExist, err := repository.ProjectExistsByID(database.DB, params.ProjectID, params.WorkspaceID)
 	if err != nil {
 		responseCode = database.IsError(err)

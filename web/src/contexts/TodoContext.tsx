@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 import type { ProjectBoard, Project, SubmitExtraParams, TaksPayload, UpdateOptions } from '@/components/todo/type';
 import type { StartDraftOptions } from "@/hooks/useTodoTask"
+import { UserPresence } from '@/lib/realtime';
 export type TodoContextValue = {
     columns: ProjectBoard;
     projectList: Project[];
@@ -18,6 +19,9 @@ export type TodoContextValue = {
     // 如果有移动/编辑等，也加上：
     // moveTask: (...) => Promise<void>;
     // updateTask: (...) => Promise<void>;
+    onlineMap?: Record<string, UserPresence[]>;
+    blurTask?: (taskId: string) => void;
+    focusTask?: (taskId: string) => void;
 };
 
 const TodoContext = createContext<TodoContextValue | null>(null);

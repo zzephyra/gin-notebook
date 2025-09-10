@@ -1,6 +1,6 @@
 // column.tsx
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { columnKey, TaskState, TColumnData, ToDoColumn } from "../type";
+import { columnKey, TaskState, ToDoColumn } from "../type";
 import { useTodo } from "@/contexts/TodoContext";
 import invariant from "tiny-invariant";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
@@ -27,7 +27,6 @@ import { useLingui } from "@lingui/react/macro";
 import { IconDelete, IconEdit2Stroked } from "@douyinfe/semi-icons";
 import {
     attachClosestEdge,
-    extractClosestEdge,
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 /** 指示条：插在两个 task 之间 */
 function GapIndicator() {
@@ -88,37 +87,37 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
     };
 
     // 根据 dropIndex 计算 before/after_task_id，并调用 updateTask
-    const commitInsert = (sourceTaskId: string, index: number) => {
-        const container = innerRef.current;
-        if (!container) return;
+    // const commitInsert = (sourceTaskId: string, index: number) => {
+    //     const container = innerRef.current;
+    //     if (!container) return;
 
-        const nodes = Array.from(container.querySelectorAll<HTMLElement>("[data-task-id]"));
-        const ids = nodes.map((n) => n.dataset.taskId!).filter(Boolean);
+    //     const nodes = Array.from(container.querySelectorAll<HTMLElement>("[data-task-id]"));
+    //     const ids = nodes.map((n) => n.dataset.taskId!).filter(Boolean);
 
-        // 空列
-        if (ids.length === 0) {
-            updateTask(sourceTaskId, { column_id: column.id } as any);
-            return;
-        }
+    //     // 空列
+    //     if (ids.length === 0) {
+    //         updateTask(sourceTaskId, { column_id: column.id } as any);
+    //         return;
+    //     }
 
-        // index == 0 => 插到第一个前面
-        if (index <= 0) {
-            updateTask(sourceTaskId, { column_id: column.id, before_task_id: ids[0] } as any);
-            return;
-        }
+    //     // index == 0 => 插到第一个前面
+    //     if (index <= 0) {
+    //         updateTask(sourceTaskId, { column_id: column.id, before_task_id: ids[0] } as any);
+    //         return;
+    //     }
 
-        // index == ids.length => 插到最后一个后面
-        if (index >= ids.length) {
-            updateTask(sourceTaskId, {
-                column_id: column.id,
-                after_task_id: ids[ids.length - 1],
-            } as any);
-            return;
-        }
+    //     // index == ids.length => 插到最后一个后面
+    //     if (index >= ids.length) {
+    //         updateTask(sourceTaskId, {
+    //             column_id: column.id,
+    //             after_task_id: ids[ids.length - 1],
+    //         } as any);
+    //         return;
+    //     }
 
-        // 中间：插到 ids[index] 前面
-        updateTask(sourceTaskId, { column_id: column.id, before_task_id: ids[index] } as any);
-    };
+    //     // 中间：插到 ids[index] 前面
+    //     updateTask(sourceTaskId, { column_id: column.id, before_task_id: ids[index] } as any);
+    // };
 
     const handleSubmitColumnName = () => {
         if (!columnNameEditable) return;

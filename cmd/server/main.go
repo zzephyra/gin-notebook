@@ -10,6 +10,7 @@ import (
 	"gin-notebook/internal/pkg/google"
 	"gin-notebook/internal/pkg/queue"
 	"gin-notebook/internal/pkg/rbac"
+	"gin-notebook/internal/pkg/realtime/bus"
 	asynqimpl "gin-notebook/internal/tasks/asynq"
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/algorithm"
@@ -67,6 +68,12 @@ func main() {
 
 	// 初始化Google OAuth2客户端
 	google.Init(config)
+
+	// sse 实时通信
+	broker := bus.NewBroker(128)
+	bus.Use(broker)                               // 给路由处理器/订阅用
+	bus.UsePublisher(bus.NewSSEPublisher(broker)) // 给业务发布用
+
 	// 设置路由
 	var router = api.SetRouter()
 	router.Run("0.0.0.0:8899") // 监听并在 0.0.0.0:8899 上启动服务

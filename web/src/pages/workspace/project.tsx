@@ -36,7 +36,7 @@ function ProjectPage() {
     const projectID = searchParams.get("project_id") || "";
     const boardRef = useRef<HTMLDivElement | null>(null);
     const isDesktop = useMediaQuery({ minWidth: 1024 });
-    const { columns, activeOverlay, updateColumn, cleanColumnTasks, setActiveOverlay, updateTask, submitTask, startDraftTask, projectList, currentProject, isLoading } = useProjectTodo(projectID, workspaceID)
+    const { columns, activeOverlay, updateColumn, cleanColumnTasks, setActiveOverlay, updateTask, submitTask, startDraftTask, projectList, currentProject, isLoading, onlineMap, blurTask, focusTask } = useProjectTodo(projectID, workspaceID)
 
     const providerValue = {
         columns,
@@ -50,6 +50,7 @@ function ProjectPage() {
         submitTask,
         cleanColumnTasks,
         updateColumn,
+        onlineMap, blurTask, focusTask
         // moveTask, updateTask, ...
     };
     useEffect(() => {
@@ -59,7 +60,6 @@ function ProjectPage() {
             monitorForElements({
                 canMonitor: ({ source }) => isCardData(source.data),
                 onDrop({ source, location }) {
-                    console.log('onDrop', { source, location })
                     const dragging = source.data;
                     if (!isCardData(dragging)) {
                         return;
@@ -127,7 +127,6 @@ function ProjectPage() {
                         }
                     }
                     if (isColumnData(dropTargetData)) {
-                        console.log('列数据', dropTargetData)
                         const destinationColumnIndex = columns.findIndex(
                             (column) => column.id === dropTargetData.column.id,
                         );

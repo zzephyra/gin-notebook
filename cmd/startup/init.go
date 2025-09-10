@@ -25,6 +25,7 @@ func Init() (err error) {
 	}
 	systemSetting := tools.StructToUpdateMap(data, nil, []string{})
 	err = cache.RedisInstance.SaveSystemSettings(systemSetting)
+
 	return
 }
 

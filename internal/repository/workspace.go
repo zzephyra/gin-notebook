@@ -61,6 +61,7 @@ func GetWorkspaceByID(workspaceID any, OwnerID int64) (*dto.WorkspaceDTO, error)
 			wm.nickname as nickname, 
 			wm.editable as editable,
 			wmc.member_cnt as member_count `).
+		Debug().
 		Joins("LEFT JOIN users ON users.id = workspaces.owner").
 		Joins("LEFT JOIN workspace_members as wm on wm.workspace_id = workspaces.id and wm.user_id = ?", OwnerID).
 		Joins(`LEFT JOIN (
@@ -69,7 +70,7 @@ func GetWorkspaceByID(workspaceID any, OwnerID int64) (*dto.WorkspaceDTO, error)
 			GROUP  BY workspace_id
 			) AS wmc
 			ON wmc.workspace_id = workspaces.id`).
-		Where("workspaces.id = ? and owner = ?", workspaceID, OwnerID).
+		Where("workspaces.id = ?", workspaceID).
 		First(&workspace).Error
 	if err != nil {
 		return nil, err
@@ -146,16 +147,16 @@ func GetWorkspaceMemberByIDs(memberID []int64) (workspaceMembers *[]dto.Workspac
 	return
 }
 
-func IsUserAllowedToModifyWorkspace(userID int64, workspaceID int64) (int64, bool) {
+func IsUserAllowedToModifyWorkspace(userID int64, workspaceID int64) (*model.WorkspaceMember, bool) {
 	workspaceMember, err := GetWorkspaceMember(userID, workspaceID)
 	if err != nil {
-		return 0, false
+		return nil, false
 	}
 	roles := make([]string, 0)
 	if err := json.Unmarshal(workspaceMember.Role, &roles); err != nil {
-		return 0, false
+		return nil, false
 	}
-	return workspaceMember.ID, tools.Contains(roles, model.MemberRole.Admin)
+	return workspaceMember, tools.Contains(roles, model.MemberRole.Admin)
 }
 
 func GetWorkspaceLinks(workspaceID string) (*[]model.WorkspaceInvite, error) {
