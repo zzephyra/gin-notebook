@@ -74,6 +74,10 @@ func main() {
 	bus.Use(broker)                               // 给路由处理器/订阅用
 	bus.UsePublisher(bus.NewSSEPublisher(broker)) // 给业务发布用
 
+	// websocket 初始化
+	wsPub := bus.NewRedisWsPublisher(cache.RedisInstance.Client)
+	bus.UseWsPublisher(wsPub)
+
 	// 设置路由
 	var router = api.SetRouter()
 	router.Run("0.0.0.0:8899") // 监听并在 0.0.0.0:8899 上启动服务

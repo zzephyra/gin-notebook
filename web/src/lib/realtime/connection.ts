@@ -1,4 +1,4 @@
-import { Incoming, Outgoing } from './protocol';
+import { Incoming, Outgoing, roomTask } from './protocol';
 
 type Listener = (msg: Incoming) => void;
 
@@ -123,11 +123,30 @@ export class RealtimeConnection {
 
     /** 公开：presence 专用辅助 */
     focusTask(projectId: string, taskId: string) {
-        console.log('focusTask', projectId, taskId);
+        // 订阅任务事件房间（只收该任务的评论等事件）
+        const room = roomTask(taskId);
+        if (!this.subs.has(room)) {
+            this.subs.add(room);
+            this.send({ type: 'subscribe', rooms: [room] });
+        }
+        // 通知服务端 presence & 记录活跃任务（由服务端持久化）
         this.send({ type: 'focus_task', project_id: projectId, task_id: taskId });
     }
+
     blurTask(projectId: string, taskId: string) {
+        const room = roomTask(taskId);
+        if (this.subs.delete(room)) {
+            this.send({ type: 'unsubscribe', rooms: [room] });
+        }
         this.send({ type: 'blur_task', project_id: projectId, task_id: taskId });
+    }
+
+    /** 公开: 新增/删除评论 */
+    addComment(projectId: string, taskId: string, commentId: string) {
+        this.send({ type: 'add_comment', project_id: projectId, task_id: taskId, comment_id: commentId });
+    }
+    removeComment(projectId: string, taskId: string, commentId: string) {
+        this.send({ type: 'remove_comment', project_id: projectId, task_id: taskId, comment_id: commentId });
     }
 
     /** 公开：注册/注销监听器 */
@@ -194,6 +213,5 @@ export function getRealtime(opts: RealtimeOptions) {
     return _instance;
 }
 
-// 小工具：构建 ws 房间名
-export { roomProject } from './protocol';
-export type { Incoming, OnlineMap } from './protocol';
+export { roomProject, roomTask } from './protocol';
+export type { Incoming, OnlineMap, Outgoing } from './protocol';

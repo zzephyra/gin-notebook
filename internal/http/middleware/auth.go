@@ -68,7 +68,7 @@ func RequireWorkspaceAccess() gin.HandlerFunc {
 			c.Set("workspaceMemberID", workspaceMember.ID)
 			c.Set("workspaceID", workspaceID)
 			if workspaceMember.Nickname != "" {
-				c.Set("nickname", workspaceMember.Nickname)
+				c.Set("workspaceNickname", workspaceMember.Nickname)
 			}
 		}
 		c.Next()

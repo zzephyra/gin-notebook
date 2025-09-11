@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gin-notebook/internal/pkg/dto"
 	"strconv"
 	"time"
 
@@ -16,10 +17,8 @@ const (
 )
 
 type UserPresence struct {
-	UserID   int64  `json:"user_id,string"`
-	Name     string `json:"name"`
-	Avatar   string `json:"avatar"`
-	LastSeen int64  `json:"last_seen"`
+	dto.WorkspaceMemberDTO
+	LastSeen int64 `json:"last_seen"`
 }
 
 func Touch(ctx context.Context, rdb *redis.Client, taskID string, up UserPresence, ttl time.Duration) error {

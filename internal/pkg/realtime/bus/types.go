@@ -24,7 +24,7 @@ type Event struct {
 
 func newID() string { return strconv.FormatInt(time.Now().UnixNano(), 10) }
 
-func NewEvent(typ, topic string, data any) Event {
+func NewEvent(typ string, topic string, data any) Event {
 	return Event{
 		ID:    newID(),
 		Type:  typ,
@@ -37,7 +37,7 @@ func NewEvent(typ, topic string, data any) Event {
 func (e Event) Marshal() []byte {
 	var buf bytes.Buffer
 	buf.WriteString("event: ")
-	buf.WriteString(e.Type)
+	buf.WriteString(string(e.Type))
 	buf.WriteByte('\n')
 
 	buf.WriteString("id: ")

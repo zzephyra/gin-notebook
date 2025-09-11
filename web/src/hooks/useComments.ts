@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { getPercent } from '@/components/comment/input/script';
 import { Comment } from '@/components/comment/main/type';
 import {
@@ -15,6 +15,9 @@ import { UploadFile } from '@/lib/upload';
 import { UploadResult } from '@/lib/upload/type';
 import { hashFilesSHA256 } from '@/utils/hashFiles';
 import { useInfiniteQuery, useMutation, useQueryClient, UseMutationResult } from '@tanstack/react-query';
+import { getRealtime, Incoming, Outgoing, RealtimeOptions } from "@/lib/realtime";
+import { websocketApi } from "@/features/api/routes";
+import { BASE_URL } from "@/lib/api/client";
 
 export interface TaskCommentsController {
     isLoading: boolean;
@@ -445,6 +448,23 @@ export function useTaskCommentsController(params: TaskCommentParams & { offset?:
         [commentsQuery.data]
     );
     const total = commentsQuery.data?.pages?.[0]?.data?.total ?? 0;
+    const wsOpt: RealtimeOptions = { api: websocketApi(BASE_URL), defaultQuery: { workspace_id: params.workspace_id } }
+
+    function onMessage(msg: Incoming) {
+        if (msg.type == "comment_added") {
+            const c = msg.payload.comment;
+            if (c.todo_task_id === params.task_id) {
+                // 新评论只在当前任务下生效
+                replaceInCache(c);
+            }
+        }
+    }
+
+    // websocket获取评论更新
+    useEffect(() => {
+        if (!params.task_id) return;
+        getRealtime(wsOpt).on(onMessage)
+    }, [params.task_id])
 
     return {
         isLoading: commentsQuery.isLoading,

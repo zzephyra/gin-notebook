@@ -7,6 +7,7 @@ import (
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
+	"gin-notebook/internal/pkg/realtime/bus"
 	"gin-notebook/internal/repository"
 	"gin-notebook/internal/tasks/asynq/enqueue"
 	"gin-notebook/internal/tasks/asynq/types"
@@ -100,7 +101,7 @@ func CreateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 	return
 }
 
-func CreateTaskComment(params *dto.CreateToDoTaskCommentDTO) (responseCode int, data map[string]interface{}) {
+func CreateTaskComment(ctx context.Context, params *dto.CreateToDoTaskCommentDTO) (responseCode int, data map[string]interface{}) {
 	// 验证用户权限
 	isAllowed, err := repository.CheckWorkspaceMemberAuth(database.DB, params.WorkspaceID, params.UserID, params.MemberID)
 	if err != nil {
@@ -197,6 +198,8 @@ func CreateTaskComment(params *dto.CreateToDoTaskCommentDTO) (responseCode int, 
 		for _, attachment := range Attachments {
 			data["attachments"] = append(data["attachments"].([]map[string]interface{}), tools.StructToUpdateMap(&attachment, nil, []string{"DeletedAt", "CreatedAt", "UpdatedAt", "CommentID", "SHA256Hash", "UploaderID"}))
 		}
+
+		bus.PublishCommentAdded(context.Background(), params.TaskID, data)
 
 		return nil
 	})

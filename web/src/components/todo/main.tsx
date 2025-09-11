@@ -54,7 +54,6 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
 
     useEffect(() => {
         if (openSideSheet && task) {
-            console.log('openSideSheet', task.id);
             focusTask && focusTask(task.id);
         } else {
             if (task) {

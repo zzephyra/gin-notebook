@@ -1,6 +1,8 @@
+// Package bus 定义了一个发布-订阅接口和默认实现
+// Publisher 负责发布事件，Subscriber 负责订阅事件
+// defaultPublisher 为SSE服务提供事件
+// defaultWsPublisher 为WS服务提供事件
 package bus
-
-import "fmt"
 
 // 业务侧只依赖这个接口，不关心底层是 SSE、Kafka 还是 WS
 type Publisher interface {
@@ -13,7 +15,9 @@ type Publisher interface {
 }
 
 // —— 默认 Publisher（可在启动时注入） ——
-var defaultPublisher Publisher
+var (
+	defaultPublisher Publisher
+)
 
 // 在 main/startup 里调用，注入默认发布器
 func UsePublisher(p Publisher)    { defaultPublisher = p }
@@ -26,7 +30,6 @@ func BroadcastToWorkspace(workspaceID, typ string, payload any) {
 	}
 }
 func BroadcastToProject(projectID, typ string, payload any) {
-	fmt.Println("BroadcastToProject", defaultPublisher == nil)
 	if defaultPublisher != nil {
 		defaultPublisher.ToProject(projectID, typ, payload)
 	}

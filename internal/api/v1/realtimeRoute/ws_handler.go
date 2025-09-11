@@ -2,11 +2,13 @@ package realtimeRoute
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"sync"
 	"time"
 
+	"gin-notebook/internal/pkg/dto"
+	"gin-notebook/internal/pkg/realtime/presence"
+	"gin-notebook/internal/pkg/realtime/protocol"
 	"gin-notebook/internal/service/realtimeService"
 
 	"github.com/gin-gonic/gin"
@@ -28,17 +30,21 @@ func NewWsHandler(svc *realtimeService.Service) *WsHandler {
 }
 
 func (h *WsHandler) ServeWS(c *gin.Context) {
-	var nickname = getCtxString(c, "nickname")
-	fmt.Println("nickname", nickname)
-	if workspaceNickname := getCtxString(c, "workspaceNickname"); workspaceNickname != "" {
-		nickname = workspaceNickname
+	// 从上下文获取用户信息, 统一为WorkspaceMemberDTO
+	role, exists := c.Get("role")
+	if !exists {
+		role = []string{}
 	}
-	fmt.Println("nickname", nickname)
 
-	user := realtimeService.User{
-		UserID: getCtxInt64(c, "userID"),
-		Name:   nickname,
-		Avatar: getCtxString(c, "avatar"),
+	user := presence.UserPresence{
+		WorkspaceMemberDTO: dto.WorkspaceMemberDTO{
+			UserID:            getCtxInt64(c, "userID"),
+			UserNickname:      getCtxString(c, "nickname"),
+			WorkspaceNickname: getCtxString(c, "workspaceNickname"), // 可选地覆盖
+			Email:             getCtxString(c, "email"),
+			Avatar:            getCtxString(c, "avatar"),
+			Role:              role.([]string),
+		},
 	}
 	conn, err := h.Upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
@@ -69,7 +75,7 @@ func (h *WsHandler) ServeWS(c *gin.Context) {
 		if err != nil {
 			return
 		}
-		var in realtimeService.Incoming
+		var in protocol.Incoming
 		if err := json.Unmarshal(data, &in); err != nil {
 			continue
 		}

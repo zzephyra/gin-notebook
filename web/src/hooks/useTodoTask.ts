@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { LexoRank } from "lexorank";
 import { addTaskToColumnEnd, findTask, removeTaskById, replaceColumnById, replaceTaskById } from '@/utils/boardPatch'
 import { responseCode } from '@/features/constant/response';
-import { getRealtime, Incoming, OnlineMap, RealtimeOptions, roomProject } from '@/lib/realtime';
+import { getRealtime, Incoming, OnlineMap, Outgoing, RealtimeOptions, roomProject } from '@/lib/realtime';
 import { websocketApi } from '@/features/api/routes';
 import { BASE_URL } from '@/lib/api/client';
 
@@ -561,8 +561,6 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
     // 对外暴露的 presence API
     const getTaskViewers = (taskId: string) => onlineMap[taskId] ?? [];
     const focusTask = (taskId: string) => {
-        console.log('focusTask-hook', taskId);
-        console.log('currentProject', currentProject?.id);
         currentProject?.id && getRealtime(wsOpt).focusTask(currentProject.id, taskId)
     };
     const blurTask = (taskId: string) => currentProject?.id && getRealtime(wsOpt).blurTask(currentProject.id, taskId);
