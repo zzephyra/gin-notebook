@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { hashFilesSHA256 } from "@/utils/hashFiles";
 import CommentContent from "../content";
 import { CommentContentHandle } from "../content/types";
+import { handleKeyDown } from "../script";
 
 const CommentInput = forwardRef<CommentInputRef, CommentInputProps>((props, ref) => {
     const { t } = useLingui();
@@ -126,6 +127,16 @@ const CommentInput = forwardRef<CommentInputRef, CommentInputProps>((props, ref)
         controllersRef.current.delete(String(attachment_id));
     };
 
+    const handleContentKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            e.preventDefault();
+            handleSubmit();
+            return;
+        } else {
+            handleKeyDown(e);
+        }
+    }
+
     useImperativeHandle(
         ref,
         (): CommentInputRef => ({
@@ -173,6 +184,7 @@ const CommentInput = forwardRef<CommentInputRef, CommentInputProps>((props, ref)
             <CommentContent
                 ref={contextRef}
                 container={containerRef}
+                onInputKeyDown={handleContentKeyDown}
                 inputStyle={{
                     minHeight: 80,
                     padding: 8,

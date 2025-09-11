@@ -291,6 +291,11 @@ const CommentContent = forwardRef<CommentContentHandle, CommentContentProps>((pr
         }
     };
 
+    const handleKeyDownWrapper = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        props.onInputKeyDown?.(e);
+    }
+
+
     // 阻断 pointerdown：避免父组件“点外提交”误伤
     useEffect(() => {
         const stop = (e: PointerEvent) => e.preventDefault();
@@ -316,7 +321,7 @@ const CommentContent = forwardRef<CommentContentHandle, CommentContentProps>((pr
                     tabIndex={0}
                     suppressContentEditableWarning
                     onInput={handleInput}
-                    onKeyDown={handleKeyDown}
+                    onKeyDown={handleKeyDownWrapper}
                     onBlur={props.onBlur}
                     onClick={handleClick}
                     style={{ outline: "none", whiteSpace: "pre-wrap", ...(props.inputStyle || {}) }}

@@ -11,6 +11,7 @@ export interface CommentContentProps {
     inputStyle?: CSSProperties
     editable?: boolean
     onBlur?: () => void,
+    onInputKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void,
     portalContainer?: HTMLElement | null;
     /** popover 容器；不传则用本地 container */
     popoverContainer?: HTMLElement | null;
