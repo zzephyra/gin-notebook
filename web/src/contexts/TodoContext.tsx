@@ -15,6 +15,7 @@ export type TodoContextValue = {
     submitTask: (tempId: string, params?: SubmitExtraParams) => Promise<any>;
     cancelDraftTask?: (tempId: string) => void;
     cleanColumnTasks: (columnId: string) => void;
+    deleteTask: (taskId: string, columnId: string) => Promise<void>;
     updateColumn: (columnId: string, patch: Partial<{ name: string; color: string; }>) => Promise<void>;
     // 如果有移动/编辑等，也加上：
     // moveTask: (...) => Promise<void>;

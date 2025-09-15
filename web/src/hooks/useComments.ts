@@ -15,7 +15,7 @@ import { UploadFile } from '@/lib/upload';
 import { UploadResult } from '@/lib/upload/type';
 import { hashFilesSHA256 } from '@/utils/hashFiles';
 import { useInfiniteQuery, useMutation, useQueryClient, UseMutationResult } from '@tanstack/react-query';
-import { getRealtime, Incoming, Outgoing, RealtimeOptions } from "@/lib/realtime";
+import { getRealtime, Incoming, RealtimeOptions } from "@/lib/realtime";
 import { websocketApi } from "@/features/api/routes";
 import { BASE_URL } from "@/lib/api/client";
 

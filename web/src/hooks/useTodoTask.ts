@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { LexoRank } from "lexorank";
 import { addTaskToColumnEnd, findTask, removeTaskById, replaceColumnById, replaceTaskById } from '@/utils/boardPatch'
 import { responseCode } from '@/features/constant/response';
-import { getRealtime, Incoming, OnlineMap, Outgoing, RealtimeOptions, roomProject } from '@/lib/realtime';
+import { getRealtime, Incoming, OnlineMap, RealtimeOptions, roomProject } from '@/lib/realtime';
 import { websocketApi } from '@/features/api/routes';
 import { BASE_URL } from '@/lib/api/client';
 
@@ -511,6 +511,17 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         cleanColumnTasksRequest(columnId, workspaceId, currentProject.id);
     }
 
+    const deleteTask = async (taskId: string, columnId: string) => {
+        const key = getBoardQueryKey(currentProject.id);
+        queryClient.setQueryData<ProjectBoard>(key, (old = []) => {
+            const colIdx = columnIndex.get(columnId);
+            if (colIdx === undefined) return old;
+            const newBoard = old.slice();
+            newBoard[colIdx] = { ...newBoard[colIdx], tasks: newBoard[colIdx].tasks.filter(t => t.id !== taskId) };
+            return newBoard;
+        });
+    }
+
     const updateColumn = async (columnId: string, patch: Partial<ColumnUpdatePayload>) => {
         if (!currentProject) return;
         const colIdx = columnIndex.get(columnId) ?? -1;
@@ -571,6 +582,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         projectList: projectList || [],
         createTask,
         updateTask,
+        deleteTask,
         startDraftTask,
         submitTask,
         cleanColumnTasks,

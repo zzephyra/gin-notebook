@@ -145,3 +145,17 @@ export async function getTaskActivitiesRequest(taskID: string, workspaceID: stri
         return defaultResp
     }
 }
+
+export async function deleteProjectTaskRequest(taskID: string, workspace_id: string) {
+    if (!taskID || !workspace_id) {
+        toast.error("Missing required parameters to delete task.");
+        return {};
+    }
+
+    try {
+        let res = await axiosClient.delete(taskUpdateApi(taskID), { data: { workspace_id } })
+        return res.data || {};
+    } catch (err) {
+        return {};
+    }
+}

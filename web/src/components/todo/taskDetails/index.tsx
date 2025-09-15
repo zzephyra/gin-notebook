@@ -46,7 +46,7 @@ import useTaskActivity from "@/hooks/useActivity";
 import TaskActivity from "../activity";
 
 
-const TaskDetails = ({ task, column, onScroll, showBrief, onChange }: { task: TodoTask, column: ToDoColumn, onScroll?: (e: React.UIEvent<HTMLDivElement>) => void, showBrief?: boolean, onChange?: (taskID: string, columnID: string) => void }) => {
+const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: { task: TodoTask, column: ToDoColumn, onScroll?: (e: React.UIEvent<HTMLDivElement>) => void, showBrief?: boolean, onChange?: (taskID: string, columnID: string) => void, onUpload: (taskID: string, file: File) => void }) => {
     const drawerBodyRef = useRef<HTMLDivElement | null>(null);
     const titleRef = useRef<HTMLInputElement>(null);
     const coverRef = useRef<HTMLInputElement>(null);
@@ -120,20 +120,14 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange }: { task: To
         if (isEdit.title) switchEditStatus("title");
     };
 
-    const handleUploadCover = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = Array.from(e.target.files ?? []);
-        const controller = UploadFile({ file: files[0] });
-        const off = controller.on((event) => {
-            if (event.type === "error") {
-                toast.error(t`Upload failed`);
-                off();
-            }
-        });
-        e.target.files = null;
-        const { url } = await controller.promise;
-        handleUpdateTask({ cover: url } as any);
-    }
 
+    const handleUploadCover = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!onUpload) return;
+        const files = Array.from(e.target.files ?? []);
+        if (files.length === 0) return;
+        onUpload(task.id, files[0]);
+        e.target.value = "";
+    }
 
     const handleUpdateTask = (payload: TaksPayload) => {
         updateTask(task.id, payload);
@@ -206,8 +200,6 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange }: { task: To
                         )
                     }
                     <input className="hidden" onChange={handleUploadCover} accept="image/*" ref={coverRef} type="file" />
-
-
                 </div>
                 <div className={`${showBrief ? "" : "flex gap-2 flex-1 overflow-hidden"}`}>
                     <div className="flex-1">

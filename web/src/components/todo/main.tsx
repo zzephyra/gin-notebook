@@ -7,6 +7,12 @@ import Task from "./task";
 import { useTodo } from "@/contexts/TodoContext";
 import { Button } from "@heroui/button";
 import TaskDetails from "./taskDetails";
+import { UploadFile } from "@/lib/upload";
+import toast from "react-hot-toast";
+import { useLingui } from "@lingui/react/macro";
+import { deleteProjectTaskRequest } from "@/features/api/project";
+import { useParams } from "react-router-dom";
+import { responseCode } from "@/features/constant/response";
 
 export interface TodoListProps {
     columns: ToDoColumn[]
@@ -23,15 +29,22 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
     const [activeColumnID, setActiveColumnID] = useState<string>();
     const [showBackTop, setShowBackTop] = useState(false);
     const drawerBodyRef = useRef<HTMLDivElement | null>(null);
-    const { activeOverlay, focusTask, blurTask } = useTodo();
+    const { activeOverlay, updateTask, focusTask, blurTask, deleteTask } = useTodo();
     const column = props.columns.find(c => c.id === activeColumnID);
     const task = column?.tasks.find(t => t.id === activeTaskID);
+    const { t } = useLingui();
+    const params = useParams();
 
-    const handleClick = (task: TodoTask, column: ToDoColumn) => {
-        if (task.isEdit) return;
-        setActiveTaskID(task.id);
+    const handleClick = (newTask: TodoTask, column: ToDoColumn) => {
+        if (task) {
+            blurTask && blurTask(task.id);
+        }
+
+        if (newTask.isEdit) return;
+        setActiveTaskID(newTask.id);
         setActiveColumnID(column.id);
         setOpenSideSheet(true);
+        focusTask && focusTask(newTask.id);
     };
 
     const scrollDrawerToTop = useCallback(() => {
@@ -51,18 +64,39 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
         setActiveColumnID(columnID);
     }
 
+    const handleUploadCover = async (taskID: string, file: File) => {
+        if (!taskID) return;
+        const controller = UploadFile({ file: file });
+        const off = controller.on((event) => {
+            if (event.type === "error") {
+                toast.error(t`Upload failed`);
+                off();
+            }
+        });
+
+        const { url } = await controller.promise;
+        updateTask(taskID, { cover: url } as any);
+    }
+
+    const handleDeleteTask = async (taskID: string, columnID: string) => {
+        let res = await deleteProjectTaskRequest(taskID, params.id || "")
+        if (res.code != responseCode.SUCCESS) {
+            toast.error(t`Delete task failed`);
+        } else {
+            deleteTask(taskID, columnID);
+        }
+    }
 
     useEffect(() => {
-        if (openSideSheet && task) {
-            focusTask && focusTask(task.id);
-        } else {
+        if (!openSideSheet && task) {
+
             if (task) {
                 blurTask && blurTask(task.id);
             }
             setActiveTaskID(undefined);
             setActiveColumnID(undefined);
         }
-    }, [openSideSheet]);
+    }, [openSideSheet, task]);
 
 
     return (
@@ -73,7 +107,7 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
                         <div key={column.id} className="max-h-full">
                             <Column key={column.id} column={column}>
                                 {column.tasks.map((task) => (
-                                    <Task key={task.id} column={column} onClick={handleClick} task={task} />
+                                    <Task key={task.id} column={column} onClick={handleClick} onDelete={handleDeleteTask} task={task} onUpload={handleUploadCover} />
                                 ))}
                             </Column>
                         </div>
@@ -111,7 +145,7 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
                     setOpenSideSheet(false);
                 }}
                 disableScroll={false}>
-                {task && column && <TaskDetails onChange={handleChange} task={task} column={column} onScroll={handleBodyScroll} showBrief={!isFullWidth} />
+                {task && column && <TaskDetails onUpload={handleUploadCover} onChange={handleChange} task={task} column={column} onScroll={handleBodyScroll} showBrief={!isFullWidth} />
                 }
             </SideSheet>
         </>

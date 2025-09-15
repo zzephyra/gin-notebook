@@ -1,5 +1,5 @@
 import { useRef, forwardRef, useImperativeHandle, useState, useLayoutEffect, useEffect, useMemo } from "react";
-import { calcInContainer, extractCommentPayload, handleKeyDown, splitByMentions } from "../script";
+import { calcInContainer, extractCommentPayload, splitByMentions } from "../script";
 import type { CommentContentHandle, CommentContentProps } from "./types";
 import type { WorkspaceMember } from "@/types/workspace";
 import { useWorkspaceMembers } from "@/hooks/useWorkspaceMembers";

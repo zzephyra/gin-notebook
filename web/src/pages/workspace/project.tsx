@@ -36,7 +36,7 @@ function ProjectPage() {
     const projectID = searchParams.get("project_id") || "";
     const boardRef = useRef<HTMLDivElement | null>(null);
     const isDesktop = useMediaQuery({ minWidth: 1024 });
-    const { columns, activeOverlay, updateColumn, cleanColumnTasks, setActiveOverlay, updateTask, submitTask, startDraftTask, projectList, currentProject, isLoading, onlineMap, blurTask, focusTask } = useProjectTodo(projectID, workspaceID)
+    const { columns, activeOverlay, deleteTask, updateColumn, cleanColumnTasks, setActiveOverlay, updateTask, submitTask, startDraftTask, projectList, currentProject, isLoading, onlineMap, blurTask, focusTask } = useProjectTodo(projectID, workspaceID)
 
     const providerValue = {
         columns,
@@ -50,6 +50,7 @@ function ProjectPage() {
         submitTask,
         cleanColumnTasks,
         updateColumn,
+        deleteTask,
         onlineMap, blurTask, focusTask
         // moveTask, updateTask, ...
     };

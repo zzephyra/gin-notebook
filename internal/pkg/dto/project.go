@@ -142,3 +142,9 @@ type KanbanActivityDTO struct {
 	Email           string         `json:"-"`
 	CreatedAt       time.Time      `json:"created_at"`
 }
+
+type DeleteProjectTaskDTO struct {
+	MemberID    int64 `validate:"required,gt=0"`                            // 用户ID
+	TaskID      int64 `validate:"required,gt=0"`                            // 任务ID
+	WorkspaceID int64 `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
+}

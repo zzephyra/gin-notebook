@@ -4,7 +4,7 @@ import {
     dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
-import { memo, useEffect, useRef, useState } from "react";
+import { Key, memo, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
 import { createPortal } from "react-dom";
@@ -22,11 +22,12 @@ import {
     Button,
     DropdownMenu,
     DropdownItem,
+    ButtonGroup
 } from "@heroui/react";
 import { Tag } from "@douyinfe/semi-ui";
 import { i18n } from "@lingui/core";
 import { useLingui } from "@lingui/react/macro";
-import { ChartBarIcon } from "@heroicons/react/24/outline";
+import { ChartBarIcon, EllipsisHorizontalIcon, PencilSquareIcon, PhotoIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useWorkspaceMembers } from "@/hooks/useWorkspaceMembers";
 import { useParams } from "react-router-dom";
 import { debounce } from "lodash";
@@ -41,6 +42,7 @@ import {
     extractClosestEdge,
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { getCardData, getCardDropTargetData, isCardData } from "../script";
+import { deleteProjectTaskRequest } from "@/features/api/project";
 
 const idle: TaskState = { type: "idle" };
 const avatarVariants = {
@@ -53,10 +55,10 @@ type PreviewState =
     | { type: "idle" }
     | { type: "preview"; container: HTMLElement; rect: DOMRect };
 
-function Task({ task, column, onClick }: { task: TodoTask; column: ToDoColumn, onClick?: (task: TodoTask, column: ToDoColumn) => void }) {
+function Task({ task, column, onClick, onUpload, onDelete }: { task: TodoTask; column: ToDoColumn, onClick?: (task: TodoTask, column: ToDoColumn) => void, onUpload?: (taskID: string, file: File) => void, onDelete?: (taskID: string, columnID: string) => void }) {
     // wrapper 作为 drop target 容器
     const wrapperRef = useRef<HTMLDivElement | null>(null);
-
+    const coverRef = useRef<HTMLInputElement>(null);
     const params = useParams();
     const [state, setState] = useState<TaskState>(idle);
     // 新增：拖拽预览状态
@@ -209,6 +211,26 @@ function Task({ task, column, onClick }: { task: TodoTask; column: ToDoColumn, o
         onClick?.(task, column);
     }
 
+    const handlerUploadCover = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.stopPropagation();
+        if (!onUpload) return;
+        const files = Array.from(e.target.files ?? []);
+        if (files.length === 0) return;
+        onUpload(task.id, files[0]);
+        e.target.value = "";
+    }
+
+
+    const dropdownAction = async (key: Key) => {
+        if (key === "upload_cover") {
+            const el = coverRef.current;
+            if (!el) return;
+            el.dispatchEvent(new MouseEvent("click", { bubbles: false, cancelable: true }));
+        } else if (key === "delete_task") {
+            if (!onDelete) return;
+            onDelete(task.id, column.id);
+        }
+    }
     const hasOnline = !!onlineMap?.[task.id]?.length;
 
     const draggingClass = state.type === "is-dragging" ? "opacity-40" : "";
@@ -222,7 +244,7 @@ function Task({ task, column, onClick }: { task: TodoTask; column: ToDoColumn, o
                 onClick={handleClick}
             >
                 {/* inner：真正的 draggable 元素 */}
-                <Card ref={taskRootRef} className={` shadow-none background-white ${task.isEdit ? "" : "cursor-pointer"} `}>
+                <Card ref={taskRootRef} className={`overflow-visible group/card shadow-none background-white ${task.isEdit ? "" : "cursor-pointer"} `}>
                     <CardBody>
                         {task.isEdit ? (
                             <div className="flex flex-col gap-2">
@@ -298,8 +320,32 @@ function Task({ task, column, onClick }: { task: TodoTask; column: ToDoColumn, o
                                         </Tag>
                                     )}
                                 </div>
+                                <div className="opacity-0 group-hover/card:opacity-100 absolute top-1 right-1 z-[100]">
+                                    <ButtonGroup variant="light" className="shadow-xs rounded-md">
+                                        <Button className="h-[24px] text-gray-400 w-[26px] min-w-0" radius="sm" isIconOnly>
+                                            <PencilSquareIcon className="w-4 h-4" />
+                                        </Button>
+                                        <Dropdown shouldCloseOnBlur portalContainer={taskRootRef.current || document.body}>
+                                            <DropdownTrigger>
+                                                <Button className="h-[24px] text-gray-400 w-[26px] min-w-0" radius="sm" isIconOnly>
+                                                    <EllipsisHorizontalIcon className="w-4 h-4" />
+                                                </Button>
+                                            </DropdownTrigger>
+                                            <DropdownMenu onAction={dropdownAction} className="group/card" >
+                                                <DropdownItem key="upload_cover" startContent={<PhotoIcon className="w-4 h-4" />}>
+                                                    {task.cover ? t`Change Cover` : t`Add Cover`}
+                                                </DropdownItem>
+                                                <DropdownItem key="delete_task" color="danger" startContent={<TrashIcon className="w-4 h-4" />}>
+                                                    {t`Delete`}
+                                                </DropdownItem>
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                        <input type="file" accept="image/*" className="hidden" ref={coverRef} onChange={handlerUploadCover} />
+                                    </ButtonGroup>
+                                </div>
                             </>
                         )}
+
                     </CardBody>
                 </Card>
 

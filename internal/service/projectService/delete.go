@@ -63,3 +63,14 @@ func DeleteTaskCommentLike(params *dto.DeleteLikeTaskCommentDTO) (responseCode i
 	}
 	return message.SUCCESS
 }
+
+func DeleteProjectTask(params *dto.DeleteProjectTaskDTO) (responseCode int) {
+	err := repository.DeleteProjectTaskByID(database.DB, params.TaskID, params.WorkspaceID, params.MemberID)
+	if err != nil {
+		responseCode = database.IsError(err)
+		return
+	}
+
+	responseCode = message.SUCCESS
+	return
+}

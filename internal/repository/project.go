@@ -421,3 +421,19 @@ func DeleteCommentLike(db *gorm.DB, commentID, memberID int64) (string, error) {
 	}
 	return "undislike", nil
 }
+
+func DeleteProjectTaskByID(db *gorm.DB, taskID, workspaceID, memberID int64) error {
+	// 软删除任务
+	task := &model.ToDoTask{
+		BaseModel: model.BaseModel{
+			ImmutableBaseModel: model.ImmutableBaseModel{
+				ID: taskID,
+			},
+		},
+	}
+	err := DeleteModel(db, task)
+	if err != nil {
+		return err
+	}
+	return nil
+}
