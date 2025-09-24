@@ -359,7 +359,7 @@ function ProjectPage() {
                             className="project-cls h-full flex flex-col flex-1 min-w-0 max-w-full box-border"
                             style={{ paddingLeft: "var(--sb-w)" }}
                         >
-                            <div className="flex-1 flex flex-col max-w-full ps-24 pe-24 overflow-auto" ref={boardRef}>
+                            <div className="flex-1 flex flex-col max-w-full ps-4 pe-4 lg:ps-24 lg:pe-24 overflow-auto" ref={boardRef}>
                                 {
                                     isLoading ? (
                                         <ChaseLoading text={t`Loading project...`}>

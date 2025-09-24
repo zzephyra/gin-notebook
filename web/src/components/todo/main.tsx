@@ -101,10 +101,10 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
 
     return (
         <>
-            <div className="flex gap-4 overflow-y-auto w-full flex-1 p-2">
+            <div className="grid grid-cols-3 gap-4 overflow-y-auto w-full flex-1 px-2 pb-2 mt-2">
                 {
                     props.columns.map((column) => (
-                        <div key={column.id} className="max-h-full">
+                        <div key={column.id} className="h-full">
                             <Column key={column.id} column={column}>
                                 {column.tasks.map((task) => (
                                     <Task key={task.id} column={column} onClick={handleClick} onDelete={handleDeleteTask} task={task} onUpload={handleUploadCover} />
