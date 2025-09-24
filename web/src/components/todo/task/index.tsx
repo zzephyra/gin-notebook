@@ -22,12 +22,16 @@ import {
     Button,
     DropdownMenu,
     DropdownItem,
-    ButtonGroup
+    ButtonGroup,
+    Tooltip,
+    Listbox,
+    Image,
+    ListboxItem
 } from "@heroui/react";
 import { Tag } from "@douyinfe/semi-ui";
 import { i18n } from "@lingui/core";
 import { useLingui } from "@lingui/react/macro";
-import { ChartBarIcon, EllipsisHorizontalIcon, PencilSquareIcon, PhotoIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ArrowTurnRightUpIcon, ChartBarIcon, ChevronRightIcon, EllipsisHorizontalIcon, PencilSquareIcon, PhotoIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useWorkspaceMembers } from "@/hooks/useWorkspaceMembers";
 import { useParams } from "react-router-dom";
 import { debounce } from "lodash";
@@ -42,7 +46,6 @@ import {
     extractClosestEdge,
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { getCardData, getCardDropTargetData, isCardData } from "../script";
-import { deleteProjectTaskRequest } from "@/features/api/project";
 
 const idle: TaskState = { type: "idle" };
 const avatarVariants = {
@@ -68,7 +71,7 @@ function Task({ task, column, onClick, onUpload, onDelete }: { task: TodoTask; c
     const [searchParams, setSearchParams] = useState({ limit: 10, keywords: "" });
     const { data: members, isFetching } = useWorkspaceMembers(params.id || "", searchParams);
 
-    const { submitTask, updateTask, onlineMap } = useTodo();
+    const { submitTask, updateTask, onlineMap, columns, currentProject } = useTodo();
     // 被拖拽的实际元素（必须是 draggable 绑定的盒子）
     const taskRootRef = useRef<HTMLDivElement | null>(null);
     const assigneeRef = useRef<HTMLDivElement | null>(null);
@@ -193,6 +196,13 @@ function Task({ task, column, onClick, onUpload, onDelete }: { task: TodoTask; c
         updateTask(task.id, payload);
     };
 
+    const handlerMoveTo = (columnId: string) => {
+        var destination = columns.find(c => c.id === columnId);
+        if (!destination || destination.id === column.id) return;
+        updateTask(task.id, { column_id: destination.id, before_id: destination.tasks[0].id } as any, { insertIndex: 0 });
+
+    }
+
     const handleSelectAssignee = (keys: any) => {
         setSelectedAssigneeIDs((prev) => {
             const next = new Set(prev);
@@ -245,9 +255,9 @@ function Task({ task, column, onClick, onUpload, onDelete }: { task: TodoTask; c
             >
                 {/* inner：真正的 draggable 元素 */}
                 <Card ref={taskRootRef} className={`overflow-visible group/card shadow-none background-white ${task.isEdit ? "" : "cursor-pointer"} `}>
-                    <CardBody>
+                    <CardBody className="p-0">
                         {task.isEdit ? (
-                            <div className="flex flex-col gap-2">
+                            <div className="p-3 flex flex-col gap-2">
                                 <Input
                                     size="sm"
                                     classNames={{ input: "text-xs" }}
@@ -301,31 +311,43 @@ function Task({ task, column, onClick, onUpload, onDelete }: { task: TodoTask; c
                             </div>
                         ) : (
                             <>
-                                <div className="text-sm text-gray-500 mb-2">{task.title || t`New Task`}</div>
-                                <div className="flex justify-between items-center">
-                                    <div className="flex gap-2 items-end">
-                                        {task.assignee &&
-                                            task.assignee.map((assignee) => (
-                                                <Avatar
-                                                    key={assignee.id}
-                                                    src={assignee.avatar}
-                                                    alt={assignee.avatar}
-                                                    className="w-6 h-6 text-tiny"
-                                                />
-                                            ))}
+                                {
+                                    currentProject?.settings.card_preview == "cover" && task.cover && (
+                                        <>
+                                            <div className="overflow-hidden rounded-t-large">
+                                                <Image alt="task cover" radius="none" width="100%" height={148} isZoomed src={task.cover} removeWrapper />
+                                            </div>
+                                        </>
+                                    )
+                                }
+                                <div className="p-3 relative">
+                                    <div className="text-sm text-gray-500 mb-2">{task.title || t`New Task`}</div>
+                                    <div className="flex justify-between items-center">
+                                        <div className="flex gap-2 items-end">
+                                            {task.assignee &&
+                                                task.assignee.map((assignee) => (
+                                                    <Avatar
+                                                        key={assignee.id}
+                                                        src={assignee.avatar}
+                                                        alt={assignee.avatar}
+                                                        className="w-6 h-6 text-tiny"
+                                                    />
+                                                ))}
+                                        </div>
+                                        {task.priority && (
+                                            <Tag size="small" {...TagAttributesMap[task.priority]}>
+                                                {i18n._(task.priority)}
+                                            </Tag>
+                                        )}
                                     </div>
-                                    {task.priority && (
-                                        <Tag size="small" {...TagAttributesMap[task.priority]}>
-                                            {i18n._(task.priority)}
-                                        </Tag>
-                                    )}
+
                                 </div>
                                 <div className="opacity-0 group-hover/card:opacity-100 absolute top-1 right-1 z-[100]">
-                                    <ButtonGroup variant="light" className="shadow-xs rounded-md">
+                                    <ButtonGroup variant="light" className="shadow-xs bg-white rounded-md">
                                         <Button className="h-[24px] text-gray-400 w-[26px] min-w-0" radius="sm" isIconOnly>
                                             <PencilSquareIcon className="w-4 h-4" />
                                         </Button>
-                                        <Dropdown shouldCloseOnBlur portalContainer={taskRootRef.current || document.body}>
+                                        <Dropdown shouldCloseOnBlur>
                                             <DropdownTrigger>
                                                 <Button className="h-[24px] text-gray-400 w-[26px] min-w-0" radius="sm" isIconOnly>
                                                     <EllipsisHorizontalIcon className="w-4 h-4" />
@@ -334,6 +356,23 @@ function Task({ task, column, onClick, onUpload, onDelete }: { task: TodoTask; c
                                             <DropdownMenu onAction={dropdownAction} className="group/card" >
                                                 <DropdownItem key="upload_cover" startContent={<PhotoIcon className="w-4 h-4" />}>
                                                     {task.cover ? t`Change Cover` : t`Add Cover`}
+                                                </DropdownItem>
+                                                <DropdownItem key="move_task" endContent={<ChevronRightIcon className="w-4 h-4" />} startContent={<ArrowTurnRightUpIcon className="w-4 h-4" />}>
+                                                    <Tooltip radius="sm" placement="right" offset={45} content={
+                                                        <Listbox>
+                                                            {
+                                                                columns.map(c => c.id !== column.id ? <ListboxItem className="max-w-[100px]" key={c.id} onClick={() => {
+                                                                    handlerMoveTo(c.id);
+                                                                }}>
+                                                                    {c.name}
+                                                                </ListboxItem> : <></>)
+                                                            }
+                                                        </Listbox>
+                                                    }>
+                                                        <div>
+                                                            {t`Move to`}
+                                                        </div>
+                                                    </Tooltip>
                                                 </DropdownItem>
                                                 <DropdownItem key="delete_task" color="danger" startContent={<TrashIcon className="w-4 h-4" />}>
                                                     {t`Delete`}

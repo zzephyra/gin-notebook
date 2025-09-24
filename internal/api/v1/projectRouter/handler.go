@@ -531,3 +531,105 @@ func DeleteProjectTaskApi(c *gin.Context) {
 	responseCode := projectService.DeleteProjectTask(params)
 	c.JSON(http.StatusOK, response.Response(responseCode, nil))
 }
+
+func UpdateProjectSettingApi(c *gin.Context) {
+	projectID, isExist := c.Params.Get("projectID")
+	if !isExist {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
+		return
+	}
+
+	ProjectID, err := strconv.ParseInt(projectID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PROJECT_ID, nil))
+		return
+	}
+
+	params := &dto.UpdateProjectSettingDTO{
+		ProjectID: ProjectID,
+		MemberID:  c.MustGet("workspaceMemberID").(int64),
+	}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Failed to bind JSON parameters")
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Validation failed for UpdateProjectSettingDTO")
+		return
+	}
+
+	responseCode, data := projectService.UpdateProjectSetting(c.Request.Context(), params)
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func UpdateProjectApi(c *gin.Context) {
+	projectID, isExist := c.Params.Get("projectID")
+	if !isExist {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
+		return
+	}
+
+	ProjectID, err := strconv.ParseInt(projectID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PROJECT_ID, nil))
+		return
+	}
+
+	params := &dto.UpdateProjectDTO{
+		ProjectID: ProjectID,
+		MemberID:  c.MustGet("workspaceMemberID").(int64),
+	}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Failed to bind JSON parameters")
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Validation failed for UpdateProjectDTO")
+		return
+	}
+
+	responseCode, data := projectService.UpdateProject(c.Request.Context(), params)
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}
+
+func GetProjectBoardApi(c *gin.Context) {
+	projectID, isExist := c.Params.Get("projectID")
+	if !isExist {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_EMPTY_PROJECT_ID, nil))
+		return
+	}
+
+	ProjectID, err := strconv.ParseInt(projectID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PROJECT_ID, nil))
+		return
+	}
+
+	params := &dto.GetProjectBoardDTO{
+		ProjectID: ProjectID,
+		MemberID:  c.MustGet("workspaceMemberID").(int64),
+	}
+
+	if err := c.ShouldBindQuery(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Failed to bind JSON parameters")
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		logger.LogError(err, "Validation failed for get board")
+		return
+	}
+
+	responseCode, data := projectService.GetProjectBoard(c.Request.Context(), params)
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}

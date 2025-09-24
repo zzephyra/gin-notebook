@@ -47,6 +47,7 @@ func Migrate(db *gorm.DB) {
 		&model.ToDoCommentAttachment{},
 		&model.ToDoCommentLike{},
 		&model.KanbanActivity{},
+		&model.ProjectSetting{},
 	)
 }
 

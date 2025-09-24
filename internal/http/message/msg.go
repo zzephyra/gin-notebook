@@ -126,6 +126,7 @@ const (
 	ERROR_TASK_UPDATE_CONFLICTED            = 12017 // 任务更新冲突
 	ERROR_PROJECT_COLUMN_UPDATE_CONFLICTED  = 12018 // 项目列更新冲突
 	ERROR_COMMENT_ALREADY_LIKED_OR_DISLIKED = 12019 // 重复操作点赞/点踩
+	ERROR_PROJECT_UPDATE_CONFLICTED         = 12020 // 项目更新冲突
 )
 
 var CodeMsg = map[int]string{
@@ -205,4 +206,5 @@ var CodeMsg = map[int]string{
 	ERROR_TASK_UPDATE_CONFLICTED:                     "任务更新冲突，请刷新页面后重试",
 	ERROR_PROJECT_COLUMN_UPDATE_CONFLICTED:           "项目列更新冲突，请刷新页面后重试",
 	ERROR_COMMENT_ALREADY_LIKED_OR_DISLIKED:          "您已操作过啦，不能重复点赞/点踩",
+	ERROR_PROJECT_UPDATE_CONFLICTED:                  "项目更新冲突，请刷新页面后重试",
 }

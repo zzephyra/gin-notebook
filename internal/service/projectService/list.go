@@ -71,7 +71,7 @@ func GetTaskComment(params *dto.GetProjectTaskCommentsDTO) (responseCode int, da
 		attachmentMap[attachment.CommentID] = append(attachmentMap[attachment.CommentID], attachment)
 	}
 
-	members, err := repository.GetWorkspaceMemberByIDs(memberIDs)
+	members, err := repository.GetWorkspaceMemberByIDs(database.DB, memberIDs)
 	memberMap := make(map[int64]dto.WorkspaceMemberDTO)
 
 	for _, member := range *members {

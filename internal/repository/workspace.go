@@ -134,8 +134,8 @@ func GetWorkspaceMembers(workspaceID int64, limit int, offset int, keywords stri
 	return &workspaceMembers, count, nil
 }
 
-func GetWorkspaceMemberByIDs(memberID []int64) (workspaceMembers *[]dto.WorkspaceMemberDTO, err error) {
-	query := database.DB.Model(&model.WorkspaceMember{}).
+func GetWorkspaceMemberByIDs(db *gorm.DB, memberID []int64) (workspaceMembers *[]dto.WorkspaceMemberDTO, err error) {
+	query := db.Model(&model.WorkspaceMember{}).
 		Select("workspace_members.id, workspace_members.role, workspace_members.user_id, workspace_members.nickname as workspace_nickname, u.avatar, u.email, u.nickname as user_nickname").
 		Joins("LEFT JOIN users as u ON u.id = workspace_members.user_id").
 		Where("workspace_members.id in ?", memberID)
@@ -145,6 +145,21 @@ func GetWorkspaceMemberByIDs(memberID []int64) (workspaceMembers *[]dto.Workspac
 		return nil, err
 	}
 	return
+}
+
+func GetWorkspaceMemberByID(db *gorm.DB, memberID int64) (workspaceMember *dto.WorkspaceMemberDTO, err error) {
+	members, err := GetWorkspaceMemberByIDs(db, []int64{memberID})
+	if err != nil {
+		return nil, err
+	}
+
+	if members != nil && len(*members) > 0 {
+		member := (*members)[0]
+		if member.ID == memberID {
+			return &member, nil
+		}
+	}
+	return nil, fmt.Errorf("成员不存在")
 }
 
 func IsUserAllowedToModifyWorkspace(userID int64, workspaceID int64) (*model.WorkspaceMember, bool) {

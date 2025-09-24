@@ -2,11 +2,18 @@ import { createContext, useContext } from 'react';
 import type { ProjectBoard, Project, SubmitExtraParams, TaksPayload, UpdateOptions } from '@/components/todo/type';
 import type { StartDraftOptions } from "@/hooks/useTodoTask"
 import { UserPresence } from '@/lib/realtime';
+import { ProjectType, TodoParamsType } from '@/types/project';
+import { ProjectSettingsPayload } from '@/features/api/type';
 export type TodoContextValue = {
     columns: ProjectBoard;
     projectList: Project[];
-    currentProject?: Project;
+    currentProject?: ProjectType | null;
+    isLoadTodo: boolean;
     isLoading: boolean;
+    updateProjectSetting: (payload: ProjectSettingsPayload) => Promise<void>;
+    updateProject: (payload: Partial<ProjectType>) => Promise<void>;
+    setTodoParams: (params: TodoParamsType) => void;
+    todoParams: TodoParamsType;
     activeOverlay?: boolean;
     setActiveOverlay?: (open: boolean) => void;
     // 你在 useProjectTodo 暴露的能力（按你的实现填充）

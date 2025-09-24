@@ -121,6 +121,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
 
     const handleSubmitColumnName = () => {
         if (!columnNameEditable) return;
+        moveCaretToStartAndBlur(columnNameRef.current);
         setColumnNameEditable(false);
         const value = columnNameRef.current?.innerText.trim() ?? "";
         updateColumn(column.id, { name: value })
@@ -200,6 +201,33 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
         }
     }
 
+    function moveCaretToStartAndBlur(el?: HTMLElement | null) {
+        if (!el) return;
+        // 折叠 selection 到开头
+        const range = document.createRange();
+        try {
+            range.selectNodeContents(el);
+        } catch (e) {
+            return;
+        }
+        range.collapse(true); // 折叠到开头
+
+        const sel = window.getSelection();
+        if (sel) {
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+
+        // 如果元素可水平滚动，重置滚动位置到开头
+        // （若元素为 inline，可能需要将其变为 inline-block 或 block 才能滚动）
+        try {
+            (el as HTMLElement).scrollLeft = 0;
+        } catch (e) {
+            // ignore
+        }
+    }
+
+
     // Dropdown 关闭后再聚焦到列名，避免被 restoreFocus 抢走
     useEffect(() => {
         if (!isOpenPopover && columnNameEditable && pendingRenameRef.current) {
@@ -241,7 +269,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
                                     if (!columnNameEditable) { setColumnNameEditable(true); pendingRenameRef.current = true }
                                 }}
 
-                                className="whitespace-nowrap overflow-hidden"
+                                className={`whitespace-nowrap max-w-[100px] overflow-hidden ${columnNameEditable ? "" : "truncate"}`}
                                 suppressContentEditableWarning={true}
                                 onBlur={handleSubmitColumnName}
                                 onKeyDown={(e) => {

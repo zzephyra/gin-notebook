@@ -1,23 +1,23 @@
-.login-page{
-    height: 100vh;
-    width: 100%;
+.login-page {
+  height: 100vh;
+  width: 100%;
 
 }
 
 .line {
-    display: table;
-    width: 100%;
-    white-space: nowrap;
-    border-spacing: .2rem 0;
-    color: #ccc;
-  }
+  display: table;
+  width: 100%;
+  white-space: nowrap;
+  border-spacing: .2rem 0;
+  color: #ccc;
+}
 
-  .line:before,
-  .line:after {
-    display: table-cell;
-    content: '';
-    width: 40%;
-    background: -webkit-linear-gradient(#eee, #eee) repeat-x left center;
-    background: linear-gradient(#eee, #eee) repeat-x left center;
-    background-size: 0.1rem 0.1rem;
-  }
+.line:before,
+.line:after {
+  display: table-cell;
+  content: '';
+  width: 40%;
+  background: -webkit-linear-gradient(#eee, #eee) repeat-x left center;
+  background: linear-gradient(#eee, #eee) repeat-x left center;
+  background-size: 0.1rem 0.1rem;
+}

@@ -45,3 +45,6 @@ export const taskCommentLikeApi = (taskID: string, commentID: string) =>
 export const websocketApi = (baseUrl: string) => {
     return baseUrl.replace(/^http/, 'ws') + '/realtime/ws';
 }
+export const projectSettingsApi = (projectID: string) => {
+    return `/project/${projectID}/setting`;
+}

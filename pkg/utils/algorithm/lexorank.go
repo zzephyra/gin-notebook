@@ -24,6 +24,7 @@ func RankBetween(a, b string) string {
 
 	betweenValue, err := bucket.Between(lexorank.BucketKey(a), lexorank.BucketKey(b))
 	if err != nil {
+		logger.LogError(err, "Failed to get rank between values")
 		initialValue, _ := bucket.Initial()
 		return initialValue.String()
 	}

@@ -1,16 +1,15 @@
 import axiosClient from "@/lib/api/client";
 import { columnApiWithID, projectsApi, taskActivitiesApi, taskUpdateApi, todoTasksApi } from "./routes";
 import { responseCode } from "../constant/response";
-import { ColumnUpdatePayload, CreateTaskInput, TaskUpdatePayload, ToDoColumn } from "@/components/todo/type";
+import { ColumnUpdatePayload, CreateTaskInput, TaskUpdatePayload } from "@/components/todo/type";
 import toast from "react-hot-toast";
-import { TaskActivityOptions } from "./type";
-export async function getProjectsRequest(projectID: string, workspaceID: string): Promise<{ code: number, data: { todo: ToDoColumn[] } }> {
+import { ProjectPayload, TaskActivityOptions } from "./type";
+import { ProjectBoardType, ProjectType, TodoParamsType } from "@/types/project";
+export async function getProjectsRequest(projectID: string, workspaceID: string): Promise<{ code: number, data: ProjectType }> {
     if (!projectID || !workspaceID) {
         return {
             code: responseCode.ERROR,
-            data: {
-                todo: []
-            }
+            data: null as unknown as ProjectType
         }
     }
 
@@ -20,11 +19,34 @@ export async function getProjectsRequest(projectID: string, workspaceID: string)
     } catch (err) {
         return {
             code: responseCode.ERROR,
+            data: null as unknown as ProjectType
+        }
+    }
+}
+
+export async function getProjectBoardRequest(projectID: string, workspaceID: string, params?: TodoParamsType): Promise<{ code: number, data: ProjectBoardType }> {
+    if (!projectID || !workspaceID) {
+        return {
+            code: responseCode.ERROR,
             data: {
                 todo: []
             }
         }
     }
+
+    console.log("getProjectBoardRequest params:", params);
+    try {
+        let res = await axiosClient.get(projectsApi + `/${projectID}/board`, { params: { workspace_id: workspaceID, ...params } })
+        return res.data;
+    } catch (err) {
+        return {
+            code: responseCode.ERROR,
+            data: {
+                todo: []
+            }
+        }
+    }
+
 }
 
 export async function getProjectsListRequest(workspaceID: string) {
@@ -158,4 +180,31 @@ export async function deleteProjectTaskRequest(taskID: string, workspace_id: str
     } catch (err) {
         return {};
     }
+}
+
+export async function updateProjectRequest(projectID: string, workspace_id: string, updated_at: string, payload: Partial<ProjectPayload>) {
+    if (!projectID || !workspace_id || !updated_at) {
+        return {};
+    }
+
+    const try_times = 3;
+
+    for (let i = 0; i < try_times; i++) {
+        try {
+            let res = await axiosClient.put(projectsApi + `/${projectID}`, { workspace_id, updated_at, payload }, { suppressToast: i < try_times - 1 });
+            if (res.data.code === responseCode.SUCCESS) {
+                return res.data.data || {};
+            }
+
+            updated_at = res.data.data?.updated_at;
+
+            if (updated_at === undefined || updated_at === "") {
+                return {};
+            }
+        } catch (err) {
+            continue;
+        }
+    }
+
+    return {};
 }

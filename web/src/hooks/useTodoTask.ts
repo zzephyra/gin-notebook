@@ -1,5 +1,5 @@
 import { ColumnUpdatePayload, CreateTaskInput, Project, ProjectBoard, SubmitExtraParams, TaskUpdatePayload, TodoTask, UpdateOptions } from '@/components/todo/type'
-import { cleanColumnTasksRequest, createTaskRequest, getProjectsListRequest, getProjectsRequest, updateProjectColumnRequest, updateTaskRequest } from '@/features/api/project'
+import { cleanColumnTasksRequest, createTaskRequest, getProjectBoardRequest, getProjectsListRequest, getProjectsRequest, updateProjectColumnRequest, updateProjectRequest, updateTaskRequest } from '@/features/api/project'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { LexoRank } from "lexorank";
@@ -8,6 +8,9 @@ import { responseCode } from '@/features/constant/response';
 import { getRealtime, Incoming, OnlineMap, RealtimeOptions, roomProject } from '@/lib/realtime';
 import { websocketApi } from '@/features/api/routes';
 import { BASE_URL } from '@/lib/api/client';
+import { updateProjectSettingsRequest } from '@/features/api/settings';
+import { ProjectPayload, ProjectSettingsPayload } from '@/features/api/type';
+import { ProjectBoardType, ProjectType, TodoParamsType } from '@/types/project';
 
 const genTempId = () => (globalThis.crypto?.randomUUID?.() ?? `tmp_${Date.now()}_${Math.random()}`);
 export type ActiveDraftPtr = { id: string; columnId: string; colIdx: number } | null;
@@ -15,14 +18,19 @@ export type StartDraftOptions = {
     single?: 'submit' | 'cancel' | 'block'; // 默认 block
 };
 
-const getBoardQueryKey = (projectId: string) => ['project-board', projectId] as const;
+const getBoardQueryKey = (projectId: string, params: TodoParamsType) => ['project', 'board', projectId, params] as const;
+const getProjectQueryKey = (projectId: string) => ['project', projectId] as const;
 
+export type TodoPageType = {
+    limit?: number;
+    offset?: number;
+}
 
-export function useProjectTodo(projectId: string, workspaceId: string) {
+export function useProjectTodo(projectId: string, workspaceId: string, params?: TodoParamsType) {
     const queryClient = useQueryClient();
     const [activeOverlay, setActiveOverlay] = useState(false);
     const chainsRef = useRef(new Map<string, Promise<any>>());
-
+    const [todoParams, setTodoParams] = useState<TodoParamsType>(params || { order_by: 'priority', asc: true });
     // 1) 项目列表
     const {
         data: projectList,
@@ -35,29 +43,64 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         },
         staleTime: 5 * 60 * 1000,
     });
+
+    const currentProjectId = useMemo(() => {
+        if (projectId) {
+            var t = projectList.find((p: any) => p.id === projectId);
+            if (t) {
+                return projectId;
+            }
+        }
+        return projectList?.[0]?.id;
+    }, [projectId, projectList]);
+
     // 2) 当前项目
-    const currentProject = useMemo(() => {
-        if (!projectList || projectList.length === 0) return undefined;
-        const found = (projectList as Project[]).find((p) => p.id === projectId);
-        return found || projectList[0];
-    }, [projectList, projectId]);
-
-
-    // 3) Board（真源）
     const {
-        data: board,
-        isLoading: isLoadingBoard,
+        data: currentProject,
+        isLoading: isLoadingProject,
         ...rest
     } = useQuery({
-        queryKey: ['project-board', currentProject?.id],
+        queryKey: ['project', currentProjectId],
         queryFn: async () => {
-            if (!currentProject) return [];
-            let res = await getProjectsRequest(currentProject.id, currentProject.workspace_id);
-            return res.data.todo || [];
+            if (!projectId) {
+                if (projectList && projectList.length > 0) {
+                    projectId = projectList[0].id;
+                } else {
+                    return null;
+                }
+            };
+            const res = await getProjectsRequest(projectId, workspaceId);
+            return res.data; // 假设返回的是完整的 project 对象，含 todo
         },
-        enabled: !!currentProject && !!projectList,
+        enabled: !!currentProjectId && !!workspaceId,
         staleTime: 5 * 60 * 1000,
     });
+
+    const {
+        data: projectBoard,
+        isLoading: isLoadingProjectBoard
+    } = useQuery({
+        queryKey: ['project', 'board', currentProjectId, todoParams],
+        queryFn: async () => {
+            if (!projectId) {
+                if (projectList && projectList.length > 0) {
+                    projectId = projectList[0].id;
+                } else {
+                    return null;
+                }
+            };
+            const res = await getProjectBoardRequest(projectId, workspaceId, todoParams);
+            return res.data; // 假设返回的是完整的 project 对象，含 todo
+        },
+        enabled: !!currentProjectId && !!workspaceId,
+        staleTime: 5 * 60 * 1000,
+    });
+
+    // 3) Board（直接取 currentProject 的 todo）
+    const board = useMemo(() => {
+        if (!projectBoard) return [];
+        return projectBoard.todo || [];
+    }, [projectBoard]);
 
 
     // 4) 列快速索引：columnId -> colIdx（board 变一次，建一次）
@@ -113,6 +156,7 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
     // 6) 快速读取当前草稿（接近 O(1)）
     function getActiveDraftFast(): { id: string; columnId: string; task: TodoTask } | null {
         const ad = activeDraftRef.current;
+
         if (!ad || !board) return null;
 
         // 6.1 直接按 colIdx 取列
@@ -228,15 +272,6 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         return generateTaskOrder(prevOrder, nextOrder);
     }
 
-    // function tailOrderOfColumn(orders: string[]): string {
-    //     if (!orders || orders.length === 0) return LexoRank.min().toString();
-    //     try {
-    //         return LexoRank.parse(orders[orders.length - 1]).genNext().toString();
-    //     } catch {
-    //         return LexoRank.min().toString();
-    //     }
-    // }
-
     async function createTask(arg: {
         columnId: string;
         afterId?: string;
@@ -261,17 +296,10 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         return await createTaskMutation.mutateAsync(input);
     }
 
-    // function computeDraftTailOrder(columnId: string): string {
-    //     const col = (board || []).find(c => c.id === columnId);
-    //     if (!col) return generateTaskOrder();
-    //     const orders = col.tasks.map(t => t.order).filter(Boolean) as string[];
-    //     return tailOrderOfColumn(orders);
-    // }
-
     async function startDraftTask(columnId: string, opts: StartDraftOptions = {}): Promise<string> {
         const single = opts.single ?? 'block';
         if (!currentProject) return '';
-        const key = getBoardQueryKey(currentProject.id);
+        const key = getBoardQueryKey(currentProjectId, todoParams);
 
         const active = getActiveDraftFast();
         if (active) {
@@ -288,17 +316,18 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
                 if (isDraftEmpty(active.task)) return active.id;
                 try {
                     await submitTask(active.id); // 成功会清指针
-                } catch {
+                } catch (err) {
+                    console.error('提交草稿失败', err);
                     // return active.id;
                 }
             }
         }
-
         const tempId = genTempId();
         const colIdx = columnIndex.get(columnId) ?? 0;
         const order = draftTailOrder(columnId);
-        queryClient.setQueryData<ProjectBoard>(key, (old = []) =>
-            addTaskToColumnEnd(old, columnId, {
+        queryClient.setQueryData<ProjectType>(key, (old: ProjectType | undefined): ProjectType | undefined => {
+            if (!old || !old.todo) return old; // 如果没有缓存，保持不变（或返回一个默认值）
+            const newBoard = addTaskToColumnEnd(old.todo, columnId, {
                 id: tempId,
                 columnId,
                 title: '',
@@ -308,7 +337,9 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
                 order,
                 isEdit: true,
                 isDraft: true,
-            }),
+            });
+            return { ...old, todo: newBoard };
+        }
         );
         setActiveDraft({ id: tempId, columnId, colIdx });
         return tempId;
@@ -316,11 +347,12 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
 
     async function submitTask(tempId: string, params?: SubmitExtraParams) {
         if (!currentProject || !board) return;
-        const key = getBoardQueryKey(currentProject.id);
+        const key = getBoardQueryKey(currentProjectId, todoParams);
 
         // 若指针失效，兜底全板找一次
-        const current = queryClient.getQueryData<ProjectBoard>(key) ?? [];
-        const found = findTask(current, tempId);
+        const current = queryClient.getQueryData<ProjectType>(key) ?? { todo: [] };
+        console.log(current)
+        const found = findTask(current?.todo, tempId);
         if (!found) return;
 
         const col = board[columnIndex.get(found.columnId) ?? -1];
@@ -336,19 +368,15 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         const beforeId = idx + 1 < col.tasks.length ? col.tasks[idx + 1].id : undefined;
         const orderHint = generateTaskOrder(prevOrder, nextOrder);
 
-        // 简单校验：标题必填（按需扩展）
-        // const title = found.task.title?.trim() ?? '';
-        // if (!title) {
-        //     // 这里你可以触发 toast
-        //     // toast.error('Title is required');
-        //     return;
-        // }
-
         // 提交前：先退出编辑态，提升感知（可选）
         if (found.task.isEdit) {
-            queryClient.setQueryData<ProjectBoard>(key, (old = []) => {
-                let res = replaceTaskById(old, found.columnId, tempId, { isEdit: false, _optimistic: true })
-                return res;
+            queryClient.setQueryData<ProjectType>(key, (old) => {
+                if (!old) return old
+                let res = replaceTaskById(old.todo, found.columnId, tempId, { isEdit: false, _optimistic: true })
+                return {
+                    ...old,
+                    todo: res
+                };
             },
             );
         }
@@ -374,17 +402,27 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
 
     async function updateTask(taskID: string, patch: Partial<TaskUpdatePayload>, opts?: UpdateOptions) {
         if (!currentProject) return;
-        const key = getBoardQueryKey(currentProject.id);
+        const key = getBoardQueryKey(currentProjectId, todoParams);
 
         // 读最新 board & 当前任务
-        const snapshot = queryClient.getQueryData<ProjectBoard>(key) ?? [];
-        const found = findTask(snapshot, taskID);
+        const snapshot = queryClient.getQueryData<ProjectBoardType>(key) ?? { todo: [] };
+        const found = findTask(snapshot.todo, taskID);
         if (!found) return;
+        console.log(snapshot)
 
         // 乐观更新：先把 UI 改了（可在 onError 时回滚/或 invalidate）
-        queryClient.setQueryData<ProjectBoard>(key,
-            (old = []) => replaceTaskById(old, found.columnId, taskID, { ...patch, _optimistic: true }, opts?.insertIndex)
+        queryClient.setQueryData<ProjectBoardType>(key,
+            (old) => {
+                if (!old) return old
+                console.log(old)
+                var newBoard = replaceTaskById(old.todo, found.columnId, taskID, { ...patch, _optimistic: true }, opts?.insertIndex)
+                return {
+                    ...old,
+                    todo: newBoard
+                }
+            }
         );
+        console.log(12)
         if (found.task.isDraft) {
             // 创建仅更新本地，不发请求，等待submitTask提交
             return;
@@ -418,8 +456,11 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
                         _optimistic: undefined,
                         _forceReplace: true, // 强制替换，避免“无变化提前返回”
                     };
-                    queryClient.setQueryData<ProjectBoard>(key, (old = []) =>
-                        replaceTaskById(old, normalizedPatch.column_id ?? columnId, taskID, normalizedPatch, opts?.insertIndex),
+                    queryClient.setQueryData<ProjectBoardType>(key, (old: ProjectBoardType | undefined) => {
+                        if (!old) return old
+                        var newBoard = replaceTaskById(old.todo, normalizedPatch.column_id ?? columnId, taskID, normalizedPatch, opts?.insertIndex)
+                        return { ...old, todo: newBoard };
+                    }
                     );
                     // 这里如果你有单独的 token 存储，也更新它；否则 token 保存在 task.updated_at 里即可
                     return;
@@ -460,7 +501,6 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
                 // 其它错误：退出循环由下面兜底
                 break;
             }
-            // queryClient.invalidateQueries({ queryKey: key });
         });
     }
 
@@ -471,55 +511,70 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
         },
         onSuccess: (res, input) => {
             if (!currentProject) return;
-            const key = getBoardQueryKey(currentProject.id);
+            const key = getBoardQueryKey(currentProjectId, todoParams);
             // 用服务端返回替换草稿（id / order / 去掉 isDraft,isEdit）
-            queryClient.setQueryData<ProjectBoard>(key, (old = []) =>
-                replaceTaskById(old, input.column_id, input.client_temp_id, {
-                    ...res,
-                    id: res.id,
-                    order: res.order,
-                    isDraft: false,
-                    isEdit: false,
-                    _optimistic: undefined,
-                }),
+            queryClient.setQueryData<ProjectType>(key, (old) => {
+                if (!old) return old
+                return {
+                    ...old,
+                    todo: replaceTaskById(old.todo, input.column_id, input.client_temp_id, {
+                        ...res,
+                        id: res.id,
+                        order: res.order,
+                        isDraft: false,
+                        isEdit: false,
+                        _optimistic: undefined,
+                    })
+                }
+            },
             );
         },
         onError: (_err, input) => {
             if (!currentProject) return;
-            const key = getBoardQueryKey(currentProject.id);
+            const key = getBoardQueryKey(currentProjectId, todoParams);
             // 提交失败：保留草稿 & 维持编辑态，方便用户修正后再试
-            queryClient.setQueryData<ProjectBoard>(key, (old = []) =>
-                replaceTaskById(old, input.column_id, input.client_temp_id, {
-                    isEdit: true,
-                    isDraft: true,
-                    _optimistic: undefined,
-                }),
-            );
+            queryClient.setQueryData<ProjectType>(key, (old) => {
+                if (!old) return old
+                return {
+                    ...old,
+                    todo: replaceTaskById(old.todo, input.column_id, input.client_temp_id, {
+                        isEdit: true,
+                        isDraft: true,
+                        _optimistic: undefined,
+                    })
+                }
+            },
+            )
         }
     });
 
     const cleanColumnTasks = (columnId: string) => {
         if (!currentProject) return;
-        const key = getBoardQueryKey(currentProject.id);
-        queryClient.setQueryData<ProjectBoard>(key, (old = []) => {
+        const key = getBoardQueryKey(currentProjectId, todoParams);
+        queryClient.setQueryData<ProjectType>(key, (old) => {
+            if (!old) return old
             const colIdx = columnIndex.get(columnId);
             if (colIdx === undefined) return old;
-            const newBoard = old.slice();
+            const newBoard = old?.todo.slice();
             newBoard[colIdx] = { ...newBoard[colIdx], tasks: [] };
-            return newBoard;
-        });
+            return { ...old, todo: newBoard };
+        },
+        )
         cleanColumnTasksRequest(columnId, workspaceId, currentProject.id);
     }
 
     const deleteTask = async (taskId: string, columnId: string) => {
-        const key = getBoardQueryKey(currentProject.id);
-        queryClient.setQueryData<ProjectBoard>(key, (old = []) => {
+        if (!currentProject) return;
+        const key = getBoardQueryKey(currentProjectId, todoParams);
+        queryClient.setQueryData<ProjectType>(key, (old) => {
+            if (!old) return old
             const colIdx = columnIndex.get(columnId);
             if (colIdx === undefined) return old;
-            const newBoard = old.slice();
-            newBoard[colIdx] = { ...newBoard[colIdx], tasks: newBoard[colIdx].tasks.filter(t => t.id !== taskId) };
-            return newBoard;
-        });
+            const newBoard = old.todo.slice();
+            newBoard[colIdx] = { ...newBoard[colIdx], tasks: newBoard[colIdx].tasks.filter((t: any) => t.id !== taskId) };
+            return { ...old, todo: newBoard };
+        },
+        )
     }
 
     const updateColumn = async (columnId: string, patch: Partial<ColumnUpdatePayload>) => {
@@ -529,15 +584,20 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
 
         const col = board?.[colIdx];
         if (!col) return;
-        queryClient.setQueryData<ProjectBoard>(getBoardQueryKey(currentProject.id), (old = []) =>
-            replaceColumnById(old, columnId, patch),
-        );
+        queryClient.setQueryData<ProjectType>(getBoardQueryKey(currentProjectId, todoParams), (old) => {
+            if (!old) return old
+            const newBoard = replaceColumnById(old.todo, columnId, patch);
+            return { ...old, todo: newBoard };
+        },
+        )
         let res = await updateProjectColumnRequest(columnId, workspaceId, col.updated_at || "", currentProject.id, patch);
 
         if (!res.conflicted && res.column) {
-            queryClient.setQueryData<ProjectBoard>(getBoardQueryKey(currentProject.id), (old = []) =>
-                replaceColumnById(old, columnId, res.column),
-            );
+            queryClient.setQueryData<ProjectType>(getBoardQueryKey(currentProjectId, todoParams), (old) => {
+                if (!old) return old
+                const newBoard = replaceColumnById(old.todo, columnId, res.column);
+                return { ...old, todo: newBoard };
+            },)
         }
         return
     }
@@ -577,20 +637,144 @@ export function useProjectTodo(projectId: string, workspaceId: string) {
     const blurTask = (taskId: string) => currentProject?.id && getRealtime(wsOpt).blurTask(currentProject.id, taskId);
 
 
+    const updateProjectSetting = useMutation({
+        mutationFn: async (payload: ProjectSettingsPayload) => {
+            if (!currentProjectId || !currentProject?.settings.updated_at) {
+                throw new Error("Missing currentProjectId or updated_at");
+            }
+            return await updateProjectSettingsRequest(
+                currentProjectId,
+                workspaceId,
+                currentProject.settings.updated_at,
+                payload
+            );
+        },
+        onMutate: async (payload: ProjectSettingsPayload) => {
+            // 取消当前关于该 project 的正在进行的请求，避免竞态覆盖
+            var key = getProjectQueryKey(currentProjectId)
+            await queryClient.cancelQueries({ queryKey: key });
+
+            // 取出当前缓存（快照）
+            const previous = queryClient.getQueryData<Project | null>(key) ?? null;
+
+            // 立刻在 cache 做修改 —— 乐观更新（示例假设后端返回的是整个 settings 部分）
+            queryClient.setQueryData<Project | null>(key, (old) => {
+                if (!old) return old;
+                // 这里把 payload 合并入设置（根据你的实际结构调整）
+                return {
+                    ...old,
+                    settings: {
+                        ...old.settings,
+                        ...payload,
+                    },
+                };
+            });
+            // 返回 context，onError 会接收它用于回滚
+            return { previous };
+        },
+        onSuccess: (res) => {
+            if (!res) return;
+            var key = getProjectQueryKey(currentProjectId)
+
+            queryClient.setQueryData<Project>(key, (old) => {
+                if (!old) return old;
+                return { ...old, settings: { ...old.settings, ...res.settings } };
+            });
+        },
+        onError: (context: { previous: Project | null } | undefined) => {
+            var key = getProjectQueryKey(currentProjectId)
+            if (context?.previous) {
+                queryClient.setQueryData<Project | null>(key, context.previous);
+            } else {
+                queryClient.invalidateQueries({ queryKey: key });
+            }
+        },
+    })
+
+    const updateProject = useMutation({
+        mutationFn: async (payload: ProjectPayload) => {
+            if (!currentProjectId || !currentProject?.updated_at) {
+                throw new Error("Missing currentProjectId or updated_at");
+            }
+            return await updateProjectRequest(
+                currentProjectId,
+                workspaceId,
+                currentProject.updated_at,
+                payload
+            );
+        },
+        onMutate: async (payload: ProjectPayload) => {
+            // 取消当前关于该 project 的正在进行的请求，避免竞态覆盖
+            var key = getProjectQueryKey(currentProjectId)
+            await queryClient.cancelQueries({ queryKey: key });
+
+            // 取出当前缓存（快照）
+            const previous = queryClient.getQueryData<Project | null>(key) ?? null;
+
+            // 立刻在 cache 做修改 —— 乐观更新（示例假设后端返回的是整个 settings 部分）
+            queryClient.setQueryData<Project | null>(key, (old) => {
+                if (!old) return old;
+                // 这里把 payload 合并入设置（根据你的实际结构调整）
+                return {
+                    ...old,
+                    ...payload,
+                };
+            });
+            // 返回 context，onError 会接收它用于回滚
+            return { previous };
+        },
+        onSuccess: (res) => {
+            if (!res) return;
+            var key = getProjectQueryKey(currentProjectId)
+            queryClient.setQueryData<Project>(key, (old) => {
+                if (!old) return old;
+                return { ...old, ...res.project };
+            });
+        },
+        onError: (context: { previous: Project | null } | undefined) => {
+            var key = getProjectQueryKey(currentProjectId)
+
+            if (context?.previous) {
+                queryClient.setQueryData<Project | null>(key, context.previous);
+            } else {
+                queryClient.invalidateQueries({ queryKey: key });
+            }
+        },
+    })
+
+    // const loadNextColumnTasks = useMutation({
+    //     mutationFn: async (columnId: string, payload: ProjecctPayload) => {
+    //         if (!currentProjectId || !currentProject?.updated_at) {
+    //             throw new Error("Missing currentProjectId or updated_at");
+    //         }
+    //         return await updateProjectRequest(
+    //             currentProjectId,
+    //             workspaceId,
+    //             currentProject.updated_at,
+    //             payload
+    //         );
+    //     },
+    // })
+
     return {
         columns: stableColumns,
+        isLoadTodo: isLoadingProjectBoard,
         projectList: projectList || [],
+        todoParams,
         createTask,
         updateTask,
         deleteTask,
         startDraftTask,
+        setTodoParams,
+        updateProjectSetting: updateProjectSetting.mutateAsync,
+        updateProject: updateProject.mutateAsync,
         submitTask,
         cleanColumnTasks,
         updateColumn,
         activeOverlay,
         setActiveOverlay,
         currentProject: currentProject,
-        isLoading: isLoadingProjects || isLoadingBoard,
+        isLoading: isLoadingProjects || isLoadingProject,
         ...rest,
 
         getTaskViewers, // (taskId) => UserPresence[]

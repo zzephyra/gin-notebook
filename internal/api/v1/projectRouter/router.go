@@ -14,6 +14,9 @@ func ProjectRoutes(r *gin.RouterGroup) {
 	{
 		projectGroup.GET("", GetProjectListApi)
 		projectGroup.GET("/:projectID", GetProjectApi)
+		projectGroup.PUT("/:projectID", UpdateProjectApi)
+		projectGroup.PUT("/:projectID/setting", UpdateProjectSettingApi)
+		projectGroup.GET("/:projectID/board", GetProjectBoardApi)
 		projectGroup.POST("/task", CreateProjectTaskApi)
 		projectGroup.DELETE("/task/:taskID", DeleteProjectTaskApi)
 		projectGroup.PUT("/task/:taskID", UpdateProjectTaskApi)

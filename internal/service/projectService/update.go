@@ -55,7 +55,11 @@ func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 					responseCode = message.ERROR_INVALID_TASK_ID
 					return gorm.ErrInvalidData
 				}
-				task["OrderIndex"] = algorithm.RankBetween(tasks[0].OrderIndex, tasks[1].OrderIndex)
+				taskMapping := make(map[int64]model.ToDoTask)
+				for _, t := range tasks {
+					taskMapping[t.ID] = t
+				}
+				task["OrderIndex"] = algorithm.RankBetween(taskMapping[taskIDs[0]].OrderIndex, taskMapping[taskIDs[1]].OrderIndex)
 			} else if hasAfterTask || hasBeforeTask {
 				if len(tasks) != 1 {
 					responseCode = message.ERROR_INVALID_TASK_ID
@@ -239,7 +243,7 @@ func UpdateTaskComment(params *dto.UpdateTaskCommentDTO) (responseCode int, data
 			}
 		}
 
-		workspaceMembers, err := repository.GetWorkspaceMemberByIDs(memtionUserIDs)
+		workspaceMembers, err := repository.GetWorkspaceMemberByIDs(database.DB, memtionUserIDs)
 		if err != nil {
 			responseCode = database.IsError(err)
 			return err
@@ -299,6 +303,75 @@ func UpdateColumn(params *dto.UpdateProjectColumnDTO) (responseCode int, data ma
 		responseCode = message.ERROR_PROJECT_COLUMN_UPDATE_CONFLICTED
 		data["conflicted"] = true
 		return
+	}
+
+	responseCode = message.SUCCESS
+	return
+}
+
+func UpdateProjectSetting(ct context.Context, params *dto.UpdateProjectSettingDTO) (responseCode int, data map[string]interface{}) {
+	updateData := tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt"})
+	projectModel, err, conflicted := repository.UpdateProjectSettingByID(database.DB, params.ProjectID, params.UpdatedAt, updateData)
+	if err != nil {
+		responseCode = database.IsError(err)
+		return
+	}
+
+	data = map[string]interface{}{
+		"project_id": params.ProjectID,
+	}
+
+	if projectModel != nil {
+		data["settings"] = tools.StructToUpdateMap(*projectModel, nil, []string{"ID", "DeletedAt", "CreatedAt", "Creator", "ProjectID"})
+	}
+
+	if conflicted {
+		responseCode = message.ERROR_PROJECT_UPDATE_CONFLICTED
+		data["conflicted"] = true
+		return
+	}
+
+	responseCode = message.SUCCESS
+	return
+}
+
+func UpdateProject(ct context.Context, params *dto.UpdateProjectDTO) (responseCode int, data map[string]interface{}) {
+	updateData := tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt", "OwnerID", "WorkspaceID"})
+	projectModel, err, conflicted := repository.UpdateProjectByID(database.DB, params.ProjectID, params.UpdatedAt, updateData)
+	if err != nil {
+		responseCode = database.IsError(err)
+		return
+	}
+
+	if conflicted {
+		responseCode = message.ERROR_PROJECT_UPDATE_CONFLICTED
+		data = map[string]interface{}{
+			"conflicted": true,
+			"updated_at": params.UpdatedAt,
+		}
+		return
+	}
+
+	if data == nil {
+		data = map[string]interface{}{}
+	}
+
+	data["project"] = tools.StructToUpdateMap(projectModel, nil, []string{"DeletedAt", "CreatedAt", "OwnerID", "WorkspaceID"})
+
+	if projectModel.OwnerID != 0 {
+		workspaceMember, err := repository.GetWorkspaceMemberByIDs(database.DB, []int64{projectModel.OwnerID})
+		if err != nil || len(*workspaceMember) == 0 {
+			responseCode = message.ERROR_WORKSPACE_MEMBER_NOT_EXIST
+			return
+		}
+
+		projectMap, ok := data["project"].(map[string]interface{})
+		if !ok || projectMap == nil {
+			responseCode = message.ERROR_PROJECT_UPDATE
+			return responseCode, nil
+		}
+
+		projectMap["owner"] = tools.StructToUpdateMap((*workspaceMember)[0], nil, []string{"Password", "Email", "CreatedAt", "UpdatedAt", "DeletedAt"})
 	}
 
 	responseCode = message.SUCCESS

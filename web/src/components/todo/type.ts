@@ -99,6 +99,7 @@ export type Project = {
     name: string;
     description?: string;
     status?: string;
+    icon?: string | null;
     [key: string]: any;
 
     // owner_id?: string;

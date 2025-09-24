@@ -2,15 +2,25 @@ package model
 
 import (
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Project struct {
 	BaseModel
-	Name        string `json:"name" gorm:"not null; type:varchar(100); index:idx_name"`
-	Description string `json:"description" gorm:"type:text"`
-	OwnerID     int64  `json:"owner_id,string" gorm:"not null; index:idx_owner_id"`
-	WorkspaceID int64  `json:"workspace_id,string" gorm:"not null; index:idx_workspace_id"`
-	Status      string `json:"status" gorm:"default:'active'; index:idx_status"` // active, archived, completed
+	Icon        *string `json:"icon" gorm:"type:text;default:NULL"` // 项目图标
+	Name        string  `json:"name" gorm:"not null; type:varchar(100); index:idx_name"`
+	Description string  `json:"description" gorm:"type:text"`
+	OwnerID     int64   `json:"owner_id,string" gorm:"not null; index:idx_owner_id"`
+	WorkspaceID int64   `json:"workspace_id,string" gorm:"not null; index:idx_workspace_id"`
+	Status      string  `json:"status" gorm:"default:'active'; index:idx_status"` // active, archived, completed
+}
+
+func (p *Project) AfterCreate(tx *gorm.DB) (err error) {
+	err = tx.Create(&ProjectSetting{
+		ProjectID: p.ID,
+	}).Error
+	return
 }
 
 type ToDoColumn struct {
@@ -26,8 +36,8 @@ type ToDoTask struct {
 	BaseModel
 	ProjectID   int64      `json:"project_id,string" gorm:"not null; index:idx_project_id"`
 	Title       string     `json:"title" gorm:"not null; type:varchar(200); index:idx_title"`
-	OrderIndex  string     `json:"order_index" gorm:"varchar(10),index:uniq_column_order,priority:2"`
-	ColumnID    int64      `json:"column_id,string" gorm:"index:uniq_column_order,priority:1"`
+	OrderIndex  string     `json:"order_index" gorm:"not null;varchar(10);uniqueIndex:uniq_column_order,priority:2"`
+	ColumnID    int64      `json:"column_id,string" gorm:"not null;uniqueIndex:uniq_column_order,priority:1"`
 	Creator     int64      `json:"creator,string" gorm:"not null; index:idx_creator"`
 	Priority    string     `json:"priority" gorm:"index:idx_priority"`          // low, medium, high
 	Status      string     `json:"status" gorm:"index:idx_status"`              // pending, in_progress, completed

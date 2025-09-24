@@ -7,6 +7,7 @@ import (
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/pkg/utils/tools"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -78,5 +79,45 @@ func GetAISettings() (data *dto.AISettingsDTO, err error) {
 		return
 	}
 	data = settings
+	return
+}
+
+func UpdateProjectSettingByID(db *gorm.DB, ProjectID int64, updatedAt time.Time, data map[string]interface{}) (settings *model.ProjectSetting, err error, conflicted bool) {
+	sql := db.Model(&model.ProjectSetting{}).Where("project_id = ? AND updated_at = ?", ProjectID, updatedAt).Updates(data)
+
+	if sql.Error != nil {
+		return nil, sql.Error, false
+	}
+
+	if sql.RowsAffected == 0 {
+		conflicted = true
+	}
+	var c model.ProjectSetting
+	err = db.Where("project_id = ?", ProjectID).First(&c).Error
+	if err != nil {
+		return
+	}
+
+	settings = &c
+	return
+}
+
+func UpdateProjectByID(db *gorm.DB, ProjectID int64, updatedAt time.Time, data map[string]interface{}) (settings *model.Project, err error, conflicted bool) {
+	sql := db.Model(&model.Project{}).Where("id = ? AND updated_at = ?", ProjectID, updatedAt).Updates(data)
+
+	if sql.Error != nil {
+		return nil, sql.Error, false
+	}
+
+	if sql.RowsAffected == 0 {
+		conflicted = true
+	}
+	var c model.Project
+	err = db.Where("id = ?", ProjectID).First(&c).Error
+	if err != nil {
+		return
+	}
+
+	settings = &c
 	return
 }

@@ -40,8 +40,6 @@ import { ToDoColumnClasses } from "../column/script";
 import { useWorkspaceMembers } from "@/hooks/useWorkspaceMembers";
 import { debounce } from "lodash";
 import { IconDelete, IconPlus, IconUpload } from '@douyinfe/semi-icons';
-import { UploadFile } from "@/lib/upload";
-import toast from "react-hot-toast";
 import useTaskActivity from "@/hooks/useActivity";
 import TaskActivity from "../activity";
 

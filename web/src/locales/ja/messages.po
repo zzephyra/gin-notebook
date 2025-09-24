@@ -14,6 +14,16 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
+#: src/locales/dynamicKeys.ts:3
+msgid "task.update"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/locales/dynamicKeys.ts:4
+msgid "task.create"
+msgstr ""
+
+#. js-lingui-explicit-id
 #: src/locales/dynamicKeys.ts:5
 msgid "column name"
 msgstr ""
@@ -24,25 +34,15 @@ msgid "task name"
 msgstr ""
 
 #. js-lingui-explicit-id
-#: src/pages/workspace/tasks.tsx:147
 #: src/components/modal/event/add/index.tsx:152
+#: src/pages/workspace/tasks.tsx:147
 msgid "Monthly on the {day}th"
 msgstr ""
 
 #. js-lingui-explicit-id
-#: src/pages/workspace/tasks.tsx:150
 #: src/components/modal/event/add/index.tsx:155
+#: src/pages/workspace/tasks.tsx:150
 msgid "Last {byDay} of the Month"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/locales/dynamicKeys.ts:3
-msgid "task.update"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/locales/dynamicKeys.ts:4
-msgid "task.create"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -126,14 +126,14 @@ msgstr ""
 #~ msgid "File size exceeds the limit of {size} bytes"
 #~ msgstr ""
 
-#. placeholder {0}: option.label
 #. placeholder {0}: FilterMapping[props.filter?.order_by || "create"]
 #. placeholder {0}: item.label
-#: src/components/todo/taskDetails/index.tsx:260
-#: src/components/todo/taskDetails/index.tsx:364
-#: src/components/todo/task/index.tsx:310
-#: src/components/comment/main/index.tsx:172
+#. placeholder {0}: option.label
 #: src/components/avatarMenu/index.tsx:80
+#: src/components/comment/main/index.tsx:190
+#: src/components/todo/task/index.tsx:305
+#: src/components/todo/taskDetails/index.tsx:250
+#: src/components/todo/taskDetails/index.tsx:357
 msgid "{0}"
 msgstr ""
 
@@ -169,11 +169,12 @@ msgstr "アクション"
 msgid "Active"
 msgstr "アクティブ"
 
-#: src/components/todo/taskDetails/index.tsx:467
+#: src/components/todo/taskDetails/index.tsx:463
 msgid "Activity"
 msgstr ""
 
-#: src/components/todo/taskDetails/index.tsx:203
+#: src/components/todo/task/index.tsx:358
+#: src/components/todo/taskDetails/index.tsx:195
 msgid "Add Cover"
 msgstr ""
 
@@ -241,7 +242,7 @@ msgstr ""
 #~ msgid "Are you sure you want to clean all tasks in this column?"
 #~ msgstr ""
 
-#: src/components/todo/column/index.tsx:322
+#: src/components/todo/column/index.tsx:349
 msgid "Are you sure you want to clear all tasks in this column?"
 msgstr ""
 
@@ -253,8 +254,12 @@ msgstr "この招待リンクを削除しても大丈夫ですか？"
 msgid "Are you sure you want to delete this note? This action cannot be undone."
 msgstr "本当にこのノートを削除しますか？この操作は元に戻すことはできません。"
 
-#: src/components/todo/taskDetails/index.tsx:324
-#: src/components/todo/taskDetails/index.tsx:427
+#: src/pages/workspace/project.tsx:117
+msgid "Ascending"
+msgstr ""
+
+#: src/components/todo/taskDetails/index.tsx:317
+#: src/components/todo/taskDetails/index.tsx:423
 msgid "Assignee"
 msgstr ""
 
@@ -263,6 +268,7 @@ msgid "Auto save failed, please try again later."
 msgstr ""
 
 #: src/components/step/workspace/main.tsx:182
+#: src/pages/workspace/project.tsx:115
 msgid "Back"
 msgstr "バック"
 
@@ -274,20 +280,24 @@ msgstr "基本情報"
 msgid "Bucket Name"
 msgstr "バケット名"
 
-#: src/pages/settings/workspaceSettings.tsx:194
-#: src/components/note/main/index.tsx:441
-#: src/components/modal/user/modifyPassword/index.tsx:58
-#: src/components/modal/note/selectCategory/index.tsx:113
-#: src/components/modal/note/deleteModal/index.tsx:42
-#: src/components/modal/event/add/index.tsx:162
-#: src/components/list/notes/index.tsx:134
 #: src/components/dropdown/note/index.tsx:104
 #: src/components/dropdown/note/index.tsx:203
+#: src/components/list/notes/index.tsx:134
+#: src/components/modal/event/add/index.tsx:162
+#: src/components/modal/note/deleteModal/index.tsx:42
+#: src/components/modal/note/selectCategory/index.tsx:113
+#: src/components/modal/user/modifyPassword/index.tsx:58
+#: src/components/note/main/index.tsx:441
+#: src/pages/settings/workspaceSettings.tsx:194
 msgid "Cancel"
 msgstr "キャンセル"
 
 #: src/components/aiChat/index.tsx:405
 msgid "Cannot reload message that has a parent message."
+msgstr ""
+
+#: src/pages/workspace/project.tsx:402
+msgid "Card Preview"
 msgstr ""
 
 #: src/components/note/main/index.tsx:155
@@ -307,18 +317,19 @@ msgstr "カテゴリ名"
 msgid "Category name is required"
 msgstr "カテゴリ名必須"
 
-#: src/components/todo/taskDetails/index.tsx:191
+#: src/components/todo/task/index.tsx:358
+#: src/components/todo/taskDetails/index.tsx:183
 msgid "Change Cover"
 msgstr ""
 
-#: src/pages/settings/accountSettings.tsx:91
 #: src/components/modal/user/changeEmail/index.tsx:24
 #: src/components/modal/user/changeEmail/index.tsx:31
+#: src/pages/settings/accountSettings.tsx:91
 msgid "Change Email"
 msgstr "メールを変更"
 
-#: src/pages/settings/accountSettings.tsx:86
 #: src/components/modal/user/modifyPassword/index.tsx:40
+#: src/pages/settings/accountSettings.tsx:86
 msgid "Change Password"
 msgstr "パスワード変更"
 
@@ -326,11 +337,15 @@ msgstr "パスワード変更"
 msgid "Change your password"
 msgstr "パスワード変更"
 
+#: src/components/emojiPicker/index.tsx:16
+msgid "Clean"
+msgstr ""
+
 #: src/components/todo/column/index.tsx:202
 #~ msgid "Clean Tasks"
 #~ msgstr ""
 
-#: src/components/todo/column/index.tsx:305
+#: src/components/todo/column/index.tsx:332
 msgid "Clear Tasks"
 msgstr ""
 
@@ -342,19 +357,19 @@ msgstr ""
 msgid "Come up with a good name!"
 msgstr "良い名前を思い付く！"
 
-#: src/components/comment/input/index.tsx:41
+#: src/components/comment/input/index.tsx:42
 msgid "Comment cannot be empty"
 msgstr ""
 
-#: src/components/comment/main/index.tsx:74
+#: src/components/comment/main/index.tsx:76
 msgid "Comment submitted successfully"
 msgstr ""
 
-#: src/components/comment/main/index.tsx:101
+#: src/components/comment/main/index.tsx:104
 msgid "Comment updated successfully"
 msgstr ""
 
-#: src/components/todo/taskDetails/index.tsx:459
+#: src/components/todo/taskDetails/index.tsx:455
 msgid "Comments"
 msgstr ""
 
@@ -379,12 +394,14 @@ msgid "Copy successfully"
 msgstr "コピー成功"
 
 #: src/components/note/main/index.tsx:162
+#: src/pages/workspace/project.tsx:144
+#: src/pages/workspace/project.tsx:422
 msgid "Cover"
 msgstr ""
 
-#: src/components/modal/event/add/index.tsx:165
 #: src/components/dropdown/note/index.tsx:107
 #: src/components/dropdown/note/index.tsx:206
+#: src/components/modal/event/add/index.tsx:165
 msgid "Create"
 msgstr "作成"
 
@@ -416,8 +433,8 @@ msgstr "ワークスペース作成失敗"
 msgid "Created by:"
 msgstr "作成者："
 
+#: src/components/comment/main/index.tsx:195
 #: src/pages/workspace/favorites.tsx:266
-#: src/components/comment/main/index.tsx:177
 msgid "Created Time"
 msgstr ""
 
@@ -433,16 +450,25 @@ msgstr "現在の装置"
 msgid "Danger Zone"
 msgstr "危険地帯"
 
-#: src/components/todo/taskDetails/index.tsx:301
-#: src/components/todo/taskDetails/index.tsx:405
+#: src/components/todo/taskDetails/index.tsx:294
+#: src/components/todo/taskDetails/index.tsx:401
 msgid "Deadline"
 msgstr ""
 
-#: src/pages/settings/workspaceSettings.tsx:195
-#: src/components/note/noteList/index.tsx:77
+#: src/pages/workspace/project.tsx:148
+#~ msgid "Default"
+#~ msgstr ""
+
+#: src/pages/workspace/project.tsx:148
+msgid "Default Sort"
+msgstr ""
+
+#: src/components/comment/box/index.tsx:148
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
-#: src/components/comment/box/index.tsx:126
+#: src/components/note/noteList/index.tsx:77
+#: src/components/todo/task/index.tsx:378
+#: src/pages/settings/workspaceSettings.tsx:195
 msgid "Delete"
 msgstr "削除"
 
@@ -464,25 +490,37 @@ msgstr "メモを削除"
 msgid "Delete note failed: {0}"
 msgstr ""
 
-#: src/pages/settings/workspaceSettings.tsx:63
 #: src/components/modal/note/deleteModal/index.tsx:17
+#: src/pages/settings/workspaceSettings.tsx:63
 msgid "Delete successfully"
 msgstr "正常に削除"
+
+#: src/components/todo/main.tsx:84
+msgid "Delete task failed"
+msgstr ""
 
 #: src/components/note/main/index.tsx:184
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "この項目の削除は永続的なアクションであり、元に戻すことはできません。"
 
-#: src/pages/settings/accountSettings.tsx:97
+#: src/pages/workspace/project.tsx:119
+msgid "Descending"
+msgstr ""
+
 #: src/components/table/device/index.tsx:60
+#: src/pages/settings/accountSettings.tsx:97
 msgid "Device"
+msgstr ""
+
+#: src/components/comment/main/index.tsx:119
+msgid "Disliked the comment"
 msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:85
 msgid "Domain Url"
 msgstr "ドメインURL"
 
-#: src/components/todo/column/index.tsx:332
+#: src/components/todo/column/index.tsx:359
 msgid "Don’t clear"
 msgstr ""
 
@@ -538,9 +576,9 @@ msgstr ""
 msgid "Event start or end time is invalid"
 msgstr ""
 
+#: src/components/modal/event/add/index.tsx:90
 #: src/pages/workspace/tasks.tsx:69
 #: src/pages/workspace/tasks.tsx:73
-#: src/components/modal/event/add/index.tsx:90
 msgid "Event Title"
 msgstr ""
 
@@ -548,13 +586,13 @@ msgstr ""
 msgid "Event title is required"
 msgstr ""
 
-#: src/pages/workspace/tasks.tsx:138
 #: src/components/modal/event/add/index.tsx:143
+#: src/pages/workspace/tasks.tsx:138
 msgid "Every Weekday"
 msgstr ""
 
-#: src/pages/workspace/tasks.tsx:135
 #: src/components/modal/event/add/index.tsx:140
+#: src/pages/workspace/tasks.tsx:135
 msgid "Everyday"
 msgstr ""
 
@@ -591,12 +629,17 @@ msgid "Failed to load chat history"
 msgstr ""
 
 #. placeholder {0}: res.message
-#: src/components/comment/main/index.tsx:76
+#: src/components/comment/main/index.tsx:121
+msgid "Failed to react to comment: {0}"
+msgstr ""
+
+#. placeholder {0}: res.message
+#: src/components/comment/main/index.tsx:79
 msgid "Failed to submit comment: {0}"
 msgstr ""
 
 #. placeholder {0}: res.message
-#: src/components/comment/main/index.tsx:103
+#: src/components/comment/main/index.tsx:106
 msgid "Failed to update comment: {0}"
 msgstr ""
 
@@ -641,7 +684,7 @@ msgstr "他のワークスペースを選択する"
 msgid "Go to Workspace"
 msgstr "ワークスペースに移動"
 
-#: src/components/comment/main/index.tsx:198
+#: src/components/comment/main/index.tsx:216
 msgid "Has attachments"
 msgstr ""
 
@@ -673,7 +716,7 @@ msgstr ""
 msgid "History Chats"
 msgstr ""
 
-#: src/components/todo/column/index.tsx:342
+#: src/components/todo/column/index.tsx:369
 msgid "I'm sure"
 msgstr ""
 
@@ -733,7 +776,11 @@ msgstr "言語"
 msgid "Last Active"
 msgstr ""
 
-#: src/components/comment/main/index.tsx:257
+#: src/components/comment/main/index.tsx:119
+msgid "Liked the comment"
+msgstr ""
+
+#: src/components/comment/main/index.tsx:275
 msgid "Load more on scroll"
 msgstr ""
 
@@ -741,7 +788,7 @@ msgstr ""
 msgid "Loading members..."
 msgstr ""
 
-#: src/components/comment/main/index.tsx:255
+#: src/components/comment/main/index.tsx:273
 msgid "Loading more comments..."
 msgstr ""
 
@@ -749,7 +796,7 @@ msgstr ""
 msgid "Loading notes..."
 msgstr "ノートを読み込み中..."
 
-#: src/pages/workspace/project.tsx:189
+#: src/pages/workspace/project.tsx:365
 msgid "Loading project..."
 msgstr ""
 
@@ -765,8 +812,8 @@ msgstr "ローカルストレージパス"
 msgid "Locaton"
 msgstr ""
 
-#: src/components/menu/sidebar.tsx:92
 #: src/components/avatarMenu/index.tsx:61
+#: src/components/menu/sidebar.tsx:92
 msgid "Log out"
 msgstr "ログインする"
 
@@ -799,11 +846,11 @@ msgstr "メンバー"
 msgid "members"
 msgstr "メンバー"
 
-#: src/components/comment/content/index.tsx:351
+#: src/components/comment/content/index.tsx:362
 msgid "Members"
 msgstr ""
 
-#: src/components/comment/main/index.tsx:191
+#: src/components/comment/main/index.tsx:209
 msgid "Mention me"
 msgstr ""
 
@@ -820,6 +867,7 @@ msgid "Move note failed"
 msgstr "ノートの移動失敗"
 
 #: src/components/note/categoryItem/index.tsx:63
+#: src/components/todo/task/index.tsx:373
 msgid "Move to"
 msgstr "移動する"
 
@@ -855,13 +903,13 @@ msgstr "新しいフォルダ"
 msgid "New Password"
 msgstr "新しいパスワード"
 
-#: src/components/todo/task/index.tsx:271
+#: src/components/todo/task/index.tsx:266
 msgid "New Project"
 msgstr ""
 
-#: src/components/todo/taskDetails/index.tsx:228
-#: src/components/todo/task/index.tsx:319
-#: src/components/todo/task/index.tsx:406
+#: src/components/todo/task/index.tsx:324
+#: src/components/todo/task/index.tsx:452
+#: src/components/todo/taskDetails/index.tsx:218
 msgid "New Task"
 msgstr ""
 
@@ -881,12 +929,12 @@ msgstr ""
 msgid "No Category"
 msgstr "カテゴリーなし"
 
-#: src/components/comment/main/index.tsx:28
+#: src/components/comment/main/index.tsx:29
 msgid "No comments yet"
 msgstr ""
 
-#: src/components/todo/taskDetails/index.tsx:306
-#: src/components/todo/taskDetails/index.tsx:410
+#: src/components/todo/taskDetails/index.tsx:299
+#: src/components/todo/taskDetails/index.tsx:406
 msgid "No Deadline"
 msgstr ""
 
@@ -894,7 +942,7 @@ msgstr ""
 msgid "No expiration"
 msgstr "有効期限なし"
 
-#: src/components/comment/main/index.tsx:258
+#: src/components/comment/main/index.tsx:276
 msgid "No more comments"
 msgstr ""
 
@@ -902,13 +950,13 @@ msgstr ""
 msgid "No more templates to load."
 msgstr ""
 
-#: src/components/todo/taskDetails/index.tsx:248
-#: src/components/todo/taskDetails/index.tsx:352
+#: src/components/todo/taskDetails/index.tsx:238
+#: src/components/todo/taskDetails/index.tsx:345
 msgid "No Priority"
 msgstr ""
 
-#: src/pages/workspace/tasks.tsx:132
 #: src/components/modal/event/add/index.tsx:137
+#: src/pages/workspace/tasks.tsx:132
 msgid "No Repeat"
 msgstr ""
 
@@ -919,6 +967,14 @@ msgstr ""
 #: src/components/menu/sidebar.tsx:72
 msgid "No Workspace"
 msgstr "ワークスペースなし"
+
+#: src/pages/workspace/project.tsx:145
+msgid "none"
+msgstr ""
+
+#: src/pages/workspace/project.tsx:419
+msgid "None"
+msgstr ""
 
 #: src/components/note/main/index.tsx:152
 msgid "Note ID"
@@ -990,13 +1046,13 @@ msgstr "パスワード"
 msgid "Passwords do not match"
 msgstr "パスワードが一致しません"
 
-#: src/pages/workspace/tasks.tsx:144
 #: src/components/modal/event/add/index.tsx:149
+#: src/pages/workspace/tasks.tsx:144
 msgid "Per 2 Weeks"
 msgstr ""
 
-#: src/pages/workspace/tasks.tsx:141
 #: src/components/modal/event/add/index.tsx:146
+#: src/pages/workspace/tasks.tsx:141
 msgid "Per Week"
 msgstr ""
 
@@ -1008,6 +1064,10 @@ msgstr "許可"
 #: src/components/dropdown/note/index.tsx:142
 msgid "Permission Setting"
 msgstr "権限設定"
+
+#: src/pages/workspace/project.tsx:394
+msgid "Personalization"
+msgstr ""
 
 #: src/components/form/register/form.tsx:69
 msgid "Please check your email."
@@ -1037,7 +1097,7 @@ msgstr "カテゴリーを選択してください"
 msgid "Please select a file to upload."
 msgstr ""
 
-#: src/components/comment/input/index.tsx:45
+#: src/components/comment/input/index.tsx:46
 msgid "Please wait for attachments to finish uploading."
 msgstr ""
 
@@ -1045,8 +1105,9 @@ msgstr ""
 msgid "Previous Note"
 msgstr ""
 
-#: src/components/todo/taskDetails/index.tsx:238
-#: src/components/todo/taskDetails/index.tsx:342
+#: src/components/todo/taskDetails/index.tsx:228
+#: src/components/todo/taskDetails/index.tsx:335
+#: src/pages/workspace/project.tsx:150
 msgid "Priority"
 msgstr ""
 
@@ -1055,7 +1116,11 @@ msgid "Private"
 msgstr "プライベート"
 
 #: src/pages/workspace/project.tsx:212
-msgid "Progress"
+#~ msgid "Progress"
+#~ msgstr ""
+
+#: src/pages/workspace/project.tsx:434
+msgid "Project Icon"
 msgstr ""
 
 #: src/components/note/main/index.tsx:197
@@ -1115,7 +1180,7 @@ msgstr "成功登録、メールを確認してください"
 msgid "Remember me"
 msgstr "お問い合わせ"
 
-#: src/components/todo/taskDetails/index.tsx:195
+#: src/components/todo/taskDetails/index.tsx:187
 msgid "Remove"
 msgstr ""
 
@@ -1123,7 +1188,7 @@ msgstr ""
 msgid "Remove from Favorites"
 msgstr "お気に入りから削除"
 
-#: src/components/todo/column/index.tsx:292
+#: src/components/todo/column/index.tsx:319
 msgid "Rename"
 msgstr ""
 
@@ -1131,8 +1196,8 @@ msgstr ""
 #~ msgid "Rename Column"
 #~ msgstr ""
 
-#: src/pages/settings/storageSettings.tsx:104
 #: src/components/modal/user/modifyPassword/index.tsx:59
+#: src/pages/settings/storageSettings.tsx:104
 msgid "Save"
 msgstr "保存"
 
@@ -1154,12 +1219,16 @@ msgstr ""
 msgid "Search Category"
 msgstr "カテゴリー検索"
 
+#: src/components/project/list/index.tsx:55
+msgid "Search project..."
+msgstr ""
+
 #: src/pages/settings/storageSettings.tsx:79
 msgid "Secret Key"
 msgstr "秘密鍵"
 
-#: src/components/modal/note/selectCategory/index.tsx:114
 #: src/components/list/workspaceEntry/list.tsx:34
+#: src/components/modal/note/selectCategory/index.tsx:114
 msgid "Select"
 msgstr "選択"
 
@@ -1180,7 +1249,7 @@ msgstr "カテゴリーを選択"
 msgid "Select note status"
 msgstr "ノートステータスを選択"
 
-#: src/components/todo/task/index.tsx:297
+#: src/components/todo/task/index.tsx:292
 msgid "Select Priority"
 msgstr ""
 
@@ -1217,8 +1286,8 @@ msgstr "現在のノートのステータスを設定します。privateに設�
 #~ msgid "Settings"
 #~ msgstr "設定"
 
-#: src/components/note/noteList/index.tsx:63
 #: src/components/note/main/index.tsx:142
+#: src/components/note/noteList/index.tsx:63
 msgid "Share"
 msgstr "シェア"
 
@@ -1238,18 +1307,22 @@ msgstr "サインイン"
 msgid "Sign Up"
 msgstr "サインアップ"
 
+#: src/pages/workspace/project.tsx:100
+msgid "Sort by"
+msgstr ""
+
 #: src/components/aiChat/index.tsx:87
 msgid "Source"
 msgstr ""
 
-#: src/components/comment/main/index.tsx:29
+#: src/components/comment/main/index.tsx:30
 msgid "Start a conversation below"
 msgstr ""
 
-#: src/pages/settings/workspaceSettings.tsx:139
-#: src/components/todo/taskDetails/index.tsx:271
-#: src/components/todo/taskDetails/index.tsx:375
 #: src/components/dropdown/note/index.tsx:194
+#: src/components/todo/taskDetails/index.tsx:261
+#: src/components/todo/taskDetails/index.tsx:368
+#: src/pages/settings/workspaceSettings.tsx:139
 msgid "Status"
 msgstr "状態"
 
@@ -1305,7 +1378,7 @@ msgstr "ワークスペース名に不正文字が含まれる"
 msgid "This invitation link does not exist."
 msgstr "この招待リンクは存在しません。"
 
-#: src/components/todo/column/index.tsx:326
+#: src/components/todo/column/index.tsx:353
 msgid "This is a very dangerous action. Once confirmed, the data cannot be recovered."
 msgstr ""
 
@@ -1321,6 +1394,10 @@ msgstr ""
 #: src/components/step/workspace/main.tsx:113
 msgid "To ensure compatibility, please avoid special characters in the name."
 msgstr "互換性を確保するため、名前に特殊文字を使用しないでください。"
+
+#: src/pages/workspace/project.tsx:370
+msgid "Typing for search..."
+msgstr ""
 
 #: src/components/table/device/index.tsx:49
 msgid "Unknow"
@@ -1338,8 +1415,8 @@ msgstr ""
 msgid "Update avatar successfully"
 msgstr "アバターの更新"
 
-#: src/pages/workspace/tasks.tsx:212
 #: src/components/fullCalendar/index.tsx:157
+#: src/pages/workspace/tasks.tsx:212
 msgid "Update event failed"
 msgstr ""
 
@@ -1347,14 +1424,14 @@ msgstr ""
 msgid "Update nickname successfully"
 msgstr "ニックネームの更新"
 
-#: src/components/modal/user/modifyPassword/index.tsx:18
 #: src/components/modal/user/changeEmail/index.tsx:14
+#: src/components/modal/user/modifyPassword/index.tsx:18
 msgid "Update password successfully"
 msgstr "パスワードの更新"
 
-#: src/pages/settings/storageSettings.tsx:55
 #: src/components/note/main/index.tsx:73
 #: src/components/note/main/index.tsx:110
+#: src/pages/settings/storageSettings.tsx:55
 msgid "Update successfully"
 msgstr "更新成功"
 
@@ -1362,13 +1439,14 @@ msgstr "更新成功"
 msgid "Updated At"
 msgstr ""
 
+#: src/components/comment/main/index.tsx:198
 #: src/pages/workspace/favorites.tsx:263
-#: src/components/comment/main/index.tsx:180
+#: src/pages/workspace/project.tsx:149
 msgid "Updated Time"
 msgstr ""
 
-#: src/pages/settings/accountSettings.tsx:77
 #: src/components/note/main/index.tsx:165
+#: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"
 msgstr "アップロード"
 
@@ -1380,11 +1458,11 @@ msgstr "アバターをアップロード"
 msgid "Upload avatar failed"
 msgstr "アバターのアップロード失敗"
 
-#: src/components/todo/taskDetails/index.tsx:128
+#: src/components/todo/main.tsx:72
 msgid "Upload failed"
 msgstr ""
 
-#: src/components/comment/box/index.tsx:123
+#: src/components/comment/box/index.tsx:145
 msgid "Upload File"
 msgstr ""
 
@@ -1416,7 +1494,7 @@ msgstr "ワークスペース名"
 msgid "Workspace: "
 msgstr "ワークスペース"
 
-#: src/components/todo/taskDetails/index.tsx:445
+#: src/components/todo/taskDetails/index.tsx:441
 msgid "Write something about the task"
 msgstr ""
 

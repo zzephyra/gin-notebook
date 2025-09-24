@@ -14,6 +14,16 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
+#: src/locales/dynamicKeys.ts:3
+msgid "task.update"
+msgstr "更新了{field}：<from>{from}</from> → <to>{to}</to>"
+
+#. js-lingui-explicit-id
+#: src/locales/dynamicKeys.ts:4
+msgid "task.create"
+msgstr "创建了任务"
+
+#. js-lingui-explicit-id
 #: src/locales/dynamicKeys.ts:5
 msgid "column name"
 msgstr "列名"
@@ -24,26 +34,16 @@ msgid "task name"
 msgstr "任务名"
 
 #. js-lingui-explicit-id
-#: src/pages/workspace/tasks.tsx:147
 #: src/components/modal/event/add/index.tsx:152
+#: src/pages/workspace/tasks.tsx:147
 msgid "Monthly on the {day}th"
 msgstr "每月的第 {day} 天"
 
 #. js-lingui-explicit-id
-#: src/pages/workspace/tasks.tsx:150
 #: src/components/modal/event/add/index.tsx:155
+#: src/pages/workspace/tasks.tsx:150
 msgid "Last {byDay} of the Month"
 msgstr "每月的最后一个 {byDay}"
-
-#. js-lingui-explicit-id
-#: src/locales/dynamicKeys.ts:3
-msgid "task.update"
-msgstr "更新了{field}：<from>{from}</from> → <to>{to}</to>"
-
-#. js-lingui-explicit-id
-#: src/locales/dynamicKeys.ts:4
-msgid "task.create"
-msgstr "创建了任务"
 
 #. js-lingui-explicit-id
 #: src/lib/upload/index.ts:41
@@ -126,14 +126,14 @@ msgstr "请在输入需要发送的信息"
 #~ msgid "File size exceeds the limit of {size} bytes"
 #~ msgstr "文件大小超过限制：{size} 字节"
 
-#. placeholder {0}: option.label
 #. placeholder {0}: FilterMapping[props.filter?.order_by || "create"]
 #. placeholder {0}: item.label
-#: src/components/todo/taskDetails/index.tsx:260
-#: src/components/todo/taskDetails/index.tsx:364
-#: src/components/todo/task/index.tsx:310
-#: src/components/comment/main/index.tsx:172
+#. placeholder {0}: option.label
 #: src/components/avatarMenu/index.tsx:80
+#: src/components/comment/main/index.tsx:190
+#: src/components/todo/task/index.tsx:305
+#: src/components/todo/taskDetails/index.tsx:250
+#: src/components/todo/taskDetails/index.tsx:357
 msgid "{0}"
 msgstr "{0}"
 
@@ -169,11 +169,12 @@ msgstr "行动"
 msgid "Active"
 msgstr "有效"
 
-#: src/components/todo/taskDetails/index.tsx:467
+#: src/components/todo/taskDetails/index.tsx:463
 msgid "Activity"
 msgstr "活动"
 
-#: src/components/todo/taskDetails/index.tsx:203
+#: src/components/todo/task/index.tsx:358
+#: src/components/todo/taskDetails/index.tsx:195
 msgid "Add Cover"
 msgstr "添加封面"
 
@@ -241,7 +242,7 @@ msgstr "正在应用模板…"
 #~ msgid "Are you sure you want to clean all tasks in this column?"
 #~ msgstr ""
 
-#: src/components/todo/column/index.tsx:322
+#: src/components/todo/column/index.tsx:349
 msgid "Are you sure you want to clear all tasks in this column?"
 msgstr "您确定要清空此列中的所有任务吗？"
 
@@ -253,8 +254,12 @@ msgstr "您确定要删除此邀请链接吗？"
 msgid "Are you sure you want to delete this note? This action cannot be undone."
 msgstr "是否确实要删除此便笺？此操作无法撤消。"
 
-#: src/components/todo/taskDetails/index.tsx:324
-#: src/components/todo/taskDetails/index.tsx:427
+#: src/pages/workspace/project.tsx:117
+msgid "Ascending"
+msgstr "升序"
+
+#: src/components/todo/taskDetails/index.tsx:317
+#: src/components/todo/taskDetails/index.tsx:423
 msgid "Assignee"
 msgstr "负责人"
 
@@ -263,8 +268,9 @@ msgid "Auto save failed, please try again later."
 msgstr "自动保存失败，请稍后重试"
 
 #: src/components/step/workspace/main.tsx:182
+#: src/pages/workspace/project.tsx:115
 msgid "Back"
-msgstr "回来"
+msgstr "返回"
 
 #: src/components/note/main/index.tsx:151
 msgid "Basic Information"
@@ -274,21 +280,25 @@ msgstr "基本信息"
 msgid "Bucket Name"
 msgstr "桶名称"
 
-#: src/pages/settings/workspaceSettings.tsx:194
-#: src/components/note/main/index.tsx:441
-#: src/components/modal/user/modifyPassword/index.tsx:58
-#: src/components/modal/note/selectCategory/index.tsx:113
-#: src/components/modal/note/deleteModal/index.tsx:42
-#: src/components/modal/event/add/index.tsx:162
-#: src/components/list/notes/index.tsx:134
 #: src/components/dropdown/note/index.tsx:104
 #: src/components/dropdown/note/index.tsx:203
+#: src/components/list/notes/index.tsx:134
+#: src/components/modal/event/add/index.tsx:162
+#: src/components/modal/note/deleteModal/index.tsx:42
+#: src/components/modal/note/selectCategory/index.tsx:113
+#: src/components/modal/user/modifyPassword/index.tsx:58
+#: src/components/note/main/index.tsx:441
+#: src/pages/settings/workspaceSettings.tsx:194
 msgid "Cancel"
 msgstr "取消"
 
 #: src/components/aiChat/index.tsx:405
 msgid "Cannot reload message that has a parent message."
 msgstr "无法重新加载已有父消息的内容。"
+
+#: src/pages/workspace/project.tsx:402
+msgid "Card Preview"
+msgstr "卡片预览"
 
 #: src/components/note/main/index.tsx:155
 msgid "Categorize the note by selecting an existing note category."
@@ -307,18 +317,19 @@ msgstr "类别名称"
 msgid "Category name is required"
 msgstr "类别名称是必需的"
 
-#: src/components/todo/taskDetails/index.tsx:191
+#: src/components/todo/task/index.tsx:358
+#: src/components/todo/taskDetails/index.tsx:183
 msgid "Change Cover"
 msgstr "更新封面"
 
-#: src/pages/settings/accountSettings.tsx:91
 #: src/components/modal/user/changeEmail/index.tsx:24
 #: src/components/modal/user/changeEmail/index.tsx:31
+#: src/pages/settings/accountSettings.tsx:91
 msgid "Change Email"
 msgstr "更改电子邮件"
 
-#: src/pages/settings/accountSettings.tsx:86
 #: src/components/modal/user/modifyPassword/index.tsx:40
+#: src/pages/settings/accountSettings.tsx:86
 msgid "Change Password"
 msgstr "更改密码"
 
@@ -326,11 +337,15 @@ msgstr "更改密码"
 msgid "Change your password"
 msgstr "更改密码"
 
+#: src/components/emojiPicker/index.tsx:16
+msgid "Clean"
+msgstr "清除"
+
 #: src/components/todo/column/index.tsx:202
 #~ msgid "Clean Tasks"
-#~ msgstr ""
+#~ msgstr "清除所有任务"
 
-#: src/components/todo/column/index.tsx:305
+#: src/components/todo/column/index.tsx:332
 msgid "Clear Tasks"
 msgstr "清除所有任务"
 
@@ -342,19 +357,19 @@ msgstr "点击查看更多内容"
 msgid "Come up with a good name!"
 msgstr "想个好名字！"
 
-#: src/components/comment/input/index.tsx:41
+#: src/components/comment/input/index.tsx:42
 msgid "Comment cannot be empty"
 msgstr "评论不能为空"
 
-#: src/components/comment/main/index.tsx:74
+#: src/components/comment/main/index.tsx:76
 msgid "Comment submitted successfully"
 msgstr "评论提交成功"
 
-#: src/components/comment/main/index.tsx:101
+#: src/components/comment/main/index.tsx:104
 msgid "Comment updated successfully"
 msgstr "评论更新成功"
 
-#: src/components/todo/taskDetails/index.tsx:459
+#: src/components/todo/taskDetails/index.tsx:455
 msgid "Comments"
 msgstr "评论"
 
@@ -379,12 +394,14 @@ msgid "Copy successfully"
 msgstr "复制成功"
 
 #: src/components/note/main/index.tsx:162
+#: src/pages/workspace/project.tsx:144
+#: src/pages/workspace/project.tsx:422
 msgid "Cover"
 msgstr "封面"
 
-#: src/components/modal/event/add/index.tsx:165
 #: src/components/dropdown/note/index.tsx:107
 #: src/components/dropdown/note/index.tsx:206
+#: src/components/modal/event/add/index.tsx:165
 msgid "Create"
 msgstr "创建"
 
@@ -416,8 +433,8 @@ msgstr "创建工作区失败"
 msgid "Created by:"
 msgstr "创建人："
 
+#: src/components/comment/main/index.tsx:195
 #: src/pages/workspace/favorites.tsx:266
-#: src/components/comment/main/index.tsx:177
 msgid "Created Time"
 msgstr "创建时间"
 
@@ -433,16 +450,25 @@ msgstr "当前设备"
 msgid "Danger Zone"
 msgstr "危险区"
 
-#: src/components/todo/taskDetails/index.tsx:301
-#: src/components/todo/taskDetails/index.tsx:405
+#: src/components/todo/taskDetails/index.tsx:294
+#: src/components/todo/taskDetails/index.tsx:401
 msgid "Deadline"
 msgstr "截止日期"
 
-#: src/pages/settings/workspaceSettings.tsx:195
-#: src/components/note/noteList/index.tsx:77
+#: src/pages/workspace/project.tsx:148
+#~ msgid "Default"
+#~ msgstr "默认"
+
+#: src/pages/workspace/project.tsx:148
+msgid "Default Sort"
+msgstr "默认排序"
+
+#: src/components/comment/box/index.tsx:148
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
-#: src/components/comment/box/index.tsx:126
+#: src/components/note/noteList/index.tsx:77
+#: src/components/todo/task/index.tsx:378
+#: src/pages/settings/workspaceSettings.tsx:195
 msgid "Delete"
 msgstr "删除"
 
@@ -464,25 +490,37 @@ msgstr "删除笔记"
 msgid "Delete note failed: {0}"
 msgstr "删除笔记失败：{0}"
 
-#: src/pages/settings/workspaceSettings.tsx:63
 #: src/components/modal/note/deleteModal/index.tsx:17
+#: src/pages/settings/workspaceSettings.tsx:63
 msgid "Delete successfully"
 msgstr "删除成功"
+
+#: src/components/todo/main.tsx:84
+msgid "Delete task failed"
+msgstr "删除任务失败"
 
 #: src/components/note/main/index.tsx:184
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "删除此项目是永久性操作，无法撤消。请谨慎操作。"
 
-#: src/pages/settings/accountSettings.tsx:97
+#: src/pages/workspace/project.tsx:119
+msgid "Descending"
+msgstr "降序"
+
 #: src/components/table/device/index.tsx:60
+#: src/pages/settings/accountSettings.tsx:97
 msgid "Device"
 msgstr "设备"
+
+#: src/components/comment/main/index.tsx:119
+msgid "Disliked the comment"
+msgstr "点踩评论"
 
 #: src/pages/settings/storageSettings.tsx:85
 msgid "Domain Url"
 msgstr "域Url"
 
-#: src/components/todo/column/index.tsx:332
+#: src/components/todo/column/index.tsx:359
 msgid "Don’t clear"
 msgstr "不要清空"
 
@@ -538,9 +576,9 @@ msgstr "事件未找到"
 msgid "Event start or end time is invalid"
 msgstr "事件的开始时间或结束时间无效"
 
+#: src/components/modal/event/add/index.tsx:90
 #: src/pages/workspace/tasks.tsx:69
 #: src/pages/workspace/tasks.tsx:73
-#: src/components/modal/event/add/index.tsx:90
 msgid "Event Title"
 msgstr "事件标题"
 
@@ -548,13 +586,13 @@ msgstr "事件标题"
 msgid "Event title is required"
 msgstr "事件标题为必填项"
 
-#: src/pages/workspace/tasks.tsx:138
 #: src/components/modal/event/add/index.tsx:143
+#: src/pages/workspace/tasks.tsx:138
 msgid "Every Weekday"
 msgstr "每个工作日"
 
-#: src/pages/workspace/tasks.tsx:135
 #: src/components/modal/event/add/index.tsx:140
+#: src/pages/workspace/tasks.tsx:135
 msgid "Everyday"
 msgstr "每天"
 
@@ -591,12 +629,17 @@ msgid "Failed to load chat history"
 msgstr "加载聊天记录失败"
 
 #. placeholder {0}: res.message
-#: src/components/comment/main/index.tsx:76
+#: src/components/comment/main/index.tsx:121
+msgid "Failed to react to comment: {0}"
+msgstr "评论交互失败: {0}"
+
+#. placeholder {0}: res.message
+#: src/components/comment/main/index.tsx:79
 msgid "Failed to submit comment: {0}"
 msgstr "提交评论失败：{0}"
 
 #. placeholder {0}: res.message
-#: src/components/comment/main/index.tsx:103
+#: src/components/comment/main/index.tsx:106
 msgid "Failed to update comment: {0}"
 msgstr "更新评论失败: {0}"
 
@@ -641,7 +684,7 @@ msgstr "转到选择其他工作区"
 msgid "Go to Workspace"
 msgstr "转至工作空间"
 
-#: src/components/comment/main/index.tsx:198
+#: src/components/comment/main/index.tsx:216
 msgid "Has attachments"
 msgstr "含附件"
 
@@ -673,7 +716,7 @@ msgstr "历史"
 msgid "History Chats"
 msgstr "历史聊天"
 
-#: src/components/todo/column/index.tsx:342
+#: src/components/todo/column/index.tsx:369
 msgid "I'm sure"
 msgstr "我确定"
 
@@ -733,7 +776,11 @@ msgstr "语言"
 msgid "Last Active"
 msgstr "最后活跃时间"
 
-#: src/components/comment/main/index.tsx:257
+#: src/components/comment/main/index.tsx:119
+msgid "Liked the comment"
+msgstr "点赞评论"
+
+#: src/components/comment/main/index.tsx:275
 msgid "Load more on scroll"
 msgstr "下拉加载更多"
 
@@ -741,7 +788,7 @@ msgstr "下拉加载更多"
 msgid "Loading members..."
 msgstr "正在加载成员数据..."
 
-#: src/components/comment/main/index.tsx:255
+#: src/components/comment/main/index.tsx:273
 msgid "Loading more comments..."
 msgstr "正在加载更多评论..."
 
@@ -749,7 +796,7 @@ msgstr "正在加载更多评论..."
 msgid "Loading notes..."
 msgstr "正在加载笔记..."
 
-#: src/pages/workspace/project.tsx:189
+#: src/pages/workspace/project.tsx:365
 msgid "Loading project..."
 msgstr "正在加载项目数据..."
 
@@ -765,8 +812,8 @@ msgstr "局部存储路径"
 msgid "Locaton"
 msgstr "定位"
 
-#: src/components/menu/sidebar.tsx:92
 #: src/components/avatarMenu/index.tsx:61
+#: src/components/menu/sidebar.tsx:92
 msgid "Log out"
 msgstr "退出登录"
 
@@ -799,11 +846,11 @@ msgstr "成员"
 msgid "members"
 msgstr "成员"
 
-#: src/components/comment/content/index.tsx:351
+#: src/components/comment/content/index.tsx:362
 msgid "Members"
 msgstr "成员列表"
 
-#: src/components/comment/main/index.tsx:191
+#: src/components/comment/main/index.tsx:209
 msgid "Mention me"
 msgstr "提到我"
 
@@ -820,8 +867,9 @@ msgid "Move note failed"
 msgstr "移动笔记失败"
 
 #: src/components/note/categoryItem/index.tsx:63
+#: src/components/todo/task/index.tsx:373
 msgid "Move to"
-msgstr "搬到"
+msgstr "移动至"
 
 #: src/components/modal/note/selectCategory/index.tsx:67
 msgid "Move to Category"
@@ -855,13 +903,13 @@ msgstr "新文件夹"
 msgid "New Password"
 msgstr "新密码"
 
-#: src/components/todo/task/index.tsx:271
+#: src/components/todo/task/index.tsx:266
 msgid "New Project"
 msgstr "新建项目"
 
-#: src/components/todo/taskDetails/index.tsx:228
-#: src/components/todo/task/index.tsx:319
-#: src/components/todo/task/index.tsx:406
+#: src/components/todo/task/index.tsx:324
+#: src/components/todo/task/index.tsx:452
+#: src/components/todo/taskDetails/index.tsx:218
 msgid "New Task"
 msgstr "新建任务"
 
@@ -881,12 +929,12 @@ msgstr "下一条笔记"
 msgid "No Category"
 msgstr "无类别"
 
-#: src/components/comment/main/index.tsx:28
+#: src/components/comment/main/index.tsx:29
 msgid "No comments yet"
 msgstr "暂无评论"
 
-#: src/components/todo/taskDetails/index.tsx:306
-#: src/components/todo/taskDetails/index.tsx:410
+#: src/components/todo/taskDetails/index.tsx:299
+#: src/components/todo/taskDetails/index.tsx:406
 msgid "No Deadline"
 msgstr "无截止日期"
 
@@ -894,7 +942,7 @@ msgstr "无截止日期"
 msgid "No expiration"
 msgstr "没有到期"
 
-#: src/components/comment/main/index.tsx:258
+#: src/components/comment/main/index.tsx:276
 msgid "No more comments"
 msgstr "没有更多评论"
 
@@ -902,13 +950,13 @@ msgstr "没有更多评论"
 msgid "No more templates to load."
 msgstr "已全部加载完模板"
 
-#: src/components/todo/taskDetails/index.tsx:248
-#: src/components/todo/taskDetails/index.tsx:352
+#: src/components/todo/taskDetails/index.tsx:238
+#: src/components/todo/taskDetails/index.tsx:345
 msgid "No Priority"
 msgstr "无优先级"
 
-#: src/pages/workspace/tasks.tsx:132
 #: src/components/modal/event/add/index.tsx:137
+#: src/pages/workspace/tasks.tsx:132
 msgid "No Repeat"
 msgstr "不重复"
 
@@ -919,6 +967,14 @@ msgstr "无标题事件"
 #: src/components/menu/sidebar.tsx:72
 msgid "No Workspace"
 msgstr "无工作区"
+
+#: src/pages/workspace/project.tsx:145
+msgid "none"
+msgstr "无"
+
+#: src/pages/workspace/project.tsx:419
+msgid "None"
+msgstr "无"
 
 #: src/components/note/main/index.tsx:152
 msgid "Note ID"
@@ -990,13 +1046,13 @@ msgstr "密码"
 msgid "Passwords do not match"
 msgstr "密码不匹配"
 
-#: src/pages/workspace/tasks.tsx:144
 #: src/components/modal/event/add/index.tsx:149
+#: src/pages/workspace/tasks.tsx:144
 msgid "Per 2 Weeks"
 msgstr "每两周"
 
-#: src/pages/workspace/tasks.tsx:141
 #: src/components/modal/event/add/index.tsx:146
+#: src/pages/workspace/tasks.tsx:141
 msgid "Per Week"
 msgstr "每周"
 
@@ -1008,6 +1064,10 @@ msgstr "许可"
 #: src/components/dropdown/note/index.tsx:142
 msgid "Permission Setting"
 msgstr "权限设置"
+
+#: src/pages/workspace/project.tsx:394
+msgid "Personalization"
+msgstr "个性化"
 
 #: src/components/form/register/form.tsx:69
 msgid "Please check your email."
@@ -1037,7 +1097,7 @@ msgstr "请选择类别"
 msgid "Please select a file to upload."
 msgstr "请选择要上传的文件"
 
-#: src/components/comment/input/index.tsx:45
+#: src/components/comment/input/index.tsx:46
 msgid "Please wait for attachments to finish uploading."
 msgstr "附件正在上传，请稍候"
 
@@ -1045,8 +1105,9 @@ msgstr "附件正在上传，请稍候"
 msgid "Previous Note"
 msgstr "上一条笔记"
 
-#: src/components/todo/taskDetails/index.tsx:238
-#: src/components/todo/taskDetails/index.tsx:342
+#: src/components/todo/taskDetails/index.tsx:228
+#: src/components/todo/taskDetails/index.tsx:335
+#: src/pages/workspace/project.tsx:150
 msgid "Priority"
 msgstr "优先级"
 
@@ -1055,8 +1116,12 @@ msgid "Private"
 msgstr "私有"
 
 #: src/pages/workspace/project.tsx:212
-msgid "Progress"
-msgstr "进度"
+#~ msgid "Progress"
+#~ msgstr "进度"
+
+#: src/pages/workspace/project.tsx:434
+msgid "Project Icon"
+msgstr "项目图标"
 
 #: src/components/note/main/index.tsx:197
 msgid "Public"
@@ -1115,7 +1180,7 @@ msgstr "注册成功，请检查您的电子邮件"
 msgid "Remember me"
 msgstr "记得我"
 
-#: src/components/todo/taskDetails/index.tsx:195
+#: src/components/todo/taskDetails/index.tsx:187
 msgid "Remove"
 msgstr "移除"
 
@@ -1123,16 +1188,16 @@ msgstr "移除"
 msgid "Remove from Favorites"
 msgstr "从收藏夹中删除"
 
-#: src/components/todo/column/index.tsx:292
+#: src/components/todo/column/index.tsx:319
 msgid "Rename"
 msgstr "重命名"
 
 #: src/components/todo/column/index.tsx:195
 #~ msgid "Rename Column"
-#~ msgstr ""
+#~ msgstr "重命名列"
 
-#: src/pages/settings/storageSettings.tsx:104
 #: src/components/modal/user/modifyPassword/index.tsx:59
+#: src/pages/settings/storageSettings.tsx:104
 msgid "Save"
 msgstr "保存"
 
@@ -1154,12 +1219,16 @@ msgstr "搜索"
 msgid "Search Category"
 msgstr "搜索类别"
 
+#: src/components/project/list/index.tsx:55
+msgid "Search project..."
+msgstr "搜索项目中..."
+
 #: src/pages/settings/storageSettings.tsx:79
 msgid "Secret Key"
 msgstr "密钥"
 
-#: src/components/modal/note/selectCategory/index.tsx:114
 #: src/components/list/workspaceEntry/list.tsx:34
+#: src/components/modal/note/selectCategory/index.tsx:114
 msgid "Select"
 msgstr "选择"
 
@@ -1180,7 +1249,7 @@ msgstr "选择类别"
 msgid "Select note status"
 msgstr "选择笔记状态"
 
-#: src/components/todo/task/index.tsx:297
+#: src/components/todo/task/index.tsx:292
 msgid "Select Priority"
 msgstr "选择优先级"
 
@@ -1217,8 +1286,8 @@ msgstr "设置当前便笺的状态。当设置为私有时，其他人将看不
 #~ msgid "Settings"
 #~ msgstr "设置"
 
-#: src/components/note/noteList/index.tsx:63
 #: src/components/note/main/index.tsx:142
+#: src/components/note/noteList/index.tsx:63
 msgid "Share"
 msgstr "分享"
 
@@ -1238,18 +1307,22 @@ msgstr "登录"
 msgid "Sign Up"
 msgstr "登录"
 
+#: src/pages/workspace/project.tsx:100
+msgid "Sort by"
+msgstr "排序"
+
 #: src/components/aiChat/index.tsx:87
 msgid "Source"
 msgstr "来源"
 
-#: src/components/comment/main/index.tsx:29
+#: src/components/comment/main/index.tsx:30
 msgid "Start a conversation below"
 msgstr "在下方开始对话"
 
-#: src/pages/settings/workspaceSettings.tsx:139
-#: src/components/todo/taskDetails/index.tsx:271
-#: src/components/todo/taskDetails/index.tsx:375
 #: src/components/dropdown/note/index.tsx:194
+#: src/components/todo/taskDetails/index.tsx:261
+#: src/components/todo/taskDetails/index.tsx:368
+#: src/pages/settings/workspaceSettings.tsx:139
 msgid "Status"
 msgstr "状态"
 
@@ -1305,7 +1378,7 @@ msgstr "工作区名称包含非法字符"
 msgid "This invitation link does not exist."
 msgstr "此邀请链接不存在。"
 
-#: src/components/todo/column/index.tsx:326
+#: src/components/todo/column/index.tsx:353
 msgid "This is a very dangerous action. Once confirmed, the data cannot be recovered."
 msgstr "这是一个非常危险的操作，确认删除后数据将无法恢复"
 
@@ -1321,6 +1394,10 @@ msgstr "标题"
 #: src/components/step/workspace/main.tsx:113
 msgid "To ensure compatibility, please avoid special characters in the name."
 msgstr "为确保兼容性，请避免在名称中使用特殊字符。"
+
+#: src/pages/workspace/project.tsx:370
+msgid "Typing for search..."
+msgstr "输入以搜索…"
 
 #: src/components/table/device/index.tsx:49
 msgid "Unknow"
@@ -1338,8 +1415,8 @@ msgstr "未命名会话"
 msgid "Update avatar successfully"
 msgstr "更新头像成功"
 
-#: src/pages/workspace/tasks.tsx:212
 #: src/components/fullCalendar/index.tsx:157
+#: src/pages/workspace/tasks.tsx:212
 msgid "Update event failed"
 msgstr "更新事件失败"
 
@@ -1347,14 +1424,14 @@ msgstr "更新事件失败"
 msgid "Update nickname successfully"
 msgstr "昵称更新成功"
 
-#: src/components/modal/user/modifyPassword/index.tsx:18
 #: src/components/modal/user/changeEmail/index.tsx:14
+#: src/components/modal/user/modifyPassword/index.tsx:18
 msgid "Update password successfully"
 msgstr "更新密码成功"
 
-#: src/pages/settings/storageSettings.tsx:55
 #: src/components/note/main/index.tsx:73
 #: src/components/note/main/index.tsx:110
+#: src/pages/settings/storageSettings.tsx:55
 msgid "Update successfully"
 msgstr "更新成功"
 
@@ -1362,13 +1439,14 @@ msgstr "更新成功"
 msgid "Updated At"
 msgstr "更新于"
 
+#: src/components/comment/main/index.tsx:198
 #: src/pages/workspace/favorites.tsx:263
-#: src/components/comment/main/index.tsx:180
+#: src/pages/workspace/project.tsx:149
 msgid "Updated Time"
 msgstr "更新时间"
 
-#: src/pages/settings/accountSettings.tsx:77
 #: src/components/note/main/index.tsx:165
+#: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"
 msgstr "上传"
 
@@ -1380,11 +1458,11 @@ msgstr "上传头像"
 msgid "Upload avatar failed"
 msgstr "上传头像失败"
 
-#: src/components/todo/taskDetails/index.tsx:128
+#: src/components/todo/main.tsx:72
 msgid "Upload failed"
 msgstr "上传失败"
 
-#: src/components/comment/box/index.tsx:123
+#: src/components/comment/box/index.tsx:145
 msgid "Upload File"
 msgstr "上传文件"
 
@@ -1412,7 +1490,7 @@ msgstr "工作区名称"
 msgid "Workspace: "
 msgstr "工作区："
 
-#: src/components/todo/taskDetails/index.tsx:445
+#: src/components/todo/taskDetails/index.tsx:441
 msgid "Write something about the task"
 msgstr "写点和任务相关的东西吧"
 

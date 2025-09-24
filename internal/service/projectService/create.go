@@ -170,7 +170,7 @@ func CreateTaskComment(ctx context.Context, params *dto.CreateToDoTaskCommentDTO
 		}
 
 		// 处理所有用户查询
-		workspaceMembers, err := repository.GetWorkspaceMemberByIDs(memtionUserIDs)
+		workspaceMembers, err := repository.GetWorkspaceMemberByIDs(database.DB, memtionUserIDs)
 		if err != nil {
 			responseCode = database.IsError(err)
 			return err

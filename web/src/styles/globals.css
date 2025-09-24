@@ -159,3 +159,9 @@
    aspect-ratio: 1 / 1;
    height: auto !important;
  }
+
+ em-emoji-picker {
+   border-bottom-right-radius: 0px;
+   border-bottom-left-radius: 0px;
+   box-shadow: none;
+ }

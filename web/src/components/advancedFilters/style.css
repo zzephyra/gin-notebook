@@ -1,0 +1,71 @@
+.ruleGroup {
+    background-color: inherit;
+    border: none;
+
+    /* input {
+        background-color: inherit;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 4px 8px;
+        color: #333;
+
+        &:hover {
+            background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1));
+        }
+    }
+
+    button {
+        background-color: white;
+        border: none;
+        border-radius: 0.375rem;
+        padding: 4px 8px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1));
+        }
+    }
+
+
+
+    select {
+        background-color: inherit;
+        border: 1px solid #ccc;
+        border-radius: 0.375rem;
+        padding: 4px 8px;
+        color: #333;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1));
+        }
+    } */
+}
+
+/* 让整个分组横向排列（可按需改 wrap/nowrap） */
+.rqb-row-group .ruleGroup-body {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    /* 或者 nowrap */
+}
+
+/* 默认 .rule 是 100% 宽，这里改成“仅包裹内容” */
+.rqb-row-group .ruleGroup-body>.rule,
+.rqb-row-rule {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: auto !important;
+    flex: 0 0 auto !important;
+    margin: 0;
+    /* 去掉默认上下 margin */
+}
+
+/* 与/或 选择器保持同一行 */
+.rqb-row-group .ruleGroup-body>.rqb-inline-combinator {
+    display: inline-flex;
+    width: auto !important;
+    flex: 0 0 auto !important;
+}

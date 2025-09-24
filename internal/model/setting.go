@@ -20,3 +20,12 @@ type UserSetting struct {
 	OwnerID  int64   `json:"owner_id" gorm:"not null;index:idx_owner_id"`
 	Language *string `json:"language" gorm:"not null;default:'zh-cn';index:idx_language"`
 }
+
+type ProjectSetting struct {
+	BaseModel
+	ProjectID      int64  `json:"project_id" gorm:"not null;index:idx_project_id"`
+	CardPreview    string `json:"card_preview"  gorm:"not null;default:none"`   // null, cover
+	IsPublic       bool   `json:"is_public" gorm:"not null;default:true"`       // 是否公开，所有成员可见
+	IsArchived     bool   `json:"is_archived" gorm:"not null;default:false"`    // 是否归档，归档后不可操作
+	EnableComments bool   `json:"enable_comments" gorm:"not null;default:true"` // 是否启用评论
+}

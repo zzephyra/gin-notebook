@@ -60,7 +60,7 @@ func CreateWorkspace(workspace *dto.WorkspaceValidation) (responseCode int, data
 		noteCategory := &model.NoteCategory{
 			WorkspaceID:  workspaceModel.ID,
 			CategoryName: "default",
-			OwnerID:      workspace.Owner,
+			OwnerID:      workspaceMember.ID,
 		}
 
 		_, err = repository.CreateNoteCategory(noteCategory)
@@ -73,7 +73,7 @@ func CreateWorkspace(workspace *dto.WorkspaceValidation) (responseCode int, data
 		project := &model.Project{
 			Name:        "Default Project",
 			WorkspaceID: workspaceModel.ID,
-			OwnerID:     workspace.Owner,
+			OwnerID:     workspaceMember.ID,
 		}
 		err = repository.CreateModel(tx, project)
 		if err != nil {

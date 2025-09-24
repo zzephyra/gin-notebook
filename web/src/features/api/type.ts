@@ -144,3 +144,17 @@ export interface TaskActivityOptions {
     Start: string; // 开始时间，ISO 8601 格式
     End: string;   // 结束时间，ISO 8601 格式
 }
+
+export interface ProjectSettingsPayload {
+    card_preview?: "none" | "cover";
+    is_public?: boolean;
+    is_archived?: boolean;
+    enable_comments?: boolean;
+}
+
+export interface ProjectPayload {
+    name?: string;
+    description?: string;
+    status?: string; // active, archived
+    icon?: string | null;
+}

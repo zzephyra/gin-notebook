@@ -61,6 +61,23 @@ type ListProjectsDTO struct {
 	UserID      int64 `validate:"required,gt=0"` // 用户ID
 }
 
+type ProjectDTO struct {
+	ID               int64   `json:"id,string"`
+	Icon             *string `json:"icon"`
+	Name             string  `json:"name"`
+	Description      string  `json:"description"`
+	OwnerID          int64   `json:"owner_id,string"`
+	WorkspaceID      int64   `json:"workspace_id,string"`
+	Status           string  `json:"status"` // active, archived, completed
+	CardPreview      *string `json:"card_preview"`
+	IsPublic         bool    `json:"is_public"`
+	IsArchived       bool    `json:"is_archived"`
+	EnableComments   bool    `json:"enable_comments"`
+	CreatedAt        string  `json:"created_at"`
+	UpdatedAt        string  `json:"updated_at"`
+	SettingUpdatedAt string  `json:"setting_updated_at"`
+}
+
 type GetProjectDTO struct {
 	ProjectID   int64 `validate:"required,gt=0"`                            // 项目ID
 	WorkspaceID int64 `form:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
@@ -147,4 +164,44 @@ type DeleteProjectTaskDTO struct {
 	MemberID    int64 `validate:"required,gt=0"`                            // 用户ID
 	TaskID      int64 `validate:"required,gt=0"`                            // 任务ID
 	WorkspaceID int64 `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
+}
+
+type ProjectSettingEditableDTO struct {
+	CardPreview    *string `json:"card_preview" validate:"omitempty,oneof=none cover"` // 卡片预览方式
+	IsPublic       *bool   `json:"is_public" validate:"omitempty"`                     // 是否公开
+	IsArchived     *bool   `json:"is_archived" validate:"omitempty"`                   // 是否归档
+	EnableComments *bool   `json:"enable_comments" validate:"omitempty"`               // 是否启用评论
+}
+
+type UpdateProjectSettingDTO struct {
+	MemberID    int64                     `validate:"required,gt=0"`                            // 用户ID
+	WorkspaceID int64                     `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
+	ProjectID   int64                     `validate:"required,gt=0"`                            // 项目ID
+	Payload     ProjectSettingEditableDTO `json:"payload" validate:"required"`
+	UpdatedAt   time.Time                 `json:"updated_at" validate:"required"` // 用于乐观锁
+}
+
+type ProjectEditableDTO struct {
+	Icon        *string `json:"icon" validate:"omitempty"`                                   // 项目图标
+	Name        *string `json:"name" validate:"omitempty,min=1,max=100"`                     // 项目名称
+	Description *string `json:"description" validate:"omitempty,max=2000"`                   // 项目描述
+	Status      *string `json:"status" validate:"omitempty,oneof=active archived completed"` // active, archived, completed
+}
+
+type UpdateProjectDTO struct {
+	MemberID    int64              `validate:"required,gt=0"`                            // 用户ID
+	WorkspaceID int64              `json:"workspace_id,string" validate:"required,gt=0"` // 工作空间ID
+	ProjectID   int64              `validate:"required,gt=0"`                            // 项目ID
+	Payload     ProjectEditableDTO `json:"payload" validate:"required"`
+	UpdatedAt   time.Time          `json:"updated_at" validate:"required"` // 用于乐观锁
+}
+
+type GetProjectBoardDTO struct {
+	MemberID    int64  `validate:"required,gt=0"`                                             // 用户ID
+	WorkspaceID int64  `form:"workspace_id,string" validate:"required,gt=0"`                  // 工作空间ID
+	ProjectID   int64  `form:"project_id,string" validate:"required,gt=0"`                    // 项目ID
+	Limit       int    `form:"limit" validate:"omitempty,min=10,max=50"`                      // 每页数量
+	OrderBy     string `form:"order_by" validate:"omitempty,oneof=order updated_at priority"` // 排序字段
+	Asc         bool   `form:"asc" validate:"omitempty"`                                      // 是否升序
+	ColumnID    *int64 `form:"column_id,string" validate:"omitempty,gt=0"`                    // 列ID, 可选, 若提供则只获取该列下的任务
 }
