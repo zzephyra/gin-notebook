@@ -256,7 +256,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
 
     return (
         <>
-            <div ref={outerRef} className="group h-full">
+            <div ref={outerRef} className="group h-full flex flex-col  overflow-y-auto relative shrink-0">
                 {/* 头部 */}
                 <div ref={headerRef} className="sticky rounded-b-none py-[15px] px-[20px] z-[25] min-w-[280px] top-0 items-center">
                     <div className="flex items-center justify-between">
@@ -385,7 +385,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
 
                 {/* 列体（列表区域是唯一 drop target） */}
                 <div
-                    className={`${ToDoColumnClasses[column.process_id]} w-full z-[-3] rounded-b-lg pb-[15px]  min-w-[280px] gap-2 flex flex-col`}
+                    className={`${ToDoColumnClasses[column.process_id]} w-full rounded-b-lg pb-[15px]  min-w-[280px] gap-2 flex flex-col`}
                 >
                     <div ref={innerRef} className="flex flex-col relative gap-2 w-full">
                         {childrenWithIndicator}

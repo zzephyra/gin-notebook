@@ -101,7 +101,7 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
 
     return (
         <>
-            <div className="grid grid-cols-3 gap-4 overflow-y-auto w-full flex-1 px-2 pb-2 mt-2">
+            <div className="flex gap-4 overflow-y-auto w-full flex-1 px-2 pb-2 mt-2">
                 {
                     props.columns.map((column) => (
                         <div key={column.id} className="h-full">
