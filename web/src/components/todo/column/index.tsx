@@ -303,7 +303,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
         <>
             <div ref={outerRef} className="group h-full flex flex-col  overflow-y-auto relative shrink-0">
                 {/* 头部 */}
-                <div ref={headerRef} className="sticky rounded-b-none py-[15px] px-[20px] z-[25] min-w-[280px] top-0 items-center">
+                <div ref={headerRef} className="sticky rounded-b-none py-[15px] px-[20px] z-[50] min-w-[280px] top-0 items-center">
 
                     <div className="flex items-center justify-between">
                         <Tag type="ghost" shape="circle" className="z-[130] cursor-pointer text-base font-semibold">

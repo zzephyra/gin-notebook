@@ -286,7 +286,7 @@ function ProjectPage() {
         <>
             <TodoContext.Provider value={todoInterface}>
                 <div className="flex-1 min-w-0 flex flex-col relative">
-                    <div className="flex z-[2000] items-center h-[40px] px-2 py-1 justify-between ">
+                    <div className="flex z-[50] items-center h-[40px] px-2 py-1 justify-between ">
                         {/* 头部 */}
                         <div className="flex gap-2.5 items-center">
                             {!isDesktop && (

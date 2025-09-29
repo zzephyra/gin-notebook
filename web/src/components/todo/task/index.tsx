@@ -342,7 +342,7 @@ function Task({ task, column, onClick, onUpload, onDelete, onUpdate, classNames 
                                     </div>
 
                                 </div>
-                                <div className="opacity-0 group-hover/card:opacity-100 absolute top-1 right-1 z-[100]">
+                                <div className="opacity-0 group-hover/card:opacity-100 absolute top-1 right-1 z-[20]">
                                     <ButtonGroup variant="light" className="shadow-xs bg-white rounded-md">
                                         <Button className="h-[24px] text-gray-400 w-[26px] min-w-0" radius="sm" isIconOnly>
                                             <PencilSquareIcon className="w-4 h-4" />
