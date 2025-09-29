@@ -28,6 +28,12 @@ export type TodoTask = {
     updated_at?: string;
     isDraft?: boolean; // 是否为草稿（刚创建，尚未保存到服务端）
     cover?: string | null;
+    cursor?: {
+        f1: string;
+        fid: string;
+        b1: string;
+        bid: string;
+    }
     [key: string]: any;
 }
 
@@ -90,6 +96,7 @@ export type ToDoColumn = {
     process_id: number;
     summary: Record<Priority, number>;
     tasks: TodoTask[];
+    has_next?: boolean;
     [key: string]: any;
 
 };

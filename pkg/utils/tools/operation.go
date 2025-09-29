@@ -67,6 +67,30 @@ func ToInt64(x any) (int64, bool) {
 	}
 }
 
+func ToString(x any) (string, bool) {
+	switch v := x.(type) {
+	case string:
+		return v, true
+	case *string:
+		if v != nil {
+			return *v, true
+		}
+		return "", false
+	case json.Number:
+		return v.String(), true
+	case int, int8, int16, int32, int64:
+		return strconv.FormatInt(reflect.ValueOf(v).Int(), 10), true
+	case uint, uint8, uint16, uint32, uint64:
+		return strconv.FormatUint(reflect.ValueOf(v).Uint(), 10), true
+	default:
+		rv := reflect.ValueOf(x)
+		if rv.Kind() == reflect.Ptr && !rv.IsNil() {
+			return ToString(rv.Elem().Interface())
+		}
+		return "", false
+	}
+}
+
 func GetValueFromParams(params gin.Params, key string, format string) (any, bool) {
 	value, err := params.Get(key)
 	if !err {

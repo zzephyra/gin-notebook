@@ -58,7 +58,7 @@ type PreviewState =
     | { type: "idle" }
     | { type: "preview"; container: HTMLElement; rect: DOMRect };
 
-function Task({ task, column, onClick, onUpload, onDelete }: { task: TodoTask; column: ToDoColumn, onClick?: (task: TodoTask, column: ToDoColumn) => void, onUpload?: (taskID: string, file: File) => void, onDelete?: (taskID: string, columnID: string) => void }) {
+function Task({ task, column, onClick, onUpload, onDelete, onUpdate, classNames }: { classNames?: { wrapper: string }, task: TodoTask; column: ToDoColumn, onClick?: (task: TodoTask, column: ToDoColumn) => void, onUpdate?: (taskID: string, payload: TaksPayload) => void, onUpload?: (taskID: string, file: File) => void, onDelete?: (taskID: string, columnID: string) => void }) {
     // wrapper 作为 drop target 容器
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const coverRef = useRef<HTMLInputElement>(null);
@@ -71,7 +71,7 @@ function Task({ task, column, onClick, onUpload, onDelete }: { task: TodoTask; c
     const [searchParams, setSearchParams] = useState({ limit: 10, keywords: "" });
     const { data: members, isFetching } = useWorkspaceMembers(params.id || "", searchParams);
 
-    const { submitTask, updateTask, onlineMap, columns, currentProject } = useTodo();
+    const { submitTask, updateTask, onlineMap, columns, currentProject, clearDraft } = useTodo();
     // 被拖拽的实际元素（必须是 draggable 绑定的盒子）
     const taskRootRef = useRef<HTMLDivElement | null>(null);
     const assigneeRef = useRef<HTMLDivElement | null>(null);
@@ -100,7 +100,8 @@ function Task({ task, column, onClick, onUpload, onDelete }: { task: TodoTask; c
                 )
             ) {
                 const addAssignees = Array.from(selectedRef.current);
-                submitTask(task.id, { assignee_actions: { action_add: addAssignees } } as any);
+                submitTask(task, column.id, { assignee_actions: { action_add: addAssignees } } as any);
+                clearDraft();
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -193,14 +194,13 @@ function Task({ task, column, onClick, onUpload, onDelete }: { task: TodoTask; c
     }, 500);
 
     const handleUpdateTask = (payload: TaksPayload) => {
-        updateTask(task.id, payload);
+        onUpdate?.(task.id, payload)
     };
 
     const handlerMoveTo = (columnId: string) => {
         var destination = columns.find(c => c.id === columnId);
         if (!destination || destination.id === column.id) return;
         updateTask(task.id, { column_id: destination.id, before_id: destination.tasks[0].id } as any, { insertIndex: 0 });
-
     }
 
     const handleSelectAssignee = (keys: any) => {
@@ -250,7 +250,7 @@ function Task({ task, column, onClick, onUpload, onDelete }: { task: TodoTask; c
             <div
                 ref={wrapperRef}
                 data-task-id={task.id}
-                className={`relative w-full px-[20px]  ${draggingClass} `}
+                className={`relative w-full ${classNames?.wrapper} ${draggingClass} `}
                 onClick={handleClick}
             >
                 {/* inner：真正的 draggable 元素 */}

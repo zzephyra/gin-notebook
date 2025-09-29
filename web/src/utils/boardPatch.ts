@@ -2,8 +2,11 @@
 import { ToDoColumn, ProjectBoard, TodoTask } from '@/components/todo/type';
 
 export function addTaskToColumnEnd(board: ProjectBoard, columnId: string, task: TodoTask): ProjectBoard {
-    console.log('addTaskToColumnEnd', { board, columnId, task });
     return board.map((col: ToDoColumn) => col.id === columnId ? { ...col, tasks: [...col.tasks, task] } : col);
+}
+
+export function addTaskToColumnStart(board: ProjectBoard, columnId: string, task: TodoTask): ProjectBoard {
+    return board.map((col: ToDoColumn) => col.id === columnId ? { ...col, tasks: [task, ...col.tasks] } : col);
 }
 
 export function replaceTaskById(

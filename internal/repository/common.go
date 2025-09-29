@@ -110,3 +110,17 @@ func DecodeCursorTok(s string) (*CursorTok, error) {
 	err = json.Unmarshal(b, &t)
 	return &t, err
 }
+
+func intsToCSV(a []int64) string {
+	if len(a) == 0 {
+		return "NULL"
+	}
+	sb := strings.Builder{}
+	for i, v := range a {
+		if i > 0 {
+			sb.WriteByte(',')
+		}
+		sb.WriteString(fmt.Sprintf("%d", v))
+	}
+	return sb.String()
+}

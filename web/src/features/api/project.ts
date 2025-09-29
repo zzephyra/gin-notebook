@@ -34,7 +34,6 @@ export async function getProjectBoardRequest(projectID: string, workspaceID: str
         }
     }
 
-    console.log("getProjectBoardRequest params:", params);
     try {
         let res = await axiosClient.get(projectsApi + `/${projectID}/board`, { params: { workspace_id: workspaceID, ...params } })
         return res.data;

@@ -2,7 +2,6 @@ package projectService
 
 import (
 	"context"
-	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
@@ -11,6 +10,15 @@ import (
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/tools"
 	"strconv"
+)
+
+var (
+	PriorityMap = map[uint8]string{
+		0: "",
+		1: "low",
+		2: "medium",
+		3: "high",
+	}
 )
 
 func GetProject(params *dto.GetProjectDTO) (responseCode int, data map[string]interface{}) {
@@ -64,7 +72,7 @@ func GetProject(params *dto.GetProjectDTO) (responseCode int, data map[string]in
 }
 
 func GetProjectBoard(ctx context.Context, params *dto.GetProjectBoardDTO) (responseCode int, data map[string]interface{}) {
-	columns, err := repository.GetProjectColumnsByProjectID(database.DB, params.ProjectID)
+	columns, err := repository.GetProjectColumnsByProjectID(database.DB, params.ProjectID, params.ColumnIDs)
 
 	if err != nil {
 		responseCode = database.IsError(err)
@@ -86,17 +94,33 @@ func GetProjectBoard(ctx context.Context, params *dto.GetProjectBoardDTO) (respo
 		orderByFieldName = "order_index"
 	}
 
-	bounds, err := repository.GetColumnsBounded(database.DB, columnsIDs, orderByFieldName, params.Asc)
+	var bounds map[int64]repository.CursorTok
+	if params.BID != nil || params.B1 != nil {
+		bounds = make(map[int64]repository.CursorTok)
+		for _, columnID := range columnsIDs {
+			bounds[columnID] = repository.CursorTok{
+				BID: params.BID,
+				B1:  params.B1,
+			}
+		}
 
-	if err != nil {
-		logger.LogError(err, "获取看板列边界失败")
+	} else {
+		bounds, err = repository.GetColumnsBounded(database.DB, columnsIDs, orderByFieldName, !params.Asc)
+		if err != nil {
+			logger.LogError(err, "获取看板列边界失败")
+		}
 	}
 
-	for _, bound := range bounds {
-		fmt.Println("B1:", *bound.B1, "BID:", *bound.BID)
+	if params.ColumnIDs != nil && len(*params.ColumnIDs) > 0 && params.FID != nil && params.F1 != nil {
+		for i := range bounds {
+			bound := bounds[i]
+			bound.FID = params.FID
+			bound.F1 = params.F1
+			bounds[i] = bound
+		}
 	}
 
-	tasks, pageInfo, err := repository.GetTasksByColumnsBounded(database.DB, columnsIDs, params.Limit, bounds, !params.Asc, orderByFieldName)
+	tasks, pageInfo, err := repository.GetTasksByColumnsBounded(database.DB, columnsIDs, params.Limit, bounds, params.Asc, orderByFieldName)
 	if err != nil {
 		responseCode = database.IsError(err)
 		logger.LogError(err, "获取看板列边界任务失败")
@@ -128,6 +152,15 @@ func GetProjectBoard(ctx context.Context, params *dto.GetProjectBoardDTO) (respo
 			continue
 		}
 		parseTaks := tools.StructToUpdateMap(task.ToDoTask, nil, []string{"DeletedAt", "CreatedAt"})
+
+		// 更新边界
+		bound := bounds[task.ColumnID]
+		f1, _ := tools.ToString(parseTaks[orderByFieldName])
+		bound.F1 = &f1
+		bound.FID = &task.ID
+		bounds[task.ColumnID] = bound
+
+		parseTaks["priority"] = PriorityMap[task.Priority]
 		parseTaks["assignee"] = assigneesMap[task.ID] // 初始化分配人
 		(*column)["tasks"] = append((*column)["tasks"].([]map[string]interface{}), parseTaks)
 		(*column)["total"] = pageInfo[task.ColumnID].Total
@@ -140,8 +173,18 @@ func GetProjectBoard(ctx context.Context, params *dto.GetProjectBoardDTO) (respo
 
 	for _, columnID := range columnsIDs {
 		if column, ok := columnsMap[columnID]; ok {
+			if (*column)["has_next"] == nil {
+				(*column)["has_next"] = false
+			}
+
+			if (*column)["total"] == nil {
+				(*column)["total"] = 0
+			}
+			(*column)["cursor"] = bounds[columnID]
 			data["todo"] = append(data["todo"].([]map[string]interface{}), *column)
+
 		}
+
 	}
 
 	responseCode = message.SUCCESS

@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
-import { ToDoColumn, TodoTask } from "./type";
+import { TaksPayload, ToDoColumn, TodoTask } from "./type";
 import { SideSheet } from "@douyinfe/semi-ui";
 import { IconBackTop, IconClose, IconMaximize, IconMinimize } from "@douyinfe/semi-icons";
 import Column from "./column";
@@ -87,9 +87,12 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
         }
     }
 
+    const handleUpdateTask = (taskID: string, payload: Partial<TaksPayload>) => {
+        updateTask(taskID, payload);
+    }
+
     useEffect(() => {
         if (!openSideSheet && task) {
-
             if (task) {
                 blurTask && blurTask(task.id);
             }
@@ -107,7 +110,7 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
                         <div key={column.id} className="h-full">
                             <Column key={column.id} column={column}>
                                 {column.tasks.map((task) => (
-                                    <Task key={task.id} column={column} onClick={handleClick} onDelete={handleDeleteTask} task={task} onUpload={handleUploadCover} />
+                                    <Task onUpdate={handleUpdateTask} classNames={{ wrapper: "px-[20px]" }} key={task.id} column={column} onClick={handleClick} onDelete={handleDeleteTask} task={task} onUpload={handleUploadCover} />
                                 ))}
                             </Column>
                         </div>

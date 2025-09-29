@@ -33,14 +33,14 @@ func CreateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 	var latestError error
 	for attempt := 0; attempt < maxRetry; attempt++ {
 		err := database.DB.Transaction(func(tx *gorm.DB) error {
-			latestTask, err := repository.GetLastTask(tx, params.ColumnID, repository.WithLock())
-			var latestOrderIndex = algorithm.RankMin()
+			firstTask, err := repository.GetFirstTask(tx, params.ColumnID, repository.WithLock())
+			var firstOrderIndex = algorithm.RankMax()
 			if err == nil {
-				// 当列内存在任务时，优先最后任务的OrderIndex，否则默认最小值
-				latestOrderIndex = lexorank.BucketKey(latestTask.OrderIndex)
+				// 当列内存在任务时，优先获取第一个任务的OrderIndex，否则默认最大值
+				firstOrderIndex = lexorank.BucketKey(firstTask.OrderIndex)
 			}
 
-			task.OrderIndex = algorithm.RankBetweenBucket(latestOrderIndex, algorithm.RankMax()).String()
+			task.OrderIndex = algorithm.RankBetweenBucket(algorithm.RankMin(), firstOrderIndex).String()
 
 			if err := repository.CreateProjectTask(tx, &task); err != nil {
 				responseCode = database.IsError(err)
@@ -80,6 +80,7 @@ func CreateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 	if latestError == nil {
 		responseCode = message.SUCCESS
 		data = tools.StructToUpdateMap(&task, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
+		data["priority"] = PriorityMap[task.Priority]
 	}
 
 	isSuccess := latestError == nil

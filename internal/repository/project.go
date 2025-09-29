@@ -5,6 +5,7 @@ import (
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
+	"strconv"
 	"strings"
 	"time"
 
@@ -91,42 +92,98 @@ func GetProjectByID(db *gorm.DB, projectID, workspaceID int64) (*dto.ProjectDTO,
 	return &project, nil
 }
 
-func GetColumnsBounded(db *gorm.DB, columnID []int64, field string, asc bool) (map[int64]CursorTok, error) {
-	var bounds map[int64]CursorTok = make(map[int64]CursorTok)
-	var tasks []model.ToDoTask
-
+func GetColumnsBounded(db *gorm.DB, columnIDs []int64, field string, asc bool) (map[int64]CursorTok, error) {
+	bounds := make(map[int64]CursorTok)
+	if len(columnIDs) == 0 {
+		return bounds, nil
+	}
 	if field == "" {
 		field = "order_index"
 	}
-
-	orderBy := GetOrderIndexExpr(field, "t")
 
 	dir := "ASC"
 	if !asc {
 		dir = "DESC"
 	}
 
-	sql := db.Debug().Table("to_do_tasks AS t").
-		Select(fmt.Sprintf(`DISTINCT ON (t.column_id) t.column_id, *`)).
-		Where("t.column_id IN ? AND t.deleted_at IS NULL AND t."+field+" IS NOT NULL", columnID).
-		Order(fmt.Sprintf(`t.column_id, %s %s`, orderBy, dir)).
-		Scan(&tasks)
+	// 构造列内排序（含稳定回退：order_index(字节序) + id）
+	var innerOrderParts []string
+	switch field {
+	case "order_index":
+		oi := GetOrderIndexExpr("order_index", "t")
+		innerOrderParts = append(innerOrderParts, fmt.Sprintf("%s %s", oi, dir))
+	case "priority":
+		// priority 为整数语义；空值按 0
+		innerOrderParts = append(innerOrderParts, fmt.Sprintf("COALESCE(t.%s, 0) %s", field, dir))
+	default:
+		innerOrderParts = append(innerOrderParts, fmt.Sprintf("t.%s %s", field, dir))
+	}
+	// innerOrderParts = append(innerOrderParts, GetOrderIndexExpr("order_index", "t")+" "+dir)
+	innerOrderParts = append(innerOrderParts, "t.id"+" "+dir)
+	innerOrder := strings.Join(innerOrderParts, ", ")
 
-	if sql.Error != nil {
-		return nil, sql.Error
+	// VALUES ($1::bigint),($2::bigint),...  —— 显式 ::bigint，避免 bigint=text 错误
+	valuesPlaceholders := make([]string, 0, len(columnIDs))
+	args := make([]any, 0, len(columnIDs))
+	for i, id := range columnIDs {
+		valuesPlaceholders = append(valuesPlaceholders, fmt.Sprintf("($%d::bigint)", i+1))
+		args = append(args, id)
+	}
+	valuesSQL := strings.Join(valuesPlaceholders, ",")
+
+	// LATERAL：对每个 column_id 单独 ORDER BY … LIMIT 1，天然“一列一条”
+	q := fmt.Sprintf(`
+		WITH cols(column_id) AS (
+			VALUES %s
+		)
+		SELECT
+			h.id,
+			c.column_id,
+			h.order_index,
+			h.priority
+		FROM cols c
+		LEFT JOIN LATERAL (
+			SELECT t.id, t.order_index, t.priority
+			FROM to_do_tasks t
+			WHERE t.deleted_at IS NULL
+			  AND t.column_id = c.column_id
+			ORDER BY %s
+			LIMIT 1
+		) AS h ON TRUE
+	`, valuesSQL, innerOrder)
+
+	var rows []headRow
+	if err := db.Raw(q, args...).Scan(&rows).Error; err != nil {
+		return nil, err
 	}
 
-	for _, t := range tasks {
+	// 组装边界游标：B1 统一 string；priority 转字符串
+	for _, r := range rows {
+		// 该列没有任务：LEFT LATERAL 会返回 id=NULL；按需决定是否保留空游标
+		if r.ID == nil {
+			// 若希望空列也返回空游标，可启用：
+			// bounds[r.ColumnID] = CursorTok{B1: nil, BID: nil}
+			continue
+		}
+		id := *r.ID
 		switch field {
 		case "priority":
-			bounds[t.ColumnID] = CursorTok{
-				B1:  &t.Priority,
-				BID: &t.ID,
+			var s *string
+			if r.Priority != nil {
+				tmp := strconv.FormatUint(uint64(*r.Priority), 10)
+				s = &tmp
+			} else {
+				z := "0" // 与 COALESCE 语义一致
+				s = &z
 			}
+			bounds[r.ColumnID] = CursorTok{B1: s, BID: &id}
 		default:
-			bounds[t.ColumnID] = CursorTok{
-				B1:  &t.OrderIndex,
-				BID: &t.ID,
+			if r.OrderIndex == nil {
+				empty := ""
+				bounds[r.ColumnID] = CursorTok{B1: &empty, BID: &id}
+			} else {
+				oi := *r.OrderIndex
+				bounds[r.ColumnID] = CursorTok{B1: &oi, BID: &id}
 			}
 		}
 	}
@@ -141,6 +198,7 @@ const (
 	kindText     colKind = iota // 普通文本
 	kindLexoText                // order_index（LexoRank，按字节序）
 	kindTime                    // 时间（timestamp/datetime/date）
+	kindInt                     // 数值（int/bigint/float 等
 )
 
 // 允许排序的列（按你的表调整/扩充）
@@ -149,7 +207,7 @@ var allowedOrderCols = map[string]colKind{
 	"updated_at":  kindTime,
 	"created_at":  kindTime,
 	"deadline":    kindTime, // 若是 DATE 列也可用
-	"priority":    kindText,
+	"priority":    kindInt,
 	"status":      kindText,
 	"title":       kindText,
 	"id":          kindText, // 数值也可直接比较；仅用于兜底二级排序
@@ -161,7 +219,7 @@ func GetTasksByColumnsBounded(
 	limitPerCol int,
 	cursors map[int64]CursorTok, // {columnID: F1/FID/B1/BID}，值需与 orderBy 对应
 	asc bool,
-	orderBy string, // 新增：排序列名
+	orderBy string, // 排序列名
 ) ([]dto.ToDoTaskWithFlag, map[int64]ColPageInfo, error) {
 
 	if limitPerCol <= 0 {
@@ -171,7 +229,7 @@ func GetTasksByColumnsBounded(
 		return nil, map[int64]ColPageInfo{}, nil
 	}
 
-	// 1) 校验并识别排序列
+	// 1) 校验排序列
 	kind, ok := allowedOrderCols[orderBy]
 	if !ok {
 		return nil, nil, fmt.Errorf("invalid orderBy column: %s", orderBy)
@@ -182,9 +240,7 @@ func GetTasksByColumnsBounded(
 		dir = "DESC"
 	}
 
-	// 2) 根据数据库与列类型生成排序与比较表达式
-	//    colL: 左侧列表达式（可能带 COLLATE）
-	//    f1R/b1R: 右侧边界表达式（可能需要 CAST）
+	// 2) 生成排序 & 比较表达式
 	var orderExpr, colL, f1R, b1R string
 
 	switch {
@@ -198,10 +254,15 @@ func GetTasksByColumnsBounded(
 		case kindTime:
 			orderExpr = fmt.Sprintf(`t.%s`, orderBy)
 			colL = orderExpr
-			// 这里按 timestamptz 处理；若是 date 列，可改为 ::date
-			// PG 会做隐式转换，但显式 CAST 更稳
-			f1R = `CASE WHEN bound.f1 IS NULL THEN NULL ELSE bound.f1::timestamptz END`
-			b1R = `CASE WHEN bound.b1 IS NULL THEN NULL ELSE bound.b1::timestamptz END`
+			// 将游标文本转 timestamptz（若是 date 列可换 ::date）
+			f1R = `CASE WHEN bound.f1 IS NULL THEN NULL ELSE (bound.f1)::timestamptz END`
+			b1R = `CASE WHEN bound.b1 IS NULL THEN NULL ELSE (bound.b1)::timestamptz END`
+		case kindInt:
+			orderExpr = fmt.Sprintf(`t.%s`, orderBy)
+			colL = orderExpr
+			// 将游标文本转 smallint（支持 uint8）
+			f1R = `CASE WHEN bound.f1 IS NULL THEN NULL ELSE (bound.f1)::smallint END`
+			b1R = `CASE WHEN bound.b1 IS NULL THEN NULL ELSE (bound.b1)::smallint END`
 		default: // kindText
 			orderExpr = fmt.Sprintf(`t.%s`, orderBy)
 			colL = orderExpr
@@ -219,9 +280,15 @@ func GetTasksByColumnsBounded(
 		case kindTime:
 			orderExpr = fmt.Sprintf(`t.%s`, orderBy)
 			colL = orderExpr
-			// 显式转成 DATETIME；若列是 DATE，可 CAST(... AS DATE)
+			// 将游标文本转 DATETIME（如为 DATE，可 CAST(... AS DATE)）
 			f1R = `CAST(BOUND.f1 AS DATETIME)`
 			b1R = `CAST(BOUND.b1 AS DATETIME)`
+		case kindInt:
+			orderExpr = fmt.Sprintf(`t.%s`, orderBy)
+			colL = orderExpr
+			// 将游标文本转无符号整数（兼容 uint8）
+			f1R = `CAST(BOUND.f1 AS UNSIGNED)`
+			b1R = `CAST(BOUND.b1 AS UNSIGNED)`
 		default: // kindText
 			orderExpr = fmt.Sprintf(`t.%s`, orderBy)
 			colL = orderExpr
@@ -230,13 +297,14 @@ func GetTasksByColumnsBounded(
 		}
 
 	default:
+		// 兜底（本地 sqlite 等），按文本比较
 		orderExpr = fmt.Sprintf(`t.%s`, orderBy)
 		colL = orderExpr
 		f1R = `bound.f1`
 		b1R = `bound.b1`
 	}
 
-	// 3) 为每个列补一行 bound（没游标也要 NULL 行，避免 JOIN 丢列）
+	// 3) 为每个列构造一行 bound（没游标也要 NULL 行，避免 JOIN 丢列）
 	type bRow struct {
 		ColumnID int64
 		F1       *string
@@ -260,6 +328,7 @@ func GetTasksByColumnsBounded(
 	if database.IsPostgres() {
 		rows := make([]string, 0, len(bounds))
 		for range bounds {
+			// f1/b1 作为 text 注入，后续按列类型 CAST
 			rows = append(rows, "(?::bigint, ?::text, ?::bigint, ?::text, ?::bigint)")
 		}
 		boundSQL = fmt.Sprintf(
@@ -274,7 +343,6 @@ func GetTasksByColumnsBounded(
 		for range bounds {
 			parts = append(parts, "SELECT ? AS column_id, ? AS f1, ? AS fid, ? AS b1, ? AS bid")
 		}
-		// 注意：MySQL 对大小写敏感与否取决于 collation；这里统一用大写别名 BOUND，避免与关键字冲突
 		boundSQL = fmt.Sprintf(
 			"LEFT JOIN ( %s ) AS BOUND ON BOUND.column_id = t.column_id",
 			strings.Join(parts, " UNION ALL "),
@@ -282,20 +350,20 @@ func GetTasksByColumnsBounded(
 		for _, b := range bounds {
 			boundArgs = append(boundArgs, b.ColumnID, b.F1, b.FID, b.B1, b.BID)
 		}
-		// 把上面生成的 f1R/b1R 中的标识符同步为 BOUND
+		// 同步标识符
 		f1R = strings.ReplaceAll(f1R, "bound.", "BOUND.")
 		b1R = strings.ReplaceAll(b1R, "bound.", "BOUND.")
 	}
 
-	// 5) 上下界谓词（与排序方向一致）
+	// 5) 上下界谓词（与排序方向一致；等值时用 id 作稳定比较）
 	var lowerOK, upperOK string
 	if asc {
-		lowerOK = fmt.Sprintf(`( %s IS NULL OR %s > %s OR (%s = %s AND (bound.fid IS NULL OR t.id >= bound.fid)) )`,
+		lowerOK = fmt.Sprintf(`( %s IS NULL OR %s > %s OR (%s = %s AND (bound.fid IS NULL OR t.id > bound.fid)) )`,
 			f1R, colL, f1R, colL, f1R)
 		upperOK = fmt.Sprintf(`( %s IS NULL OR %s < %s OR (%s = %s AND (bound.bid IS NULL OR t.id <= bound.bid)) )`,
 			b1R, colL, b1R, colL, b1R)
 	} else {
-		lowerOK = fmt.Sprintf(`( %s IS NULL OR %s < %s OR (%s = %s AND (bound.fid IS NULL OR t.id <= bound.fid)) )`,
+		lowerOK = fmt.Sprintf(`( %s IS NULL OR %s < %s OR (%s = %s AND (bound.fid IS NULL OR t.id < bound.fid)) )`,
 			f1R, colL, f1R, colL, f1R)
 		upperOK = fmt.Sprintf(`( %s IS NULL OR %s > %s OR (%s = %s AND (bound.bid IS NULL OR t.id >= bound.bid)) )`,
 			b1R, colL, b1R, colL, b1R)
@@ -323,19 +391,19 @@ func GetTasksByColumnsBounded(
         WHERE rn <= ?
     `, orderExpr, dir, dir, boundSQL, lowerOK, upperOK, orderBy)
 
-	// 参数顺序：先 boundArgs，再 columnIDs，再 limit
+	// 7) 参数组装：先 boundArgs，再 columnIDs，再 limit
 	args := make([]any, 0, len(boundArgs)+2)
 	args = append(args, boundArgs...)
 	args = append(args, columnIDs)
 	args = append(args, limitPerCol)
 
-	// 7) 执行
+	// 8) 执行
 	var rows []dto.ToDoTaskWithFlag
-	if err := db.Raw(q, args...).Scan(&rows).Error; err != nil {
+	if err := db.Debug().Raw(q, args...).Scan(&rows).Error; err != nil {
 		return nil, nil, err
 	}
 
-	// 8) 汇总分页信息
+	// 9) 汇总分页信息
 	page := make(map[int64]ColPageInfo, len(columnIDs))
 	for _, cid := range columnIDs {
 		page[cid] = ColPageInfo{Total: 0, HasNext: false}
@@ -356,6 +424,7 @@ func GetTasksByColumnsBounded(
 			page[cid] = info
 		}
 	}
+
 	return rows, page, nil
 }
 
@@ -366,10 +435,17 @@ func ternary[T any](cond bool, a, b T) T {
 	return b
 }
 
-func GetProjectColumnsByProjectID(db *gorm.DB, projectID int64) ([]model.ToDoColumn, error) {
+func GetProjectColumnsByProjectID(db *gorm.DB, projectID int64, columnIDs *[]int64) ([]model.ToDoColumn, error) {
 	var columns []model.ToDoColumn
-	err := db.Where("project_id = ?", projectID).Find(&columns).Error
-	if err != nil {
+	sql := db.Where("project_id = ?", projectID)
+
+	fmt.Println(columnIDs)
+	if columnIDs != nil && len(*columnIDs) > 0 {
+		sql = sql.Where("id IN ?", *columnIDs)
+	}
+
+	sql = sql.Find(&columns)
+	if err := sql.Error; err != nil {
 		return nil, err
 	}
 	return columns, nil
@@ -530,7 +606,7 @@ func DeleteProjectColumnTasksByID(db *gorm.DB, columnID, projectID int64, hard b
 	return sql.Error
 }
 
-func GetLastTask(db *gorm.DB, columnID int64, opts ...DatabaseExtraOpt) (*model.ToDoTask, error) {
+func GetFirstTask(db *gorm.DB, columnID int64, opts ...DatabaseExtraOpt) (*model.ToDoTask, error) {
 	option := &DatabaseExtraOptions{}
 	for _, o := range opts {
 		o(option)
@@ -538,7 +614,7 @@ func GetLastTask(db *gorm.DB, columnID int64, opts ...DatabaseExtraOpt) (*model.
 
 	var task model.ToDoTask
 	sql := db.Where("column_id = ?", columnID).
-		Order(GetLexoRankOrderExpr(true)).
+		Order(GetLexoRankOrderExpr(false)).
 		Limit(1).
 		First(&task)
 
@@ -607,7 +683,6 @@ func GetProjectTaskActivitiesByTaskID(db *gorm.DB, taskID int64, limit, offset i
 
 	sql := db.
 		Model(&model.KanbanActivity{}).
-		Debug().
 		Where("task_id = ? AND success = true", taskID).
 		Joins("LEFT JOIN workspace_members wm ON wm.id = kanban_activity.member_id").
 		Joins("LEFT JOIN users u ON u.id = wm.user_id").

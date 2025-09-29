@@ -1,6 +1,6 @@
 // column.tsx
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { columnKey, TaskState, ToDoColumn } from "../type";
+import { columnKey, TaksPayload, TaskState, ToDoColumn } from "../type";
 import { useTodo } from "@/contexts/TodoContext";
 import invariant from "tiny-invariant";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
@@ -12,6 +12,7 @@ import { isCardOver, ToDoColumnClasses } from "./script";
 import { isCardData } from "../script";
 import { Dropdown } from '@douyinfe/semi-ui';
 import {
+    Divider,
     Listbox,
     ListboxItem,
     ListboxSection,
@@ -28,6 +29,7 @@ import { IconDelete, IconEdit2Stroked } from "@douyinfe/semi-icons";
 import {
     attachClosestEdge,
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
+import Task from "../task";
 /** 指示条：插在两个 task 之间 */
 function GapIndicator() {
     return (
@@ -51,8 +53,9 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
     const [_, setState] = useState<TaskState>(idle);
     const [dropIndex, setDropIndex] = useState<number | null>(null);
     const pendingRenameRef = useRef(false); // 记录“等待重命名聚焦”
-
-    const { startDraftTask, updateTask, cleanColumnTasks, updateColumn } = useTodo();
+    const sentinelRef = useRef<HTMLDivElement | null>(null);
+    const loadingLockRef = useRef(false);
+    const { startDraftTask, updateTask, loadMoreTasks, cleanColumnTasks, updateColumn, activeDraft, updateDraftTask } = useTodo();
     const {
         isOpen: isOpenCleanModal,
         onOpen: onOpenCleanModal,
@@ -85,6 +88,44 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
         // 否则插到末尾
         return nodes.length;
     };
+
+    const tryLoadMore = useMemo(() => {
+        return async () => {
+            if (!column.has_next) return;
+            if (loadingLockRef.current) return;
+            loadingLockRef.current = true;
+            try {
+                await loadMoreTasks(column.id);
+            } finally {
+                loadingLockRef.current = false;
+            }
+        };
+    }, [column.has_next, loadMoreTasks, column.id]);
+
+    useEffect(() => {
+        const outer = outerRef.current;
+        const sentinel = sentinelRef.current;
+        if (!outer || !sentinel) return;
+
+        // 用列表容器作为 root，让“滚动到底部”更稳定
+        const io = new IntersectionObserver(
+            (entries) => {
+                const entry = entries[0];
+                if (entry.isIntersecting) {
+                    // 到底部了，拉下一页
+                    tryLoadMore();
+                }
+            },
+            {
+                root: outer,         // 以列的滚动容器为 root
+                rootMargin: "0px",
+                threshold: 0.01,     // 只要有一点点可见就触发
+            }
+        );
+
+        io.observe(sentinel);
+        return () => io.disconnect();
+    }, [tryLoadMore]);
 
     // 根据 dropIndex 计算 before/after_task_id，并调用 updateTask
     // const commitInsert = (sourceTaskId: string, index: number) => {
@@ -245,6 +286,10 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
         startDraftTask(column.id, { single: "submit" });
     };
 
+    const handeUpdate = (taskID: string, payload: TaksPayload) => {
+        updateDraftTask(payload);
+    }
+
     // 把指示条插到 childArray 的第 dropIndex 个位置（0..N）
     const childrenWithIndicator = useMemo(() => {
         if (dropIndex == null) return childArray;
@@ -259,6 +304,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
             <div ref={outerRef} className="group h-full flex flex-col  overflow-y-auto relative shrink-0">
                 {/* 头部 */}
                 <div ref={headerRef} className="sticky rounded-b-none py-[15px] px-[20px] z-[25] min-w-[280px] top-0 items-center">
+
                     <div className="flex items-center justify-between">
                         <Tag type="ghost" shape="circle" className="z-[130] cursor-pointer text-base font-semibold">
                             <span
@@ -281,6 +327,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
                             >
                                 {column.name}
                             </span>
+
                         </Tag>
 
                         {/* 触发器容器：重命名中强制可见；hover 可见；focus-within 可见 */}
@@ -374,7 +421,20 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
                         </div>
                     </div>
 
-                    <div>{/* column设置项 */}</div>
+                    {
+                        activeDraft && activeDraft.columnId === column.id && (
+                            <>
+                                <div className="z-[130] relative mt-2">
+                                    <Task task={activeDraft.task} column={column} onUpdate={handeUpdate}>
+                                    </Task>
+                                    <div className="mt-2">
+                                        <Button className="min-w-0 h-6 text-xs px-3" color="primary">{t`Create`}</Button>
+                                    </div>
+                                    <Divider className="mt-4"></Divider>
+                                </div>
+                            </>
+                        )
+                    }
 
                     {/* 顶部叠层背景（保留你的原有视觉层） */}
                     <div className="absolute overflow-hidden inset-0 bg-white dark:bg-black z-[15]" />
@@ -385,7 +445,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
 
                 {/* 列体（列表区域是唯一 drop target） */}
                 <div
-                    className={`${ToDoColumnClasses[column.process_id]} w-full rounded-b-lg pb-[15px]  min-w-[280px] gap-2 flex flex-col`}
+                    className={`${ToDoColumnClasses[column.process_id]} w-full rounded-b-lg  min-w-[280px] gap-2 flex flex-col`}
                 >
                     <div ref={innerRef} className="flex flex-col relative gap-2 w-full">
                         {childrenWithIndicator}
@@ -394,6 +454,8 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
                     <Button onPress={handleCreate} size="sm" className="min-h-[32px] w-full" variant="light">
                         <PlusIcon className="h-5 text-gray-300 w-5" />
                     </Button>
+
+                    <div ref={sentinelRef} />
                 </div>
             </div>
         </>

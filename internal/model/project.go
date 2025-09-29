@@ -39,11 +39,11 @@ type ToDoTask struct {
 	OrderIndex  string     `json:"order_index" gorm:"not null;varchar(10);uniqueIndex:uniq_column_order,priority:2"`
 	ColumnID    int64      `json:"column_id,string" gorm:"not null;uniqueIndex:uniq_column_order,priority:1"`
 	Creator     int64      `json:"creator,string" gorm:"not null; index:idx_creator"`
-	Priority    string     `json:"priority" gorm:"index:idx_priority"`          // low, medium, high
-	Status      string     `json:"status" gorm:"index:idx_status"`              // pending, in_progress, completed
-	Description string     `json:"description" gorm:"type:text"`                // 任务描述
-	Deadline    *time.Time `json:"deadline" gorm:"type:date"`                   // 任务截止时间
-	Cover       *string    `json:"cover" gorm:"type:varchar(255);default:NULL"` // 任务封面图片
+	Priority    uint8      `json:"priority" gorm:"index:idx_priority;default:0"` // 0(未定义), 1(低), 2(中), 3(高)
+	Status      string     `json:"status" gorm:"index:idx_status"`               // pending, in_progress, completed
+	Description string     `json:"description" gorm:"type:text"`                 // 任务描述
+	Deadline    *time.Time `json:"deadline" gorm:"type:date"`                    // 任务截止时间
+	Cover       *string    `json:"cover" gorm:"type:varchar(255);default:NULL"`  // 任务封面图片
 }
 
 type ToDoTaskAssignee struct {

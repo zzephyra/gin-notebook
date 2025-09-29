@@ -93,14 +93,17 @@ func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 				isDiff = true
 			}
 
+			if data == nil {
+				data = make(map[string]interface{})
+			}
+
 			if isDiff {
 				taskModel, err, isConflicted := repository.UpdateTaskByTaskID(tx, params.TaskID, params.UpdatedAt, task)
-				if data == nil {
-					data = make(map[string]interface{})
-				}
 
 				if taskModel != nil {
-					data["task"] = tools.StructToUpdateMap(*taskModel, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
+					taskData := tools.StructToUpdateMap(*taskModel, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
+					taskData["priority"] = PriorityMap[taskModel.Priority]
+					data["task"] = taskData
 				}
 
 				if isConflicted {
@@ -116,7 +119,9 @@ func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 					return err
 				}
 			} else {
-				data["task"] = tools.StructToUpdateMap(*originModel, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
+				taskMap := tools.StructToUpdateMap(*originModel, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
+				taskMap["priority"] = PriorityMap[originModel.Priority]
+				data["task"] = taskMap
 			}
 
 		}

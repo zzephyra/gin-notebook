@@ -197,11 +197,15 @@ type UpdateProjectDTO struct {
 }
 
 type GetProjectBoardDTO struct {
-	MemberID    int64  `validate:"required,gt=0"`                                             // 用户ID
-	WorkspaceID int64  `form:"workspace_id,string" validate:"required,gt=0"`                  // 工作空间ID
-	ProjectID   int64  `form:"project_id,string" validate:"required,gt=0"`                    // 项目ID
-	Limit       int    `form:"limit" validate:"omitempty,min=10,max=50"`                      // 每页数量
-	OrderBy     string `form:"order_by" validate:"omitempty,oneof=order updated_at priority"` // 排序字段
-	Asc         bool   `form:"asc" validate:"omitempty"`                                      // 是否升序
-	ColumnID    *int64 `form:"column_id,string" validate:"omitempty,gt=0"`                    // 列ID, 可选, 若提供则只获取该列下的任务
+	MemberID    int64    `validate:"required,gt=0"`                                             // 用户ID
+	WorkspaceID int64    `form:"workspace_id,string" validate:"required,gt=0"`                  // 工作空间ID
+	ProjectID   int64    `form:"project_id,string" validate:"required,gt=0"`                    // 项目ID
+	Limit       int      `form:"limit" validate:"omitempty,min=10,max=50"`                      // 每页数量
+	OrderBy     string   `form:"order_by" validate:"omitempty,oneof=order updated_at priority"` // 排序字段
+	Asc         bool     `form:"asc" validate:"omitempty"`                                      // 是否升序
+	F1          *string  `form:"f1,string" validate:"omitempty"`                                // 从指定任务开始加载，用于分页
+	FID         *int64   `form:"fid,string" validate:"omitempty"`                               // 边界任务ID
+	B1          *string  `form:"b1" validate:"omitempty"`                                       // 从指定任务结束加载，用于分页
+	BID         *int64   `form:"bid,string" validate:"omitempty"`                               // 边界任务ID
+	ColumnIDs   *[]int64 `form:"column_id,string" validate:"omitempty"`                         // 列ID, 可选, 若提供则只获取该列下的任务
 }

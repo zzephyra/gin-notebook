@@ -3,7 +3,7 @@ import { cleanColumnTasksRequest, createTaskRequest, getProjectBoardRequest, get
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { LexoRank } from "lexorank";
-import { addTaskToColumnEnd, findTask, removeTaskById, replaceColumnById, replaceTaskById } from '@/utils/boardPatch'
+import { addTaskToColumnStart, findTask, removeTaskById, replaceColumnById, replaceTaskById } from '@/utils/boardPatch'
 import { responseCode } from '@/features/constant/response';
 import { getRealtime, Incoming, OnlineMap, RealtimeOptions, roomProject } from '@/lib/realtime';
 import { websocketApi } from '@/features/api/routes';
@@ -21,10 +21,7 @@ export type StartDraftOptions = {
 const getBoardQueryKey = (projectId: string, params: TodoParamsType) => ['project', 'board', projectId, params] as const;
 const getProjectQueryKey = (projectId: string) => ['project', projectId] as const;
 
-export type TodoPageType = {
-    limit?: number;
-    offset?: number;
-}
+export type ActiveDraft = { task: TodoTask; columnId: string, colIdx: number } | null;
 
 export function useProjectTodo(projectId: string, workspaceId: string, params?: TodoParamsType) {
     const queryClient = useQueryClient();
@@ -112,8 +109,8 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
     }, [board]);
 
     // 5) 活跃草稿指针 + 活跃列任务索引（taskId -> index）
-    const [activeDraft, setActiveDraft] = useState<ActiveDraftPtr>(null);
-    const activeDraftRef = useRef<ActiveDraftPtr>(null);
+    const [activeDraft, setActiveDraft] = useState<ActiveDraft>(null);
+    const activeDraftRef = useRef<ActiveDraft>(null);
     useEffect(() => {
         activeDraftRef.current = activeDraft;
     }, [activeDraft]);
@@ -123,19 +120,16 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
     useEffect(() => {
         if (!board) return;
         const ad = activeDraftRef.current;
-        if (!ad) {
-            activeColumnTaskIndexRef.current = null;
-            return;
-        }
+        if (!ad) { activeColumnTaskIndexRef.current = null; return; }
+
         const col = board[ad.colIdx];
-        if (!col || col.id !== ad.columnId) {
-            activeColumnTaskIndexRef.current = null;
-            return;
-        }
+        if (!col || col.id !== ad.task.columnId) { activeColumnTaskIndexRef.current = null; return; }
+
         const m = new Map<string, number>();
         col.tasks.forEach((t, i) => m.set(t.id, i));
         activeColumnTaskIndexRef.current = m;
-    }, [board, activeDraftRef.current?.id]); // board 动了，或活跃草稿切换，重建索引
+        // NOTE: depend on the *id* of the draft task
+    }, [board, activeDraft?.task.id]);
 
     function canAutoMerge(patch: Partial<TaskUpdatePayload>) {
         // 例：仅排序/指派自动重试；标题/描述等文本不自动重试
@@ -154,50 +148,42 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
         return next;
     }
     // 6) 快速读取当前草稿（接近 O(1)）
-    function getActiveDraftFast(): { id: string; columnId: string; task: TodoTask } | null {
+    function getActiveDraftFast(): { task: TodoTask; colIdx: number } | null {
         const ad = activeDraftRef.current;
-
         if (!ad || !board) return null;
 
-        // 6.1 直接按 colIdx 取列
+        // 1) Try by colIdx
         let col = board[ad.colIdx];
-        if (col && col.id === ad.columnId) {
-            const idx = activeColumnTaskIndexRef.current?.get(ad.id);
-            if (idx != null) {
-                const task = col.tasks[idx];
-                if (task) return { id: ad.id, columnId: ad.columnId, task };
-            }
-            // 索引丢失则列内顺扫一次（列通常不大）
-            const task = col.tasks.find(t => t.id === ad.id);
-            if (task) return { id: ad.id, columnId: ad.columnId, task };
+        if (col && col.id === ad.task.columnId) {
+            const idx = activeColumnTaskIndexRef.current?.get(ad.task.id);
+            const task = idx != null ? col.tasks[idx] : col.tasks.find(t => t.id === ad.task.id);
+            if (task) return { task, colIdx: ad.colIdx };
         }
 
-        // 6.2 列顺序可能变了：用 columnIndex 修正 colIdx
-        const idx2 = columnIndex.get(ad.columnId);
+        // 2) Column order may change → fix colIdx using columnIndex
+        const idx2 = columnIndex.get(ad.task.columnId);
         if (idx2 != null) {
             col = board[idx2];
-            const task = col.tasks.find(t => t.id === ad.id);
+            const task = col.tasks.find(t => t.id === ad.task.id);
             if (task) {
-                const fixed = { ...ad, colIdx: idx2 };
-                setActiveDraft(fixed);
-                activeDraftRef.current = fixed;
-                return { id: ad.id, columnId: ad.columnId, task };
+                const fixed: ActiveDraft = { task: { ...task }, colIdx: idx2, columnId: col.id };
+                setActiveDraft(fixed); activeDraftRef.current = fixed;
+                return { task, colIdx: idx2 };
             }
         }
 
-        // 6.3 兜底全板扫一次（极少发生，比如任务被拖到别列）
+        // 3) Fallback scan (task might be moved across columns)
         for (let i = 0; i < board.length; i++) {
             const c = board[i];
-            const task = c.tasks.find(t => t.id === ad.id);
+            const task = c.tasks.find(t => t.id === ad.task.id);
             if (task) {
-                const fixed = { id: ad.id, columnId: c.id, colIdx: i };
-                setActiveDraft(fixed);
-                activeDraftRef.current = fixed;
-                return { ...fixed, task };
+                const fixed: ActiveDraft = { task: { ...task }, colIdx: i, columnId: c.id };
+                setActiveDraft(fixed); activeDraftRef.current = fixed;
+                return { task, colIdx: i };
             }
         }
 
-        // 6.4 找不到：被提交/删除
+        // 4) Not found → cleared (deleted/committed elsewhere)
         setActiveDraft(null);
         activeDraftRef.current = null;
         activeColumnTaskIndexRef.current = null;
@@ -207,18 +193,13 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
     // 7) 计算“列尾”的一个临时 order（仅用于草稿展示）
     function draftTailOrder(columnId: string): string {
         if (!board || board.length === 0) return LexoRank.min().toString();
-
         const col = board[columnIndex.get(columnId) ?? -1];
         if (!col || col.tasks.length === 0) return LexoRank.min().toString();
         try {
-            let latestOrder = col.tasks[col.tasks.length - 1].order;
-            if (!latestOrder) {
-                return LexoRank.min().toString();
-            }
-            return LexoRank.parse(latestOrder).genNext().toString();
-        } catch {
-            return LexoRank.min().toString();
-        }
+            const last = col.tasks[col.tasks.length - 1].order;
+            if (!last) return LexoRank.min().toString();
+            return LexoRank.parse(last).genNext().toString();
+        } catch { return LexoRank.min().toString(); }
     }
 
     // 8) 单一草稿策略 + 新建草稿（返回 tempId）
@@ -299,80 +280,63 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
     async function startDraftTask(columnId: string, opts: StartDraftOptions = {}): Promise<string> {
         const single = opts.single ?? 'block';
         if (!currentProject) return '';
-        const key = getBoardQueryKey(currentProjectId, todoParams);
 
-        const active = getActiveDraftFast();
-        if (active) {
-            // 已存在草稿
-            if (single === 'block') return active.id;
+        const key = getBoardQueryKey(currentProjectId, todoParams);
+        const existing = getActiveDraftFast();
+
+        if (existing) {
+            if (single === 'block') return existing.task.id;
             if (single === 'cancel') {
-                // 取消旧草稿
-                queryClient.setQueryData<ProjectBoard>(key, (old = []) =>
-                    removeTaskById(old, active.columnId, active.id),
-                );
+                // remove existing draft from cache
+                queryClient.setQueryData<ProjectType>(key, (old) => {
+                    if (!old) return old;
+                    return {
+                        ...old,
+                        todo: removeTaskById(old.todo, existing.task.columnId, existing.task.id),
+                    };
+                });
                 setActiveDraft(null);
             }
-            if (single === 'submit') {
-                if (isDraftEmpty(active.task)) return active.id;
-                try {
-                    await submitTask(active.id); // 成功会清指针
-                } catch (err) {
-                    console.error('提交草稿失败', err);
-                    // return active.id;
-                }
-            }
         }
+
+        // Create a fresh empty draft task (local only)
         const tempId = genTempId();
         const colIdx = columnIndex.get(columnId) ?? 0;
         const order = draftTailOrder(columnId);
-        queryClient.setQueryData<ProjectType>(key, (old: ProjectType | undefined): ProjectType | undefined => {
-            if (!old || !old.todo) return old; // 如果没有缓存，保持不变（或返回一个默认值）
-            const newBoard = addTaskToColumnEnd(old.todo, columnId, {
-                id: tempId,
-                columnId,
-                title: '',
-                description: '',
-                priority: undefined,
-                deadline: null,
-                order,
-                isEdit: true,
-                isDraft: true,
-            });
-            return { ...old, todo: newBoard };
-        }
-        );
-        setActiveDraft({ id: tempId, columnId, colIdx });
+
+        const draftTask: TodoTask = {
+            id: tempId,
+            columnId,
+            title: '',
+            description: '',
+            priority: undefined,
+            deadline: null,
+            order,
+            isEdit: true,
+            isDraft: true,
+            // 兼容后端字段（如果你的 TodoTask 里包含这些可去掉）
+            // updated_at: '',
+        };
+
+        // insert into cache
+        // queryClient.setQueryData<ProjectType>(key, (old: ProjectType | undefined): ProjectType | undefined => {
+        //     if (!old || !old.todo) return old;
+        //     const newBoard = addTaskToColumnEnd(old.todo, columnId, draftTask);
+        //     return { ...old, todo: newBoard };
+        // });
+
+        setActiveDraft({ task: draftTask, colIdx, columnId });
         return tempId;
     }
 
-    async function submitTask(tempId: string, params?: SubmitExtraParams) {
+    async function submitTask(task: TodoTask, columnId: string, params?: SubmitExtraParams) {
         if (!currentProject || !board) return;
         const key = getBoardQueryKey(currentProjectId, todoParams);
 
-        // 若指针失效，兜底全板找一次
-        const current = queryClient.getQueryData<ProjectType>(key) ?? { todo: [] };
-        console.log(current)
-        const found = findTask(current?.todo, tempId);
-        if (!found) return;
-
-        const col = board[columnIndex.get(found.columnId) ?? -1];
-        if (!col) return;
-
-        const idx =
-            activeColumnTaskIndexRef.current?.get(tempId) ??
-            col.tasks.findIndex(t => t.id === tempId);
-
-        const prevOrder = idx > 0 ? col.tasks[idx - 1].order : undefined;
-        const nextOrder = idx + 1 < col.tasks.length ? col.tasks[idx + 1].order : undefined;
-        const afterId = idx > 0 ? col.tasks[idx - 1].id : undefined;
-        const beforeId = idx + 1 < col.tasks.length ? col.tasks[idx + 1].id : undefined;
-        const orderHint = generateTaskOrder(prevOrder, nextOrder);
-
-        // 提交前：先退出编辑态，提升感知（可选）
-        if (found.task.isEdit) {
+        if (task.isEdit) {
             queryClient.setQueryData<ProjectType>(key, (old) => {
                 if (!old) return old
-                let res = replaceTaskById(old.todo, found.columnId, tempId, { isEdit: false, _optimistic: true })
+                let res = replaceTaskById(old.todo, columnId, task.id, { isEdit: false, _optimistic: true })
                 return {
                     ...old,
                     todo: res
@@ -382,18 +346,15 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
         }
 
         const input: CreateTaskInput = {
-            column_id: found.columnId,
-            client_temp_id: tempId,
-            order_hint: orderHint,
+            column_id: columnId,
+            client_temp_id: task.id,
             workspace_id: workspaceId,
-            after_id: afterId,
-            before_id: beforeId,
-            project_id: currentProject.id,
+            project_id: currentProjectId || '',
             payload: {
-                title: found.task.title,
-                description: found.task.description,
-                priority: found.task.priority,
-                deadline: found.task.deadline,
+                title: task.title,
+                description: task.description,
+                priority: task.priority,
+                deadline: task.deadline,
                 ...params,
             },
         };
@@ -408,13 +369,11 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
         const snapshot = queryClient.getQueryData<ProjectBoardType>(key) ?? { todo: [] };
         const found = findTask(snapshot.todo, taskID);
         if (!found) return;
-        console.log(snapshot)
 
         // 乐观更新：先把 UI 改了（可在 onError 时回滚/或 invalidate）
         queryClient.setQueryData<ProjectBoardType>(key,
             (old) => {
                 if (!old) return old
-                console.log(old)
                 var newBoard = replaceTaskById(old.todo, found.columnId, taskID, { ...patch, _optimistic: true }, opts?.insertIndex)
                 return {
                     ...old,
@@ -422,7 +381,6 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
                 }
             }
         );
-        console.log(12)
         if (found.task.isDraft) {
             // 创建仅更新本地，不发请求，等待submitTask提交
             return;
@@ -508,6 +466,37 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
     const createTaskMutation = useMutation({
         mutationFn: async (input: CreateTaskInput) => {
             return await createTaskRequest(input);
+        },
+        onMutate: async (payload: CreateTaskInput) => {
+            // 取消当前关于该 project 的正在进行的请求，避免竞态覆盖
+            var key = getBoardQueryKey(currentProjectId, todoParams)
+            await queryClient.cancelQueries({ queryKey: key });
+
+            // 取出当前缓存（快照）
+            const previous = queryClient.getQueryData<Project | null>(key) ?? null;
+
+            // 立刻在 cache 做修改 —— 乐观更新（示例假设后端返回的是整个 settings 部分）
+            queryClient.setQueryData<Project | null>(key, (old) => {
+                if (!old) return old;
+                // 这里把 payload 合并入设置（根据你的实际结构调整）
+                return {
+                    ...old,
+                    todo: addTaskToColumnStart(old.todo, payload.column_id, {
+                        id: payload.client_temp_id,
+                        columnId: payload.column_id,
+                        title: payload.payload.title || '',
+                        description: payload.payload.description || '',
+                        priority: payload.payload.priority,
+                        deadline: payload.payload.deadline || null,
+                        order: payload.order_hint,
+                        isDraft: true,
+                        isEdit: false,
+                        _optimistic: true,
+                    })
+                };
+            });
+            // 返回 context，onError 会接收它用于回滚
+            return { previous };
         },
         onSuccess: (res, input) => {
             if (!currentProject) return;
@@ -742,26 +731,93 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
         },
     })
 
-    // const loadNextColumnTasks = useMutation({
-    //     mutationFn: async (columnId: string, payload: ProjecctPayload) => {
-    //         if (!currentProjectId || !currentProject?.updated_at) {
-    //             throw new Error("Missing currentProjectId or updated_at");
-    //         }
-    //         return await updateProjectRequest(
-    //             currentProjectId,
-    //             workspaceId,
-    //             currentProject.updated_at,
-    //             payload
-    //         );
-    //     },
-    // })
+    const loadMoreTasks = useMutation({
+        mutationFn: async (columnID: string) => {
+            if (!currentProjectId || !currentProject?.updated_at) {
+                throw new Error("Missing currentProjectId or updated_at");
+            }
+            const idx = columnIndex.get(columnID);
+            if (idx === undefined) {
+                throw new Error("Invalid columnID");
+            }
+            const col = board?.[idx];
+            if (!col) {
+                throw new Error("Column not found");
+            }
+
+            var params = { ...todoParams, column_id: columnID };
+            if (col.tasks.length != 0) {
+                var cursor = col.cursor;
+                params = { ...params, ...cursor };
+            }
+            return await getProjectBoardRequest(currentProjectId, workspaceId, params);
+        },
+        // onMutate: async (payload: TodoParamsType) => {
+        //     // 取消当前关于该 project 的正在进行的请求，避免竞态覆盖
+        //     if (!params || !currentProjectId) return;
+        //     var key = getBoardQueryKey(currentProjectId, params)
+        //     await queryClient.cancelQueries({ queryKey: key });
+
+        //     // 取出当前缓存（快照）
+        //     const previous = queryClient.getQueryData<Project | null>(key) ?? null;
+
+        //     // 立刻在 cache 做修改 —— 乐观更新（示例假设后端返回的是整个 settings 部分）
+        //     // 返回 context，onError 会接收它用于回滚
+        //     return { previous };
+        // },
+        onSuccess: (res) => {
+            if (!res) return;
+            if (!currentProjectId) return;
+            var key = getBoardQueryKey(currentProjectId, todoParams)
+            queryClient.setQueryData<ProjectType>(key, (old) => {
+                if (!old) return old;
+                var todo = old.todo || [];
+                for (let i = 0; i < res.data.todo.length; i++) {
+                    const col = res.data.todo[i];
+                    const idx = columnIndex.get(col.id);
+                    if (idx === undefined) continue;
+                    console.log(col.cursor)
+                    todo[idx] = { ...todo[idx], tasks: [...(todo[idx]?.tasks || []), ...(col.tasks || [])], has_next: col.has_next, cursor: col.cursor };
+                }
+                return { ...old, todo };
+            });
+        },
+        onError: (context: { previous: Project | null } | undefined) => {
+            if (!params || !currentProjectId) return;
+            var key = getBoardQueryKey(currentProjectId, params)
+
+            if (context?.previous) {
+                queryClient.setQueryData<Project | null>(key, context.previous);
+            } else {
+                queryClient.invalidateQueries({ queryKey: key });
+            }
+        }
+    })
+
+    const clearDraft = () => {
+        setActiveDraft(null);
+    }
+
+
+    const updateDraftTask = (patch: Partial<TodoTask>) => {
+        setActiveDraft(ad => {
+            if (!ad) return ad;
+            const updated = { ...ad.task, ...patch };
+            const fixed: ActiveDraft = { ...ad, task: updated };
+            return fixed;
+        });
+    }
 
     return {
         columns: stableColumns,
         isLoadTodo: isLoadingProjectBoard,
         projectList: projectList || [],
         todoParams,
+        activeDraft,
         createTask,
+        clearDraft,
+        updateDraftTask,
+        loadMoreTasks: loadMoreTasks.mutateAsync,
         updateTask,
         deleteTask,
         startDraftTask,

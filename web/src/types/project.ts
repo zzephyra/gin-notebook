@@ -26,6 +26,11 @@ export interface ProjectBoardType {
 }
 
 export type TodoParamsType = {
+    column_id?: string; // 列ID，多个用逗号分隔
     order_by?: string;
     asc?: boolean;
+    f1?: string; // 用于分页，从指定任务开始加载
+    fid?: string; // 用于分页，从指定任务ID开始加载
+    b1?: string; // 用于分页，从指定任务结束加载
+    bid?: string; // 用于分页，从指定任务ID结束加载
 }
