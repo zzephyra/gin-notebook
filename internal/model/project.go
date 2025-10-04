@@ -28,8 +28,9 @@ type ToDoColumn struct {
 	ProjectID   int64  `json:"project_id,string" gorm:"not null; index:idx_project_id"`
 	Name        string `json:"name" gorm:"not null; type:varchar(100); index:idx_name"`
 	Description string `json:"description" gorm:"type:text"`
-	OrderIndex  string `json:"order_index" gorm:""`                    // 用于排序
-	ProcessID   uint8  `json:"process_id" gorm:"index:idx_process_id"` // 用于流程管理，区分统计项目进度，释放名称自定义
+	OrderIndex  string `json:"order_index" gorm:""`                      // 用于排序
+	Color       string `json:"color" gorm:"type:varchar(20);default:''"` // 列颜色
+	ProcessID   uint8  `json:"process_id" gorm:"index:idx_process_id"`   // 用于流程管理，区分统计项目进度，释放名称自定义
 }
 
 type ToDoTask struct {

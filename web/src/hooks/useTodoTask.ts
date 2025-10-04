@@ -1,4 +1,4 @@
-import { ColumnUpdatePayload, CreateTaskInput, Project, ProjectBoard, SubmitExtraParams, TaskUpdatePayload, TodoTask, UpdateOptions } from '@/components/todo/type'
+import { ColumnUpdatePayload, CreateTaskInput, Project, SubmitExtraParams, TaskUpdatePayload, TodoTask, UpdateOptions } from '@/components/todo/type'
 import { cleanColumnTasksRequest, createTaskRequest, getProjectBoardRequest, getProjectsListRequest, getProjectsRequest, updateProjectColumnRequest, updateProjectRequest, updateTaskRequest } from '@/features/api/project'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -203,13 +203,13 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
     }
 
     // 8) 单一草稿策略 + 新建草稿（返回 tempId）
-    function isDraftEmpty(_?: TodoTask): boolean {
-        // const hasTitle = !!task.title?.trim();
-        // const hasPriority = !!task.priority;
-        // const hasAssignee = !!task.assignee?.length;
-        // const hasDeadline = !!task.deadline;
-        return false;
-    }
+    // function isDraftEmpty(_?: TodoTask): boolean {
+    //     // const hasTitle = !!task.title?.trim();
+    //     // const hasPriority = !!task.priority;
+    //     // const hasAssignee = !!task.assignee?.length;
+    //     // const hasDeadline = !!task.deadline;
+    //     return false;
+    // }
 
     const generateTaskOrder = (previousOrder?: string | undefined, nextOrder?: string) => {
         if (!previousOrder) {

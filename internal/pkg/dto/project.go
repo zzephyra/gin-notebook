@@ -24,7 +24,8 @@ type TaskEditableDTO struct {
 	AssigneeActions *UpdateAssigneeDTO `json:"assignee_actions" validate:"omitempty"` // 任务负责人变更操作
 	AfterID         *int64             `json:"after_id,string" validate:"omitempty"`
 	BeforeID        *int64             `json:"before_id,string" validate:"omitempty"`
-	Cover           NullableString     `json:"cover" validate:"omitempty"` // 任务封面图片
+	Cover           NullableString     `json:"cover" validate:"omitempty"`        // 任务封面图片
+	Color           *string            `json:"color" validate:"omitempty,max=20"` // 任务列颜色
 }
 
 func (t TaskEditableDTO) HasTaskFieldUpdates() bool {
@@ -36,7 +37,8 @@ func (t TaskEditableDTO) HasTaskFieldUpdates() bool {
 		t.Status != nil ||
 		t.Description != nil ||
 		t.Deadline != nil ||
-		t.Cover.Set
+		t.Cover.Set ||
+		t.Color != nil
 }
 
 func (p ProjectTaskDTO) IsAssigneeOnlyUpdate() bool {
@@ -122,6 +124,7 @@ type ColumnEditableDTO struct {
 	Description *string `json:"description" validate:"omitempty"`
 	OrderIndex  *string `json:"order_index" validate:"omitempty"`
 	ProcessID   *uint8  `json:"process_id" validate:"omitempty"`
+	Color       *string `json:"color" validate:"omitempty,max=20"` // 列颜色
 }
 
 type UpdateProjectColumnDTO struct {

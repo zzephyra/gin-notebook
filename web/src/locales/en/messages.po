@@ -71,6 +71,16 @@ msgid "Please log in to continue."
 msgstr "Please log in to continue."
 
 #. js-lingui-explicit-id
+#: src/features/api/ai.ts:65
+msgid "Message ID is required for update action"
+msgstr "Message ID is required for update action"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:123
+msgid "Failed to fetch AI chat session"
+msgstr "Failed to fetch AI chat session"
+
+#. js-lingui-explicit-id
 #: src/features/api/note.ts:13
 #: src/features/api/note.ts:34
 msgid "Missing valid value"
@@ -95,16 +105,6 @@ msgstr "Delete note failed"
 #: src/features/api/note.ts:211
 msgid "Content cannot be empty"
 msgstr "Content cannot be empty"
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:65
-msgid "Message ID is required for update action"
-msgstr "Message ID is required for update action"
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:123
-msgid "Failed to fetch AI chat session"
-msgstr "Failed to fetch AI chat session"
 
 #. js-lingui-explicit-id
 #: src/components/list/notes/index.tsx:126
@@ -234,6 +234,10 @@ msgstr "Allow sharing this note with others or third-party applications."
 msgid "Already have an account?"
 msgstr "Already have an account?"
 
+#: src/components/todo/column/index.tsx:372
+msgid "Appearance"
+msgstr "Appearance"
+
 #: src/components/note/main/index.tsx:514
 msgid "Applying the template..."
 msgstr "Applying the template..."
@@ -242,7 +246,7 @@ msgstr "Applying the template..."
 #~ msgid "Are you sure you want to clean all tasks in this column?"
 #~ msgstr "Are you sure you want to clean all tasks in this column?"
 
-#: src/components/todo/column/index.tsx:349
+#: src/components/todo/column/index.tsx:411
 msgid "Are you sure you want to clear all tasks in this column?"
 msgstr "Are you sure you want to clear all tasks in this column?"
 
@@ -345,7 +349,7 @@ msgstr "Clean"
 #~ msgid "Clean Tasks"
 #~ msgstr "Clean Tasks"
 
-#: src/components/todo/column/index.tsx:332
+#: src/components/todo/column/index.tsx:394
 msgid "Clear Tasks"
 msgstr "Clear Tasks"
 
@@ -402,6 +406,7 @@ msgstr "Cover"
 #: src/components/dropdown/note/index.tsx:107
 #: src/components/dropdown/note/index.tsx:206
 #: src/components/modal/event/add/index.tsx:165
+#: src/components/todo/column/index.tsx:446
 msgid "Create"
 msgstr "Create"
 
@@ -520,7 +525,7 @@ msgstr "Disliked the comment"
 msgid "Domain Url"
 msgstr "Domain Url"
 
-#: src/components/todo/column/index.tsx:359
+#: src/components/todo/column/index.tsx:421
 msgid "Don’t clear"
 msgstr "Don’t clear"
 
@@ -716,7 +721,7 @@ msgstr "History"
 msgid "History Chats"
 msgstr "History Chats"
 
-#: src/components/todo/column/index.tsx:369
+#: src/components/todo/column/index.tsx:431
 msgid "I'm sure"
 msgstr "I'm sure"
 
@@ -1188,7 +1193,7 @@ msgstr "Remove"
 msgid "Remove from Favorites"
 msgstr "Remove from Favorites"
 
-#: src/components/todo/column/index.tsx:319
+#: src/components/todo/column/index.tsx:368
 msgid "Rename"
 msgstr "Rename"
 
@@ -1382,7 +1387,7 @@ msgstr "The workspace name contains illegal characters"
 msgid "This invitation link does not exist."
 msgstr "This invitation link does not exist."
 
-#: src/components/todo/column/index.tsx:353
+#: src/components/todo/column/index.tsx:415
 msgid "This is a very dangerous action. Once confirmed, the data cannot be recovered."
 msgstr "This is a very dangerous action. Once confirmed, the data cannot be recovered."
 

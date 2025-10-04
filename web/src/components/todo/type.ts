@@ -118,6 +118,7 @@ export type TaksPayload = {
     title?: string;
     description?: string;
     priority?: Priority;
+    color?: string;
     assignee_actions?: Partial<AssigneeAction>;
     deadline?: string | null;
     cover?: string | null;

@@ -11,6 +11,7 @@ import { EllipsisHorizontalIcon, ExclamationCircleIcon, PlusIcon } from "@heroic
 import { isCardOver, ToDoColumnClasses } from "./script";
 import { isCardData } from "../script";
 import { Dropdown } from '@douyinfe/semi-ui';
+import { CirclePicker } from 'react-color';
 import {
     Divider,
     Listbox,
@@ -47,7 +48,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
     const innerRef = useRef<HTMLDivElement | null>(null);
     const headerRef = useRef<HTMLDivElement | null>(null);
     const columnNameRef = useRef<HTMLSpanElement | null>(null);
-
+    const [templateColor, setTemplateColor] = useState<string>("");
     const [isOpenPopover, setIsOpenPopover] = useState(false);
     const [columnNameEditable, setColumnNameEditable] = useState(false);
     const [_, setState] = useState<TaskState>(idle);
@@ -286,7 +287,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
         startDraftTask(column.id, { single: "submit" });
     };
 
-    const handeUpdate = (taskID: string, payload: TaksPayload) => {
+    const handeUpdate = (_: string, payload: TaksPayload) => {
         updateDraftTask(payload);
     }
 
@@ -350,6 +351,7 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
                             </Button>
 
                             <Dropdown position="bottom"
+                                className="dark:!bg-black"
                                 render={
                                     <Listbox className="z-[130] relative">
                                         <ListboxSection showDivider classNames={{ base: "mb-1", divider: "mt-1" }}>
@@ -364,6 +366,19 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
                                                 }}
                                             >
                                                 {t`Rename`}
+                                            </ListboxItem>
+
+                                        </ListboxSection>
+                                        <ListboxSection title={t`Appearance`} showDivider>
+                                            <ListboxItem
+                                                key={"background"}
+                                                className="hover:!bg-transparent"
+                                            >
+                                                <div
+                                                    onMouseLeave={() => setTemplateColor('')} // 离开时恢复原色
+                                                >
+                                                    <CirclePicker onChange={(e: any) => updateColumn(column.id, { color: e.hex })} onSwatchHover={(color: any) => setTemplateColor(color.hex)} colors={['#FF6900', '#FCB900', '#7BDCB5', '#00D084', '#8ED1FC', '#0693E3', '#ABB8C3', '#EB144C', '#F78DA7', '#9900EF']} circleSpacing={9} circleSize={24} width="200px"></CirclePicker>
+                                                </div>
                                             </ListboxItem>
                                         </ListboxSection>
                                         <ListboxSection classNames={{ base: "mb-0" }}>
@@ -439,12 +454,15 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
                     {/* 顶部叠层背景（保留你的原有视觉层） */}
                     <div className="absolute overflow-hidden inset-0 bg-white dark:bg-black z-[15]" />
                     <div
+                        style={{ backgroundColor: `${templateColor || column.color}26` || 'inherit' }}
+
                         className={`absolute overflow-hidden rounded-t-lg inset-0 z-[20] ${ToDoColumnClasses[column.process_id]}`}
                     />
-                </div>
-
+                </div >
                 {/* 列体（列表区域是唯一 drop target） */}
-                <div
+                < div
+                    style={{ backgroundColor: `${templateColor || column.color}26` || 'inherit' }
+                    }
                     className={`${ToDoColumnClasses[column.process_id]} w-full rounded-b-lg  min-w-[280px] gap-2 flex flex-col`}
                 >
                     <div ref={innerRef} className="flex flex-col relative gap-2 w-full">
@@ -456,8 +474,8 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
                     </Button>
 
                     <div ref={sentinelRef} />
-                </div>
-            </div>
+                </div >
+            </div >
         </>
     );
 };

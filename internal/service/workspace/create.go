@@ -82,9 +82,9 @@ func CreateWorkspace(workspace *dto.WorkspaceValidation) (responseCode int, data
 		}
 
 		columns := []model.ToDoColumn{
-			{ProjectID: project.ID, Name: "To Do", OrderIndex: "a", ProcessID: 0},
-			{ProjectID: project.ID, Name: "In Progress", OrderIndex: "b", ProcessID: 1},
-			{ProjectID: project.ID, Name: "Done", OrderIndex: "c", ProcessID: 2},
+			{ProjectID: project.ID, Name: "To Do", OrderIndex: "a", Color: "#f8f8f7", ProcessID: 0},
+			{ProjectID: project.ID, Name: "In Progress", OrderIndex: "b", Color: "#5BA6D1", ProcessID: 1},
+			{ProjectID: project.ID, Name: "Done", OrderIndex: "c", Color: "#69A56F", ProcessID: 2},
 		}
 
 		err = repository.CreateModel(tx, &columns)

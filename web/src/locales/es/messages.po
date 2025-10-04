@@ -71,6 +71,16 @@ msgid "Please log in to continue."
 msgstr ""
 
 #. js-lingui-explicit-id
+#: src/features/api/ai.ts:65
+msgid "Message ID is required for update action"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:123
+msgid "Failed to fetch AI chat session"
+msgstr ""
+
+#. js-lingui-explicit-id
 #: src/features/api/note.ts:13
 #: src/features/api/note.ts:34
 msgid "Missing valid value"
@@ -94,16 +104,6 @@ msgstr ""
 #. js-lingui-explicit-id
 #: src/features/api/note.ts:211
 msgid "Content cannot be empty"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:65
-msgid "Message ID is required for update action"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:123
-msgid "Failed to fetch AI chat session"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -234,6 +234,10 @@ msgstr ""
 msgid "Already have an account?"
 msgstr ""
 
+#: src/components/todo/column/index.tsx:372
+msgid "Appearance"
+msgstr ""
+
 #: src/components/note/main/index.tsx:514
 msgid "Applying the template..."
 msgstr ""
@@ -242,7 +246,7 @@ msgstr ""
 #~ msgid "Are you sure you want to clean all tasks in this column?"
 #~ msgstr ""
 
-#: src/components/todo/column/index.tsx:349
+#: src/components/todo/column/index.tsx:411
 msgid "Are you sure you want to clear all tasks in this column?"
 msgstr ""
 
@@ -345,7 +349,7 @@ msgstr ""
 #~ msgid "Clean Tasks"
 #~ msgstr ""
 
-#: src/components/todo/column/index.tsx:332
+#: src/components/todo/column/index.tsx:394
 msgid "Clear Tasks"
 msgstr ""
 
@@ -402,6 +406,7 @@ msgstr ""
 #: src/components/dropdown/note/index.tsx:107
 #: src/components/dropdown/note/index.tsx:206
 #: src/components/modal/event/add/index.tsx:165
+#: src/components/todo/column/index.tsx:446
 msgid "Create"
 msgstr ""
 
@@ -520,7 +525,7 @@ msgstr ""
 msgid "Domain Url"
 msgstr ""
 
-#: src/components/todo/column/index.tsx:359
+#: src/components/todo/column/index.tsx:421
 msgid "Don’t clear"
 msgstr ""
 
@@ -716,7 +721,7 @@ msgstr ""
 msgid "History Chats"
 msgstr ""
 
-#: src/components/todo/column/index.tsx:369
+#: src/components/todo/column/index.tsx:431
 msgid "I'm sure"
 msgstr ""
 
@@ -1188,7 +1193,7 @@ msgstr ""
 msgid "Remove from Favorites"
 msgstr ""
 
-#: src/components/todo/column/index.tsx:319
+#: src/components/todo/column/index.tsx:368
 msgid "Rename"
 msgstr ""
 
@@ -1378,7 +1383,7 @@ msgstr ""
 msgid "This invitation link does not exist."
 msgstr ""
 
-#: src/components/todo/column/index.tsx:353
+#: src/components/todo/column/index.tsx:415
 msgid "This is a very dangerous action. Once confirmed, the data cannot be recovered."
 msgstr ""
 

@@ -46,7 +46,7 @@ export default function SiderBar() {
     }
 
     return (
-        <div className="flex h-full flex-col flex p-1 gap-2 items-center px-2 z-[10000] bg-white">
+        <div className="flex h-full flex-col flex p-1 gap-2 items-center px-2 z-[10000] light:bg-white">
             <div className="pt-1" >
                 <Popover content="right-end" placement="right-end" showArrow={true}>
                     <PopoverTrigger>

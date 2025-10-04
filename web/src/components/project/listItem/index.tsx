@@ -1,6 +1,6 @@
 import { ProjectListItemProps } from "./script";
 
-function ProjectListItem(props: ProjectListItemProps) {
+function ProjectListItem(_: ProjectListItemProps) {
     return (
         <>
 

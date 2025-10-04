@@ -333,7 +333,7 @@ function ProjectPage() {
                             isDesktop ?
                                 <>
                                     <motion.aside
-                                        className="absolute  pt-2 left-0 top-0 bottom-0 w-72 bg-white border-r border-gray-200  overflow-hidden"
+                                        className="absolute  pt-2 left-0 top-0 bottom-0 w-72 light:bg-white border-r light:border-gray-200  overflow-hidden"
                                         initial={false}
                                         animate={{ x: openSiderBar ? 0 : -SB, opacity: openSiderBar ? 1 : 0 }}
                                         transition={{ duration: 0.28, ease: "easeInOut" }}

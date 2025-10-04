@@ -71,6 +71,16 @@ msgid "Please log in to continue."
 msgstr "请登录以继续操作"
 
 #. js-lingui-explicit-id
+#: src/features/api/ai.ts:65
+msgid "Message ID is required for update action"
+msgstr "更新操作需要提供消息 ID"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:123
+msgid "Failed to fetch AI chat session"
+msgstr "无法获取 AI 聊天会话"
+
+#. js-lingui-explicit-id
 #: src/features/api/note.ts:13
 #: src/features/api/note.ts:34
 msgid "Missing valid value"
@@ -95,16 +105,6 @@ msgstr "删除笔记失败"
 #: src/features/api/note.ts:211
 msgid "Content cannot be empty"
 msgstr "内容不允许为空"
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:65
-msgid "Message ID is required for update action"
-msgstr "更新操作需要提供消息 ID"
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:123
-msgid "Failed to fetch AI chat session"
-msgstr "无法获取 AI 聊天会话"
 
 #. js-lingui-explicit-id
 #: src/components/list/notes/index.tsx:126
@@ -234,6 +234,10 @@ msgstr "允许与其他人或第三方应用程序共享此笔记。"
 msgid "Already have an account?"
 msgstr "已经有账户？"
 
+#: src/components/todo/column/index.tsx:372
+msgid "Appearance"
+msgstr "外观"
+
 #: src/components/note/main/index.tsx:514
 msgid "Applying the template..."
 msgstr "正在应用模板…"
@@ -242,7 +246,7 @@ msgstr "正在应用模板…"
 #~ msgid "Are you sure you want to clean all tasks in this column?"
 #~ msgstr ""
 
-#: src/components/todo/column/index.tsx:349
+#: src/components/todo/column/index.tsx:411
 msgid "Are you sure you want to clear all tasks in this column?"
 msgstr "您确定要清空此列中的所有任务吗？"
 
@@ -345,7 +349,7 @@ msgstr "清除"
 #~ msgid "Clean Tasks"
 #~ msgstr "清除所有任务"
 
-#: src/components/todo/column/index.tsx:332
+#: src/components/todo/column/index.tsx:394
 msgid "Clear Tasks"
 msgstr "清除所有任务"
 
@@ -402,6 +406,7 @@ msgstr "封面"
 #: src/components/dropdown/note/index.tsx:107
 #: src/components/dropdown/note/index.tsx:206
 #: src/components/modal/event/add/index.tsx:165
+#: src/components/todo/column/index.tsx:446
 msgid "Create"
 msgstr "创建"
 
@@ -520,7 +525,7 @@ msgstr "点踩评论"
 msgid "Domain Url"
 msgstr "域Url"
 
-#: src/components/todo/column/index.tsx:359
+#: src/components/todo/column/index.tsx:421
 msgid "Don’t clear"
 msgstr "不要清空"
 
@@ -716,7 +721,7 @@ msgstr "历史"
 msgid "History Chats"
 msgstr "历史聊天"
 
-#: src/components/todo/column/index.tsx:369
+#: src/components/todo/column/index.tsx:431
 msgid "I'm sure"
 msgstr "我确定"
 
@@ -1188,7 +1193,7 @@ msgstr "移除"
 msgid "Remove from Favorites"
 msgstr "从收藏夹中删除"
 
-#: src/components/todo/column/index.tsx:319
+#: src/components/todo/column/index.tsx:368
 msgid "Rename"
 msgstr "重命名"
 
@@ -1378,7 +1383,7 @@ msgstr "工作区名称包含非法字符"
 msgid "This invitation link does not exist."
 msgstr "此邀请链接不存在。"
 
-#: src/components/todo/column/index.tsx:353
+#: src/components/todo/column/index.tsx:415
 msgid "This is a very dangerous action. Once confirmed, the data cannot be recovered."
 msgstr "这是一个非常危险的操作，确认删除后数据将无法恢复"
 
