@@ -14,6 +14,28 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
+#: src/pages/settings/integrationAccount.tsx:103
+msgid "Are you sure you want to unlink {provider} account?"
+msgstr "你确定要解除与 {provider} 账户的绑定吗？"
+
+#. js-lingui-explicit-id
+#: src/pages/settings/integrationAccount.tsx:108
+msgid "This action cannot be undone."
+msgstr "此操作无法撤销。"
+
+#. js-lingui-explicit-id
+#: src/components/modal/event/add/index.tsx:152
+#: src/pages/workspace/tasks.tsx:147
+msgid "Monthly on the {day}th"
+msgstr "每月的第 {day} 天"
+
+#. js-lingui-explicit-id
+#: src/components/modal/event/add/index.tsx:155
+#: src/pages/workspace/tasks.tsx:150
+msgid "Last {byDay} of the Month"
+msgstr "每月的最后一个 {byDay}"
+
+#. js-lingui-explicit-id
 #: src/locales/dynamicKeys.ts:3
 msgid "task.update"
 msgstr "更新了{field}：<from>{from}</from> → <to>{to}</to>"
@@ -32,18 +54,6 @@ msgstr "列名"
 #: src/locales/dynamicKeys.ts:6
 msgid "task name"
 msgstr "任务名"
-
-#. js-lingui-explicit-id
-#: src/components/modal/event/add/index.tsx:152
-#: src/pages/workspace/tasks.tsx:147
-msgid "Monthly on the {day}th"
-msgstr "每月的第 {day} 天"
-
-#. js-lingui-explicit-id
-#: src/components/modal/event/add/index.tsx:155
-#: src/pages/workspace/tasks.tsx:150
-msgid "Last {byDay} of the Month"
-msgstr "每月的最后一个 {byDay}"
 
 #. js-lingui-explicit-id
 #: src/lib/upload/index.ts:41
@@ -69,16 +79,6 @@ msgstr "权限不足，无法查看或更新工作区"
 #: src/lib/api/client.ts:46
 msgid "Please log in to continue."
 msgstr "请登录以继续操作"
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:65
-msgid "Message ID is required for update action"
-msgstr "更新操作需要提供消息 ID"
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:123
-msgid "Failed to fetch AI chat session"
-msgstr "无法获取 AI 聊天会话"
 
 #. js-lingui-explicit-id
 #: src/features/api/note.ts:13
@@ -107,6 +107,16 @@ msgid "Content cannot be empty"
 msgstr "内容不允许为空"
 
 #. js-lingui-explicit-id
+#: src/features/api/ai.ts:65
+msgid "Message ID is required for update action"
+msgstr "更新操作需要提供消息 ID"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:123
+msgid "Failed to fetch AI chat session"
+msgstr "无法获取 AI 聊天会话"
+
+#. js-lingui-explicit-id
 #: src/components/list/notes/index.tsx:126
 msgid "Would you like to move the file to the \"{total}\" folder?"
 msgstr "是否要将文件移动到\"{total}\\”文件夹？"
@@ -125,6 +135,11 @@ msgstr "请在输入需要发送的信息"
 #: src/lib/upload/index.ts:18
 #~ msgid "File size exceeds the limit of {size} bytes"
 #~ msgstr "文件大小超过限制：{size} 字节"
+
+#: src/pages/settings/integrationSetting.tsx:233
+#: src/pages/settings/integrationSetting.tsx:241
+msgid " (optional)"
+msgstr " (可选)"
 
 #. placeholder {0}: FilterMapping[props.filter?.order_by || "create"]
 #. placeholder {0}: item.label
@@ -157,6 +172,10 @@ msgstr "7天"
 msgid "Access Key"
 msgstr "访问密钥"
 
+#: src/layouts/SettingsLayout.tsx:33
+msgid "Account"
+msgstr "账户"
+
 #: src/pages/settings/accountSettings.tsx:58
 msgid "Account Settings"
 msgstr "账户设置"
@@ -165,6 +184,7 @@ msgstr "账户设置"
 msgid "Action"
 msgstr "行动"
 
+#: src/pages/settings/integrationSetting.tsx:109
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Active"
 msgstr "有效"
@@ -234,6 +254,18 @@ msgstr "允许与其他人或第三方应用程序共享此笔记。"
 msgid "Already have an account?"
 msgstr "已经有账户？"
 
+#: src/pages/settings/integrationSetting.tsx:217
+msgid "App ID"
+msgstr "应用ID(app id)"
+
+#: src/pages/settings/integrationSetting.tsx:209
+msgid "App Name"
+msgstr "应用名称"
+
+#: src/pages/settings/integrationSetting.tsx:225
+msgid "App Secret"
+msgstr "应用密钥(app secret)"
+
 #: src/components/todo/column/index.tsx:372
 msgid "Appearance"
 msgstr "外观"
@@ -280,6 +312,10 @@ msgstr "返回"
 msgid "Basic Information"
 msgstr "基本信息"
 
+#: src/layouts/SettingsLayout.tsx:34
+msgid "Bind Integration Account"
+msgstr "绑定第三方账户"
+
 #: src/pages/settings/storageSettings.tsx:82
 msgid "Bucket Name"
 msgstr "桶名称"
@@ -292,6 +328,7 @@ msgstr "桶名称"
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/user/modifyPassword/index.tsx:58
 #: src/components/note/main/index.tsx:441
+#: src/pages/settings/integrationAccount.tsx:115
 #: src/pages/settings/workspaceSettings.tsx:194
 msgid "Cancel"
 msgstr "取消"
@@ -418,6 +455,10 @@ msgstr "创建一个新的工作区"
 msgid "Create event successfully"
 msgstr "事件创建成功"
 
+#: src/pages/settings/integrationSetting.tsx:137
+msgid "Create Integration"
+msgstr "创建集成"
+
 #: src/components/dropdown/note/index.tsx:70
 msgid "Create note success"
 msgstr "创建笔记成功"
@@ -442,6 +483,10 @@ msgstr "创建人："
 #: src/pages/workspace/favorites.tsx:266
 msgid "Created Time"
 msgstr "创建时间"
+
+#: src/pages/settings/integrationSetting.tsx:174
+msgid "Creating the app, please wait patiently…"
+msgstr "正在创建应用，请耐心等待…"
 
 #: src/components/step/workspace/main.tsx:192
 msgid "Creating workspace..."
@@ -473,6 +518,7 @@ msgstr "默认排序"
 #: src/components/modal/note/deleteModal/index.tsx:43
 #: src/components/note/noteList/index.tsx:77
 #: src/components/todo/task/index.tsx:378
+#: src/pages/settings/integrationSetting.tsx:118
 #: src/pages/settings/workspaceSettings.tsx:195
 msgid "Delete"
 msgstr "删除"
@@ -533,6 +579,10 @@ msgstr "不要清空"
 msgid "Don't have an account yet?"
 msgstr "还没有帐户？"
 
+#: src/pages/settings/integrationSetting.tsx:276
+msgid "Done"
+msgstr "完成"
+
 #: src/components/modal/workspace/link/index.tsx:115
 msgid "Download QR Code"
 msgstr "下载二维码"
@@ -540,6 +590,10 @@ msgstr "下载二维码"
 #: src/pages/settings/workspaceSettings.tsx:174
 msgid "Download Qrcode"
 msgstr "下载二维码"
+
+#: src/pages/settings/integrationSetting.tsx:218
+msgid "e.g., cli_xxx"
+msgstr "例如：cli_xxx"
 
 #: src/components/comment/box/index.tsx:159
 #~ msgid "Edit"
@@ -564,6 +618,18 @@ msgstr "启用编辑"
 #: src/components/note/main/index.tsx:176
 msgid "Enable Share"
 msgstr "Enable Share"
+
+#: src/pages/settings/integrationSetting.tsx:241
+msgid "Encrypt Key"
+msgstr "加密密钥"
+
+#: src/pages/settings/integrationSetting.tsx:210
+msgid "Enter a recognizable name for your app"
+msgstr "输入一个容易识别的应用名称"
+
+#: src/pages/settings/integrationSetting.tsx:226
+msgid "Enter the secret key provided by the platform"
+msgstr "输入平台提供的应用密钥"
 
 #: src/components/modal/user/changeEmail/index.tsx:28
 msgid "Enter your new email"
@@ -629,6 +695,10 @@ msgstr "无法生成邀请链接"
 #~ msgid "Failed to get response from AI"
 #~ msgstr "AI生成失败，请稍后再试～"
 
+#: src/pages/settings/integrationAccount.tsx:31
+msgid "Failed to link: {error}"
+msgstr "绑定失败：{error}"
+
 #: src/components/aiChat/index.tsx:206
 msgid "Failed to load chat history"
 msgstr "加载聊天记录失败"
@@ -643,6 +713,10 @@ msgstr "评论交互失败: {0}"
 msgid "Failed to submit comment: {0}"
 msgstr "提交评论失败：{0}"
 
+#: src/pages/settings/integrationAccount.tsx:120
+msgid "Failed to unlink"
+msgstr "绑定失败"
+
 #. placeholder {0}: res.message
 #: src/components/comment/main/index.tsx:106
 msgid "Failed to update comment: {0}"
@@ -651,6 +725,10 @@ msgstr "更新评论失败: {0}"
 #: src/pages/workspace/favorites.tsx:240
 msgid "Favorites"
 msgstr "收藏夹"
+
+#: src/pages/settings/integrationAccount.tsx:40
+msgid "Feishu"
+msgstr "飞书"
 
 #: src/components/list/notes/index.tsx:122
 msgid "File movement"
@@ -733,6 +811,22 @@ msgstr "如果你要带一位客人，请随意在下面添加他们的电子邮
 msgid "Ignore this prompt for this login"
 msgstr "忽略此登录的提示"
 
+#: src/pages/settings/integrationSetting.tsx:109
+msgid "Inactive"
+msgstr "未激活"
+
+#: src/layouts/SettingsLayout.tsx:51
+msgid "Integration"
+msgstr "集成"
+
+#: src/pages/settings/integrationSetting.tsx:90
+msgid "Integration Setting"
+msgstr "集成设置"
+
+#: src/pages/settings/integrationSetting.tsx:250
+msgid "Integration setup is complete! You can now manage your integration apps in the settings."
+msgstr "集成设置已完成！您现在可以在设置中管理您的集成应用。"
+
 #: src/pages/settings/workspaceSettings.tsx:120
 msgid "Invite link"
 msgstr "邀请链接"
@@ -785,6 +879,14 @@ msgstr "最后活跃时间"
 msgid "Liked the comment"
 msgstr "点赞评论"
 
+#: src/pages/settings/integrationAccount.tsx:78
+msgid "Link"
+msgstr "关联"
+
+#: src/pages/settings/integrationAccount.tsx:67
+msgid "Linked"
+msgstr "已关联"
+
 #: src/components/comment/main/index.tsx:275
 msgid "Load more on scroll"
 msgstr "下拉加载更多"
@@ -808,6 +910,10 @@ msgstr "正在加载项目数据..."
 #: src/pages/workspace/select.tsx:59
 msgid "Loading Workspace..."
 msgstr "正在加载工作区..."
+
+#: src/layouts/SettingsLayout.tsx:99
+msgid "Loading..."
+msgstr "加载中..."
 
 #: src/pages/settings/storageSettings.tsx:96
 msgid "Local storage path"
@@ -839,6 +945,10 @@ msgstr "搜一搜"
 msgid "Mameos Robot"
 msgstr "Mameos小机器人"
 
+#: src/pages/settings/integrationSetting.tsx:116
+msgid "Manage"
+msgstr "管理"
+
 #: src/components/note/main/index.tsx:139
 msgid "Management"
 msgstr "管理"
@@ -852,6 +962,7 @@ msgid "members"
 msgstr "成员"
 
 #: src/components/comment/content/index.tsx:362
+#: src/layouts/SettingsLayout.tsx:42
 msgid "Members"
 msgstr "成员列表"
 
@@ -922,6 +1033,10 @@ msgstr "新建任务"
 msgid "New Template"
 msgstr "新建模版"
 
+#: src/pages/settings/integrationSetting.tsx:269
+msgid "Next"
+msgstr "下一步"
+
 #: src/components/note/noteList/index.tsx:73
 msgid "Next Note"
 msgstr "下一条笔记"
@@ -946,6 +1061,10 @@ msgstr "无截止日期"
 #: src/components/step/workspace/main.tsx:42
 msgid "No expiration"
 msgstr "没有到期"
+
+#: src/pages/settings/integrationSetting.tsx:133
+msgid "No integration available."
+msgstr "无可用集成"
 
 #: src/components/comment/main/index.tsx:276
 msgid "No more comments"
@@ -1102,9 +1221,17 @@ msgstr "请选择类别"
 msgid "Please select a file to upload."
 msgstr "请选择要上传的文件"
 
+#: src/pages/settings/integrationSetting.tsx:37
+msgid "Please select a provider"
+msgstr "请选择服务提供方"
+
 #: src/components/comment/input/index.tsx:46
 msgid "Please wait for attachments to finish uploading."
 msgstr "附件正在上传，请稍候"
+
+#: src/pages/settings/integrationSetting.tsx:262
+msgid "Previous"
+msgstr "上一步"
 
 #: src/components/note/noteList/index.tsx:72
 msgid "Previous Note"
@@ -1258,6 +1385,10 @@ msgstr "选择笔记状态"
 msgid "Select Priority"
 msgstr "选择优先级"
 
+#: src/pages/settings/integrationSetting.tsx:148
+msgid "Select Provider"
+msgstr "选择服务提供方"
+
 #: src/pages/workspace/favorites.tsx:258
 msgid "Select sorting field"
 msgstr "选择排序字段"
@@ -1331,6 +1462,10 @@ msgstr "在下方开始对话"
 msgid "Status"
 msgstr "状态"
 
+#: src/layouts/SettingsLayout.tsx:50
+msgid "Storage"
+msgstr "存储"
+
 #: src/pages/settings/storageSettings.tsx:64
 msgid "Storage Management"
 msgstr "存储管理"
@@ -1347,6 +1482,18 @@ msgstr "存储路径"
 msgid "Submit"
 msgstr "提交"
 
+#: src/pages/settings/integrationSetting.tsx:150
+msgid "Success"
+msgstr "成功"
+
+#: src/pages/settings/integrationAccount.tsx:29
+msgid "Successfully linked"
+msgstr "关联成功"
+
+#: src/pages/settings/integrationAccount.tsx:122
+msgid "Successfully unlinked"
+msgstr "解除关联成功"
+
 #: src/components/menu/sidebar.tsx:85
 msgid "Switch"
 msgstr "切换"
@@ -1354,6 +1501,10 @@ msgstr "切换"
 #: src/components/avatarMenu/index.tsx:59
 msgid "Switch Workspace"
 msgstr "更换工作区"
+
+#: src/layouts/SettingsLayout.tsx:48
+msgid "System"
+msgstr "系统"
 
 #: src/components/note/main/index.tsx:310
 msgid "Templates"
@@ -1407,6 +1558,16 @@ msgstr "输入以搜索…"
 #: src/components/table/device/index.tsx:49
 msgid "Unknow"
 msgstr "未知"
+
+#: src/pages/settings/integrationAccount.tsx:81
+#: src/pages/settings/integrationAccount.tsx:124
+msgid "Unlink"
+msgstr "解除关联"
+
+#: src/pages/settings/integrationAccount.tsx:89
+#: src/pages/settings/integrationAccount.tsx:95
+msgid "Unlink Account"
+msgstr "解除关联账号"
 
 #: src/pages/workspace/favorites.tsx:157
 msgid "Untitled Note"
@@ -1471,6 +1632,18 @@ msgstr "上传失败"
 msgid "Upload File"
 msgstr "上传文件"
 
+#: src/pages/settings/integrationSetting.tsx:234
+msgid "Used for validating requests (if required)"
+msgstr "用于验证请求（如需要）"
+
+#: src/pages/settings/integrationSetting.tsx:242
+msgid "Used to decrypt event payloads (if applicable)"
+msgstr "用于解密事件内容（如适用）"
+
+#: src/layouts/SettingsLayout.tsx:31
+msgid "User"
+msgstr "用户"
+
 #: src/components/form/register/form.tsx:74
 msgid "Verification code failed to send."
 msgstr "验证码发送失败。"
@@ -1479,6 +1652,10 @@ msgstr "验证码发送失败。"
 msgid "Verification code has been sent."
 msgstr "验证码已发送。"
 
+#: src/pages/settings/integrationSetting.tsx:233
+msgid "Verification Token"
+msgstr "验证令牌"
+
 #: src/components/step/workspace/main.tsx:96
 msgid "We are glad to have you here."
 msgstr "我们很高兴你能来。"
@@ -1486,6 +1663,10 @@ msgstr "我们很高兴你能来。"
 #: src/components/aiChatInput/index.tsx:28
 msgid "Welcome back, {username}! Glad to be working with you again today."
 msgstr "欢迎回来，{username}！很高兴今天又能与你共事。"
+
+#: src/layouts/SettingsLayout.tsx:41
+msgid "Workspace"
+msgstr "工作区"
 
 #: src/components/step/workspace/main.tsx:129
 msgid "Workspace Name"

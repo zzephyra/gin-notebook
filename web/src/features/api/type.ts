@@ -1,4 +1,5 @@
 import { CommentAttachment, MentionPayload } from "@/components/comment/main/type";
+import { SupportedIntegrationProvider } from "@/types/integration";
 
 export interface ApiResponse<T = any> {
     code: number;
@@ -157,4 +158,14 @@ export interface ProjectPayload {
     description?: string;
     status?: string; // active, archived
     icon?: string | null;
+}
+
+
+export interface IntegrationAppPayload {
+    name?: string;
+    provider: SupportedIntegrationProvider;
+    app_id: string;
+    app_secret: string;
+    verification_token?: string;
+    encrypt_key?: string;
 }

@@ -4,6 +4,7 @@ import (
 	"gin-notebook/internal/api/v1/aiRoute"
 	"gin-notebook/internal/api/v1/authRoute"
 	"gin-notebook/internal/api/v1/eventRoute"
+	"gin-notebook/internal/api/v1/integrationRoute"
 	"gin-notebook/internal/api/v1/noteRoute"
 	"gin-notebook/internal/api/v1/projectRouter"
 	"gin-notebook/internal/api/v1/realtimeRoute"
@@ -27,7 +28,7 @@ func RegisterV1Routes(r *gin.RouterGroup) {
 	aiRoute.RegisterAiRoutes(group)
 	eventRoute.RegisterEventRoutes(group)
 	projectRouter.ProjectRoutes(group)
-
+	integrationRoute.IntegrationRoutes(group)
 	if broker := bus.Default(); broker != nil {
 		realtimeRoute.RealTimeRoute(group, realtimeRoute.New(broker))
 	}

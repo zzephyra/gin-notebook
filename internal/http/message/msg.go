@@ -127,6 +127,18 @@ const (
 	ERROR_PROJECT_COLUMN_UPDATE_CONFLICTED  = 12018 // 项目列更新冲突
 	ERROR_COMMENT_ALREADY_LIKED_OR_DISLIKED = 12019 // 重复操作点赞/点踩
 	ERROR_PROJECT_UPDATE_CONFLICTED         = 12020 // 项目更新冲突
+
+	// integration模块的错误
+	ERROR_INTEGRATION_ACCOUNT_NOT_EXIST               = 13001 // 集成账号不存在
+	ERROR_INTEGRATION_ACCOUNT_CREATE                  = 13002 // 创建集成账号失败
+	ERROR_INTEGRATION_ACCOUNT_UPDATE                  = 13003 // 更新集成账号失败
+	ERROR_INTEGRATION_ACCOUNT_DELETE                  = 13004 // 删除集成账号失败
+	ERROR_NO_PROMISSION_TO_MODIFY_INTEGRATION_ACCOUNT = 13005 // 无权修改集成账号
+	ERROR_INVALID_INTEGRATION_APP_CREDENTIALS         = 13006 // 无效的集成应用凭据
+	ERROR_FEISHU_INTEGRATION_NOT_CONFIGURED           = 13007 // 飞书集成未配置
+	ERROR_INTEGRATION_APP_NOT_FOUND                   = 13008 // 集成应用未找到
+	ERROR_FEISHU_GET_APP_ACCESS_TOKEN_FAILED          = 13009 // 获取飞书应用访问令牌失败
+	ERROR_FEISHU_GET_USER_ACCESS_TOKEN_FAILED         = 13010 // 获取飞书用户访问令牌失败
 )
 
 var CodeMsg = map[int]string{
@@ -207,4 +219,9 @@ var CodeMsg = map[int]string{
 	ERROR_PROJECT_COLUMN_UPDATE_CONFLICTED:           "项目列更新冲突，请刷新页面后重试",
 	ERROR_COMMENT_ALREADY_LIKED_OR_DISLIKED:          "您已操作过啦，不能重复点赞/点踩",
 	ERROR_PROJECT_UPDATE_CONFLICTED:                  "项目更新冲突，请刷新页面后重试",
+	ERROR_INVALID_INTEGRATION_APP_CREDENTIALS:        "无效的集成应用凭据",
+	ERROR_FEISHU_INTEGRATION_NOT_CONFIGURED:          "飞书集成未配置",
+	ERROR_INTEGRATION_APP_NOT_FOUND:                  "集成应用未找到",
+	ERROR_FEISHU_GET_APP_ACCESS_TOKEN_FAILED:         "获取飞书应用访问令牌失败",
+	ERROR_FEISHU_GET_USER_ACCESS_TOKEN_FAILED:        "获取飞书用户访问令牌失败",
 }

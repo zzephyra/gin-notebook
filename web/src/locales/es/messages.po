@@ -14,6 +14,28 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
+#: src/pages/settings/integrationAccount.tsx:103
+msgid "Are you sure you want to unlink {provider} account?"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/pages/settings/integrationAccount.tsx:108
+msgid "This action cannot be undone."
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/components/modal/event/add/index.tsx:152
+#: src/pages/workspace/tasks.tsx:147
+msgid "Monthly on the {day}th"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/components/modal/event/add/index.tsx:155
+#: src/pages/workspace/tasks.tsx:150
+msgid "Last {byDay} of the Month"
+msgstr ""
+
+#. js-lingui-explicit-id
 #: src/locales/dynamicKeys.ts:3
 msgid "task.update"
 msgstr ""
@@ -31,18 +53,6 @@ msgstr ""
 #. js-lingui-explicit-id
 #: src/locales/dynamicKeys.ts:6
 msgid "task name"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/components/modal/event/add/index.tsx:152
-#: src/pages/workspace/tasks.tsx:147
-msgid "Monthly on the {day}th"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/components/modal/event/add/index.tsx:155
-#: src/pages/workspace/tasks.tsx:150
-msgid "Last {byDay} of the Month"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -68,16 +78,6 @@ msgstr ""
 #. js-lingui-explicit-id
 #: src/lib/api/client.ts:46
 msgid "Please log in to continue."
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:65
-msgid "Message ID is required for update action"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:123
-msgid "Failed to fetch AI chat session"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -107,6 +107,16 @@ msgid "Content cannot be empty"
 msgstr ""
 
 #. js-lingui-explicit-id
+#: src/features/api/ai.ts:65
+msgid "Message ID is required for update action"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:123
+msgid "Failed to fetch AI chat session"
+msgstr ""
+
+#. js-lingui-explicit-id
 #: src/components/list/notes/index.tsx:126
 msgid "Would you like to move the file to the \"{total}\" folder?"
 msgstr ""
@@ -125,6 +135,11 @@ msgstr ""
 #: src/lib/upload/index.ts:18
 #~ msgid "File size exceeds the limit of {size} bytes"
 #~ msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:233
+#: src/pages/settings/integrationSetting.tsx:241
+msgid " (optional)"
+msgstr ""
 
 #. placeholder {0}: FilterMapping[props.filter?.order_by || "create"]
 #. placeholder {0}: item.label
@@ -157,6 +172,10 @@ msgstr ""
 msgid "Access Key"
 msgstr ""
 
+#: src/layouts/SettingsLayout.tsx:33
+msgid "Account"
+msgstr ""
+
 #: src/pages/settings/accountSettings.tsx:58
 msgid "Account Settings"
 msgstr ""
@@ -165,6 +184,7 @@ msgstr ""
 msgid "Action"
 msgstr ""
 
+#: src/pages/settings/integrationSetting.tsx:109
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Active"
 msgstr ""
@@ -234,6 +254,18 @@ msgstr ""
 msgid "Already have an account?"
 msgstr ""
 
+#: src/pages/settings/integrationSetting.tsx:217
+msgid "App ID"
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:209
+msgid "App Name"
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:225
+msgid "App Secret"
+msgstr ""
+
 #: src/components/todo/column/index.tsx:372
 msgid "Appearance"
 msgstr ""
@@ -280,6 +312,10 @@ msgstr ""
 msgid "Basic Information"
 msgstr ""
 
+#: src/layouts/SettingsLayout.tsx:34
+msgid "Bind Integration Account"
+msgstr ""
+
 #: src/pages/settings/storageSettings.tsx:82
 msgid "Bucket Name"
 msgstr ""
@@ -292,6 +328,7 @@ msgstr ""
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/user/modifyPassword/index.tsx:58
 #: src/components/note/main/index.tsx:441
+#: src/pages/settings/integrationAccount.tsx:115
 #: src/pages/settings/workspaceSettings.tsx:194
 msgid "Cancel"
 msgstr ""
@@ -418,6 +455,10 @@ msgstr ""
 msgid "Create event successfully"
 msgstr ""
 
+#: src/pages/settings/integrationSetting.tsx:137
+msgid "Create Integration"
+msgstr ""
+
 #: src/components/dropdown/note/index.tsx:70
 msgid "Create note success"
 msgstr ""
@@ -441,6 +482,10 @@ msgstr ""
 #: src/components/comment/main/index.tsx:195
 #: src/pages/workspace/favorites.tsx:266
 msgid "Created Time"
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:174
+msgid "Creating the app, please wait patiently…"
 msgstr ""
 
 #: src/components/step/workspace/main.tsx:192
@@ -473,6 +518,7 @@ msgstr ""
 #: src/components/modal/note/deleteModal/index.tsx:43
 #: src/components/note/noteList/index.tsx:77
 #: src/components/todo/task/index.tsx:378
+#: src/pages/settings/integrationSetting.tsx:118
 #: src/pages/settings/workspaceSettings.tsx:195
 msgid "Delete"
 msgstr ""
@@ -533,12 +579,20 @@ msgstr ""
 msgid "Don't have an account yet?"
 msgstr ""
 
+#: src/pages/settings/integrationSetting.tsx:276
+msgid "Done"
+msgstr ""
+
 #: src/components/modal/workspace/link/index.tsx:115
 msgid "Download QR Code"
 msgstr ""
 
 #: src/pages/settings/workspaceSettings.tsx:174
 msgid "Download Qrcode"
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:218
+msgid "e.g., cli_xxx"
 msgstr ""
 
 #: src/components/comment/box/index.tsx:159
@@ -563,6 +617,18 @@ msgstr ""
 
 #: src/components/note/main/index.tsx:176
 msgid "Enable Share"
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:241
+msgid "Encrypt Key"
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:210
+msgid "Enter a recognizable name for your app"
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:226
+msgid "Enter the secret key provided by the platform"
 msgstr ""
 
 #: src/components/modal/user/changeEmail/index.tsx:28
@@ -629,6 +695,10 @@ msgstr ""
 #~ msgid "Failed to get response from AI"
 #~ msgstr ""
 
+#: src/pages/settings/integrationAccount.tsx:31
+msgid "Failed to link: {error}"
+msgstr ""
+
 #: src/components/aiChat/index.tsx:206
 msgid "Failed to load chat history"
 msgstr ""
@@ -643,6 +713,10 @@ msgstr ""
 msgid "Failed to submit comment: {0}"
 msgstr ""
 
+#: src/pages/settings/integrationAccount.tsx:120
+msgid "Failed to unlink"
+msgstr ""
+
 #. placeholder {0}: res.message
 #: src/components/comment/main/index.tsx:106
 msgid "Failed to update comment: {0}"
@@ -650,6 +724,10 @@ msgstr ""
 
 #: src/pages/workspace/favorites.tsx:240
 msgid "Favorites"
+msgstr ""
+
+#: src/pages/settings/integrationAccount.tsx:40
+msgid "Feishu"
 msgstr ""
 
 #: src/components/list/notes/index.tsx:122
@@ -733,6 +811,22 @@ msgstr ""
 msgid "Ignore this prompt for this login"
 msgstr ""
 
+#: src/pages/settings/integrationSetting.tsx:109
+msgid "Inactive"
+msgstr ""
+
+#: src/layouts/SettingsLayout.tsx:51
+msgid "Integration"
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:90
+msgid "Integration Setting"
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:250
+msgid "Integration setup is complete! You can now manage your integration apps in the settings."
+msgstr ""
+
 #: src/pages/settings/workspaceSettings.tsx:120
 msgid "Invite link"
 msgstr ""
@@ -785,6 +879,14 @@ msgstr ""
 msgid "Liked the comment"
 msgstr ""
 
+#: src/pages/settings/integrationAccount.tsx:78
+msgid "Link"
+msgstr ""
+
+#: src/pages/settings/integrationAccount.tsx:67
+msgid "Linked"
+msgstr ""
+
 #: src/components/comment/main/index.tsx:275
 msgid "Load more on scroll"
 msgstr ""
@@ -807,6 +909,10 @@ msgstr ""
 
 #: src/pages/workspace/select.tsx:59
 msgid "Loading Workspace..."
+msgstr ""
+
+#: src/layouts/SettingsLayout.tsx:99
+msgid "Loading..."
 msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:96
@@ -839,6 +945,10 @@ msgstr ""
 msgid "Mameos Robot"
 msgstr ""
 
+#: src/pages/settings/integrationSetting.tsx:116
+msgid "Manage"
+msgstr ""
+
 #: src/components/note/main/index.tsx:139
 msgid "Management"
 msgstr ""
@@ -852,6 +962,7 @@ msgid "members"
 msgstr ""
 
 #: src/components/comment/content/index.tsx:362
+#: src/layouts/SettingsLayout.tsx:42
 msgid "Members"
 msgstr ""
 
@@ -922,6 +1033,10 @@ msgstr ""
 msgid "New Template"
 msgstr ""
 
+#: src/pages/settings/integrationSetting.tsx:269
+msgid "Next"
+msgstr ""
+
 #: src/components/note/noteList/index.tsx:73
 msgid "Next Note"
 msgstr ""
@@ -945,6 +1060,10 @@ msgstr ""
 
 #: src/components/step/workspace/main.tsx:42
 msgid "No expiration"
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:133
+msgid "No integration available."
 msgstr ""
 
 #: src/components/comment/main/index.tsx:276
@@ -1102,8 +1221,16 @@ msgstr ""
 msgid "Please select a file to upload."
 msgstr ""
 
+#: src/pages/settings/integrationSetting.tsx:37
+msgid "Please select a provider"
+msgstr ""
+
 #: src/components/comment/input/index.tsx:46
 msgid "Please wait for attachments to finish uploading."
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:262
+msgid "Previous"
 msgstr ""
 
 #: src/components/note/noteList/index.tsx:72
@@ -1258,6 +1385,10 @@ msgstr ""
 msgid "Select Priority"
 msgstr ""
 
+#: src/pages/settings/integrationSetting.tsx:148
+msgid "Select Provider"
+msgstr ""
+
 #: src/pages/workspace/favorites.tsx:258
 msgid "Select sorting field"
 msgstr ""
@@ -1331,6 +1462,10 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+#: src/layouts/SettingsLayout.tsx:50
+msgid "Storage"
+msgstr ""
+
 #: src/pages/settings/storageSettings.tsx:64
 msgid "Storage Management"
 msgstr ""
@@ -1347,12 +1482,28 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
+#: src/pages/settings/integrationSetting.tsx:150
+msgid "Success"
+msgstr ""
+
+#: src/pages/settings/integrationAccount.tsx:29
+msgid "Successfully linked"
+msgstr ""
+
+#: src/pages/settings/integrationAccount.tsx:122
+msgid "Successfully unlinked"
+msgstr ""
+
 #: src/components/menu/sidebar.tsx:85
 msgid "Switch"
 msgstr ""
 
 #: src/components/avatarMenu/index.tsx:59
 msgid "Switch Workspace"
+msgstr ""
+
+#: src/layouts/SettingsLayout.tsx:48
+msgid "System"
 msgstr ""
 
 #: src/components/note/main/index.tsx:310
@@ -1406,6 +1557,16 @@ msgstr ""
 
 #: src/components/table/device/index.tsx:49
 msgid "Unknow"
+msgstr ""
+
+#: src/pages/settings/integrationAccount.tsx:81
+#: src/pages/settings/integrationAccount.tsx:124
+msgid "Unlink"
+msgstr ""
+
+#: src/pages/settings/integrationAccount.tsx:89
+#: src/pages/settings/integrationAccount.tsx:95
+msgid "Unlink Account"
 msgstr ""
 
 #: src/pages/workspace/favorites.tsx:157
@@ -1471,12 +1632,28 @@ msgstr ""
 msgid "Upload File"
 msgstr ""
 
+#: src/pages/settings/integrationSetting.tsx:234
+msgid "Used for validating requests (if required)"
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:242
+msgid "Used to decrypt event payloads (if applicable)"
+msgstr ""
+
+#: src/layouts/SettingsLayout.tsx:31
+msgid "User"
+msgstr ""
+
 #: src/components/form/register/form.tsx:74
 msgid "Verification code failed to send."
 msgstr ""
 
 #: src/components/form/register/form.tsx:68
 msgid "Verification code has been sent."
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:233
+msgid "Verification Token"
 msgstr ""
 
 #: src/components/todo/task/index.tsx:515
@@ -1489,6 +1666,10 @@ msgstr ""
 
 #: src/components/aiChatInput/index.tsx:28
 msgid "Welcome back, {username}! Glad to be working with you again today."
+msgstr ""
+
+#: src/layouts/SettingsLayout.tsx:41
+msgid "Workspace"
 msgstr ""
 
 #: src/components/step/workspace/main.tsx:129

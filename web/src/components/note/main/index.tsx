@@ -128,7 +128,7 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
     }
 
     return (
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl" className="max-h-[715px] share-modal">
+        <Modal classNames={{ base: "z-[1100]" }} isOpen={isOpen} onOpenChange={onOpenChange} size="4xl" className="max-h-[715px] share-modal">
             <ModalContent >
                 {() => (
                     <>

@@ -1,0 +1,26 @@
+import { IntegrationAppPayload } from "@/features/api/type";
+import { IntegrationAppMap } from "@/hooks/useIntegration";
+import { IntegrationAccount, IntegrationApp, SupportedIntegrationProvider } from "@/types/integration";
+import { createContext, useContext } from 'react';
+
+export interface IntegrationController {
+    isLoading: boolean;
+    isLoadingAccounts: boolean;
+    apps: IntegrationApp[];
+    accounts: IntegrationAccount[];
+    addNewApp: (app: IntegrationAppPayload) => Promise<any>;
+    appsMap: Record<string, IntegrationAppMap>;
+    refreshIntegrationAccounts: (provider?: SupportedIntegrationProvider) => Promise<any>;
+    unlinkIntegrationAccount: (provider: SupportedIntegrationProvider) => Promise<any>;
+}
+
+const IntegrationContext = createContext<IntegrationController | null>(null);
+
+export const IntegrationProvider = IntegrationContext.Provider;
+
+export function useIntegration() {
+    const ctx = useContext(IntegrationContext);
+    if (!ctx) throw new Error('useIntegration must be used within IntegrationProvider');
+    return ctx;
+}
+
