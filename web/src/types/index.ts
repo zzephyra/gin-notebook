@@ -10,6 +10,7 @@ export interface IconType {
   filled?: boolean,
   size?: number,
   height?: number,
+  className?: string,
   width?: number,
   [key: string]: any
 } 

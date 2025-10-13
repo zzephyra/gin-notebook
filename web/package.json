@@ -48,7 +48,7 @@
     "@heroui/snippet": "^2.2.24",
     "@heroui/switch": "^2.2.21",
     "@heroui/system": "^2.4.19",
-    "@heroui/theme": "^2.4.19",
+    "@heroui/theme": "^2.4.23",
     "@heroui/use-theme": "^2.1.10",
     "@lingui/core": "^5.3.0",
     "@lingui/macro": "^5.3.0",

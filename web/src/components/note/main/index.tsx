@@ -26,8 +26,6 @@ import {
 import { useDroppable } from '@dnd-kit/react';
 import ShareIcon from "../../icons/share";
 import "./style.css"
-import NotionIcon from "../../icons/notion";
-import WechatIcon from "../../icons/wechat";
 import LinkIcon from "../../icons/link";
 import LockIcon from "../../icons/lock";
 import SettingsWrapper from "../../setting/wrapper";
@@ -39,7 +37,7 @@ import SquareIcon from "../../icons/square";
 import { store } from "@/store";
 import { UpdateNoteByID } from "@/store/features/workspace";
 import DeleteNoteModal from "@/components/modal/note/deleteModal";
-import { CameraIcon, Cog8ToothIcon, CubeIcon, PlusIcon, SparklesIcon, StarIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
+import { CameraIcon, CloudArrowUpIcon, Cog8ToothIcon, CubeIcon, PlusIcon, SparklesIcon, StarIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
 import { StarIcon as SolidStarIcon } from "@heroicons/react/24/solid";
 import BlockNoteEditor from "@/components/third-party/BlockNoteEditor";
 import { Tabs, Tab } from "@heroui/tabs";
@@ -52,6 +50,9 @@ import TemplateCard from "@/components/template/card";
 import { TemplateNote } from "@/components/template/type";
 import { useDragDropMonitor } from '@dnd-kit/react';
 import Loading from "@/components/loading/Chase/loading";
+import NewSyncModal from "@/components/modal/note/addSync";
+import { IntegrationProvider } from "@/contexts/IntegrationContext";
+import useIntegration from "@/hooks/useIntegration";
 
 
 const iconSize = 14
@@ -61,6 +62,13 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
     const inputRef = useRef<HTMLInputElement>(null);
     const [selectedKey, setSelectedKey] = useState([activeKey || "permission"]);
     const { isOpen: isOpenDeleteModal, onOpen: onOpenDeleteModal, onOpenChange: onOpenDeleteModalChange } = useDisclosure();
+    const { isOpen: isOpenNewSyncModal, onOpen: onOpenNewSyncModal, onOpenChange: onOpenNewSyncModalChange } = useDisclosure();
+    const isSyncTab = selectedKey[0] === "sync";
+    const integrationEnabled = isSyncTab || isOpenNewSyncModal;
+    const value = useIntegration({
+        enabledApps: integrationEnabled,
+        enabledAccounts: integrationEnabled,
+    })
     const state = store.getState()
     const handleSelectionChange = (keys: any) => {
         setSelectedKey([keys.currentKey]);
@@ -128,24 +136,24 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
     }
 
     return (
-        <Modal classNames={{ base: "z-[1100]" }} isOpen={isOpen} onOpenChange={onOpenChange} size="4xl" className="max-h-[715px] share-modal">
+        <Modal classNames={{ base: "z-[1100] !my-auto" }} isOpen={isOpen} onOpenChange={onOpenChange} size="4xl" className="max-h-[715px] share-modal">
             <ModalContent >
                 {() => (
                     <>
-                        <ModalBody className="p-0">
+                        <ModalBody className="p-0 h-full">
+
                             <div className="flex h-full">
-                                <Listbox disallowEmptySelection hideSelectedIcon={false} disabledKeys={disabledList} selectionMode="single" shouldHighlightOnFocus variant="flat" aria-label="Share Modal" className="w-56 h-full bg-slate-50 px-3 py-2" selectedKeys={selectedKey} onSelectionChange={handleSelectionChange}>
+                                <Listbox disallowEmptySelection hideSelectedIcon={false} disabledKeys={disabledList} selectionMode="single" shouldHighlightOnFocus variant="flat" aria-label="Share Modal" className="w-56 h-full bg-slate-50 dark:bg-[#191919] px-3 py-2" selectedKeys={selectedKey} onSelectionChange={handleSelectionChange}>
                                     <ListboxSection showDivider title={t`General`}>
                                         <ListboxItem key="management" startContent={<SquareIcon size={iconSize} />}>{t`Management`}</ListboxItem>
                                         <ListboxItem key="permission" startContent={<LockIcon size={iconSize} />}>{t`Permission`}</ListboxItem>
                                     </ListboxSection>
                                     <ListboxSection title={t`Share`} >
                                         <ListboxItem key="link" startContent={<LinkIcon size={iconSize} />} >{t`Invite Link`}</ListboxItem>
-                                        <ListboxItem key="notion" startContent={<NotionIcon size={iconSize} />}>{t`Share Notion`}</ListboxItem>
-                                        <ListboxItem key="wechat" startContent={<WechatIcon size={iconSize} />}>{t`Share Wechat`}</ListboxItem>
+                                        <ListboxItem key="sync" startContent={<CloudArrowUpIcon className="w-3.5" />}>{t`Synchronization`}</ListboxItem>
                                     </ListboxSection>
                                 </Listbox>
-                                <div className="flex-1 px-16 py-9 gap-4 flex flex-col">
+                                <div className="flex-1 px-16 py-9 gap-4 dark:bg-[#191919] flex flex-col overflow-y-auto">
                                     {selectedKey[0] == "management" && (
                                         <>
                                             <SettingsWrapper title={t`Basic Information`}>
@@ -212,10 +220,18 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                                             </SettingsWrapper>
                                         </div>
                                     )}
-                                    {selectedKey[0] == "notion" && (
-                                        <div>
-                                            notion
-                                        </div>
+                                    {selectedKey[0] == "sync" && (
+                                        <IntegrationProvider value={value}>
+                                            <div className=" flex-1">
+                                                <SettingsWrapper title={t`Synchronization`} itemClasses="h-full" className="h-full" endComponent={<Button onPress={onOpenNewSyncModalChange} className="w-[55px] h-[26px] !text-xs min-w-0" radius="sm" color="primary">{t`Add`}</Button>}>
+                                                    <div className="h-full overflow-y-auto border border-slate-200 rounded-lg p-4">
+
+                                                    </div>
+                                                </SettingsWrapper>
+                                                <NewSyncModal isOpen={isOpenNewSyncModal} onOpenChange={onOpenNewSyncModalChange}></NewSyncModal>
+                                            </div>
+                                        </IntegrationProvider>
+
                                     )}
                                     {selectedKey[0] == "wechat" && (
                                         <div>

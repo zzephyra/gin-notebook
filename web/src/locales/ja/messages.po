@@ -136,8 +136,8 @@ msgstr ""
 #~ msgid "File size exceeds the limit of {size} bytes"
 #~ msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:233
-#: src/pages/settings/integrationSetting.tsx:241
+#: src/pages/settings/integrationSetting.tsx:219
+#: src/pages/settings/integrationSetting.tsx:227
 msgid " (optional)"
 msgstr ""
 
@@ -184,13 +184,17 @@ msgstr ""
 msgid "Action"
 msgstr "アクション"
 
-#: src/pages/settings/integrationSetting.tsx:109
+#: src/pages/settings/integrationSetting.tsx:95
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Active"
 msgstr "アクティブ"
 
 #: src/components/todo/taskDetails/index.tsx:463
 msgid "Activity"
+msgstr ""
+
+#: src/components/note/main/index.tsx:226
+msgid "Add"
 msgstr ""
 
 #: src/components/todo/task/index.tsx:358
@@ -214,6 +218,10 @@ msgstr "新しい招待リンクを追加"
 msgid "Add New Note"
 msgstr "新しいノートを追加"
 
+#: src/components/modal/note/addSync/index.tsx:44
+msgid "Add Synchronization"
+msgstr ""
+
 #: src/components/note/categoryItem/index.tsx:60
 msgid "Add to Favorites"
 msgstr "お気に入りに追加"
@@ -230,7 +238,7 @@ msgstr "コメントを許可"
 msgid "Allow editing"
 msgstr "編集を許可"
 
-#: src/components/note/main/index.tsx:179
+#: src/components/note/main/index.tsx:187
 msgid "Allow editing this note."
 msgstr "このノートを編集できます。"
 
@@ -246,7 +254,7 @@ msgstr "参加許可"
 msgid "Allow sharing"
 msgstr "共有を許可"
 
-#: src/components/note/main/index.tsx:176
+#: src/components/note/main/index.tsx:184
 msgid "Allow sharing this note with others or third-party applications."
 msgstr "このノートを他のアプリケーションやサードパーティアプリケーションと共有することを許可します。"
 
@@ -254,15 +262,15 @@ msgstr "このノートを他のアプリケーションやサードパーティ
 msgid "Already have an account?"
 msgstr "アカウントをお持ちですか？"
 
-#: src/pages/settings/integrationSetting.tsx:217
+#: src/pages/settings/integrationSetting.tsx:203
 msgid "App ID"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:209
+#: src/pages/settings/integrationSetting.tsx:195
 msgid "App Name"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:225
+#: src/pages/settings/integrationSetting.tsx:211
 msgid "App Secret"
 msgstr ""
 
@@ -270,7 +278,7 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
-#: src/components/note/main/index.tsx:514
+#: src/components/note/main/index.tsx:530
 msgid "Applying the template..."
 msgstr ""
 
@@ -303,12 +311,16 @@ msgstr ""
 msgid "Auto save failed, please try again later."
 msgstr ""
 
+#: src/components/modal/note/addSync/index.tsx:86
+msgid "Auto Sync"
+msgstr ""
+
 #: src/components/step/workspace/main.tsx:182
 #: src/pages/workspace/project.tsx:115
 msgid "Back"
 msgstr "バック"
 
-#: src/components/note/main/index.tsx:151
+#: src/components/note/main/index.tsx:159
 msgid "Basic Information"
 msgstr "基本情報"
 
@@ -327,7 +339,7 @@ msgstr "バケット名"
 #: src/components/modal/note/deleteModal/index.tsx:42
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/user/modifyPassword/index.tsx:58
-#: src/components/note/main/index.tsx:441
+#: src/components/note/main/index.tsx:457
 #: src/pages/settings/integrationAccount.tsx:115
 #: src/pages/settings/workspaceSettings.tsx:194
 msgid "Cancel"
@@ -341,11 +353,11 @@ msgstr ""
 msgid "Card Preview"
 msgstr ""
 
-#: src/components/note/main/index.tsx:155
+#: src/components/note/main/index.tsx:163
 msgid "Categorize the note by selecting an existing note category."
 msgstr "既存のノートカテゴリを選択してノートを分類します。"
 
-#: src/components/note/main/index.tsx:155
+#: src/components/note/main/index.tsx:163
 msgid "Category"
 msgstr "カテゴリー"
 
@@ -414,7 +426,7 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
-#: src/components/note/main/index.tsx:444
+#: src/components/note/main/index.tsx:460
 msgid "Confirm"
 msgstr ""
 
@@ -426,6 +438,10 @@ msgstr "パスワードの確認"
 msgid "Confirm your new password"
 msgstr "新しいパスワードを確認する"
 
+#: src/components/modal/note/addSync/index.tsx:103
+msgid "Conflict Policy"
+msgstr ""
+
 #: src/components/modal/workspace/link/index.tsx:116
 msgid "Copy Link"
 msgstr "リンクをコピー"
@@ -434,7 +450,7 @@ msgstr "リンクをコピー"
 msgid "Copy successfully"
 msgstr "コピー成功"
 
-#: src/components/note/main/index.tsx:162
+#: src/components/note/main/index.tsx:170
 #: src/pages/workspace/project.tsx:144
 #: src/pages/workspace/project.tsx:422
 msgid "Cover"
@@ -455,7 +471,7 @@ msgstr "新しいワークスペースの作成"
 msgid "Create event successfully"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:137
+#: src/pages/settings/integrationSetting.tsx:123
 msgid "Create Integration"
 msgstr ""
 
@@ -484,7 +500,7 @@ msgstr "作成者："
 msgid "Created Time"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:174
+#: src/pages/settings/integrationSetting.tsx:160
 msgid "Creating the app, please wait patiently…"
 msgstr ""
 
@@ -496,7 +512,7 @@ msgstr "ワークスペースの作成..."
 msgid "Current device"
 msgstr "現在の装置"
 
-#: src/components/note/main/index.tsx:183
+#: src/components/note/main/index.tsx:191
 msgid "Danger Zone"
 msgstr "危険地帯"
 
@@ -518,7 +534,7 @@ msgstr ""
 #: src/components/modal/note/deleteModal/index.tsx:43
 #: src/components/note/noteList/index.tsx:77
 #: src/components/todo/task/index.tsx:378
-#: src/pages/settings/integrationSetting.tsx:118
+#: src/pages/settings/integrationSetting.tsx:104
 #: src/pages/settings/workspaceSettings.tsx:195
 msgid "Delete"
 msgstr "削除"
@@ -531,8 +547,8 @@ msgstr "削除失敗"
 msgid "Delete Invite Link"
 msgstr "招待リンクを削除"
 
-#: src/components/note/main/index.tsx:184
-#: src/components/note/main/index.tsx:186
+#: src/components/note/main/index.tsx:192
+#: src/components/note/main/index.tsx:194
 msgid "Delete Note"
 msgstr "メモを削除"
 
@@ -550,7 +566,7 @@ msgstr "正常に削除"
 msgid "Delete task failed"
 msgstr ""
 
-#: src/components/note/main/index.tsx:184
+#: src/components/note/main/index.tsx:192
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "この項目の削除は永続的なアクションであり、元に戻すことはできません。"
 
@@ -579,7 +595,7 @@ msgstr ""
 msgid "Don't have an account yet?"
 msgstr "まだアカウントをお持ちでない場合"
 
-#: src/pages/settings/integrationSetting.tsx:276
+#: src/pages/settings/integrationSetting.tsx:262
 msgid "Done"
 msgstr ""
 
@@ -591,7 +607,7 @@ msgstr "QRコードをダウンロード"
 msgid "Download Qrcode"
 msgstr "ダウンロードQrcode"
 
-#: src/pages/settings/integrationSetting.tsx:218
+#: src/pages/settings/integrationSetting.tsx:204
 msgid "e.g., cli_xxx"
 msgstr ""
 
@@ -611,23 +627,23 @@ msgstr "メールアドレス"
 msgid "Emails go here → one@example.com, two@example.com"
 msgstr "メール は こちら →one@example.com, two@example.com"
 
-#: src/components/note/main/index.tsx:179
+#: src/components/note/main/index.tsx:187
 msgid "Enable Edit"
 msgstr "編集を有効に"
 
-#: src/components/note/main/index.tsx:176
+#: src/components/note/main/index.tsx:184
 msgid "Enable Share"
 msgstr "共有を有効に"
 
-#: src/pages/settings/integrationSetting.tsx:241
+#: src/pages/settings/integrationSetting.tsx:227
 msgid "Encrypt Key"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:210
+#: src/pages/settings/integrationSetting.tsx:196
 msgid "Enter a recognizable name for your app"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:226
+#: src/pages/settings/integrationSetting.tsx:212
 msgid "Enter the secret key provided by the platform"
 msgstr ""
 
@@ -667,7 +683,7 @@ msgstr ""
 msgid "Everyday"
 msgstr ""
 
-#: src/components/note/main/index.tsx:436
+#: src/components/note/main/index.tsx:452
 msgid "Existing content detected. Importing the template will overwrite it. Continue?"
 msgstr ""
 
@@ -726,19 +742,28 @@ msgstr ""
 msgid "Favorites"
 msgstr "アーカイブ"
 
+#: src/hooks/useIntegration.ts:88
 #: src/pages/settings/integrationAccount.tsx:40
 msgid "Feishu"
+msgstr ""
+
+#: src/hooks/useIntegration.ts:91
+msgid "Feishu is an all-in-one collaboration and communication platform that integrates chat, meetings, calendar, docs, and cloud storage. By connecting Feishu, you can automatically sync your notes or tasks into Feishu Docs for seamless teamwork."
 msgstr ""
 
 #: src/components/list/notes/index.tsx:122
 msgid "File movement"
 msgstr "ファイル移動"
 
+#: src/components/modal/note/addSync/index.tsx:126
+msgid "Finish"
+msgstr ""
+
 #: src/components/modal/note/selectCategory/index.tsx:92
 msgid "Frequent Used"
 msgstr "よく使われる"
 
-#: src/components/note/main/index.tsx:138
+#: src/components/note/main/index.tsx:147
 msgid "General"
 msgstr "全般"
 
@@ -811,19 +836,23 @@ msgstr "ゲストを連れてくる場合は、以下のメールアドレスを
 msgid "Ignore this prompt for this login"
 msgstr "このログインのプロンプトを無視する"
 
-#: src/pages/settings/integrationSetting.tsx:109
+#: src/pages/settings/integrationSetting.tsx:95
 msgid "Inactive"
+msgstr ""
+
+#: src/components/modal/note/addSync/index.tsx:111
+msgid "Input note id"
 msgstr ""
 
 #: src/layouts/SettingsLayout.tsx:51
 msgid "Integration"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:90
+#: src/pages/settings/integrationSetting.tsx:76
 msgid "Integration Setting"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:250
+#: src/pages/settings/integrationSetting.tsx:236
 msgid "Integration setup is complete! You can now manage your integration apps in the settings."
 msgstr ""
 
@@ -831,7 +860,7 @@ msgstr ""
 msgid "Invite link"
 msgstr "招待リンク"
 
-#: src/components/note/main/index.tsx:143
+#: src/components/note/main/index.tsx:152
 msgid "Invite Link"
 msgstr "招待リンク"
 
@@ -867,12 +896,16 @@ msgstr "ワークスペースに参加！"
 msgid "Key"
 msgstr "キー"
 
-#: src/layouts/base.tsx:29
+#: src/layouts/base.tsx:34
 msgid "Languages"
 msgstr "言語"
 
 #: src/components/table/device/index.tsx:61
 msgid "Last Active"
+msgstr ""
+
+#: src/components/modal/note/addSync/index.tsx:105
+msgid "Latest Modified Wins"
 msgstr ""
 
 #: src/components/comment/main/index.tsx:119
@@ -924,7 +957,7 @@ msgid "Locaton"
 msgstr ""
 
 #: src/components/avatarMenu/index.tsx:61
-#: src/components/menu/sidebar.tsx:92
+#: src/components/menu/sidebar.tsx:93
 msgid "Log out"
 msgstr "ログインする"
 
@@ -945,19 +978,23 @@ msgstr ""
 msgid "Mameos Robot"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:116
+#: src/pages/settings/integrationSetting.tsx:102
 msgid "Manage"
 msgstr ""
 
-#: src/components/note/main/index.tsx:139
+#: src/components/note/main/index.tsx:148
 msgid "Management"
 msgstr "マネジメント"
 
-#: src/components/menu/sidebar.tsx:75
+#: src/components/modal/note/addSync/index.tsx:89
+msgid "Manual Sync"
+msgstr ""
+
+#: src/components/menu/sidebar.tsx:76
 msgid "member"
 msgstr "メンバー"
 
-#: src/components/menu/sidebar.tsx:75
+#: src/components/menu/sidebar.tsx:76
 msgid "members"
 msgstr "メンバー"
 
@@ -1029,11 +1066,12 @@ msgstr ""
 msgid "New Task"
 msgstr ""
 
-#: src/components/note/main/index.tsx:284
+#: src/components/note/main/index.tsx:300
 msgid "New Template"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:269
+#: src/components/modal/note/addSync/index.tsx:128
+#: src/pages/settings/integrationSetting.tsx:255
 msgid "Next"
 msgstr ""
 
@@ -1045,7 +1083,7 @@ msgstr ""
 #~ msgid "No"
 #~ msgstr ""
 
-#: src/components/note/main/index.tsx:158
+#: src/components/note/main/index.tsx:166
 msgid "No Category"
 msgstr "カテゴリーなし"
 
@@ -1062,7 +1100,11 @@ msgstr ""
 msgid "No expiration"
 msgstr "有効期限なし"
 
-#: src/pages/settings/integrationSetting.tsx:133
+#: src/components/modal/note/addSync/index.tsx:77
+msgid "No integration apps available. Please add an integration app first."
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:119
 msgid "No integration available."
 msgstr ""
 
@@ -1070,7 +1112,7 @@ msgstr ""
 msgid "No more comments"
 msgstr ""
 
-#: src/components/note/main/index.tsx:325
+#: src/components/note/main/index.tsx:341
 msgid "No more templates to load."
 msgstr ""
 
@@ -1088,7 +1130,7 @@ msgstr ""
 msgid "No Title Event"
 msgstr ""
 
-#: src/components/menu/sidebar.tsx:72
+#: src/components/menu/sidebar.tsx:73
 msgid "No Workspace"
 msgstr "ワークスペースなし"
 
@@ -1100,7 +1142,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: src/components/note/main/index.tsx:152
+#: src/components/note/main/index.tsx:160
 msgid "Note ID"
 msgstr "ノートID"
 
@@ -1108,12 +1150,12 @@ msgstr "ノートID"
 msgid "Note Name"
 msgstr "ノート名"
 
-#: src/components/note/main/index.tsx:175
+#: src/components/note/main/index.tsx:183
 msgid "Note Settings"
 msgstr "ノートの設定"
 
-#: src/components/note/main/index.tsx:195
-#: src/components/note/main/index.tsx:201
+#: src/components/note/main/index.tsx:203
+#: src/components/note/main/index.tsx:209
 msgid "Note Status"
 msgstr "ノートステータス"
 
@@ -1121,12 +1163,24 @@ msgstr "ノートステータス"
 msgid "Note title is required"
 msgstr "Note title必須"
 
+#: src/components/modal/note/addSync/index.tsx:111
+msgid "Notebook ID"
+msgstr ""
+
 #: src/pages/workspace/note.tsx:166
 msgid "Notes"
 msgstr "備考"
 
 #: src/components/drower/folderDrower/index.tsx:14
 msgid "Notes Management"
+msgstr ""
+
+#: src/hooks/useIntegration.ts:93
+msgid "Notion"
+msgstr ""
+
+#: src/hooks/useIntegration.ts:96
+msgid "Notion is a powerful tool for note-taking and knowledge management, combining documents, tasks, and databases. Integrating with Notion lets you automatically sync your notes into Notion pages for smooth, bidirectional content updates."
 msgstr ""
 
 #: src/components/table/device/index.tsx:43
@@ -1150,7 +1204,7 @@ msgstr "OR"
 msgid "Ordering"
 msgstr "ソート"
 
-#: src/components/note/main/index.tsx:431
+#: src/components/note/main/index.tsx:447
 msgid "Overwrite Note"
 msgstr ""
 
@@ -1180,8 +1234,8 @@ msgstr ""
 msgid "Per Week"
 msgstr ""
 
-#: src/components/note/main/index.tsx:140
-#: src/components/note/main/index.tsx:194
+#: src/components/note/main/index.tsx:149
+#: src/components/note/main/index.tsx:202
 msgid "Permission"
 msgstr "許可"
 
@@ -1217,11 +1271,12 @@ msgstr "パスワードを入力してください。"
 msgid "Please select a category"
 msgstr "カテゴリーを選択してください"
 
-#: src/components/note/main/index.tsx:119
+#: src/components/note/main/index.tsx:127
 msgid "Please select a file to upload."
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:37
+#: src/components/modal/note/addSync/index.tsx:26
+#: src/pages/settings/integrationSetting.tsx:40
 msgid "Please select a provider"
 msgstr ""
 
@@ -1229,7 +1284,8 @@ msgstr ""
 msgid "Please wait for attachments to finish uploading."
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:262
+#: src/components/modal/note/addSync/index.tsx:119
+#: src/pages/settings/integrationSetting.tsx:248
 msgid "Previous"
 msgstr ""
 
@@ -1243,7 +1299,7 @@ msgstr ""
 msgid "Priority"
 msgstr ""
 
-#: src/components/note/main/index.tsx:198
+#: src/components/note/main/index.tsx:206
 msgid "Private"
 msgstr "プライベート"
 
@@ -1255,9 +1311,17 @@ msgstr "プライベート"
 msgid "Project Icon"
 msgstr ""
 
-#: src/components/note/main/index.tsx:197
+#: src/components/note/main/index.tsx:205
 msgid "Public"
 msgstr "パブリック"
+
+#: src/components/modal/note/addSync/index.tsx:97
+msgid "Pull Only"
+msgstr ""
+
+#: src/components/modal/note/addSync/index.tsx:94
+msgid "Push Only"
+msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:76
 msgid "Qi Niu Cloud access key"
@@ -1385,7 +1449,7 @@ msgstr "ノートステータスを選択"
 msgid "Select Priority"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:148
+#: src/pages/settings/integrationSetting.tsx:134
 msgid "Select Provider"
 msgstr ""
 
@@ -1413,8 +1477,8 @@ msgstr ""
 msgid "Session updated successfully"
 msgstr ""
 
-#: src/components/note/main/index.tsx:195
-#: src/components/note/main/index.tsx:201
+#: src/components/note/main/index.tsx:203
+#: src/components/note/main/index.tsx:209
 msgid "Set the current note's status. When set to private, it will be invisible to others."
 msgstr "現在のノートのステータスを設定します。privateに設定すると、他のノートには見えません。"
 
@@ -1422,18 +1486,18 @@ msgstr "現在のノートのステータスを設定します。privateに設�
 #~ msgid "Settings"
 #~ msgstr "設定"
 
-#: src/components/note/main/index.tsx:142
+#: src/components/note/main/index.tsx:151
 #: src/components/note/noteList/index.tsx:63
 msgid "Share"
 msgstr "シェア"
 
 #: src/components/note/main/index.tsx:144
-msgid "Share Notion"
-msgstr "Share Notion"
+#~ msgid "Share Notion"
+#~ msgstr "Share Notion"
 
 #: src/components/note/main/index.tsx:145
-msgid "Share Wechat"
-msgstr "シェアWechat"
+#~ msgid "Share Wechat"
+#~ msgstr "シェアWechat"
 
 #: src/components/form/login/form.tsx:40
 msgid "Sign In"
@@ -1482,7 +1546,7 @@ msgstr "ストレージパス"
 msgid "Submit"
 msgstr "コンテンツ"
 
-#: src/pages/settings/integrationSetting.tsx:150
+#: src/pages/settings/integrationSetting.tsx:136
 msgid "Success"
 msgstr ""
 
@@ -1494,7 +1558,7 @@ msgstr ""
 msgid "Successfully unlinked"
 msgstr ""
 
-#: src/components/menu/sidebar.tsx:85
+#: src/components/menu/sidebar.tsx:86
 msgid "Switch"
 msgstr "スイッチ"
 
@@ -1502,15 +1566,28 @@ msgstr "スイッチ"
 msgid "Switch Workspace"
 msgstr ""
 
+#: src/components/modal/note/addSync/index.tsx:92
+msgid "Sync Direction"
+msgstr ""
+
+#: src/components/modal/note/addSync/index.tsx:84
+msgid "Sync Mode"
+msgstr ""
+
+#: src/components/note/main/index.tsx:153
+#: src/components/note/main/index.tsx:226
+msgid "Synchronization"
+msgstr ""
+
 #: src/layouts/SettingsLayout.tsx:48
 msgid "System"
 msgstr ""
 
-#: src/components/note/main/index.tsx:310
+#: src/components/note/main/index.tsx:326
 msgid "Templates"
 msgstr ""
 
-#: src/components/note/main/index.tsx:163
+#: src/components/note/main/index.tsx:171
 msgid "The cover image is displayed at the top of the note and in the template thumbnail. Leave it blank to use the first image in the note."
 msgstr ""
 
@@ -1522,7 +1599,7 @@ msgstr "ノートタイトルは必須で、長さは100文字を超えてはな
 msgid "The number of members who have joined the workspace using this link"
 msgstr "このリンクを使用してワークスペースに参加したメンバー数"
 
-#: src/components/note/main/index.tsx:152
+#: src/components/note/main/index.tsx:160
 msgid "The unique ID of the note."
 msgstr "ノートの一意のID。"
 
@@ -1550,6 +1627,10 @@ msgstr ""
 #: src/components/step/workspace/main.tsx:113
 msgid "To ensure compatibility, please avoid special characters in the name."
 msgstr "互換性を確保するため、名前に特殊文字を使用しないでください。"
+
+#: src/components/modal/note/addSync/index.tsx:100
+msgid "Two-way Sync"
+msgstr ""
 
 #: src/pages/workspace/project.tsx:370
 msgid "Typing for search..."
@@ -1595,8 +1676,8 @@ msgstr "ニックネームの更新"
 msgid "Update password successfully"
 msgstr "パスワードの更新"
 
-#: src/components/note/main/index.tsx:73
-#: src/components/note/main/index.tsx:110
+#: src/components/note/main/index.tsx:81
+#: src/components/note/main/index.tsx:118
 #: src/pages/settings/storageSettings.tsx:55
 msgid "Update successfully"
 msgstr "更新成功"
@@ -1611,7 +1692,7 @@ msgstr ""
 msgid "Updated Time"
 msgstr ""
 
-#: src/components/note/main/index.tsx:165
+#: src/components/note/main/index.tsx:173
 #: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"
 msgstr "アップロード"
@@ -1632,11 +1713,11 @@ msgstr ""
 msgid "Upload File"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:234
+#: src/pages/settings/integrationSetting.tsx:220
 msgid "Used for validating requests (if required)"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:242
+#: src/pages/settings/integrationSetting.tsx:228
 msgid "Used to decrypt event payloads (if applicable)"
 msgstr ""
 
@@ -1652,7 +1733,7 @@ msgstr "認証コードの送信に失敗した。"
 msgid "Verification code has been sent."
 msgstr "認証コードが送信されました。"
 
-#: src/pages/settings/integrationSetting.tsx:233
+#: src/pages/settings/integrationSetting.tsx:219
 msgid "Verification Token"
 msgstr ""
 
@@ -1676,7 +1757,7 @@ msgstr ""
 msgid "Workspace Name"
 msgstr "ワークスペース名"
 
-#: src/components/menu/sidebar.tsx:72
+#: src/components/menu/sidebar.tsx:73
 msgid "Workspace: "
 msgstr "ワークスペース"
 

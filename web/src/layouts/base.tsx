@@ -4,10 +4,13 @@ import { Trans } from '@lingui/react/macro';
 import { ThemeSwitcher } from '@/components/ThemeSwitch/switch';
 import { i18n } from '@lingui/core';
 import { loadCatalog } from "@/i18n";
+import { useAppTheme } from '@/contexts/UIThemeContext';
 const languages = [
   { value: 'en', label: 'English' },
   { value: 'zh_cn', label: '简体中文' },
 ];
+
+
 
 async function changeLanguage(locale: "all" | Set<React.Key> & { anchorKey?: string; currentKey?: string }) {
   if (locale === "all") {
@@ -18,6 +21,8 @@ async function changeLanguage(locale: "all" | Set<React.Key> & { anchorKey?: str
     await loadCatalog(key);
     i18n.activate(key);
   }
+
+
 
 }
 

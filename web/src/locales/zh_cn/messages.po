@@ -136,8 +136,8 @@ msgstr "请在输入需要发送的信息"
 #~ msgid "File size exceeds the limit of {size} bytes"
 #~ msgstr "文件大小超过限制：{size} 字节"
 
-#: src/pages/settings/integrationSetting.tsx:233
-#: src/pages/settings/integrationSetting.tsx:241
+#: src/pages/settings/integrationSetting.tsx:219
+#: src/pages/settings/integrationSetting.tsx:227
 msgid " (optional)"
 msgstr " (可选)"
 
@@ -184,7 +184,7 @@ msgstr "账户设置"
 msgid "Action"
 msgstr "行动"
 
-#: src/pages/settings/integrationSetting.tsx:109
+#: src/pages/settings/integrationSetting.tsx:95
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Active"
 msgstr "有效"
@@ -192,6 +192,10 @@ msgstr "有效"
 #: src/components/todo/taskDetails/index.tsx:463
 msgid "Activity"
 msgstr "活动"
+
+#: src/components/note/main/index.tsx:226
+msgid "Add"
+msgstr ""
 
 #: src/components/todo/task/index.tsx:358
 #: src/components/todo/taskDetails/index.tsx:195
@@ -214,6 +218,10 @@ msgstr "添加新的邀请链接"
 msgid "Add New Note"
 msgstr "添加新笔记"
 
+#: src/components/modal/note/addSync/index.tsx:44
+msgid "Add Synchronization"
+msgstr ""
+
 #: src/components/note/categoryItem/index.tsx:60
 msgid "Add to Favorites"
 msgstr "添加到收藏夹"
@@ -230,7 +238,7 @@ msgstr "允许评论"
 msgid "Allow editing"
 msgstr "允许编辑"
 
-#: src/components/note/main/index.tsx:179
+#: src/components/note/main/index.tsx:187
 msgid "Allow editing this note."
 msgstr "允许编辑此笔记。"
 
@@ -246,7 +254,7 @@ msgstr "允许加入"
 msgid "Allow sharing"
 msgstr "允许共享"
 
-#: src/components/note/main/index.tsx:176
+#: src/components/note/main/index.tsx:184
 msgid "Allow sharing this note with others or third-party applications."
 msgstr "允许与其他人或第三方应用程序共享此笔记。"
 
@@ -254,15 +262,15 @@ msgstr "允许与其他人或第三方应用程序共享此笔记。"
 msgid "Already have an account?"
 msgstr "已经有账户？"
 
-#: src/pages/settings/integrationSetting.tsx:217
+#: src/pages/settings/integrationSetting.tsx:203
 msgid "App ID"
 msgstr "应用ID(app id)"
 
-#: src/pages/settings/integrationSetting.tsx:209
+#: src/pages/settings/integrationSetting.tsx:195
 msgid "App Name"
 msgstr "应用名称"
 
-#: src/pages/settings/integrationSetting.tsx:225
+#: src/pages/settings/integrationSetting.tsx:211
 msgid "App Secret"
 msgstr "应用密钥(app secret)"
 
@@ -270,7 +278,7 @@ msgstr "应用密钥(app secret)"
 msgid "Appearance"
 msgstr "外观"
 
-#: src/components/note/main/index.tsx:514
+#: src/components/note/main/index.tsx:530
 msgid "Applying the template..."
 msgstr "正在应用模板…"
 
@@ -303,12 +311,16 @@ msgstr "负责人"
 msgid "Auto save failed, please try again later."
 msgstr "自动保存失败，请稍后重试"
 
+#: src/components/modal/note/addSync/index.tsx:86
+msgid "Auto Sync"
+msgstr ""
+
 #: src/components/step/workspace/main.tsx:182
 #: src/pages/workspace/project.tsx:115
 msgid "Back"
 msgstr "返回"
 
-#: src/components/note/main/index.tsx:151
+#: src/components/note/main/index.tsx:159
 msgid "Basic Information"
 msgstr "基本信息"
 
@@ -327,7 +339,7 @@ msgstr "桶名称"
 #: src/components/modal/note/deleteModal/index.tsx:42
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/user/modifyPassword/index.tsx:58
-#: src/components/note/main/index.tsx:441
+#: src/components/note/main/index.tsx:457
 #: src/pages/settings/integrationAccount.tsx:115
 #: src/pages/settings/workspaceSettings.tsx:194
 msgid "Cancel"
@@ -341,11 +353,11 @@ msgstr "无法重新加载已有父消息的内容。"
 msgid "Card Preview"
 msgstr "卡片预览"
 
-#: src/components/note/main/index.tsx:155
+#: src/components/note/main/index.tsx:163
 msgid "Categorize the note by selecting an existing note category."
 msgstr "通过选择现有笔记类别对笔记进行分类。"
 
-#: src/components/note/main/index.tsx:155
+#: src/components/note/main/index.tsx:163
 msgid "Category"
 msgstr "类别"
 
@@ -414,7 +426,7 @@ msgstr "评论更新成功"
 msgid "Comments"
 msgstr "评论"
 
-#: src/components/note/main/index.tsx:444
+#: src/components/note/main/index.tsx:460
 msgid "Confirm"
 msgstr "确认"
 
@@ -426,6 +438,10 @@ msgstr "确认密码"
 msgid "Confirm your new password"
 msgstr "确认您的新密码"
 
+#: src/components/modal/note/addSync/index.tsx:103
+msgid "Conflict Policy"
+msgstr ""
+
 #: src/components/modal/workspace/link/index.tsx:116
 msgid "Copy Link"
 msgstr "复制链接"
@@ -434,7 +450,7 @@ msgstr "复制链接"
 msgid "Copy successfully"
 msgstr "复制成功"
 
-#: src/components/note/main/index.tsx:162
+#: src/components/note/main/index.tsx:170
 #: src/pages/workspace/project.tsx:144
 #: src/pages/workspace/project.tsx:422
 msgid "Cover"
@@ -455,7 +471,7 @@ msgstr "创建一个新的工作区"
 msgid "Create event successfully"
 msgstr "事件创建成功"
 
-#: src/pages/settings/integrationSetting.tsx:137
+#: src/pages/settings/integrationSetting.tsx:123
 msgid "Create Integration"
 msgstr "创建集成"
 
@@ -484,7 +500,7 @@ msgstr "创建人："
 msgid "Created Time"
 msgstr "创建时间"
 
-#: src/pages/settings/integrationSetting.tsx:174
+#: src/pages/settings/integrationSetting.tsx:160
 msgid "Creating the app, please wait patiently…"
 msgstr "正在创建应用，请耐心等待…"
 
@@ -496,7 +512,7 @@ msgstr "正在创建工作区..."
 msgid "Current device"
 msgstr "当前设备"
 
-#: src/components/note/main/index.tsx:183
+#: src/components/note/main/index.tsx:191
 msgid "Danger Zone"
 msgstr "危险区"
 
@@ -518,7 +534,7 @@ msgstr "默认排序"
 #: src/components/modal/note/deleteModal/index.tsx:43
 #: src/components/note/noteList/index.tsx:77
 #: src/components/todo/task/index.tsx:378
-#: src/pages/settings/integrationSetting.tsx:118
+#: src/pages/settings/integrationSetting.tsx:104
 #: src/pages/settings/workspaceSettings.tsx:195
 msgid "Delete"
 msgstr "删除"
@@ -531,8 +547,8 @@ msgstr "删除失败"
 msgid "Delete Invite Link"
 msgstr "删除邀请链接"
 
-#: src/components/note/main/index.tsx:184
-#: src/components/note/main/index.tsx:186
+#: src/components/note/main/index.tsx:192
+#: src/components/note/main/index.tsx:194
 msgid "Delete Note"
 msgstr "删除笔记"
 
@@ -550,7 +566,7 @@ msgstr "删除成功"
 msgid "Delete task failed"
 msgstr "删除任务失败"
 
-#: src/components/note/main/index.tsx:184
+#: src/components/note/main/index.tsx:192
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "删除此项目是永久性操作，无法撤消。请谨慎操作。"
 
@@ -579,7 +595,7 @@ msgstr "不要清空"
 msgid "Don't have an account yet?"
 msgstr "还没有帐户？"
 
-#: src/pages/settings/integrationSetting.tsx:276
+#: src/pages/settings/integrationSetting.tsx:262
 msgid "Done"
 msgstr "完成"
 
@@ -591,7 +607,7 @@ msgstr "下载二维码"
 msgid "Download Qrcode"
 msgstr "下载二维码"
 
-#: src/pages/settings/integrationSetting.tsx:218
+#: src/pages/settings/integrationSetting.tsx:204
 msgid "e.g., cli_xxx"
 msgstr "例如：cli_xxx"
 
@@ -611,23 +627,23 @@ msgstr "电子邮件"
 msgid "Emails go here → one@example.com, two@example.com"
 msgstr "电子邮件地址：one@example.com，two@example.com"
 
-#: src/components/note/main/index.tsx:179
+#: src/components/note/main/index.tsx:187
 msgid "Enable Edit"
 msgstr "启用编辑"
 
-#: src/components/note/main/index.tsx:176
+#: src/components/note/main/index.tsx:184
 msgid "Enable Share"
 msgstr "Enable Share"
 
-#: src/pages/settings/integrationSetting.tsx:241
+#: src/pages/settings/integrationSetting.tsx:227
 msgid "Encrypt Key"
 msgstr "加密密钥"
 
-#: src/pages/settings/integrationSetting.tsx:210
+#: src/pages/settings/integrationSetting.tsx:196
 msgid "Enter a recognizable name for your app"
 msgstr "输入一个容易识别的应用名称"
 
-#: src/pages/settings/integrationSetting.tsx:226
+#: src/pages/settings/integrationSetting.tsx:212
 msgid "Enter the secret key provided by the platform"
 msgstr "输入平台提供的应用密钥"
 
@@ -667,7 +683,7 @@ msgstr "每个工作日"
 msgid "Everyday"
 msgstr "每天"
 
-#: src/components/note/main/index.tsx:436
+#: src/components/note/main/index.tsx:452
 msgid "Existing content detected. Importing the template will overwrite it. Continue?"
 msgstr "检测到已有内容。导入模板将覆盖现有内容，是否继续？"
 
@@ -726,19 +742,28 @@ msgstr "更新评论失败: {0}"
 msgid "Favorites"
 msgstr "收藏夹"
 
+#: src/hooks/useIntegration.ts:88
 #: src/pages/settings/integrationAccount.tsx:40
 msgid "Feishu"
 msgstr "飞书"
+
+#: src/hooks/useIntegration.ts:91
+msgid "Feishu is an all-in-one collaboration and communication platform that integrates chat, meetings, calendar, docs, and cloud storage. By connecting Feishu, you can automatically sync your notes or tasks into Feishu Docs for seamless teamwork."
+msgstr "飞书是一体化的协作与沟通平台，集成了聊天、会议、日历、文档和云存储等功能。通过连接飞书，你可以将笔记或任务自动同步到飞书文档中，实现无缝的团队协作。"
 
 #: src/components/list/notes/index.tsx:122
 msgid "File movement"
 msgstr "文件移动"
 
+#: src/components/modal/note/addSync/index.tsx:126
+msgid "Finish"
+msgstr "完成"
+
 #: src/components/modal/note/selectCategory/index.tsx:92
 msgid "Frequent Used"
 msgstr "经常使用"
 
-#: src/components/note/main/index.tsx:138
+#: src/components/note/main/index.tsx:147
 msgid "General"
 msgstr "一般"
 
@@ -811,19 +836,23 @@ msgstr "如果你要带一位客人，请随意在下面添加他们的电子邮
 msgid "Ignore this prompt for this login"
 msgstr "忽略此登录的提示"
 
-#: src/pages/settings/integrationSetting.tsx:109
+#: src/pages/settings/integrationSetting.tsx:95
 msgid "Inactive"
 msgstr "未激活"
+
+#: src/components/modal/note/addSync/index.tsx:111
+msgid "Input note id"
+msgstr "输入笔记ID"
 
 #: src/layouts/SettingsLayout.tsx:51
 msgid "Integration"
 msgstr "集成"
 
-#: src/pages/settings/integrationSetting.tsx:90
+#: src/pages/settings/integrationSetting.tsx:76
 msgid "Integration Setting"
 msgstr "集成设置"
 
-#: src/pages/settings/integrationSetting.tsx:250
+#: src/pages/settings/integrationSetting.tsx:236
 msgid "Integration setup is complete! You can now manage your integration apps in the settings."
 msgstr "集成设置已完成！您现在可以在设置中管理您的集成应用。"
 
@@ -831,7 +860,7 @@ msgstr "集成设置已完成！您现在可以在设置中管理您的集成应
 msgid "Invite link"
 msgstr "邀请链接"
 
-#: src/components/note/main/index.tsx:143
+#: src/components/note/main/index.tsx:152
 msgid "Invite Link"
 msgstr "邀请链接"
 
@@ -867,13 +896,17 @@ msgstr "加入工作区成功！"
 msgid "Key"
 msgstr "关键"
 
-#: src/layouts/base.tsx:29
+#: src/layouts/base.tsx:34
 msgid "Languages"
 msgstr "语言"
 
 #: src/components/table/device/index.tsx:61
 msgid "Last Active"
 msgstr "最后活跃时间"
+
+#: src/components/modal/note/addSync/index.tsx:105
+msgid "Latest Modified Wins"
+msgstr "以最新修改为准"
 
 #: src/components/comment/main/index.tsx:119
 msgid "Liked the comment"
@@ -924,7 +957,7 @@ msgid "Locaton"
 msgstr "定位"
 
 #: src/components/avatarMenu/index.tsx:61
-#: src/components/menu/sidebar.tsx:92
+#: src/components/menu/sidebar.tsx:93
 msgid "Log out"
 msgstr "退出登录"
 
@@ -945,19 +978,23 @@ msgstr "搜一搜"
 msgid "Mameos Robot"
 msgstr "Mameos小机器人"
 
-#: src/pages/settings/integrationSetting.tsx:116
+#: src/pages/settings/integrationSetting.tsx:102
 msgid "Manage"
 msgstr "管理"
 
-#: src/components/note/main/index.tsx:139
+#: src/components/note/main/index.tsx:148
 msgid "Management"
 msgstr "管理"
 
-#: src/components/menu/sidebar.tsx:75
+#: src/components/modal/note/addSync/index.tsx:89
+msgid "Manual Sync"
+msgstr ""
+
+#: src/components/menu/sidebar.tsx:76
 msgid "member"
 msgstr "成员"
 
-#: src/components/menu/sidebar.tsx:75
+#: src/components/menu/sidebar.tsx:76
 msgid "members"
 msgstr "成员"
 
@@ -1029,11 +1066,12 @@ msgstr "新建项目"
 msgid "New Task"
 msgstr "新建任务"
 
-#: src/components/note/main/index.tsx:284
+#: src/components/note/main/index.tsx:300
 msgid "New Template"
 msgstr "新建模版"
 
-#: src/pages/settings/integrationSetting.tsx:269
+#: src/components/modal/note/addSync/index.tsx:128
+#: src/pages/settings/integrationSetting.tsx:255
 msgid "Next"
 msgstr "下一步"
 
@@ -1045,7 +1083,7 @@ msgstr "下一条笔记"
 #~ msgid "No"
 #~ msgstr "不"
 
-#: src/components/note/main/index.tsx:158
+#: src/components/note/main/index.tsx:166
 msgid "No Category"
 msgstr "无类别"
 
@@ -1062,7 +1100,11 @@ msgstr "无截止日期"
 msgid "No expiration"
 msgstr "没有到期"
 
-#: src/pages/settings/integrationSetting.tsx:133
+#: src/components/modal/note/addSync/index.tsx:77
+msgid "No integration apps available. Please add an integration app first."
+msgstr ""
+
+#: src/pages/settings/integrationSetting.tsx:119
 msgid "No integration available."
 msgstr "无可用集成"
 
@@ -1070,7 +1112,7 @@ msgstr "无可用集成"
 msgid "No more comments"
 msgstr "没有更多评论"
 
-#: src/components/note/main/index.tsx:325
+#: src/components/note/main/index.tsx:341
 msgid "No more templates to load."
 msgstr "已全部加载完模板"
 
@@ -1088,7 +1130,7 @@ msgstr "不重复"
 msgid "No Title Event"
 msgstr "无标题事件"
 
-#: src/components/menu/sidebar.tsx:72
+#: src/components/menu/sidebar.tsx:73
 msgid "No Workspace"
 msgstr "无工作区"
 
@@ -1100,7 +1142,7 @@ msgstr "无"
 msgid "None"
 msgstr "无"
 
-#: src/components/note/main/index.tsx:152
+#: src/components/note/main/index.tsx:160
 msgid "Note ID"
 msgstr "笔记ID"
 
@@ -1108,18 +1150,22 @@ msgstr "笔记ID"
 msgid "Note Name"
 msgstr "笔记名称"
 
-#: src/components/note/main/index.tsx:175
+#: src/components/note/main/index.tsx:183
 msgid "Note Settings"
 msgstr "笔记设置"
 
-#: src/components/note/main/index.tsx:195
-#: src/components/note/main/index.tsx:201
+#: src/components/note/main/index.tsx:203
+#: src/components/note/main/index.tsx:209
 msgid "Note Status"
 msgstr "笔记状态"
 
 #: src/components/dropdown/note/index.tsx:124
 msgid "Note title is required"
 msgstr "标题为必填项"
+
+#: src/components/modal/note/addSync/index.tsx:111
+msgid "Notebook ID"
+msgstr "笔记ID"
 
 #: src/pages/workspace/note.tsx:166
 msgid "Notes"
@@ -1128,6 +1174,14 @@ msgstr "笔记"
 #: src/components/drower/folderDrower/index.tsx:14
 msgid "Notes Management"
 msgstr "笔记管理"
+
+#: src/hooks/useIntegration.ts:93
+msgid "Notion"
+msgstr "Notion"
+
+#: src/hooks/useIntegration.ts:96
+msgid "Notion is a powerful tool for note-taking and knowledge management, combining documents, tasks, and databases. Integrating with Notion lets you automatically sync your notes into Notion pages for smooth, bidirectional content updates."
+msgstr "Notion 是一款功能强大的笔记与知识管理工具，将文档、任务和数据库有机结合。通过集成 Notion，你可以将笔记自动同步到 Notion 页面中，实现流畅的双向内容更新。"
 
 #: src/components/table/device/index.tsx:43
 msgid "Now"
@@ -1150,7 +1204,7 @@ msgstr "或"
 msgid "Ordering"
 msgstr "排序"
 
-#: src/components/note/main/index.tsx:431
+#: src/components/note/main/index.tsx:447
 msgid "Overwrite Note"
 msgstr "覆盖笔记"
 
@@ -1180,8 +1234,8 @@ msgstr "每两周"
 msgid "Per Week"
 msgstr "每周"
 
-#: src/components/note/main/index.tsx:140
-#: src/components/note/main/index.tsx:194
+#: src/components/note/main/index.tsx:149
+#: src/components/note/main/index.tsx:202
 msgid "Permission"
 msgstr "许可"
 
@@ -1217,11 +1271,12 @@ msgstr "请输入密码"
 msgid "Please select a category"
 msgstr "请选择类别"
 
-#: src/components/note/main/index.tsx:119
+#: src/components/note/main/index.tsx:127
 msgid "Please select a file to upload."
 msgstr "请选择要上传的文件"
 
-#: src/pages/settings/integrationSetting.tsx:37
+#: src/components/modal/note/addSync/index.tsx:26
+#: src/pages/settings/integrationSetting.tsx:40
 msgid "Please select a provider"
 msgstr "请选择服务提供方"
 
@@ -1229,7 +1284,8 @@ msgstr "请选择服务提供方"
 msgid "Please wait for attachments to finish uploading."
 msgstr "附件正在上传，请稍候"
 
-#: src/pages/settings/integrationSetting.tsx:262
+#: src/components/modal/note/addSync/index.tsx:119
+#: src/pages/settings/integrationSetting.tsx:248
 msgid "Previous"
 msgstr "上一步"
 
@@ -1243,7 +1299,7 @@ msgstr "上一条笔记"
 msgid "Priority"
 msgstr "优先级"
 
-#: src/components/note/main/index.tsx:198
+#: src/components/note/main/index.tsx:206
 msgid "Private"
 msgstr "私有"
 
@@ -1255,9 +1311,17 @@ msgstr "私有"
 msgid "Project Icon"
 msgstr "项目图标"
 
-#: src/components/note/main/index.tsx:197
+#: src/components/note/main/index.tsx:205
 msgid "Public"
 msgstr "公共"
+
+#: src/components/modal/note/addSync/index.tsx:97
+msgid "Pull Only"
+msgstr "仅拉取"
+
+#: src/components/modal/note/addSync/index.tsx:94
+msgid "Push Only"
+msgstr "仅推送"
 
 #: src/pages/settings/storageSettings.tsx:76
 msgid "Qi Niu Cloud access key"
@@ -1385,7 +1449,7 @@ msgstr "选择笔记状态"
 msgid "Select Priority"
 msgstr "选择优先级"
 
-#: src/pages/settings/integrationSetting.tsx:148
+#: src/pages/settings/integrationSetting.tsx:134
 msgid "Select Provider"
 msgstr "选择服务提供方"
 
@@ -1413,8 +1477,8 @@ msgstr "会话删除成功"
 msgid "Session updated successfully"
 msgstr "会话更新成功"
 
-#: src/components/note/main/index.tsx:195
-#: src/components/note/main/index.tsx:201
+#: src/components/note/main/index.tsx:203
+#: src/components/note/main/index.tsx:209
 msgid "Set the current note's status. When set to private, it will be invisible to others."
 msgstr "设置当前便笺的状态。当设置为私有时，其他人将看不到该便笺。"
 
@@ -1422,18 +1486,18 @@ msgstr "设置当前便笺的状态。当设置为私有时，其他人将看不
 #~ msgid "Settings"
 #~ msgstr "设置"
 
-#: src/components/note/main/index.tsx:142
+#: src/components/note/main/index.tsx:151
 #: src/components/note/noteList/index.tsx:63
 msgid "Share"
 msgstr "分享"
 
 #: src/components/note/main/index.tsx:144
-msgid "Share Notion"
-msgstr "分享至Notion"
+#~ msgid "Share Notion"
+#~ msgstr "分享至Notion"
 
 #: src/components/note/main/index.tsx:145
-msgid "Share Wechat"
-msgstr "分享至微信"
+#~ msgid "Share Wechat"
+#~ msgstr "分享至微信"
 
 #: src/components/form/login/form.tsx:40
 msgid "Sign In"
@@ -1482,7 +1546,7 @@ msgstr "存储路径"
 msgid "Submit"
 msgstr "提交"
 
-#: src/pages/settings/integrationSetting.tsx:150
+#: src/pages/settings/integrationSetting.tsx:136
 msgid "Success"
 msgstr "成功"
 
@@ -1494,7 +1558,7 @@ msgstr "关联成功"
 msgid "Successfully unlinked"
 msgstr "解除关联成功"
 
-#: src/components/menu/sidebar.tsx:85
+#: src/components/menu/sidebar.tsx:86
 msgid "Switch"
 msgstr "切换"
 
@@ -1502,15 +1566,28 @@ msgstr "切换"
 msgid "Switch Workspace"
 msgstr "更换工作区"
 
+#: src/components/modal/note/addSync/index.tsx:92
+msgid "Sync Direction"
+msgstr "同步方向"
+
+#: src/components/modal/note/addSync/index.tsx:84
+msgid "Sync Mode"
+msgstr "同步模式"
+
+#: src/components/note/main/index.tsx:153
+#: src/components/note/main/index.tsx:226
+msgid "Synchronization"
+msgstr "同步"
+
 #: src/layouts/SettingsLayout.tsx:48
 msgid "System"
 msgstr "系统"
 
-#: src/components/note/main/index.tsx:310
+#: src/components/note/main/index.tsx:326
 msgid "Templates"
 msgstr "模版"
 
-#: src/components/note/main/index.tsx:163
+#: src/components/note/main/index.tsx:171
 msgid "The cover image is displayed at the top of the note and in the template thumbnail. Leave it blank to use the first image in the note."
 msgstr "封面图片将显示在笔记顶部以及模板缩略图中。如留空，则默认使用笔记中的第一张图片。"
 
@@ -1522,7 +1599,7 @@ msgstr "备注标题为必填项，长度不得超过100个字符。"
 msgid "The number of members who have joined the workspace using this link"
 msgstr "使用此链接加入工作区的成员数"
 
-#: src/components/note/main/index.tsx:152
+#: src/components/note/main/index.tsx:160
 msgid "The unique ID of the note."
 msgstr "笔记的唯一ID。"
 
@@ -1550,6 +1627,10 @@ msgstr "标题"
 #: src/components/step/workspace/main.tsx:113
 msgid "To ensure compatibility, please avoid special characters in the name."
 msgstr "为确保兼容性，请避免在名称中使用特殊字符。"
+
+#: src/components/modal/note/addSync/index.tsx:100
+msgid "Two-way Sync"
+msgstr "双向同步"
 
 #: src/pages/workspace/project.tsx:370
 msgid "Typing for search..."
@@ -1595,8 +1676,8 @@ msgstr "昵称更新成功"
 msgid "Update password successfully"
 msgstr "更新密码成功"
 
-#: src/components/note/main/index.tsx:73
-#: src/components/note/main/index.tsx:110
+#: src/components/note/main/index.tsx:81
+#: src/components/note/main/index.tsx:118
 #: src/pages/settings/storageSettings.tsx:55
 msgid "Update successfully"
 msgstr "更新成功"
@@ -1611,7 +1692,7 @@ msgstr "更新于"
 msgid "Updated Time"
 msgstr "更新时间"
 
-#: src/components/note/main/index.tsx:165
+#: src/components/note/main/index.tsx:173
 #: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"
 msgstr "上传"
@@ -1632,11 +1713,11 @@ msgstr "上传失败"
 msgid "Upload File"
 msgstr "上传文件"
 
-#: src/pages/settings/integrationSetting.tsx:234
+#: src/pages/settings/integrationSetting.tsx:220
 msgid "Used for validating requests (if required)"
 msgstr "用于验证请求（如需要）"
 
-#: src/pages/settings/integrationSetting.tsx:242
+#: src/pages/settings/integrationSetting.tsx:228
 msgid "Used to decrypt event payloads (if applicable)"
 msgstr "用于解密事件内容（如适用）"
 
@@ -1652,7 +1733,7 @@ msgstr "验证码发送失败。"
 msgid "Verification code has been sent."
 msgstr "验证码已发送。"
 
-#: src/pages/settings/integrationSetting.tsx:233
+#: src/pages/settings/integrationSetting.tsx:219
 msgid "Verification Token"
 msgstr "验证令牌"
 
@@ -1672,7 +1753,7 @@ msgstr "工作区"
 msgid "Workspace Name"
 msgstr "工作区名称"
 
-#: src/components/menu/sidebar.tsx:72
+#: src/components/menu/sidebar.tsx:73
 msgid "Workspace: "
 msgstr "工作区："
 

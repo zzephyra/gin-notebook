@@ -13,6 +13,7 @@ import { UserLogOutRequest } from "@/features/api/user";
 import { getMenuItems } from "@/config/site";
 import { GithubIcon } from "../icons";
 import { ThemeSwitcher } from "../ThemeSwitch/switch";
+import { useAppTheme } from "@/contexts/UIThemeContext";
 
 export default function SiderBar() {
     const isVertical = true; // Set to true for vertical tabs

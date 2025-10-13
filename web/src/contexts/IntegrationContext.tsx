@@ -1,6 +1,8 @@
 import { IntegrationAppPayload } from "@/features/api/type";
 import { IntegrationAppMap } from "@/hooks/useIntegration";
+import { IconType } from "@/types";
 import { IntegrationAccount, IntegrationApp, SupportedIntegrationProvider } from "@/types/integration";
+import { MessageDescriptor } from "@lingui/core";
 import { createContext, useContext } from 'react';
 
 export interface IntegrationController {
@@ -12,6 +14,18 @@ export interface IntegrationController {
     appsMap: Record<string, IntegrationAppMap>;
     refreshIntegrationAccounts: (provider?: SupportedIntegrationProvider) => Promise<any>;
     unlinkIntegrationAccount: (provider: SupportedIntegrationProvider) => Promise<any>;
+    thirdPartyIntegrationsMapping: Record<string, {
+        name: MessageDescriptor;
+        key: string;
+        icon: React.FunctionComponentElement<IconType>;
+        description: MessageDescriptor;
+    }>;
+    thirdPartyIntegrations: {
+        name: MessageDescriptor;
+        key: string;
+        icon: React.FunctionComponentElement<IconType>;
+        description: MessageDescriptor;
+    }[];
 }
 
 const IntegrationContext = createContext<IntegrationController | null>(null);

@@ -3,16 +3,17 @@ import { Steps, Tag } from "@douyinfe/semi-ui"
 import { Button } from "@heroui/button"
 import { Card, CardBody, Form, Input, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/react"
 import { useLingui } from "@lingui/react/macro"
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useMediaQuery } from "react-responsive"
 import { AnimatePresence, motion } from "framer-motion";
-import FeishuIcon from "@/components/icons/feishu"
-import NotionIcon from "@/components/icons/notion"
 import { CheckIcon, PlusIcon } from "@heroicons/react/24/outline"
 import toast from "react-hot-toast"
 import { SupportedIntegrationProvider } from "@/types/integration"
 import { useIntegration } from "@/contexts/IntegrationContext"
 import ChaseLoading from "@/components/loading/Chase/loading";
+import { i18n } from "@lingui/core"
+import { useTheme } from "@heroui/use-theme"
+import { useAppTheme } from "@/contexts/UIThemeContext"
 
 
 
@@ -26,9 +27,11 @@ function IntegrationSetting() {
     const { t } = useLingui()
     const integrationFormRef = useRef<HTMLFormElement | null>(null);
     const [step, setStep] = useState(0);
+    const { theme, resolved, setTheme, toggle } = useAppTheme();
+    console.log("IntegrationSetting sameProvider?", (window as any).__ROOT_THEME_REF__ === setTheme);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [loading, setLoading] = useState(false)
-    const { apps, addNewApp } = useIntegration()
+    const { apps, addNewApp, thirdPartyIntegrations, thirdPartyIntegrationsMapping } = useIntegration()
     const isDesktop = useMediaQuery({ minWidth: 1024 });
     const [data, setData] = useState<Partial<IntegrationData> | null>(null)
     const checkFunction = [
@@ -66,27 +69,10 @@ function IntegrationSetting() {
         setLoading(false)
         setStep(step + 1)
     }
-    var ThirdPartyIntegrations = [
-        {
-            name: "Feishu",
-            key: "feishu",
-            icon: <FeishuIcon />,
-            description: "Integrate with Feishu egrate with Feishu egrate with Feishu egrate with Feishu egrate with Feishu to enhance your productivity."
-        }, {
-            name: "Notion",
-            key: "notion",
-            icon: <NotionIcon />,
-            description: "Integrate with Feishu to enhance your productivity."
-        }
-    ]
 
-    var IntegrationsMapping = useMemo(() => {
-        return ThirdPartyIntegrations.reduce((acc, curr) => {
-            acc[curr.key] = curr;
-            return acc;
-        }, {} as Record<string, (typeof ThirdPartyIntegrations)[0]>);
-    }, [ThirdPartyIntegrations])
     return <>
+        {theme}
+        {/* <Button onPress={() => setTheme(theme == "light" ? "dark" : "light")}>test</Button> */}
         <SettingsWrapper className="h-full" title={t`Integration Setting`} itemClasses="flex-1">
             {
                 apps.length ?
@@ -97,8 +83,8 @@ function IntegrationSetting() {
                                     <CardBody>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center">
-                                                {IntegrationsMapping[app.provider]?.icon}
-                                                <span className="font-semibold text-lg ml-2">{app.app_name || IntegrationsMapping[app.provider].name}</span>
+                                                {thirdPartyIntegrationsMapping[app.provider]?.icon}
+                                                <span className="font-semibold text-lg ml-2">{app.app_name || i18n._(thirdPartyIntegrationsMapping[app.provider].name)}</span>
                                             </div>
                                             <Tag
                                                 size='large'
@@ -110,7 +96,7 @@ function IntegrationSetting() {
                                             </Tag>
                                         </div>
                                         <div className="text-xs text-gray-500 mt-2">
-                                            {IntegrationsMapping[app.provider]?.description}
+                                            {i18n._(thirdPartyIntegrationsMapping[app.provider]?.description)}
                                         </div>
                                         <div className="mt-2 flex gap-2">
                                             <Button variant="ghost" color="primary" className="h-auto w-auto px-4 py-1.5 min-w-0 text-xs" >{t`Manage`}</Button>
@@ -146,7 +132,7 @@ function IntegrationSetting() {
                 <ModalHeader>
                     <Steps className="w-full" direction={isDesktop ? "horizontal" : "vertical"} type="basic" current={step} onChange={(i) => console.log(i)}>
                         <Steps.Step title={t`Select Provider`} description="This is a description" />
-                        <Steps.Step title={data?.providerID != undefined ? ThirdPartyIntegrations[data?.providerID].name : "Processing"} description={data?.providerID != undefined ? ThirdPartyIntegrations[data?.providerID].description : "No provider selected yet"} {...data?.providerID != undefined && { icon: ThirdPartyIntegrations[data?.providerID].icon }} />
+                        <Steps.Step title={data?.providerID != undefined ? i18n._(thirdPartyIntegrations[data?.providerID].name) : "Processing"} description={data?.providerID != undefined ? i18n._(thirdPartyIntegrations[data?.providerID].description) : "No provider selected yet"} {...data?.providerID != undefined && { icon: thirdPartyIntegrations[data?.providerID].icon }} />
                         <Steps.Step title={t`Success`} description="This is a description" />
                     </Steps>
                 </ModalHeader>
@@ -176,17 +162,17 @@ function IntegrationSetting() {
                                     (step === 0 ? (
                                         <>
                                             <div className="grid md:grid-cols-3 grid-cols-2 gap-2">
-                                                {ThirdPartyIntegrations.map((item, idx) => (
+                                                {thirdPartyIntegrations.map((item, idx) => (
                                                     <>
                                                         <div onClick={() => setData({ provider: item.key, providerID: idx })} data-selected={data?.provider === item.key} data-provider={item.key} className="data-[selected=true]:border-gray-400 relative cursor-pointer min-w-0 border-dashed border-1.5 hover:border-gray-400 border-gray-300 rounded-lg p-2">
                                                             <div className="flex gap-2">
                                                                 {item.icon}
                                                                 <span className="select-none font-semibold text-md text-gray-600">
-                                                                    {item.name}
+                                                                    {i18n._(item.name)}
                                                                 </span>
                                                             </div>
                                                             <div className="select-none text-xs text-gray-500 mt-1">
-                                                                {item.description}
+                                                                {i18n._(item.description)}
                                                             </div>
                                                             {
                                                                 data?.provider === item.key && (

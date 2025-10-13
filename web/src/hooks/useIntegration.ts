@@ -3,7 +3,12 @@ import { IntegrationAppPayload } from "@/features/api/type";
 import { responseCode } from "@/features/constant/response";
 import { IntegrationAccount, IntegrationApp, SupportedIntegrationProvider } from "@/types/integration";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useMemo, createElement } from "react";
+import FeishuIcon from "@/components/icons/feishu"
+import NotionIcon from "@/components/icons/notion"
+import { IconType } from "@/types";
+import { msg } from '@lingui/core/macro'
+import { MessageDescriptor } from "@lingui/core";
 
 export interface IntegrationAppMap extends IntegrationApp {
     bindAccount: boolean,
@@ -11,7 +16,16 @@ export interface IntegrationAppMap extends IntegrationApp {
 }
 
 
-export default function useIntegration() {
+
+
+
+export default function useIntegration(opts?: {
+    enabledApps?: boolean;
+    enabledAccounts?: boolean;
+}) {
+    const enabledApps = opts?.enabledApps ?? true;
+    const enabledAccounts = opts?.enabledAccounts ?? true;
+
     const qk = ['integration-apps'];
     const aqk = ['integration-accounts'];
     const qc = useQueryClient();
@@ -26,6 +40,7 @@ export default function useIntegration() {
             return res?.data?.apps || []
         },
         staleTime: 5 * 60 * 1000,
+        enabled: enabledApps,
     });
 
     const addNewApp = useMutation({
@@ -51,7 +66,9 @@ export default function useIntegration() {
             return res?.data?.accounts || []
         },
         staleTime: 5 * 60 * 1000,
+        enabled: enabledAccounts,
     });
+
 
     const refreshIntegrationAccounts = useMutation({
         mutationFn: (provider?: SupportedIntegrationProvider) =>
@@ -64,6 +81,21 @@ export default function useIntegration() {
             });
         }
     });
+
+
+    var thirdPartyIntegrations = [
+        {
+            name: msg`Feishu`,
+            key: "feishu",
+            icon: createElement(FeishuIcon),
+            description: msg`Feishu is an all-in-one collaboration and communication platform that integrates chat, meetings, calendar, docs, and cloud storage. By connecting Feishu, you can automatically sync your notes or tasks into Feishu Docs for seamless teamwork.`
+        }, {
+            name: msg`Notion`,
+            key: "notion",
+            icon: createElement(NotionIcon),
+            description: msg`Notion is a powerful tool for note-taking and knowledge management, combining documents, tasks, and databases. Integrating with Notion lets you automatically sync your notes into Notion pages for smooth, bidirectional content updates.`
+        }
+    ]
 
     const appsMapping = useMemo(() => {
         if (!integrationApps) return {};
@@ -91,6 +123,18 @@ export default function useIntegration() {
         }
     });
 
+    var thirdPartyIntegrationsMapping = useMemo(() => {
+        return thirdPartyIntegrations.reduce((acc, curr) => {
+            acc[curr.key] = curr;
+            return acc;
+        }, {} as Record<string, {
+            name: MessageDescriptor;
+            key: string;
+            icon: React.FunctionComponentElement<IconType>;
+            description: MessageDescriptor;
+        }>);
+    }, [thirdPartyIntegrations])
+
     return {
         apps: integrationApps || [],
         accounts: integrationAccounts || [],
@@ -100,5 +144,7 @@ export default function useIntegration() {
         isLoadingAccounts,
         addNewApp: addNewApp.mutateAsync,
         appsMap: appsMapping,
+        thirdPartyIntegrationsMapping,
+        thirdPartyIntegrations
     }
 }

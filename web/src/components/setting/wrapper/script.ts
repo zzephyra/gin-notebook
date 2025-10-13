@@ -3,4 +3,5 @@ export interface SettingsWrapperProps {
     title: string;
     className?: string;
     itemClasses?: string;
+    endComponent?: React.ReactNode;
 }
