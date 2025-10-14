@@ -24,6 +24,7 @@ export const aiChatSessionApi: string = "/ai/session";
 export const eventApi: string = "/event";
 export const templateNotesApi: string = "/note/templates";
 export const templateNoteApi: string = "/note/template";
+export const syncNoteApi: string = "/note/sync";
 export const todoTasksApi: string = "/project/task";
 export const projectsApi: string = "/project";
 export const taskUpdateApi = (taskID: string | number) =>

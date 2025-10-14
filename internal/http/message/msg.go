@@ -41,6 +41,7 @@ const (
 	ERROR_NOTE_DELETE             = 2004
 	ERROR_NOTE_NOT_EXIST          = 2005
 	ERROR_NOTE_CATEGORY_NOT_EXIST = 2006
+	ERROR_NOTE_NOT_FOUND          = 2007
 	// 分类模块的错误
 	ERROR_CATENAME_USED  = 3001
 	ERROR_CATE_NOT_EXIST = 3002
@@ -139,6 +140,9 @@ const (
 	ERROR_INTEGRATION_APP_NOT_FOUND                   = 13008 // 集成应用未找到
 	ERROR_FEISHU_GET_APP_ACCESS_TOKEN_FAILED          = 13009 // 获取飞书应用访问令牌失败
 	ERROR_FEISHU_GET_USER_ACCESS_TOKEN_FAILED         = 13010 // 获取飞书用户访问令牌失败
+	ERROR_INTEGRATION_ACCOUNT_NOT_FOUND               = 13011 // 集成账号未找到
+	ERROR_INTEGRATION_ACCOUNT_EXPIRED                 = 13012 // 集成账号已过期
+	ERROR_FEISHU_GET_FILE_META_FAILED                 = 13013 // 获取飞书文件元信息失败
 )
 
 var CodeMsg = map[int]string{
@@ -224,4 +228,8 @@ var CodeMsg = map[int]string{
 	ERROR_INTEGRATION_APP_NOT_FOUND:                  "集成应用未找到",
 	ERROR_FEISHU_GET_APP_ACCESS_TOKEN_FAILED:         "获取飞书应用访问令牌失败",
 	ERROR_FEISHU_GET_USER_ACCESS_TOKEN_FAILED:        "获取飞书用户访问令牌失败",
+	ERROR_NOTE_NOT_FOUND:                             "笔记未找到",
+	ERROR_INTEGRATION_ACCOUNT_EXPIRED:                "集成账号已过期，请重新绑定",
+	ERROR_INTEGRATION_ACCOUNT_NOT_FOUND:              "集成账号未找到",
+	ERROR_FEISHU_GET_FILE_META_FAILED:                "获取飞书文件元信息失败",
 }

@@ -2,7 +2,7 @@ import { NoteProps } from "./script";
 import { useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { debounce } from "lodash";
-import { AutoUpdateContent, createTemplateNoteRequest, getTemplateListRequest, SetFavoriteNoeRequest, UpdateNote } from "@/features/api/note";
+import { AutoUpdateContent, createNoteSyncPolicyRequest, createTemplateNoteRequest, getNoteSyncPoliciesRequest, getTemplateListRequest, SetFavoriteNoeRequest, UpdateNote } from "@/features/api/note";
 import { useParams } from "react-router-dom";
 import { responseCode } from "@/features/constant/response";
 import {
@@ -53,6 +53,10 @@ import Loading from "@/components/loading/Chase/loading";
 import NewSyncModal from "@/components/modal/note/addSync";
 import { IntegrationProvider } from "@/contexts/IntegrationContext";
 import useIntegration from "@/hooks/useIntegration";
+import { SynchronizationPolicyPayload } from "@/components/modal/note/addSync/type";
+import { SyncPayload } from "@/features/api/type";
+import { SyncPolicy } from "@/types/sync";
+import { NotePolicyCard } from "@/components/card/notePolicy";
 
 
 const iconSize = 14
@@ -62,13 +66,15 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
     const inputRef = useRef<HTMLInputElement>(null);
     const [selectedKey, setSelectedKey] = useState([activeKey || "permission"]);
     const { isOpen: isOpenDeleteModal, onOpen: onOpenDeleteModal, onOpenChange: onOpenDeleteModalChange } = useDisclosure();
-    const { isOpen: isOpenNewSyncModal, onOpen: onOpenNewSyncModal, onOpenChange: onOpenNewSyncModalChange } = useDisclosure();
+    const { isOpen: isOpenNewSyncModal, onOpenChange: onOpenNewSyncModalChange } = useDisclosure();
     const isSyncTab = selectedKey[0] === "sync";
     const integrationEnabled = isSyncTab || isOpenNewSyncModal;
     const value = useIntegration({
         enabledApps: integrationEnabled,
         enabledAccounts: integrationEnabled,
     })
+    const [policy, setPolicy] = useState<SyncPolicy[]>([])
+    const [_, setPolicyTotal] = useState(0);
     const state = store.getState()
     const handleSelectionChange = (keys: any) => {
         setSelectedKey([keys.currentKey]);
@@ -134,6 +140,26 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
             store.dispatch(UpdateNoteByID({ id: note.id, changes: { cover: url } }))
         }
     }
+
+    const onCreatePolicy = async (payload: SynchronizationPolicyPayload) => {
+        var res = await createNoteSyncPolicyRequest(note.id, workspaceID, payload as SyncPayload)
+        if (res.code == responseCode.SUCCESS) {
+            setPolicy([res.data, ...policy])
+            return true;
+        }
+        return false
+    }
+
+    useEffect(() => {
+        if (integrationEnabled) {
+            getNoteSyncPoliciesRequest(note.id, workspaceID).then((res) => {
+                if (res.code == responseCode.SUCCESS) {
+                    setPolicy(res?.data?.policies || [])
+                    setPolicyTotal(res?.data?.total || 0);
+                }
+            })
+        }
+    }, [integrationEnabled])
 
     return (
         <Modal classNames={{ base: "z-[1100] !my-auto" }} isOpen={isOpen} onOpenChange={onOpenChange} size="4xl" className="max-h-[715px] share-modal">
@@ -225,10 +251,22 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                                             <div className=" flex-1">
                                                 <SettingsWrapper title={t`Synchronization`} itemClasses="h-full" className="h-full" endComponent={<Button onPress={onOpenNewSyncModalChange} className="w-[55px] h-[26px] !text-xs min-w-0" radius="sm" color="primary">{t`Add`}</Button>}>
                                                     <div className="h-full overflow-y-auto border border-slate-200 rounded-lg p-4">
-
+                                                        {
+                                                            policy.length == 0 ? (
+                                                                <div className="flex h-full items-center text-sm text-gray-500 text-center py-10">
+                                                                    {t`No synchronization policies yet. Click the "Add" button to create one.`}
+                                                                </div>
+                                                            ) : (
+                                                                <>
+                                                                    <div>
+                                                                        {policy.map((p) => <NotePolicyCard policy={p} />)}
+                                                                    </div>
+                                                                </>
+                                                            )
+                                                        }
                                                     </div>
                                                 </SettingsWrapper>
-                                                <NewSyncModal isOpen={isOpenNewSyncModal} onOpenChange={onOpenNewSyncModalChange}></NewSyncModal>
+                                                <NewSyncModal onCreate={onCreatePolicy} workspaceID={workspaceID} noteID={note.id} isOpen={isOpenNewSyncModal} onOpenChange={onOpenNewSyncModalChange}></NewSyncModal>
                                             </div>
                                         </IntegrationProvider>
 
@@ -297,13 +335,13 @@ function NoteSidebar({ note }: { note: Note }) {
 
 
     async function handleCreateNewTemplate() {
-        let newNote = await createTemplateNoteRequest(note?.content || "", note?.title || t`New Template`, note?.cover)
+        let newNote = await createTemplateNoteRequest(note.workspace_id, note?.content || "", note?.title || t`New Template`, note?.cover)
         if (newNote) {
             setData((prev) => [newNote, ...prev]);
         }
     }
     useEffect(() => {
-        getTemplateListRequest(params.current.limit, params.current.offset).then((res) => {
+        getTemplateListRequest(note.workspace_id, params.current.limit, params.current.offset).then((res) => {
             setTotal(res.data.total);
             setData(res.data.data || []);
         })
@@ -396,7 +434,7 @@ export default function NotePage(props: NoteProps) {
     }, 500)
 
     const handleStarNote = async () => {
-        SetFavoriteNoeRequest(props.note.id, !props.note.is_favorite)
+        SetFavoriteNoeRequest(props.note.workspace_id, props.note.id, !props.note.is_favorite)
         store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { is_favorite: !props.note.is_favorite } }))
     }
 

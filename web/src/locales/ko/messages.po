@@ -14,25 +14,33 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/settings/integrationAccount.tsx:103
-msgid "Are you sure you want to unlink {provider} account?"
+#: src/utils/timeAgo.ts:27
+msgid "just now"
 msgstr ""
 
 #. js-lingui-explicit-id
-#: src/pages/settings/integrationAccount.tsx:108
-msgid "This action cannot be undone."
+#: src/utils/timeAgo.ts:32
+msgid "{count} seconds ago"
 msgstr ""
 
 #. js-lingui-explicit-id
-#: src/components/modal/event/add/index.tsx:152
-#: src/pages/workspace/tasks.tsx:147
-msgid "Monthly on the {day}th"
+#: src/utils/timeAgo.ts:41
+msgid "{count} minutes ago"
 msgstr ""
 
 #. js-lingui-explicit-id
-#: src/components/modal/event/add/index.tsx:155
-#: src/pages/workspace/tasks.tsx:150
-msgid "Last {byDay} of the Month"
+#: src/utils/timeAgo.ts:49
+msgid "{count} hours ago"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/utils/timeAgo.ts:57
+msgid "{count} days ago"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/utils/timeAgo.ts:64
+msgid "30 days ago"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -56,13 +64,25 @@ msgid "task name"
 msgstr ""
 
 #. js-lingui-explicit-id
-#: src/lib/upload/index.ts:41
-msgid "File size exceeds the limit of {size} MB"
+#: src/pages/settings/integrationAccount.tsx:103
+msgid "Are you sure you want to unlink {provider} account?"
 msgstr ""
 
 #. js-lingui-explicit-id
-#: src/lib/upload/index.ts:66
-msgid "File type {type} is not accepted"
+#: src/pages/settings/integrationAccount.tsx:108
+msgid "This action cannot be undone."
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/components/modal/event/add/index.tsx:152
+#: src/pages/workspace/tasks.tsx:147
+msgid "Monthly on the {day}th"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/components/modal/event/add/index.tsx:155
+#: src/pages/workspace/tasks.tsx:150
+msgid "Last {byDay} of the Month"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -81,8 +101,20 @@ msgid "Please log in to continue."
 msgstr ""
 
 #. js-lingui-explicit-id
+#: src/lib/upload/index.ts:41
+msgid "File size exceeds the limit of {size} MB"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/lib/upload/index.ts:66
+msgid "File type {type} is not accepted"
+msgstr ""
+
+#. js-lingui-explicit-id
 #: src/features/api/note.ts:13
 #: src/features/api/note.ts:34
+#: src/features/api/note.ts:233
+#: src/features/api/note.ts:252
 msgid "Missing valid value"
 msgstr "유효한 값 누락"
 
@@ -102,7 +134,7 @@ msgid "Delete note failed"
 msgstr "노트 삭제 실패"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:211
+#: src/features/api/note.ts:214
 msgid "Content cannot be empty"
 msgstr ""
 
@@ -136,9 +168,13 @@ msgstr ""
 #~ msgid "File size exceeds the limit of {size} bytes"
 #~ msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:219
-#: src/pages/settings/integrationSetting.tsx:227
+#: src/pages/settings/integrationSetting.tsx:215
+#: src/pages/settings/integrationSetting.tsx:223
 msgid " (optional)"
+msgstr ""
+
+#: src/components/modal/note/addSync/index.tsx:147
+msgid " Next"
 msgstr ""
 
 #. placeholder {0}: FilterMapping[props.filter?.order_by || "create"]
@@ -184,7 +220,8 @@ msgstr ""
 msgid "Action"
 msgstr "액션 (Action)"
 
-#: src/pages/settings/integrationSetting.tsx:95
+#: src/components/card/notePolicy/index.tsx:54
+#: src/pages/settings/integrationSetting.tsx:91
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Active"
 msgstr "활성 상태"
@@ -193,7 +230,7 @@ msgstr "활성 상태"
 msgid "Activity"
 msgstr ""
 
-#: src/components/note/main/index.tsx:226
+#: src/components/note/main/index.tsx:256
 msgid "Add"
 msgstr ""
 
@@ -218,7 +255,7 @@ msgstr "새 초대 링크 추가"
 msgid "Add New Note"
 msgstr "새 노트 추가"
 
-#: src/components/modal/note/addSync/index.tsx:44
+#: src/components/modal/note/addSync/index.tsx:69
 msgid "Add Synchronization"
 msgstr ""
 
@@ -238,7 +275,7 @@ msgstr "주석 달기 허용"
 msgid "Allow editing"
 msgstr "편집 허용"
 
-#: src/components/note/main/index.tsx:187
+#: src/components/note/main/index.tsx:217
 msgid "Allow editing this note."
 msgstr "이 노트를 편집할 수 있습니다."
 
@@ -254,7 +291,7 @@ msgstr "조인 허용"
 msgid "Allow sharing"
 msgstr "공유 허용"
 
-#: src/components/note/main/index.tsx:184
+#: src/components/note/main/index.tsx:214
 msgid "Allow sharing this note with others or third-party applications."
 msgstr "이 노트를 다른 사용자 또는 타사 응용프로그램과 공유할 수 있습니다."
 
@@ -262,15 +299,15 @@ msgstr "이 노트를 다른 사용자 또는 타사 응용프로그램과 공�
 msgid "Already have an account?"
 msgstr "이미 계정이 있습니까?"
 
-#: src/pages/settings/integrationSetting.tsx:203
+#: src/pages/settings/integrationSetting.tsx:199
 msgid "App ID"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:195
+#: src/pages/settings/integrationSetting.tsx:191
 msgid "App Name"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:211
+#: src/pages/settings/integrationSetting.tsx:207
 msgid "App Secret"
 msgstr ""
 
@@ -278,7 +315,7 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
-#: src/components/note/main/index.tsx:530
+#: src/components/note/main/index.tsx:572
 msgid "Applying the template..."
 msgstr ""
 
@@ -311,7 +348,8 @@ msgstr ""
 msgid "Auto save failed, please try again later."
 msgstr ""
 
-#: src/components/modal/note/addSync/index.tsx:86
+#: src/components/card/notePolicy/index.tsx:46
+#: src/components/modal/note/addSync/index.tsx:111
 msgid "Auto Sync"
 msgstr ""
 
@@ -320,7 +358,7 @@ msgstr ""
 msgid "Back"
 msgstr "뒤로 (Back)"
 
-#: src/components/note/main/index.tsx:159
+#: src/components/note/main/index.tsx:189
 msgid "Basic Information"
 msgstr "기본 정보"
 
@@ -339,7 +377,7 @@ msgstr "버켓 이름"
 #: src/components/modal/note/deleteModal/index.tsx:42
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/user/modifyPassword/index.tsx:58
-#: src/components/note/main/index.tsx:457
+#: src/components/note/main/index.tsx:499
 #: src/pages/settings/integrationAccount.tsx:115
 #: src/pages/settings/workspaceSettings.tsx:194
 msgid "Cancel"
@@ -353,11 +391,11 @@ msgstr ""
 msgid "Card Preview"
 msgstr ""
 
-#: src/components/note/main/index.tsx:163
+#: src/components/note/main/index.tsx:193
 msgid "Categorize the note by selecting an existing note category."
 msgstr "기존 노트 범주를 선택하여 노트를 분류합니다."
 
-#: src/components/note/main/index.tsx:163
+#: src/components/note/main/index.tsx:193
 msgid "Category"
 msgstr "범주 (Category)"
 
@@ -426,7 +464,7 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
-#: src/components/note/main/index.tsx:460
+#: src/components/note/main/index.tsx:502
 msgid "Confirm"
 msgstr ""
 
@@ -438,7 +476,7 @@ msgstr "비밀번호 확인"
 msgid "Confirm your new password"
 msgstr "새 암호 확인"
 
-#: src/components/modal/note/addSync/index.tsx:103
+#: src/components/modal/note/addSync/index.tsx:128
 msgid "Conflict Policy"
 msgstr ""
 
@@ -450,7 +488,7 @@ msgstr "링크 복사"
 msgid "Copy successfully"
 msgstr "복제 성공"
 
-#: src/components/note/main/index.tsx:170
+#: src/components/note/main/index.tsx:200
 #: src/pages/workspace/project.tsx:144
 #: src/pages/workspace/project.tsx:422
 msgid "Cover"
@@ -471,7 +509,7 @@ msgstr "새 작업공간 만들기"
 msgid "Create event successfully"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:123
+#: src/pages/settings/integrationSetting.tsx:119
 msgid "Create Integration"
 msgstr ""
 
@@ -500,7 +538,7 @@ msgstr "만든 사람:"
 msgid "Created Time"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:160
+#: src/pages/settings/integrationSetting.tsx:156
 msgid "Creating the app, please wait patiently…"
 msgstr ""
 
@@ -512,7 +550,7 @@ msgstr "작업 영역 생성 중..."
 msgid "Current device"
 msgstr "현재 디바이스"
 
-#: src/components/note/main/index.tsx:191
+#: src/components/note/main/index.tsx:221
 msgid "Danger Zone"
 msgstr "위험지대 (Danger Zone)"
 
@@ -534,7 +572,7 @@ msgstr ""
 #: src/components/modal/note/deleteModal/index.tsx:43
 #: src/components/note/noteList/index.tsx:77
 #: src/components/todo/task/index.tsx:378
-#: src/pages/settings/integrationSetting.tsx:104
+#: src/pages/settings/integrationSetting.tsx:100
 #: src/pages/settings/workspaceSettings.tsx:195
 msgid "Delete"
 msgstr "삭제 (Delete)"
@@ -547,8 +585,8 @@ msgstr "삭제 실패"
 msgid "Delete Invite Link"
 msgstr "초대 링크 삭제"
 
-#: src/components/note/main/index.tsx:192
-#: src/components/note/main/index.tsx:194
+#: src/components/note/main/index.tsx:222
+#: src/components/note/main/index.tsx:224
 msgid "Delete Note"
 msgstr "메모 삭제"
 
@@ -566,7 +604,7 @@ msgstr "삭제 성공"
 msgid "Delete task failed"
 msgstr ""
 
-#: src/components/note/main/index.tsx:192
+#: src/components/note/main/index.tsx:222
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "이 항목을 삭제하는 것은 영구적인 작업이며 되돌릴 수 없습니다. 주의하여 계속하십시오."
 
@@ -595,7 +633,7 @@ msgstr ""
 msgid "Don't have an account yet?"
 msgstr "아직 계좌가 없으신가요?"
 
-#: src/pages/settings/integrationSetting.tsx:262
+#: src/pages/settings/integrationSetting.tsx:258
 msgid "Done"
 msgstr ""
 
@@ -607,7 +645,7 @@ msgstr "QR 코드 다운로드"
 msgid "Download Qrcode"
 msgstr "다운로드 Qrcode"
 
-#: src/pages/settings/integrationSetting.tsx:204
+#: src/pages/settings/integrationSetting.tsx:200
 msgid "e.g., cli_xxx"
 msgstr ""
 
@@ -627,23 +665,23 @@ msgstr "e-메일"
 msgid "Emails go here → one@example.com, two@example.com"
 msgstr "이메일 은   여기 로   이동one@example.com, two@example.com"
 
-#: src/components/note/main/index.tsx:187
+#: src/components/note/main/index.tsx:217
 msgid "Enable Edit"
 msgstr "편집 사용"
 
-#: src/components/note/main/index.tsx:184
+#: src/components/note/main/index.tsx:214
 msgid "Enable Share"
 msgstr "공유 사용"
 
-#: src/pages/settings/integrationSetting.tsx:227
+#: src/pages/settings/integrationSetting.tsx:223
 msgid "Encrypt Key"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:196
+#: src/pages/settings/integrationSetting.tsx:192
 msgid "Enter a recognizable name for your app"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:212
+#: src/pages/settings/integrationSetting.tsx:208
 msgid "Enter the secret key provided by the platform"
 msgstr ""
 
@@ -683,7 +721,7 @@ msgstr ""
 msgid "Everyday"
 msgstr ""
 
-#: src/components/note/main/index.tsx:452
+#: src/components/note/main/index.tsx:494
 msgid "Existing content detected. Importing the template will overwrite it. Continue?"
 msgstr ""
 
@@ -755,7 +793,7 @@ msgstr ""
 msgid "File movement"
 msgstr "파일 이동"
 
-#: src/components/modal/note/addSync/index.tsx:126
+#: src/components/modal/note/addSync/index.tsx:147
 msgid "Finish"
 msgstr ""
 
@@ -763,7 +801,7 @@ msgstr ""
 msgid "Frequent Used"
 msgstr "자주 사용됨"
 
-#: src/components/note/main/index.tsx:147
+#: src/components/note/main/index.tsx:177
 msgid "General"
 msgstr "일반 (General)"
 
@@ -836,11 +874,12 @@ msgstr "게스트를 데려오는 경우 이메일을 아래에 추가하거나 
 msgid "Ignore this prompt for this login"
 msgstr "이 로그인에 대한 이 프롬프트 무시"
 
-#: src/pages/settings/integrationSetting.tsx:95
+#: src/components/card/notePolicy/index.tsx:54
+#: src/pages/settings/integrationSetting.tsx:91
 msgid "Inactive"
 msgstr ""
 
-#: src/components/modal/note/addSync/index.tsx:111
+#: src/components/modal/note/addSync/index.tsx:136
 msgid "Input note id"
 msgstr ""
 
@@ -848,11 +887,11 @@ msgstr ""
 msgid "Integration"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:76
+#: src/pages/settings/integrationSetting.tsx:72
 msgid "Integration Setting"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:236
+#: src/pages/settings/integrationSetting.tsx:232
 msgid "Integration setup is complete! You can now manage your integration apps in the settings."
 msgstr ""
 
@@ -860,7 +899,7 @@ msgstr ""
 msgid "Invite link"
 msgstr "초대 링크"
 
-#: src/components/note/main/index.tsx:152
+#: src/components/note/main/index.tsx:182
 msgid "Invite Link"
 msgstr "링크 초대"
 
@@ -896,7 +935,7 @@ msgstr "작업 공간에 성공적으로 참여하십시오!"
 msgid "Key"
 msgstr "키 (key)"
 
-#: src/layouts/base.tsx:34
+#: src/layouts/base.tsx:28
 msgid "Languages"
 msgstr "언어 Name"
 
@@ -904,7 +943,11 @@ msgstr "언어 Name"
 msgid "Last Active"
 msgstr ""
 
-#: src/components/modal/note/addSync/index.tsx:105
+#: src/components/card/notePolicy/index.tsx:49
+msgid "Last Run"
+msgstr ""
+
+#: src/components/modal/note/addSync/index.tsx:130
 msgid "Latest Modified Wins"
 msgstr ""
 
@@ -957,7 +1000,7 @@ msgid "Locaton"
 msgstr ""
 
 #: src/components/avatarMenu/index.tsx:61
-#: src/components/menu/sidebar.tsx:93
+#: src/components/menu/sidebar.tsx:92
 msgid "Log out"
 msgstr "로그아웃"
 
@@ -978,23 +1021,24 @@ msgstr ""
 msgid "Mameos Robot"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:102
+#: src/pages/settings/integrationSetting.tsx:98
 msgid "Manage"
 msgstr ""
 
-#: src/components/note/main/index.tsx:148
+#: src/components/note/main/index.tsx:178
 msgid "Management"
 msgstr "관리 (Management)"
 
-#: src/components/modal/note/addSync/index.tsx:89
+#: src/components/card/notePolicy/index.tsx:46
+#: src/components/modal/note/addSync/index.tsx:114
 msgid "Manual Sync"
 msgstr ""
 
-#: src/components/menu/sidebar.tsx:76
+#: src/components/menu/sidebar.tsx:75
 msgid "member"
 msgstr "멤버"
 
-#: src/components/menu/sidebar.tsx:76
+#: src/components/menu/sidebar.tsx:75
 msgid "members"
 msgstr "구성원"
 
@@ -1066,12 +1110,11 @@ msgstr ""
 msgid "New Task"
 msgstr ""
 
-#: src/components/note/main/index.tsx:300
+#: src/components/note/main/index.tsx:342
 msgid "New Template"
 msgstr ""
 
-#: src/components/modal/note/addSync/index.tsx:128
-#: src/pages/settings/integrationSetting.tsx:255
+#: src/pages/settings/integrationSetting.tsx:251
 msgid "Next"
 msgstr ""
 
@@ -1083,7 +1126,7 @@ msgstr "다음 노트"
 #~ msgid "No"
 #~ msgstr ""
 
-#: src/components/note/main/index.tsx:166
+#: src/components/note/main/index.tsx:196
 msgid "No Category"
 msgstr "범주 없음"
 
@@ -1100,11 +1143,11 @@ msgstr ""
 msgid "No expiration"
 msgstr "만료 없음"
 
-#: src/components/modal/note/addSync/index.tsx:77
+#: src/components/modal/note/addSync/index.tsx:102
 msgid "No integration apps available. Please add an integration app first."
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:119
+#: src/pages/settings/integrationSetting.tsx:115
 msgid "No integration available."
 msgstr ""
 
@@ -1112,7 +1155,7 @@ msgstr ""
 msgid "No more comments"
 msgstr ""
 
-#: src/components/note/main/index.tsx:341
+#: src/components/note/main/index.tsx:383
 msgid "No more templates to load."
 msgstr ""
 
@@ -1126,11 +1169,15 @@ msgstr ""
 msgid "No Repeat"
 msgstr ""
 
+#: src/components/note/main/index.tsx:261
+msgid "No synchronization policies yet. Click the \"Add\" button to create one."
+msgstr ""
+
 #: src/pages/workspace/tasks.tsx:339
 msgid "No Title Event"
 msgstr ""
 
-#: src/components/menu/sidebar.tsx:73
+#: src/components/menu/sidebar.tsx:72
 msgid "No Workspace"
 msgstr "작업공간 없음"
 
@@ -1142,7 +1189,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: src/components/note/main/index.tsx:160
+#: src/components/note/main/index.tsx:190
 msgid "Note ID"
 msgstr "노트 ID"
 
@@ -1150,12 +1197,12 @@ msgstr "노트 ID"
 msgid "Note Name"
 msgstr "노트 이름"
 
-#: src/components/note/main/index.tsx:183
+#: src/components/note/main/index.tsx:213
 msgid "Note Settings"
 msgstr "메모 설정"
 
-#: src/components/note/main/index.tsx:203
-#: src/components/note/main/index.tsx:209
+#: src/components/note/main/index.tsx:233
+#: src/components/note/main/index.tsx:239
 msgid "Note Status"
 msgstr "노트 상태"
 
@@ -1163,7 +1210,7 @@ msgstr "노트 상태"
 msgid "Note title is required"
 msgstr "노트 제목은 필수입니다."
 
-#: src/components/modal/note/addSync/index.tsx:111
+#: src/components/modal/note/addSync/index.tsx:136
 msgid "Notebook ID"
 msgstr ""
 
@@ -1204,7 +1251,7 @@ msgstr "또는"
 msgid "Ordering"
 msgstr "종류"
 
-#: src/components/note/main/index.tsx:447
+#: src/components/note/main/index.tsx:489
 msgid "Overwrite Note"
 msgstr ""
 
@@ -1234,8 +1281,8 @@ msgstr ""
 msgid "Per Week"
 msgstr ""
 
-#: src/components/note/main/index.tsx:149
-#: src/components/note/main/index.tsx:202
+#: src/components/note/main/index.tsx:179
+#: src/components/note/main/index.tsx:232
 msgid "Permission"
 msgstr "허가 (Permission)"
 
@@ -1251,6 +1298,10 @@ msgstr ""
 msgid "Please check your email."
 msgstr "이메일을 확인해 주세요."
 
+#: src/components/modal/note/addSync/index.tsx:34
+msgid "Please complete the strategy"
+msgstr ""
+
 #: src/components/form/register/form.tsx:40
 msgid "Please enter the verification code."
 msgstr "확인 코드를 입력하십시오."
@@ -1263,6 +1314,10 @@ msgstr "전자 메일 주소를 입력하십시오."
 msgid "Please enter your password."
 msgstr "암호를 입력하십시오."
 
+#: src/components/modal/note/addSync/index.tsx:46
+msgid "Please input target note id"
+msgstr ""
+
 #: src/routes/index.tsx:12
 #~ msgid "Please login first!"
 #~ msgstr "먼저 로그인하십시오!"
@@ -1271,12 +1326,12 @@ msgstr "암호를 입력하십시오."
 msgid "Please select a category"
 msgstr "범주를 선택하십시오."
 
-#: src/components/note/main/index.tsx:127
+#: src/components/note/main/index.tsx:137
 msgid "Please select a file to upload."
 msgstr ""
 
-#: src/components/modal/note/addSync/index.tsx:26
-#: src/pages/settings/integrationSetting.tsx:40
+#: src/components/modal/note/addSync/index.tsx:27
+#: src/pages/settings/integrationSetting.tsx:36
 msgid "Please select a provider"
 msgstr ""
 
@@ -1284,8 +1339,8 @@ msgstr ""
 msgid "Please wait for attachments to finish uploading."
 msgstr ""
 
-#: src/components/modal/note/addSync/index.tsx:119
-#: src/pages/settings/integrationSetting.tsx:248
+#: src/components/modal/note/addSync/index.tsx:144
+#: src/pages/settings/integrationSetting.tsx:244
 msgid "Previous"
 msgstr ""
 
@@ -1299,7 +1354,7 @@ msgstr "이전 노트"
 msgid "Priority"
 msgstr ""
 
-#: src/components/note/main/index.tsx:206
+#: src/components/note/main/index.tsx:236
 msgid "Private"
 msgstr "Private (Private)"
 
@@ -1311,15 +1366,19 @@ msgstr "Private (Private)"
 msgid "Project Icon"
 msgstr ""
 
-#: src/components/note/main/index.tsx:205
+#: src/components/modal/note/addSync/index.tsx:51
+msgid "Provider is not selected"
+msgstr ""
+
+#: src/components/note/main/index.tsx:235
 msgid "Public"
 msgstr "공개 (Public)"
 
-#: src/components/modal/note/addSync/index.tsx:97
+#: src/components/modal/note/addSync/index.tsx:122
 msgid "Pull Only"
 msgstr ""
 
-#: src/components/modal/note/addSync/index.tsx:94
+#: src/components/modal/note/addSync/index.tsx:119
 msgid "Push Only"
 msgstr ""
 
@@ -1449,7 +1508,7 @@ msgstr "노트 상태 선택"
 msgid "Select Priority"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:134
+#: src/pages/settings/integrationSetting.tsx:130
 msgid "Select Provider"
 msgstr ""
 
@@ -1477,8 +1536,8 @@ msgstr ""
 msgid "Session updated successfully"
 msgstr ""
 
-#: src/components/note/main/index.tsx:203
-#: src/components/note/main/index.tsx:209
+#: src/components/note/main/index.tsx:233
+#: src/components/note/main/index.tsx:239
 msgid "Set the current note's status. When set to private, it will be invisible to others."
 msgstr "현재 노트의 상태를 설정합니다. 비공개로 설정하면 다른 사용자가 볼 수 없습니다."
 
@@ -1486,7 +1545,7 @@ msgstr "현재 노트의 상태를 설정합니다. 비공개로 설정하면 �
 #~ msgid "Settings"
 #~ msgstr "설정 (Settings)"
 
-#: src/components/note/main/index.tsx:151
+#: src/components/note/main/index.tsx:181
 #: src/components/note/noteList/index.tsx:63
 msgid "Share"
 msgstr "공유 (Share)"
@@ -1546,7 +1605,7 @@ msgstr "저장 경로"
 msgid "Submit"
 msgstr "제출"
 
-#: src/pages/settings/integrationSetting.tsx:136
+#: src/pages/settings/integrationSetting.tsx:132
 msgid "Success"
 msgstr ""
 
@@ -1558,7 +1617,7 @@ msgstr ""
 msgid "Successfully unlinked"
 msgstr ""
 
-#: src/components/menu/sidebar.tsx:86
+#: src/components/menu/sidebar.tsx:85
 msgid "Switch"
 msgstr "스위치 (Switch)"
 
@@ -1566,16 +1625,16 @@ msgstr "스위치 (Switch)"
 msgid "Switch Workspace"
 msgstr ""
 
-#: src/components/modal/note/addSync/index.tsx:92
+#: src/components/modal/note/addSync/index.tsx:117
 msgid "Sync Direction"
 msgstr ""
 
-#: src/components/modal/note/addSync/index.tsx:84
+#: src/components/modal/note/addSync/index.tsx:109
 msgid "Sync Mode"
 msgstr ""
 
-#: src/components/note/main/index.tsx:153
-#: src/components/note/main/index.tsx:226
+#: src/components/note/main/index.tsx:183
+#: src/components/note/main/index.tsx:256
 msgid "Synchronization"
 msgstr ""
 
@@ -1583,11 +1642,11 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: src/components/note/main/index.tsx:326
+#: src/components/note/main/index.tsx:368
 msgid "Templates"
 msgstr ""
 
-#: src/components/note/main/index.tsx:171
+#: src/components/note/main/index.tsx:201
 msgid "The cover image is displayed at the top of the note and in the template thumbnail. Leave it blank to use the first image in the note."
 msgstr ""
 
@@ -1599,7 +1658,7 @@ msgstr "노트 제목은 필수이며 100자를 초과하면 안 됩니다."
 msgid "The number of members who have joined the workspace using this link"
 msgstr "이 링크를 사용하여 작업공간에 가입한 멤버 수"
 
-#: src/components/note/main/index.tsx:160
+#: src/components/note/main/index.tsx:190
 msgid "The unique ID of the note."
 msgstr "노트의 고유 ID입니다."
 
@@ -1628,7 +1687,7 @@ msgstr "제목 (Title)"
 msgid "To ensure compatibility, please avoid special characters in the name."
 msgstr "호환성을 보장하려면 이름에 특수 문자를 사용하지 마십시오."
 
-#: src/components/modal/note/addSync/index.tsx:100
+#: src/components/modal/note/addSync/index.tsx:125
 msgid "Two-way Sync"
 msgstr ""
 
@@ -1676,8 +1735,8 @@ msgstr "닉네임을 업데이트했습니다."
 msgid "Update password successfully"
 msgstr "암호를 성공적으로 업데이트했습니다."
 
-#: src/components/note/main/index.tsx:81
-#: src/components/note/main/index.tsx:118
+#: src/components/note/main/index.tsx:91
+#: src/components/note/main/index.tsx:128
 #: src/pages/settings/storageSettings.tsx:55
 msgid "Update successfully"
 msgstr "업데이트 성공"
@@ -1692,7 +1751,7 @@ msgstr "업데이트 위치"
 msgid "Updated Time"
 msgstr ""
 
-#: src/components/note/main/index.tsx:173
+#: src/components/note/main/index.tsx:203
 #: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"
 msgstr "업로드 (Upload)"
@@ -1713,11 +1772,11 @@ msgstr ""
 msgid "Upload File"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:220
+#: src/pages/settings/integrationSetting.tsx:216
 msgid "Used for validating requests (if required)"
 msgstr ""
 
-#: src/pages/settings/integrationSetting.tsx:228
+#: src/pages/settings/integrationSetting.tsx:224
 msgid "Used to decrypt event payloads (if applicable)"
 msgstr ""
 
@@ -1733,7 +1792,7 @@ msgstr "유효성 검사 코드를 보내지 못했습니다."
 msgid "Verification code has been sent."
 msgstr "확인 코드가 전송되었습니다."
 
-#: src/pages/settings/integrationSetting.tsx:219
+#: src/pages/settings/integrationSetting.tsx:215
 msgid "Verification Token"
 msgstr ""
 
@@ -1753,11 +1812,15 @@ msgstr ""
 msgid "Workspace"
 msgstr ""
 
+#: src/components/modal/note/addSync/index.tsx:41
+msgid "Workspace ID is not found"
+msgstr ""
+
 #: src/components/step/workspace/main.tsx:129
 msgid "Workspace Name"
 msgstr "작업공간 이름"
 
-#: src/components/menu/sidebar.tsx:73
+#: src/components/menu/sidebar.tsx:72
 msgid "Workspace: "
 msgstr "작업 공간:"
 

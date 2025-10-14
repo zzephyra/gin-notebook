@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"fmt"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
@@ -33,6 +34,19 @@ func GetNotesList(workspaceID string, userID int64, limit int, offset int) (*[]d
 		return nil, err
 	}
 	return &notes, nil
+}
+
+func GetNoteByID(db *gorm.DB, ctx context.Context, workspaceID int64, noteID int64) (*model.Note, error) {
+	var note model.Note
+	err := database.DB.
+		Model(&model.Note{}).
+		Where("id = ? AND workspace_id = ? AND deleted_at is NULL", noteID, workspaceID).
+		Find(&note).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &note, nil
 }
 
 func GetNoteCategoryMap() (*[]model.NoteCategory, error) {
@@ -251,4 +265,23 @@ func GetTemplateNotes(db *gorm.DB, userID int64, limit *int, offset int) (*[]mod
 		return nil, 0, err
 	}
 	return &templateNotes, count, nil
+}
+
+func GetNoteSyncList(db *gorm.DB, ctx context.Context, memberID int64, provider *model.IntegrationProvider) (*[]model.NoteExternalLink, int64, error) {
+	var syncPolicies []model.NoteExternalLink
+	var count int64
+	query := db.Model(&model.NoteExternalLink{}).
+		Where("member_id = ?", memberID)
+
+	if provider != nil && *provider != "" {
+		query = query.Where("provider = ?", *provider)
+	}
+
+	query.Count(&count)
+
+	err := query.Order("created_at DESC").Find(&syncPolicies).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	return &syncPolicies, count, nil
 }

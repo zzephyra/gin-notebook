@@ -1,6 +1,7 @@
 package noteService
 
 import (
+	"context"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
@@ -83,5 +84,27 @@ func GetFavoriteNoteList(params *dto.FavoriteNoteQueryDTO) (int, map[string]inte
 	return message.SUCCESS, map[string]interface{}{
 		"notes": notes,
 		"total": count,
+	}
+}
+
+func GetNoteSyncList(ctx context.Context, params *dto.GetNoteSyncListDTO) (int, map[string]interface{}) {
+	syncPolicies, total, err := repository.GetNoteSyncList(database.DB, ctx, params.MemberID, params.Provider)
+
+	if err != nil {
+		return database.IsError(err), map[string]interface{}{
+			"policies": nil,
+			"total":    0,
+		}
+	}
+
+	policies := make([]map[string]interface{}, 0, len(*syncPolicies))
+
+	for _, policy := range *syncPolicies {
+		policies = append(policies, policy.Data())
+	}
+
+	return message.SUCCESS, map[string]interface{}{
+		"policies": policies,
+		"total":    total,
 	}
 }

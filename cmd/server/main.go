@@ -65,7 +65,13 @@ func main() {
 
 	// 初始化asynq
 	asynqimpl.InitGlobal(config.Cache.Host, config.Cache.Port, config.Cache.Password, config.Cache.DB)
+	_, err = asynqimpl.RunScheduler(config.Cache.Host, config.Cache.Port, config.Cache.Password, config.Cache.DB)
 
+	if err != nil {
+		logger.LogError(err, "asynq scheduler register error")
+		panic(err)
+	}
+	logger.LogInfo("asynq init success", nil)
 	// 初始化Google OAuth2客户端
 	google.Init(config)
 

@@ -194,3 +194,21 @@ type GetTemplateNotesDTO struct {
 	Limit    *int    `form:"limit" validate:"omitempty,gt=0,lt=20"`
 	Offset   int     `form:"offset" validate:"omitempty,gte=0"`
 }
+
+type AddNoteSyncDTO struct {
+	NoteID         int64                     `json:"note_id,string" validate:"required,gt=0"`
+	WorkspaceID    int64                     `json:"workspace_id,string" validate:"required,gt=0"`
+	Provider       model.IntegrationProvider `json:"provider" validate:"required,oneof=notion feishu"`
+	Mode           model.SyncMode            `json:"mode" validate:"required,oneof=auto manual"`
+	Direction      model.SyncDirection       `json:"direction" validate:"required,oneof=push pull both"`
+	ConflictPolicy model.ConflictPolicy      `json:"conflict_policy" validate:"required,oneof=latest"`
+	MemberID       int64                     `validate:"required,gt=0"`
+	TargetNoteID   string                    `json:"target_note_id"`
+}
+
+type GetNoteSyncListDTO struct {
+	NoteID      int64                      `form:"note_id,string" validate:"required,gt=0"`
+	WorkspaceID int64                      `form:"workspace_id,string" validate:"required,gt=0"`
+	Provider    *model.IntegrationProvider `form:"provider" validate:"omitempty,oneof=notion feishu"`
+	MemberID    int64                      `form:"member_id,string" validate:"omitempty,gt=0"`
+}

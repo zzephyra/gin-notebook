@@ -52,7 +52,7 @@ func (r *integrationRepository) GetIntegrationAppList(ctx context.Context, provi
 	return apps, nil
 }
 
-func (r *integrationRepository) GetIntegrationAccountList(ctx context.Context, provider *string, userID *int64) ([]model.IntegrationAccount, error) {
+func (r *integrationRepository) GetIntegrationAccountList(ctx context.Context, provider *model.IntegrationProvider, userID *int64) ([]model.IntegrationAccount, error) {
 	var accounts []model.IntegrationAccount
 	query := r.db.WithContext(ctx).Model(&model.IntegrationAccount{})
 	if provider != nil {

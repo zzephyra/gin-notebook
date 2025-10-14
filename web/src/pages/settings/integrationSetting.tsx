@@ -3,7 +3,7 @@ import { Steps, Tag } from "@douyinfe/semi-ui"
 import { Button } from "@heroui/button"
 import { Card, CardBody, Form, Input, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/react"
 import { useLingui } from "@lingui/react/macro"
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { useMediaQuery } from "react-responsive"
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon, PlusIcon } from "@heroicons/react/24/outline"
@@ -12,10 +12,7 @@ import { SupportedIntegrationProvider } from "@/types/integration"
 import { useIntegration } from "@/contexts/IntegrationContext"
 import ChaseLoading from "@/components/loading/Chase/loading";
 import { i18n } from "@lingui/core"
-import { useTheme } from "@heroui/use-theme"
 import { useAppTheme } from "@/contexts/UIThemeContext"
-
-
 
 type IntegrationData = {
     providerID: number;
@@ -27,8 +24,7 @@ function IntegrationSetting() {
     const { t } = useLingui()
     const integrationFormRef = useRef<HTMLFormElement | null>(null);
     const [step, setStep] = useState(0);
-    const { theme, resolved, setTheme, toggle } = useAppTheme();
-    console.log("IntegrationSetting sameProvider?", (window as any).__ROOT_THEME_REF__ === setTheme);
+    const { theme } = useAppTheme();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [loading, setLoading] = useState(false)
     const { apps, addNewApp, thirdPartyIntegrations, thirdPartyIntegrationsMapping } = useIntegration()

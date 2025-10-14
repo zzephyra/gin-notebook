@@ -1,5 +1,6 @@
 import { CommentAttachment, MentionPayload } from "@/components/comment/main/type";
 import { SupportedIntegrationProvider } from "@/types/integration";
+import { SyncConflictPolicy, SyncDirection, SyncMode } from "@/types/sync";
 
 export interface ApiResponse<T = any> {
     code: number;
@@ -169,3 +170,12 @@ export interface IntegrationAppPayload {
     verification_token?: string;
     encrypt_key?: string;
 }
+
+export interface SyncPayload {
+    provider: SupportedIntegrationProvider;
+    target_note_id: string;
+    mode: SyncMode;
+    direction: SyncDirection;
+    conflict_policy: SyncConflictPolicy;
+}
+

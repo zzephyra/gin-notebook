@@ -125,7 +125,7 @@ const FavoritesPage = () => {
 
 
     const handleChangeNoteFavorite = async (note_id: string, is_favorite: boolean) => {
-        SetFavoriteNoeRequest(note_id, is_favorite);
+        SetFavoriteNoeRequest(params.id || "", note_id, is_favorite);
         updateFavoriteNote(note_id, { is_favorite });
     }
 

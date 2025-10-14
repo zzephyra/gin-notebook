@@ -1,11 +1,11 @@
 import axiosClient from "@/lib/api/client";
-import { workspaceNotesApi, workspaceNoteCategoryApi, workspaceNoteDeleteApi, workspaceCategoryRecommandApi, favoriteNoteApi, templateNotesApi, templateNoteApi } from "./routes";
+import { workspaceNotesApi, workspaceNoteCategoryApi, workspaceNoteDeleteApi, workspaceCategoryRecommandApi, favoriteNoteApi, templateNotesApi, templateNoteApi, syncNoteApi } from "./routes";
 import { i18n } from "@lingui/core";
 import { responseCode } from "../constant/response";
 import { store } from "@/store";
 import { InsertNewCategory, UpdateNoteByID, DeleteNoteByID, setSelectedNoteId, UpdateNoteList } from "@/store/features/workspace";
 import toast from "react-hot-toast";
-import { FavoriteNoteListParams, WorkspaceNoteCreateParams } from "./type";
+import { FavoriteNoteListParams, SyncPayload, WorkspaceNoteCreateParams } from "./type";
 import { Note } from "@/pages/workspace/type";
 
 export async function GetNoteList(workspaceId: any, offset: number, limit: number) {
@@ -149,9 +149,12 @@ export async function GetRecommandCategories(workspace_id: string) {
 }
 
 
-export async function SetFavoriteNoeRequest(note_id: string, is_favorite: boolean) {
+export async function SetFavoriteNoeRequest(workspace_id: string, note_id: string, is_favorite: boolean) {
     try {
-        const res = await axiosClient.post(favoriteNoteApi, { note_id, is_favorite, sep: Date.now() })
+        if (workspace_id == "") {
+            return false
+        }
+        const res = await axiosClient.post(favoriteNoteApi, { workspace_id, note_id, is_favorite, sep: Date.now() })
         if (res.data.code == responseCode.SUCCESS) {
             return true
         } else {
@@ -183,7 +186,7 @@ export async function GetFavoriteNoteListRequest(params: FavoriteNoteListParams)
     }
 }
 
-export async function getTemplateListRequest(limit: number = 10, offset: number = 0) {
+export async function getTemplateListRequest(workspaceID: string, limit: number = 10, offset: number = 0) {
     if (limit <= 0) {
         limit = 10;
     }
@@ -196,7 +199,7 @@ export async function getTemplateListRequest(limit: number = 10, offset: number 
         total: 0
     }
     try {
-        const res = await axiosClient.get(templateNotesApi, { params: { limit, offset } });
+        const res = await axiosClient.get(templateNotesApi, { params: { workspace_id: workspaceID, limit, offset } });
         if (res.data.code == responseCode.SUCCESS) {
             return res.data || defaultResult;
         }
@@ -206,19 +209,57 @@ export async function getTemplateListRequest(limit: number = 10, offset: number 
     }
 }
 
-export async function createTemplateNoteRequest(content: string, title: string, cover?: string) {
+export async function createTemplateNoteRequest(workspace_id: string, content: string, title: string, cover?: string) {
     if (content.length < 1) {
         toast.error(i18n._("Content cannot be empty"));
         return null
     }
 
     try {
-        const res = await axiosClient.post(templateNoteApi, { content, title, cover });
+        const res = await axiosClient.post(templateNoteApi, { workspace_id, content, title, cover });
         if (res.data.code == responseCode.SUCCESS) {
             return res.data.data;
         }
         return null
     } catch (err) {
         return null
+    }
+}
+
+export async function createNoteSyncPolicyRequest(noteID: string, workspaceID: string, payload: SyncPayload) {
+    if (!noteID || !workspaceID) {
+        return {
+            code: 500,
+            error: i18n._("Missing valid value")
+        }
+    }
+
+    try {
+        const res = await axiosClient.post(syncNoteApi, { note_id: noteID, workspace_id: workspaceID, ...payload });
+        return res.data;
+    } catch (err) {
+        return {
+            code: 500,
+            error: "Create note sync policy failed"
+        }
+    }
+}
+
+export async function getNoteSyncPoliciesRequest(noteID: string, workspaceID: string, provider?: string) {
+    if (!noteID || !workspaceID) {
+        return {
+            code: 500,
+            error: i18n._("Missing valid value")
+        }
+    }
+
+    try {
+        const res = await axiosClient.get(syncNoteApi, { params: { note_id: noteID, workspace_id: workspaceID, provider } });
+        return res.data;
+    } catch (err) {
+        return {
+            code: 500,
+            error: "Get note sync policies failed"
+        }
     }
 }

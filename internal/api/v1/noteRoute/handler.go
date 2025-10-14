@@ -126,3 +126,52 @@ func GetTemplateNotesApi(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }
+
+func AddNoteSyncApi(c *gin.Context) {
+	params := &dto.AddNoteSyncDTO{
+		MemberID: c.MustGet("workspaceMemberID").(int64),
+	}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		log.Printf("params %s", err)
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode, data := noteService.AddNoteSync(c.Request.Context(), params)
+	if data == nil {
+		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
+		return
+	}
+	c.JSON(http.StatusCreated, response.Response(responseCode, data))
+}
+
+func GetNoteSyncListApi(c *gin.Context) {
+	params := &dto.GetNoteSyncListDTO{
+		MemberID: c.MustGet("workspaceMemberID").(int64),
+	}
+
+	if err := c.ShouldBindQuery(params); err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode, data := noteService.GetNoteSyncList(c.Request.Context(), params)
+	if data == nil {
+		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
+		return
+	}
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}

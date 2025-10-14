@@ -8,7 +8,7 @@ import (
 
 type NotionService interface {
 	// 绑定：将 note 与某个 notion page 关联起来
-	LinkNoteToPage(ctx context.Context, noteID int64, notionPageID string, linkedByUserID int64, policy model.SyncPolicy) error
+	LinkNoteToPage(ctx context.Context, noteID int64, notionPageID string, linkedByUserID int64, policy model.ConflictPolicy) error
 	// 取消绑定
 	UnlinkNote(ctx context.Context, noteID int64) error
 	// 同步
@@ -30,6 +30,5 @@ func (s *notionService) LinkNoteToPage(ctx context.Context) error {
 }
 
 func (s *notionService) LinkAccount(ctx context.Context, params dto.IntegrationAccountCreateDTO) error {
-
 	return nil
 }

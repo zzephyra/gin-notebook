@@ -11,5 +11,7 @@ func NewMux() *asynq.ServeMux {
 	mux := asynq.NewServeMux()
 	mux.HandleFunc(string(types.TypeEmailSend), handlers.HandleEmailSend)
 	mux.HandleFunc(string(types.KanbanActivityKey), handlers.KanbanActivity)
+	mux.HandleFunc(types.TypeFeishuRefreshAllUserTokens, handlers.HandleFeishuRefreshAllUserTokens)
+
 	return mux
 }

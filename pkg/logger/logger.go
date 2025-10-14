@@ -3,13 +3,19 @@ package logger
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
-func LogError(err error, message string) {
-	log.Error().Err(err).Msg(message)
+func LogError(err error, messages ...any) {
+	var b strings.Builder
+	for _, m := range messages {
+		b.WriteString(fmt.Sprint(m))
+		b.WriteRune(' ')
+	}
+	log.Error().Err(err).Msg(strings.TrimSpace(b.String()))
 }
 
 func LogDebug(message string, fields map[string]interface{}) {

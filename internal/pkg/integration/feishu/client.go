@@ -12,8 +12,10 @@ import (
 	"time"
 
 	lark "github.com/larksuite/oapi-sdk-go/v3"
+	larkcore "github.com/larksuite/oapi-sdk-go/v3/core"
 	larkauth "github.com/larksuite/oapi-sdk-go/v3/service/auth/v3"
 	larkauthen "github.com/larksuite/oapi-sdk-go/v3/service/authen/v1"
+	larkdrive "github.com/larksuite/oapi-sdk-go/v3/service/drive/v1"
 )
 
 type FeishuClient interface {
@@ -71,7 +73,6 @@ func (c *Client) LoadConfigFromDatabase() error {
 
 	for _, app := range integration {
 		if app.Provider == "feishu" {
-			fmt.Println(app.AppID, app.AppSecretEnc)
 			c.Client = lark.NewClient(app.AppID, app.AppSecretEnc)
 			break
 		}
@@ -171,5 +172,84 @@ func (c *Client) GetUserAccessToken(ctx context.Context, code string) (*dto.Feis
 		return nil, err
 	}
 
+	return &wrapper.Data, nil
+}
+
+func (c *Client) GetFileMeta(ctx context.Context, fileToken, fileType, userToken string) (*dto.FeishuFileMeta, error) {
+	if fileType == "" {
+		fileType = "docx"
+	}
+
+	req := larkdrive.NewBatchQueryMetaReqBuilder().
+		UserIdType(`user_id`).
+		MetaRequest(larkdrive.NewMetaRequestBuilder().
+			RequestDocs([]*larkdrive.RequestDoc{
+				larkdrive.NewRequestDocBuilder().
+					DocToken(fileToken).
+					DocType(fileType).
+					Build(),
+			}).
+			WithUrl(false).
+			Build()).
+		Build()
+
+	resp, err := c.Client.Drive.V1.Meta.BatchQuery(context.Background(), req, larkcore.WithUserAccessToken(userToken))
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	// 服务端错误处理
+	if !resp.Success() {
+		fmt.Printf("logId: %s, error response: \n%s", resp.RequestId(), larkcore.Prettify(resp.CodeError))
+		return nil, resp.CodeError
+	}
+
+	var wrapper struct {
+		Data dto.FeishuFileMeta `json:"data"`
+	}
+	if err := json.Unmarshal(resp.RawBody, &wrapper); err != nil {
+		logger.LogError(err, "Feishu GetFileMeta json unmarshal error")
+		return nil, err
+	}
+
+	return &wrapper.Data, nil
+}
+
+func (c *Client) RefreshUserAccessToken(ctx context.Context, refreshToken string) (*RefreshUserAccessTokenResponse, error) {
+
+	req := larkauthen.NewCreateOidcRefreshAccessTokenReqBuilder().
+		Body(larkauthen.NewCreateOidcRefreshAccessTokenReqBodyBuilder().
+			GrantType(`refresh_token`).
+			RefreshToken(refreshToken).
+			Build()).
+		Build()
+
+	resp, err := c.Client.Authen.V1.OidcRefreshAccessToken.Create(ctx, req)
+
+	if err != nil {
+		logger.LogError(err, "Feishu RefreshUserAccessToken error")
+		return nil, err
+	}
+
+	if !resp.Success() {
+		logger.LogError(resp.CodeError, "Feishu RefreshUserAccessToken response error")
+		return nil, resp.CodeError
+	}
+
+	wrapper := struct {
+		Data RefreshUserAccessTokenResponse `json:"data"`
+	}{}
+
+	if err := json.Unmarshal(resp.RawBody, &wrapper); err != nil {
+		logger.LogError(err, "Feishu RefreshUserAccessToken json unmarshal error")
+		return nil, err
+	}
+	fmt.Println("wrapper.Data:", wrapper.Data)
+
+	if wrapper.Data.AccessToken == "" {
+		logger.LogError(fmt.Errorf("empty access token"), "Feishu RefreshUserAccessToken error")
+		return nil, fmt.Errorf("empty access token")
+	}
 	return &wrapper.Data, nil
 }

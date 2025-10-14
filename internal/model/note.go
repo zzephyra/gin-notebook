@@ -1,6 +1,7 @@
 package model
 
 import (
+	"strconv"
 	"time"
 
 	"gorm.io/datatypes"
@@ -64,36 +65,48 @@ type TemplateNote struct {
 }
 
 type NoteExternalLink struct {
-	ID       int64                `gorm:"primaryKey"`
-	NoteID   int64                `gorm:"not null; index:idx_note_provider,priority:1"`
-	Provider IntegrationProvider  `gorm:"type:varchar(32); not null; index:idx_note_provider,priority:2"`
+	NoteID int64 `gorm:"not null; uniqueIndex:uidx_note_provider"`
+	// 唯一: (note_id, provider) —— 用迁移SQL建部分唯一索引
+	Provider IntegrationProvider  `gorm:"type:varchar(32); not null; uniqueIndex:uidx_note_provider"`
 	ResType  ExternalResourceType `gorm:"type:varchar(32); not null; default:'page'"`
-	// Notion 的 page_id / Jira 的 issue_key / GitHub 的 issue_id ...
-	ExternalID  string  `gorm:"type:varchar(255); not null; index:idx_provider_external,priority:1"`
-	ExternalURL *string `gorm:"type:text"`
 
-	// 谁把这个链接“建”起来的（用谁的 token 同步）
-	LinkedByUserID int64 `gorm:"not null; index"`
+	TargetNoteID  string  `gorm:"type:varchar(255); not null; index"`
+	TargetNoteURL *string `gorm:"type:text"`
 
-	// 采用哪个账号（明确指向 IntegrationAccount；避免多人协作时混淆）
-	IntegrationAccountID int64 `gorm:"not null; index"`
+	MemberID int64 `gorm:"not null; index;"`
 
 	// 同步策略与状态
-	Policy       SyncPolicy `gorm:"type:varchar(16); not null; default:'two_way'"`
-	LastStatus   SyncStatus `gorm:"type:varchar(16); not null; default:'idle'; index"`
-	LastError    *string    `gorm:"type:text"`
-	LastSyncedAt *time.Time
-
-	// 增量同步元数据（例如 Notion 的 last_edited_time、block version、ETag 等）
+	Mode            SyncMode       `gorm:"type:varchar(16); not null; default:'auto'"`
+	Direction       SyncDirection  `gorm:"type:varchar(16); not null; default:'both'"`
+	ConflictPolicy  ConflictPolicy `gorm:"type:varchar(16); not null; default:'latest'"`
+	LastStatus      SyncStatus     `gorm:"type:varchar(16); not null; default:'idle'; index"`
+	LastError       *string        `gorm:"type:text"`
+	IsActive        bool           `gorm:"not null; default:true"`
+	LastSyncedAt    *time.Time
 	ExternalVersion *string        `gorm:"type:varchar(255)"`
 	ExternalETag    *string        `gorm:"type:varchar(255)"`
-	Meta            datatypes.JSON `gorm:"type:json"` // 自由扩展（比如 block map 的 hash）
-
+	Meta            datatypes.JSON `gorm:"type:jsonb"`              // PG 用 jsonb
+	SyncHash        *string        `gorm:"type:varchar(64); index"` // sha256 等
 	BaseModel
+}
 
-	// 约束：
-	// 1) 同 Note 在同 Provider 上仅 1 条（每个页面绑定唯一 Provider 资源）
-	// UNIQUE KEY uniq_note_provider(note_id, provider)
-	// 2) 防止重复绑定相同外部资源
-	// UNIQUE KEY idx_provider_external(provider, external_id)
+func (n *NoteExternalLink) Data() map[string]interface{} {
+	return map[string]interface{}{
+		"id":              strconv.FormatInt(n.ID, 10),
+		"note_id":         strconv.FormatInt(n.NoteID, 10),
+		"provider":        n.Provider,
+		"res_type":        n.ResType,
+		"target_note_id":  n.TargetNoteID,
+		"target_note_url": n.TargetNoteURL,
+		"member_id":       strconv.FormatInt(n.MemberID, 10),
+		"mode":            n.Mode,
+		"direction":       n.Direction,
+		"conflict_policy": n.ConflictPolicy,
+		"last_status":     n.LastStatus,
+		"last_error":      n.LastError,
+		"is_active":       n.IsActive,
+		"last_synced_at":  n.LastSyncedAt,
+		"created_at":      n.CreatedAt,
+		"updated_at":      n.UpdatedAt,
+	}
 }

@@ -46,8 +46,8 @@ type FeishuUserAccessTokenResponse struct {
 }
 
 type IntegrationAccountQueryDTO struct {
-	Provider *string `form:"provider" validate:"omitempty,oneof=notion feishu jira"`
-	UserID   int64   `validate:"required"`
+	Provider *model.IntegrationProvider `form:"provider" validate:"omitempty,oneof=notion feishu jira"`
+	UserID   int64                      `validate:"required"`
 }
 
 type IntegrationAccountDeleteDTO struct {

@@ -25,13 +25,12 @@ const (
 	// ...
 )
 
-type SyncPolicy string
+type SyncDirection string
 
 const (
-	SyncPushOnly SyncPolicy = "push"    // 以本地为主，单向推送
-	SyncPullOnly SyncPolicy = "pull"    // 以外部为主，单向拉取
-	SyncTwoWay   SyncPolicy = "two_way" // 双向
-	SyncManual   SyncPolicy = "manual"  // 仅人工触发
+	SyncPushOnly SyncDirection = "push" // 以本地为主，单向推送
+	SyncPullOnly SyncDirection = "pull" // 以外部为主，单向拉取
+	SyncTwoWay   SyncDirection = "both" // 双向
 )
 
 type SyncStatus string
@@ -42,4 +41,18 @@ const (
 	SyncRunning SyncStatus = "running"
 	SyncSuccess SyncStatus = "success"
 	SyncFailed  SyncStatus = "failed"
+)
+
+type SyncMode string
+
+const (
+	SyncModeAuto   SyncMode = "auto"
+	SyncModeManual SyncMode = "manual"
+)
+
+type ConflictPolicy string
+
+const (
+	ConflictLatest ConflictPolicy = "latest" // 以最新修改时间为准
+	// ...
 )

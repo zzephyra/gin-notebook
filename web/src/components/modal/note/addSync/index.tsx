@@ -2,43 +2,69 @@ import useIntegration from "@/hooks/useIntegration";
 import { IntegrationApp } from "@/types/integration";
 import { Steps } from "@douyinfe/semi-ui";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { Button, Card, CardBody, Form, Input, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, Tab, Tabs } from "@heroui/react";
+import { Button, Form, Input, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, SharedSelection } from "@heroui/react";
 import { i18n } from "@lingui/core";
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { SynchronizationPolicyPayload } from "./type";
 
-function NewSyncModal({ isOpen, onOpenChange }: { isOpen: boolean; onOpenChange: (open: boolean) => void }) {
+function NewSyncModal({ isOpen, onOpenChange, workspaceID, onCreate }: { workspaceID?: string, noteID: string, isOpen: boolean, onOpenChange: (open: boolean) => void, onCreate?: (payload: SynchronizationPolicyPayload) => Promise<boolean> }) {
     const { t } = useLingui();
     const { apps, thirdPartyIntegrationsMapping } = useIntegration();
-    const [data, setData] = useState<{ provider?: string, conflict: string, mode: string, direction: string }>({ conflict: "latest", mode: "auto", direction: "both" });
+    const [data, setData] = useState<SynchronizationPolicyPayload>({ conflict_policy: "latest", mode: "auto", direction: "both" });
     const [step, setStep] = useState(0);
-    const next = () => {
-        var res = callbackFunction[step]();
-        console.log(res);
+    const next = async () => {
+        var res = await (callbackFunction[step])();
         if (res === false) return;
         setStep(step + 1);
     }
+    const [loading, setLoading] = useState(false);
 
-    const callbackFunction: (() => boolean)[] = [
-        () => {
+    const callbackFunction: Array<() => Promise<boolean>> = [
+        async () => {
             if (data.provider == undefined) {
                 toast.error(t`Please select a provider`);
                 return false;
             }
             return true;
         },
-        () => {
+        async () => {
+            if (data.mode == undefined || data.direction == undefined || data.conflict_policy == undefined) {
+                toast.error(t`Please complete the strategy`);
+                return false;
+            }
             return true;
         },
-        () => {
+        async () => {
+            setLoading(true);
+            if (workspaceID == undefined) {
+                toast.error(t`Workspace ID is not found`);
+                return false;
+            }
+
+            if (data.target_note_id == undefined || data.target_note_id.trim() === "") {
+                toast.error(t`Please input target note id`);
+                return false
+            }
+
+            if (data.provider == undefined) {
+                toast.error(t`Provider is not selected`);
+                return false;
+            }
+
+            if (onCreate) {
+                await onCreate(data)
+            }
+            setLoading(false);
+            onOpenChange(false)
             return true;
         }
     ]
 
     return (
         <>
-            <Modal classNames={{ wrapper: "z-[1200] " }} isOpen={isOpen} onOpenChange={onOpenChange} size="2xl" className="new-sync-modal">
+            <Modal onClose={() => setStep(0)} classNames={{ wrapper: "z-[1200]" }} isOpen={isOpen} onOpenChange={onOpenChange} size="2xl" className="new-sync-modal">
                 <ModalContent>
                     <ModalHeader>
                         {t`Add Synchronization`}
@@ -81,7 +107,7 @@ function NewSyncModal({ isOpen, onOpenChange }: { isOpen: boolean; onOpenChange:
                                 ) :
                                     step === 1 ? (<>
                                         <Form>
-                                            <Select defaultSelectedKeys={[data.mode]} classNames={{ label: "text-gray-500 dark:text-white md:w-[150px] w-[120px]" }} labelPlacement="outside-left" className="mb-2" size="md" name="mode" label={t`Sync Mode`} >
+                                            <Select isRequired onSelectionChange={(key: SharedSelection) => { if (key.currentKey) { setData({ ...data, mode: key.currentKey }) } }} defaultSelectedKeys={[data.mode]} classNames={{ label: "text-gray-500 dark:text-white md:w-[150px] w-[120px]" }} labelPlacement="outside-left" className="mb-2" size="md" name="mode" label={t`Sync Mode`} >
                                                 <SelectItem key={"auto"} >
                                                     {t`Auto Sync`}
                                                 </SelectItem>
@@ -89,7 +115,7 @@ function NewSyncModal({ isOpen, onOpenChange }: { isOpen: boolean; onOpenChange:
                                                     {t`Manual Sync`}
                                                 </SelectItem>
                                             </Select>
-                                            <Select defaultSelectedKeys={[data.direction]} classNames={{ label: "text-gray-500 dark:text-white md:w-[150px] w-[120px]" }} labelPlacement="outside-left" name="direction" className="mb-2" size="md" label={t`Sync Direction`} >
+                                            <Select isRequired onSelectionChange={(key: SharedSelection) => { if (key.currentKey) { setData({ ...data, direction: key.currentKey }) } }} defaultSelectedKeys={[data.direction ?? ""]} classNames={{ label: "text-gray-500 dark:text-white md:w-[150px] w-[120px]" }} labelPlacement="outside-left" name="direction" className="mb-2" size="md" label={t`Sync Direction`} >
                                                 <SelectItem key={"push"} >
                                                     {t`Push Only`}
                                                 </SelectItem>
@@ -100,7 +126,7 @@ function NewSyncModal({ isOpen, onOpenChange }: { isOpen: boolean; onOpenChange:
                                                     {t`Two-way Sync`}
                                                 </SelectItem>
                                             </Select>
-                                            <Select classNames={{ label: "text-gray-500 dark:text-white md:w-[150px] w-[120px]" }} defaultSelectedKeys={[data.conflict]} labelPlacement="outside-left" name="conflict" className="mb-2" size="md" label={t`Conflict Policy`} >
+                                            <Select isRequired onSelectionChange={(key: SharedSelection) => { if (key.currentKey) { setData({ ...data, conflict_policy: key.currentKey }) } }} classNames={{ label: "text-gray-500 dark:text-white md:w-[150px] w-[120px]" }} defaultSelectedKeys={[data.conflict_policy]} labelPlacement="outside-left" name="conflict" className="mb-2" size="md" label={t`Conflict Policy`} >
                                                 <SelectItem key={"latest"} >
                                                     {t`Latest Modified Wins`}
                                                 </SelectItem>
@@ -108,7 +134,7 @@ function NewSyncModal({ isOpen, onOpenChange }: { isOpen: boolean; onOpenChange:
                                         </Form>
                                     </>) : (<>
                                         <Form>
-                                            <Input classNames={{ label: "md:w-[150px] w-[120px]", mainWrapper: "flex-1" }} labelPlacement="outside-left" className="mb-2" size="md" name="notebook" label={t`Notebook ID`} placeholder={t`Input note id`} />
+                                            <Input isRequired onValueChange={(value) => setData({ ...data, target_note_id: value })} classNames={{ label: "md:w-[150px] w-[120px]", mainWrapper: "flex-1" }} labelPlacement="outside-left" className="mb-2" size="md" name="notebook" label={t`Notebook ID`} placeholder={t`Input note id`} />
                                         </Form>
                                     </>)
 
@@ -119,14 +145,7 @@ function NewSyncModal({ isOpen, onOpenChange }: { isOpen: boolean; onOpenChange:
                                 step == 1 && <Button size="sm" onPress={() => setStep(step - 1)} className="mr-2">{t`Previous`}</Button>
                             }
                             {
-                                step === 2 ? (
-                                    <Button size="sm" className="float-right" onPress={() => {
-                                        onOpenChange(false);
-                                        setStep(0);
-                                    }} color="primary">{t`Finish`}</Button>
-                                ) : (
-                                    <Button className="float-right" size="sm" onPress={next} color="primary">{t`Next`}</Button>
-                                )
+                                <Button isLoading={loading} className="float-right" size="sm" onPress={next} color="primary">{step === 2 ? t` Next` : t`Finish`}</Button>
                             }
                         </div>
                     </ModalBody>
