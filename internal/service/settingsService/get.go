@@ -48,6 +48,9 @@ func GetSystemSettings(params *dto.GetSettingsDTO) (responseCode int, data map[s
 				data["system"] = map[string]interface{}{
 					"storage_driver": systemSettingModel.StorageDriver,
 					"maximun_size":   systemSettingModel.MaximunSize,
+					"qiniu_domain":   systemSettingModel.QiniuDomain,
+					"qiniu_region":   systemSettingModel.QiniuRegion,
+					"qiniu_bucket":   systemSettingModel.QiniuBucket,
 				}
 			}
 		}
