@@ -10,9 +10,11 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
+	github.com/gorilla/websocket v1.5.3
+	github.com/larksuite/oapi-sdk-go/v3 v3.4.25
+	github.com/morikuni/go-lexorank v0.0.0
 	github.com/redis/go-redis/v9 v9.12.1
 	github.com/rs/zerolog v1.34.0
-	github.com/tanjoshua/lexorank v1.1.1
 	github.com/teambition/rrule-go v1.8.2
 	golang.org/x/oauth2 v0.30.0
 	google.golang.org/api v0.236.0
@@ -32,9 +34,6 @@ require (
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.6 // indirect
 	github.com/googleapis/gax-go/v2 v2.14.2 // indirect
-	github.com/gorilla/websocket v1.5.3 // indirect
-	github.com/larksuite/oapi-sdk-go/v3 v3.4.25 // indirect
-	github.com/morikuni/go-lexorank v0.0.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.60.0 // indirect
 	go.opentelemetry.io/otel v1.35.0 // indirect
