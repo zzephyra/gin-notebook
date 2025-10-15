@@ -12,7 +12,7 @@ export interface UserState {
     email: string,
     nickname: string,
     phone: string,
-    role: [], // e.g: ["admin", "user"]
+    role: string[], // e.g: ["admin", "user"]
     avatar: string,
     isAuth: boolean,
     id: string,

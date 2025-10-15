@@ -50,7 +50,6 @@ func GetSystemSettings(params *dto.GetSettingsDTO) (responseCode int, data map[s
 					"maximun_size":   systemSettingModel.MaximunSize,
 					"qiniu_domain":   systemSettingModel.QiniuDomain,
 					"qiniu_region":   systemSettingModel.QiniuRegion,
-					"qiniu_bucket":   systemSettingModel.QiniuBucket,
 				}
 			}
 		}

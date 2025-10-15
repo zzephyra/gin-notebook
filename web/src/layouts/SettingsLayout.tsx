@@ -6,6 +6,10 @@ import { useLingui } from "@lingui/react/macro";
 import { useSelector } from "react-redux";
 import { IntegrationProvider } from "@/contexts/IntegrationContext";
 import useIntegration from "@/hooks/useIntegration";
+import type { RootState } from "@/store"; // 你的 RootState 类型
+
+const selectIsSystemAdmin = (s: RootState) => (s.user.role ?? []).includes("admin");
+const selectIsWorkspaceAdmin = (s: RootState) => (s.workspace.currentWorkspace?.roles ?? []).includes("admin");
 
 type MenuGroup = {
     title: string;
@@ -16,12 +20,10 @@ export default function SettingsLayout() {
     const { t } = useLingui();
     const navigate = useNavigate();
     const location = useLocation();
-    const { id } = useParams(); // workspace/user/project id
-    const state = useSelector((s: any) => s);
+    const { id } = useParams();
 
-    const isSystemAdmin = (state.user.role as string[])?.includes("admin") ?? false;
-    const isWorkspaceAdmin =
-        (state.workspace.currentWorkspace?.roles as string[])?.includes("admin") ?? false;
+    const isSystemAdmin = useSelector(selectIsSystemAdmin);
+    const isWorkspaceAdmin = useSelector(selectIsWorkspaceAdmin);
 
     const base = `/settings/${id}`;
 
@@ -56,9 +58,7 @@ export default function SettingsLayout() {
         return groups;
     }, [t, base, isWorkspaceAdmin, isSystemAdmin]);
 
-    // 当前选中的 path（用于 Listbox 的受控选中）
     const selectedPath = useMemo(() => {
-        // 没有子路径时，让 /settings/:id 也高亮到 Account
         if (location.pathname === base) return `${base}/account`;
         return location.pathname;
     }, [location.pathname, base]);

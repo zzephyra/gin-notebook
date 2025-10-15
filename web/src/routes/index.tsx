@@ -24,91 +24,65 @@ const IntegrationSetting = lazy(() => import("@/pages/settings/integrationSettin
 
 export let router = createBrowserRouter([
   {
-    path: "/",
     element: (
       <RequireAuth>
         <BaseLayout />
       </RequireAuth>
     ),
     children: [
-      { index: true, Component: LoginPage },
-      { path: "workspace/:id", Component: WorkspaceNote },
-      { path: "workspace/:id/favorites", Component: FavoritesPage },
+      { path: "/workspace/:id/favorites", Component: FavoritesPage },
+      { path: "/workspace/:id", Component: WorkspaceNote },
       {
-        path: "settings/:id",
+        path: "/settings/:id",
         element: (
           <Suspense fallback={<div className="px-4 py-2 text-sm text-gray-500">Loading settings…</div>}>
             <SettingsLayout />
           </Suspense>
         ),
         children: [
-          {
-            index: true,
-            element: (
-              <Suspense fallback={<div className="px-4 py-2 text-sm text-gray-500">Loading account…</div>}>
-                <AccountSettings />
-              </Suspense>
-            ),
-          },
-          {
-            path: "account",
-            element: (
-              <Suspense fallback={<div className="px-4 py-2 text-sm text-gray-500">Loading account…</div>}>
-                <AccountSettings />
-              </Suspense>
-            ),
-          },
-          {
-            path: "bind",
-            element: (
-              <Suspense fallback={<div className="px-4 py-2 text-sm text-gray-500">Loading integration account…</div>}>
-                <IntegrationAccount />
-              </Suspense>
-            ),
-          },
+          { index: true, element: <AccountSettings /> },
+          { path: "account", element: <AccountSettings /> },
+          { path: "bind", element: <IntegrationAccount /> },
           {
             path: "members",
             element: (
-              <Suspense fallback={<div className="px-4 py-2 text-sm text-gray-500">Loading members…</div>}>
-                <WorkspaceSettings />
-              </Suspense>
+              <WorkspaceSettings />
             ),
           },
           {
             path: "storage",
             element: (
-              <Suspense fallback={<div className="px-4 py-2 text-sm text-gray-500">Loading storage…</div>}>
-                <StorageSettings />
-              </Suspense>
+              <StorageSettings />
             ),
           },
           {
             path: "integration",
             element: (
-              <Suspense fallback={<div className="px-4 py-2 text-sm text-gray-500">Loading integration…</div>}>
-                <IntegrationSetting />
-              </Suspense>
+              <IntegrationSetting />
             ),
           },
         ],
       },
-      { path: "tasks/:id", Component: TasksPage },
-      { path: "project/:id", Component: ProjectPage },
+
+      { path: "/tasks/:id", Component: TasksPage },
+      { path: "/project/:id", Component: ProjectPage },
     ],
   },
+
+  // “Simple” layout as a pathless parent with absolute children
   {
-    path: "/",
     element: (
       <RequireAuth>
         <BaseSimplePage />
       </RequireAuth>
     ),
     children: [
-      { path: "select", Component: SelectWorkspace },
-      { path: "invite/:id", Component: InviteWorkspacePage },
+      { path: "/select", Component: SelectWorkspace },
+      { path: "/invite/:id", Component: InviteWorkspacePage },
     ],
   },
 
+  // Auth routes (separate branch)
   {
     path: "/auth",
     Component: BaseSimplePage,
@@ -120,7 +94,7 @@ export let router = createBrowserRouter([
 ]);
 
 function AppRouter() {
-  return <RouterProvider router={router}></RouterProvider>;
+  return <RouterProvider router={router} />;
 }
 
 export default AppRouter;

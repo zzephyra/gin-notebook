@@ -20,7 +20,7 @@ async function changeLanguage(locale: "all" | Set<React.Key> & { anchorKey?: str
   }
 }
 
-export default function BaseLayout() {
+export default function LoginBaseLayout() {
   return (
     <div className="flex flex-col h-full">
       <header className="pt-2 flex justify-end gap-2 mr-2 content-center">

@@ -25,7 +25,7 @@ export default function SiderBar() {
 
     const navigate = useNavigate();
     const currentMenuKey = menuItems.find((item) =>
-        location.pathname == item.route
+        location.pathname.startsWith(item.route)
     )?.key;
     const [openTooltip, useOpenTooltip] = useState(false);
     function handleTabClick(key: Key | null) {
