@@ -1,6 +1,6 @@
 import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView } from "@blocknote/mantine";
-import { BlockNoteSchema, defaultInlineContentSpecs, filterSuggestionItems } from "@blocknote/core";
+import { Block, BlockNoteSchema, defaultInlineContentSpecs, filterSuggestionItems } from "@blocknote/core";
 import "@blocknote/mantine/style.css";
 import { BlockNoteOptions } from "./type";
 import {
@@ -33,9 +33,11 @@ import { en as aiEn, zh as aiZh } from "@blocknote/xl-ai/locales";
 import { en, zh } from "@blocknote/core/locales";
 import { BASE_URL } from "@/lib/api/client";
 import { aiChatApi } from "@/features/api/routes";
-import { YDocProvider } from "@y-sweet/react";
+// import { YDocProvider } from "@y-sweet/react";
 import type { User } from "@blocknote/core/comments";
 import { getUserInfoByIDRequest } from "@/features/api/user";
+import { diffSnapshots, flattenDocument } from "@/utils/blocksSnapshot";
+import { PatchOp } from "@/types/note";
 export type MyUserType = User & {
     role: "editor" | "comment";
 };
@@ -89,14 +91,14 @@ async function resolveUsers(userIds: string[]) {
     }
 }
 
-const BlockNoteEditor = ({ noteID, content, onChange, options, className }: { noteID: string, content?: string, className?: string, onChange?: (value: string) => void, options?: BlockNoteOptions }) => {
+const BlockNoteEditor = ({ noteID, content, onChange, options, className }: { noteID: string, content?: Block[], className?: string, onChange?: (value: PatchOp[]) => void, options?: BlockNoteOptions }) => {
     return (
-        <YDocProvider
-            docId={noteID}
-            authEndpoint="https://demos.y-sweet.dev/api/auth"
-        >
-            <BlockNoteEditorInner options={options} noteID={noteID} content={content} onChange={onChange} className={className} />
-        </YDocProvider>
+        // <YDocProvider
+        //     docId={noteID}
+        //     authEndpoint="https://demos.y-sweet.dev/api/auth"
+        // >
+        <BlockNoteEditorInner options={options} noteID={noteID} content={content} onChange={onChange} className={className} />
+        // </YDocProvider>
 
     )
 }
@@ -132,7 +134,7 @@ function createMameosAIExtension() {
 }
 
 
-const BlockNoteEditorInner = ({ noteID, content, onChange, options, className }: { noteID: string, content?: string, onChange?: (value: string) => void, options?: BlockNoteOptions, className?: string }) => {
+const BlockNoteEditorInner = ({ noteID, content, onChange, options, className }: { noteID: string, content?: Block[], onChange?: (value: PatchOp[]) => void, options?: BlockNoteOptions, className?: string }) => {
     // const client = createBlockNoteAIClient({
     //     apiKey: "PLACEHOLDER",
     //     baseURL: BASE_URL + aiChatApi,
@@ -149,7 +151,7 @@ const BlockNoteEditorInner = ({ noteID, content, onChange, options, className }:
     // });
 
     const prevNoteId = useRef("");
-    const prevContent = useRef("");
+    const prevContent = useRef<Block[]>();
     const editor = useCreateBlockNote(
         {
             dictionary: {
@@ -169,20 +171,17 @@ const BlockNoteEditorInner = ({ noteID, content, onChange, options, className }:
                 createMameosAIExtension(),
             ],
             resolveUsers,
-        });
+            initialContent: content?.length == 0 ? [{ "type": "paragraph" }] : content,
+        }, [noteID]);
 
     const handleOnChange = async () => {
-        const markdownContent = await editor.blocksToMarkdownLossy(editor.document);
+        const markdownContent = editor.document;
+        const flattened = flattenDocument(markdownContent);
+        const diff = diffSnapshots(flattenDocument(prevContent.current || []), flattened);
         if (onChange) {
-            onChange(markdownContent);
+            onChange(diff);
         }
     }
-
-    async function loadInitialHTML() {
-        const blocks = await editor.tryParseMarkdownToBlocks(content || "");
-        editor.replaceBlocks(editor.document, blocks);
-    }
-
 
     useEffect(() => {
         const unsubscribe = getAIExtension(editor).store.subscribe(() => {
@@ -194,9 +193,8 @@ const BlockNoteEditorInner = ({ noteID, content, onChange, options, className }:
         const noteIdChanged = prevNoteId.current !== noteID;
         const contentChanged = prevContent.current !== content;
         if ((noteIdChanged || contentChanged) && !aiRecommand) {
-            loadInitialHTML();
             prevNoteId.current = noteID;
-            prevContent.current = content || "";
+            prevContent.current = content || [];
         }
     }, [content]);
 

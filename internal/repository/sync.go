@@ -32,3 +32,10 @@ func (r *syncRepository) CreateOutboxEvent(ctx context.Context, event *model.Out
 	}
 	return nil
 }
+
+func (r *syncRepository) UpsertNoteExternalNodeMappings(ctx context.Context, nodeMappings *[]model.NoteExternalNodeMapping) error {
+	return r.db.WithContext(ctx).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "note_id"}, {Name: "provider"}, {Name: "external_block_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"updated_at"}),
+	}).Create(nodeMappings).Error
+}

@@ -109,3 +109,7 @@ func GetValueFromParams(params gin.Params, key string, format string) (any, bool
 		return value, true
 	}
 }
+
+func Ptr[T any](v T) *T {
+	return &v
+}

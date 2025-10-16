@@ -15,6 +15,7 @@ import (
 	larkcore "github.com/larksuite/oapi-sdk-go/v3/core"
 	larkauth "github.com/larksuite/oapi-sdk-go/v3/service/auth/v3"
 	larkauthen "github.com/larksuite/oapi-sdk-go/v3/service/authen/v1"
+	larkdocx "github.com/larksuite/oapi-sdk-go/v3/service/docx/v1"
 	larkdrive "github.com/larksuite/oapi-sdk-go/v3/service/drive/v1"
 )
 
@@ -252,4 +253,34 @@ func (c *Client) RefreshUserAccessToken(ctx context.Context, refreshToken string
 		return nil, fmt.Errorf("empty access token")
 	}
 	return &wrapper.Data, nil
+}
+
+func (c *Client) SyncNote(ctx context.Context) {}
+
+func (c *Client) TransferMarkdownToBlock(ctx context.Context, userToken, content string) (*FeishuIndex, error) {
+	req := larkdocx.NewConvertDocumentReqBuilder().
+		UserIdType(`user_id`).
+		Body(larkdocx.NewConvertDocumentReqBodyBuilder().
+			ContentType(`markdown`).
+			Content(content).
+			Build()).
+		Build()
+	resp, err := c.Client.Docx.V1.Document.Convert(context.Background(), req, larkcore.WithUserAccessToken(userToken))
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	// 服务端错误处理
+	if !resp.Success() {
+		fmt.Printf("logId: %s, error response: \n%s", resp.RequestId(), larkcore.Prettify(resp.CodeError))
+		return nil, err
+	}
+
+	index, err := BuildFeishuIndex(resp.RawBody)
+	if err != nil {
+		logger.LogError(err, "Feishu TransferMarkdownToBlock BuildFeishuIndex error")
+		return nil, err
+	}
+	return &index, nil
 }

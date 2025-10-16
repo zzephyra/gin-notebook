@@ -93,11 +93,14 @@ export const workspaceSlice = createSlice({
                     ...action.payload,
                 };
             }
+        },
+        InsertNewNote: (state, action: PayloadAction<Note>) => {
+            notesAdapter.addOne(state.noteList, action.payload);
         }
     }
 })
 
-export const { UpdateWorkspaceList, CleanWorkspaceState, DeleteNoteByID, InsertNewCategory, UpdateCurrentWorkspace, setSelectedNoteId, UpdateNoteCategoryList, UpdateNoteList, UpdateNoteByID, UpdateCategoryByID } = workspaceSlice.actions
+export const { UpdateWorkspaceList, CleanWorkspaceState, DeleteNoteByID, InsertNewCategory, UpdateCurrentWorkspace, setSelectedNoteId, UpdateNoteCategoryList, UpdateNoteList, UpdateNoteByID, UpdateCategoryByID, InsertNewNote } = workspaceSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type  
 export default workspaceSlice.reducer

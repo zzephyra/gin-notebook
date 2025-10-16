@@ -73,10 +73,15 @@ func WorkspaceSerializer(c *gin.Context, workspace *dto.WorkspaceDTO) WorkspaceD
 }
 
 func WorkspaceNoteSerializer(c *gin.Context, note *dto.CreateWorkspaceNoteDTO) *dto.WorkspaceNoteDTO {
+	var content = []dto.NoteBlockDTO{}
+	if note.Content != nil {
+		content = *note.Content
+	}
+
 	return &dto.WorkspaceNoteDTO{
 		ID:           *note.ID,
 		Title:        note.Title,
-		Content:      *note.Content,
+		Content:      content,
 		WorkspaceID:  note.WorkspaceID,
 		CategoryID:   note.CategoryID,
 		AllowEdit:    *note.AllowEdit,

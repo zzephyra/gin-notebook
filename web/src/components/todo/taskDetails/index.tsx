@@ -441,7 +441,7 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: 
                                 options={{ placeholder: { emptyDocument: t`Write something about the task` } }}
                                 className="task-editor"
                                 noteID={task.id}
-                                content={task.description}
+                            // content={}
                             />
                         </div>
 

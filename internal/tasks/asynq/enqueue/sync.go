@@ -1,0 +1,3 @@
+package enqueue
+
+func SyncNote() {}

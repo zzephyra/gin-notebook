@@ -52,6 +52,7 @@ func Migrate(db *gorm.DB) {
 		&model.IntegrationAccount{},
 		&model.IntegrationApp{},
 		&model.OutboxEvent{},
+		&model.NoteExternalNodeMapping{},
 	)
 }
 

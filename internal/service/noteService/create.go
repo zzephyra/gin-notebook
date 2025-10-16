@@ -11,10 +11,13 @@ import (
 	"gin-notebook/internal/pkg/integration/feishu"
 	"gin-notebook/internal/repository"
 	"gin-notebook/pkg/logger"
+	"gin-notebook/pkg/utils/tools"
 	"strconv"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -29,18 +32,24 @@ func CreateNoteCategory(params *dto.CreateNoteCategoryDTO) (responseCode int, da
 	return
 }
 
-func CreateNote(dto *dto.CreateWorkspaceNoteDTO) (responseCode int, data *dto.CreateWorkspaceNoteDTO) {
-	noteModel := dto.ToModel([]string{})
+func CreateNote(param *dto.CreateWorkspaceNoteDTO) (responseCode int, data *dto.CreateWorkspaceNoteDTO) {
+	noteModel := param.ToModel([]string{})
 
 	_, err := repository.CreateNote(noteModel)
 	if err != nil {
 		return message.ERROR_DATABASE, nil
 	}
-	dto.ID = &noteModel.ID
-	dto.Content = &noteModel.Content
-
+	param.ID = &noteModel.ID
+	var content dto.Blocks
+	if noteModel.Content != nil {
+		if err = json.Unmarshal(noteModel.Content, &content); err != nil {
+			logger.LogError(err, "Unmarshal note content error")
+			return message.ERROR, nil
+		}
+		param.Content = &content
+	}
 	responseCode = message.SUCCESS
-	data = dto
+	data = param
 	return
 }
 
@@ -68,16 +77,51 @@ func CreateTemplateNote(params *dto.CreateTemplateNoteDTO) (responseCode int, da
 	templateNote := model.TemplateNote{}
 	copier.Copy(&templateNote, params)
 
+	responseCode = message.SUCCESS
+
+	var content datatypes.JSON
+	if len(params.Content) != 0 {
+		contentBytes, err := json.Marshal(params.Content)
+		if err != nil {
+			logger.LogError(err, "Marshal note content error")
+			responseCode = message.ERROR
+			return
+		}
+
+		content = datatypes.JSON(contentBytes)
+	} else {
+		initBlocks := dto.Blocks{dto.NoteBlockDTO{
+			ID:   uuid.New().String(),
+			Type: "paragraph",
+			Props: dto.BlockPropsDTO{
+				BackgroundColor: tools.Ptr("default"),
+				TextColor:       tools.Ptr("default"),
+				TextAlignment:   tools.Ptr("left"),
+			},
+			Content:  []dto.InlineDTO{},
+			Children: []dto.NoteBlockDTO{},
+		},
+		}
+		contentBytes, err := json.Marshal(initBlocks)
+		if err != nil {
+			logger.LogError(err, "Marshal empty note content error")
+			responseCode = message.ERROR
+			return
+		}
+		content = datatypes.JSON(contentBytes)
+	}
+
+	templateNote.Content = content
+
 	err := repository.CreateTemplateNote(database.DB, &templateNote)
 	if err != nil {
 		return message.ERROR_DATABASE, nil
 	}
 
-	responseCode = message.SUCCESS
 	data = &dto.TemplateNote{
 		ID:        templateNote.ID,
 		Title:     templateNote.Title,
-		Content:   templateNote.Content,
+		Content:   params.Content,
 		IsPublic:  templateNote.IsPublic,
 		Cover:     templateNote.Cover,
 		CreatedAt: templateNote.CreatedAt,
@@ -123,10 +167,16 @@ func GetTemplateNotes(params *dto.GetTemplateNotesDTO) (responseCode int, data *
 
 	notes := make([]dto.TemplateNote, 0, len(*templateNotes))
 	for note := range *templateNotes {
+		var content dto.Blocks
+		if err = json.Unmarshal((*templateNotes)[note].Content, &content); err != nil {
+			logger.LogError(err, "Unmarshal note content error")
+			continue
+		}
+
 		notes = append(notes, dto.TemplateNote{
 			ID:        (*templateNotes)[note].ID,
 			Title:     (*templateNotes)[note].Title,
-			Content:   (*templateNotes)[note].Content,
+			Content:   content,
 			IsPublic:  (*templateNotes)[note].IsPublic,
 			Cover:     (*templateNotes)[note].Cover,
 			CreatedAt: (*templateNotes)[note].CreatedAt,
@@ -213,6 +263,61 @@ func AddNoteSync(ctx context.Context, params *dto.AddNoteSyncDTO) (responseCode 
 			responseCode = database.IsError(err)
 			return err
 		}
+
+		// note, err := repository.GetNoteByID(tx, ctx, params.WorkspaceID, params.NoteID)
+
+		// if err != nil {
+		// 	responseCode = database.IsError(err)
+		// 	return err
+		// }
+
+		// client := feishu.GetClient()
+
+		// convertedContent, err := client.TransferMarkdownToBlock(ctx, account.AccessTokenEnc, note.Content)
+		// if err != nil {
+		// 	responseCode = message.ERROR_FEISHU_CONVERT_MARKDOWN_FAILED
+		// 	return err
+		// }
+
+		// var mdIndex tools.MDIndex
+		// if err = json.Unmarshal(note.MDIndex, &mdIndex); err != nil {
+		// 	logger.LogError(err, "Unmarshal MdIndex error")
+		// 	responseCode = message.ERROR
+		// 	return err
+		// }
+
+		// mdSeq := feishu.MdIndexToSeq(mdIndex)
+		// fsSeq := feishu.FeishuIndexToSeq(*convertedContent)
+
+		// pairsArr, _, _ := feishu.MatchMdToFeishu(mdSeq, fsSeq, 0.80)
+
+		// records := make([]model.NoteExternalNodeMapping, 0, len(pairsArr))
+		// now := time.Now()
+		// for _, pr := range pairsArr {
+		// 	m := mdIndex[pr.NodeUID]
+		// 	f := (*convertedContent)[pr.BlockID]
+		// 	records = append(records, model.NoteExternalNodeMapping{
+		// 		NoteID:   note.ID,
+		// 		Provider: model.ProviderFeishu, // 你的 Provider 常量
+		// 		NodeUID:  pr.NodeUID,
+		// 		// ExternalDocID:     ,
+		// 		ExternalBlockID:   pr.BlockID,
+		// 		LocalNodeType:     m.Type,
+		// 		ExternalBlockType: f.Type,
+		// 		ExternalParentID:  f.ParentID,
+		// 		OrderIndex:        f.OrderIdx,
+		// 		SyncStatus:        "synced",
+		// 		LastSyncedAt:      now,
+		// 	})
+		// }
+
+		// if len(records) > 0 {
+		// 	if err = syncRepo.UpsertNoteExternalNodeMappings(ctx, &records); err != nil {
+		// 		responseCode = database.IsError(err)
+		// 		logger.LogError(err, "UpsertNoteExternalNodeMappings error")
+		// 		return err
+		// 	}
+		// }
 
 		data = map[string]interface{}{
 			"note_id":         strconv.FormatInt(params.NoteID, 10),

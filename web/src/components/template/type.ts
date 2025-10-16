@@ -1,6 +1,8 @@
+import { Block } from "@blocknote/core";
+
 export type TemplateNote = {
     id: string;
-    content: string;
+    content: Block[];
     cover?: string;
     title: string;
     user_id: string;

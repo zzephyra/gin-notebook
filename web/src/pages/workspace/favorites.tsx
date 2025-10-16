@@ -30,6 +30,8 @@ import NoteListViewEditor from "@/components/note/noteList";
 import { Note } from "./type";
 import { debounce } from "lodash";
 import ChaseLoading from "@/components/loading/Chase/loading";
+import { PatchOp } from "@/types/note";
+import { responseCode } from "@/features/constant/response";
 const FavoritesPage = () => {
     const { t } = useLingui();
     const params = useParams();
@@ -191,17 +193,21 @@ const FavoritesPage = () => {
         handleGetFavorites()
     }
 
-    const handleChangeContent = debounce((content: string) => {
-        if (!note || selectIndex == null || content == note.content) return;
-        setData(prevData => {
-            const newData = [...prevData]; // 创建浅拷贝
-            newData[selectIndex] = {
-                ...newData[selectIndex],
-                content: content,
-            };
-            return newData;
+    const handleChangeContent = debounce((actions: PatchOp[]) => {
+        if (!note || selectIndex == null) return;
+        UpdateNote(note.workspace_id, note.id, { actions, updated_at: note.updated_at }).then(res => {
+            if (res.code == responseCode.SUCCESS) {
+                setData(prevData => {
+                    const newData = [...prevData]; // 创建浅拷贝
+                    newData[selectIndex] = {
+                        ...newData[selectIndex],
+                        content: res.data.note.content,
+                        updated_at: res.data.note.updated_at,
+                    };
+                    return newData;
+                })
+            }
         });
-        UpdateNote(note.workspace_id, note.id, { content });
     }, 500);
 
     useEffect(() => {
@@ -326,7 +332,9 @@ const FavoritesPage = () => {
                     </div>)
                         : (
                             <div className="z-50 absolute flex-1 h-full w-full bottom-0 left-0 right-0 bg-white">
-                                <NoteListViewEditor onChange={handleChangeContent} onDelete={handleDeleteNote} note={note} onChangeIndex={handleChangeIndex} currentIndex={selectIndex} maxIndex={data.length} onClose={() => setSelectIndex(null)}></NoteListViewEditor>
+                                <NoteListViewEditor
+                                    onChange={handleChangeContent}
+                                    onDelete={handleDeleteNote} note={note} onChangeIndex={handleChangeIndex} currentIndex={selectIndex} maxIndex={data.length} onClose={() => setSelectIndex(null)}></NoteListViewEditor>
                             </div>
                         )}
                 </motion.div>

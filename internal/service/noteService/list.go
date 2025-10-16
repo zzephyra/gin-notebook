@@ -17,6 +17,7 @@ func GetWorkspaceNotesList(workspaceID string, UserID int64, limit int, offset i
 		"data":         data,
 	})
 	if err != nil {
+		logger.LogError(err, "获取工作区笔记列表失败")
 		return message.ERROR_DATABASE, err
 	}
 	return message.SUCCESS, data
@@ -88,7 +89,7 @@ func GetFavoriteNoteList(params *dto.FavoriteNoteQueryDTO) (int, map[string]inte
 }
 
 func GetNoteSyncList(ctx context.Context, params *dto.GetNoteSyncListDTO) (int, map[string]interface{}) {
-	syncPolicies, total, err := repository.GetNoteSyncList(database.DB, ctx, params.MemberID, params.Provider)
+	syncPolicies, total, err := repository.GetNoteSyncList(database.DB, ctx, params.MemberID, nil, params.Provider)
 
 	if err != nil {
 		return database.IsError(err), map[string]interface{}{

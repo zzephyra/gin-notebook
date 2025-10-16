@@ -5,24 +5,25 @@ import { t } from "@lingui/core/macro";
 // import PlateEditor from "@/components/third-party/PlateEditor";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
 import PDFIcon from "@/components/icons/pdf";
-import { exportToPDf, exportToWord } from "@/utils/tools";
+// import { exportToPDf, exportToWord } from "@/utils/tools";
 import WordIcon from "@/components/icons/word";
 import { DeleteNote } from "@/features/api/note";
 import { responseCode } from "@/features/constant/response";
 import toast from "react-hot-toast";
 import BlockNoteEditor from "@/components/third-party/BlockNoteEditor";
-const NoteListViewEditor = ({ note, currentIndex, maxIndex, onClose, onChange, onChangeIndex, onDelete }: { note: Note | null, currentIndex: number, maxIndex: number, onClose: () => void, onChangeIndex: (index: number) => void, onDelete?: (noteID: string) => void, onChange?: (value: string) => void }) => {
+import { PatchOp } from "@/types/note";
+const NoteListViewEditor = ({ note, currentIndex, maxIndex, onClose, onChange, onChangeIndex, onDelete }: { note: Note | null, currentIndex: number, maxIndex: number, onClose: () => void, onChangeIndex: (index: number) => void, onDelete?: (noteID: string) => void, onChange?: (value: PatchOp[]) => void }) => {
     if (note == null) {
         onClose();
         return
     }
 
     const handleExportAsPDF = () => {
-        exportToPDf(note.title || "note", note.content || "")
+        // exportToPDf(note.title || "note", note.content || "")
     }
 
     const handleExportAsWord = () => {
-        exportToWord(note.title || "note", note.content || "")
+        // exportToWord(note.title || "note", note.content || "")
     }
 
     const handleDeleteNote = async () => {

@@ -57,6 +57,8 @@ import { SynchronizationPolicyPayload } from "@/components/modal/note/addSync/ty
 import { SyncPayload } from "@/features/api/type";
 import { SyncPolicy } from "@/types/sync";
 import { NotePolicyCard } from "@/components/card/notePolicy";
+import { Block } from "@blocknote/core";
+import { PatchOp } from "@/types/note";
 
 
 const iconSize = 14
@@ -399,7 +401,7 @@ export default function NotePage(props: NoteProps) {
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [templateContent, setTemplateContent] = useState<any>({});
-    const [content, _] = useState<string>(props.note.content);
+    const [content, _] = useState<Block[]>(props.note.content);
     const [openSide, setOpenSide] = useState(false);
     const params = useParams();
     // const [lastSaveTime, setLastSaveTime] = useState<string | null>(null);
@@ -413,21 +415,21 @@ export default function NotePage(props: NoteProps) {
             requestAnimationFrame(() => inputRef.current?.focus());
         }
     }
-    const handleChangeContent = debounce((newContent: string) => {
+    const handleChangeContent = debounce((newContent: PatchOp[]) => {
         if (params.id == undefined || isTemplateApplying) return;
-        store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { content: newContent } }))
-        if (content != newContent) {
+        // store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { content: newContent } }))
+        if (newContent.length != 0) {
             // setSaving(true);
             AutoUpdateContent({
-                content: newContent,
+                actions: newContent,
                 workspace_id: params.id,
-                note_id: props.note.id
+                note_id: props.note.id,
+                updated_at: props.note.updated_at
             }).then((res) => {
                 if (res.code == responseCode.SUCCESS) {
-                    // setLastSaveTime(new Date().toLocaleTimeString());
-                    // setSaving(false);
+                    store.dispatch(UpdateNoteByID({ id: props.note.id, changes: res.data.note }))
                 } else {
-                    // setSaving(false);
+                    store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { updated_at: res.data.updated_at } }))
                 }
             })
         }
@@ -466,7 +468,7 @@ export default function NotePage(props: NoteProps) {
             if (isDropTarget) {
                 const { source } = event.operation;
                 const templateNoteContent = source?.data
-                if (props.note.content.trim().length != 0) {
+                if (props.note.content.length != 0) {
                     setTemplateContent(templateNoteContent);
                     onOpen();
                 } else {
@@ -558,7 +560,10 @@ export default function NotePage(props: NoteProps) {
                         <div className=" flex-1 whitespace-normal transition-all duration-300 min-w-0 flex p-4">
                             <BlockNoteEditor noteID={props.note.id} options={{
                                 editable: props.note.allow_edit,
-                            }} content={props.note.content} onChange={handleChangeContent} />
+                            }}
+                                content={props.note.content}
+                                onChange={handleChangeContent}
+                            />
 
                         </div>
                         {

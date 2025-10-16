@@ -7,6 +7,8 @@ import { InsertNewCategory, UpdateNoteByID, DeleteNoteByID, setSelectedNoteId, U
 import toast from "react-hot-toast";
 import { FavoriteNoteListParams, SyncPayload, WorkspaceNoteCreateParams } from "./type";
 import { Note } from "@/pages/workspace/type";
+import { Block } from "@blocknote/core";
+import { PatchOp } from "@/types/note";
 
 export async function GetNoteList(workspaceId: any, offset: number, limit: number) {
     if (!workspaceId) {
@@ -40,7 +42,7 @@ export async function GetNoteCategory(workspaceId: any, kw: string) {
     return [];
 }
 
-export async function AutoUpdateContent(data: { content: string, workspace_id: string, note_id: string }) {
+export async function AutoUpdateContent(data: { actions: PatchOp[], workspace_id: string, note_id: string, updated_at: string }) {
     try {
         const res = await axiosClient.put(workspaceNotesApi, data)
         return res.data
@@ -209,7 +211,7 @@ export async function getTemplateListRequest(workspaceID: string, limit: number 
     }
 }
 
-export async function createTemplateNoteRequest(workspace_id: string, content: string, title: string, cover?: string) {
+export async function createTemplateNoteRequest(workspace_id: string, content: Block[], title: string, cover?: string) {
     if (content.length < 1) {
         toast.error(i18n._("Content cannot be empty"));
         return null

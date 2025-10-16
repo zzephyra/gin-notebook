@@ -17,20 +17,21 @@ const (
 
 type Note struct {
 	BaseModel
-	Title        string     `json:"title" gorm:"not null; type:varchar(255); index:idx_title"`
-	Content      string     `json:"content" gorm:"not null; type:text; index:idx_content"`
-	WorkspaceID  int64      `json:"workspace_id" gorm:"not null; index:idx_workspace_id"`
-	TagsID       int64      `json:"tags_id" gorm:"default:NULL; index:idx_tags_id"`
-	CategoryID   int64      `json:"category_id" gorm:"default:NULL; index:idx_category_id"`
-	OwnerID      int64      `json:"owner_id" gorm:"not null; index:idx_owner_id"`
-	AllowEdit    *bool      `json:"allow_edit" gorm:"default:true"`
-	AllowComment *bool      `json:"allow_comment" gorm:"default:true"`
-	AllowShare   *bool      `json:"allow_share" gorm:"default:true"`
-	Status       NoteStatus `json:"status" gorm:"default:'private'; index:idx_status"`
-	AllowJoin    *bool      `json:"allow_join" gorm:"default:true"`
-	AllowInvite  *bool      `json:"allow_invite" gorm:"default:true"`
-	Cover        *string    `json:"cover" gorm:"default:NULL; type:text;"`
-	NotionPageID *string    `json:"notion_page_id" gorm:"-"` // 方便前端展示
+	Title        string         `json:"title" gorm:"not null; type:varchar(255); index:idx_title"`
+	Content      datatypes.JSON `json:"content" gorm:"type:jsonb;not null;default:'[]'::jsonb;index:idx_content"`
+	WorkspaceID  int64          `json:"workspace_id" gorm:"not null; index:idx_workspace_id"`
+	TagsID       int64          `json:"tags_id" gorm:"default:NULL; index:idx_tags_id"`
+	CategoryID   int64          `json:"category_id" gorm:"default:NULL; index:idx_category_id"`
+	OwnerID      int64          `json:"owner_id" gorm:"not null; index:idx_owner_id"`
+	AllowEdit    *bool          `json:"allow_edit" gorm:"default:true"`
+	AllowComment *bool          `json:"allow_comment" gorm:"default:true"`
+	AllowShare   *bool          `json:"allow_share" gorm:"default:true"`
+	Status       NoteStatus     `json:"status" gorm:"default:'private'; index:idx_status"`
+	AllowJoin    *bool          `json:"allow_join" gorm:"default:true"`
+	AllowInvite  *bool          `json:"allow_invite" gorm:"default:true"`
+	Cover        *string        `json:"cover" gorm:"default:NULL; type:text;"`
+	NotionPageID *string        `json:"notion_page_id" gorm:"-"` // 方便前端展示
+	MDIndex      datatypes.JSON `gorm:"type:jsonb" json:"md_ast_index"`
 }
 
 type NoteTag struct {
@@ -57,11 +58,11 @@ type FavoriteNote struct {
 
 type TemplateNote struct {
 	BaseModel
-	Content  string  `json:"content" gorm:"not null; type:text"`
-	Title    string  `json:"title" gorm:"not null; type:varchar(255); index:idx_title"`
-	OwnerID  int64   `json:"owner_id" gorm:"not null; index:idx_owner_id"`
-	IsPublic *bool   `json:"is_public" gorm:"default:false"`
-	Cover    *string `json:"cover" gorm:"default:NULL; type:text;"`
+	Content  datatypes.JSON `json:"content" gorm:"type:jsonb;not null;default:'[]'::jsonb;index:idx_content"`
+	Title    string         `json:"title" gorm:"not null; type:varchar(255); index:idx_title"`
+	OwnerID  int64          `json:"owner_id" gorm:"not null; index:idx_owner_id"`
+	IsPublic *bool          `json:"is_public" gorm:"default:false"`
+	Cover    *string        `json:"cover" gorm:"default:NULL; type:text;"`
 }
 
 type NoteExternalLink struct {
@@ -109,4 +110,26 @@ func (n *NoteExternalLink) Data() map[string]interface{} {
 		"created_at":      n.CreatedAt,
 		"updated_at":      n.UpdatedAt,
 	}
+}
+
+type NoteExternalNodeMapping struct {
+	NoteID            int64               `gorm:"uniqueIndex:idx_note_provider_block;not null"`                   // 本地 note
+	Provider          IntegrationProvider `gorm:"type:varchar(16);uniqueIndex:idx_note_provider_block;not null"`  // 平台
+	NodeUID           string              `gorm:"type:varchar(32);not null"`                                      // 本地粘性ID（建议 ≥ 12位）
+	ExternalDocID     string              `gorm:"type:varchar(128);index;not null"`                               // 归属外部文档
+	ExternalBlockID   string              `gorm:"type:varchar(128);uniqueIndex:idx_note_provider_block;not null"` // 外部块ID（Feishu block_id / Notion block_id）
+	LocalNodeType     string              `gorm:"type:varchar(32)"`                                               // 本地类型（paragraph/heading/...）
+	ExternalBlockType string              `gorm:"type:varchar(32)"`                                               // 外部类型（heading_1/paragraph/...）
+	ParentUID         string              `gorm:"type:varchar(32);index"`                                         // 本地父节点
+	ExternalParentID  string              `gorm:"type:varchar(128);index"`                                        // 外部父块
+	OrderIndex        int                 `gorm:"index"`                                                          // 兄弟序
+	// 同步状态
+	SyncStatus   string    `gorm:"type:varchar(16);default:'synced'"` // synced/pending/error
+	LastError    string    `gorm:"type:text"`
+	LastSyncedAt time.Time `gorm:"index"`
+	// 平台特有的块属性（如 Notion annotations、Feishu image_token 等）
+	ExtMeta datatypes.JSON `gorm:"type:json"`
+	// 乐观并发（可选）
+	ETag string `gorm:"type:varchar(64)"` // 外部版本戳/指纹
+	BaseModel
 }

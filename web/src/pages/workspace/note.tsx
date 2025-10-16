@@ -1,5 +1,5 @@
 import ChaseLoading from "@/components/loading/Chase/loading";
-import { GetNoteCategory, GetNoteList } from "@/features/api/note";
+import { CreateNote, GetNoteCategory, GetNoteList } from "@/features/api/note";
 import {
   Button,
   Divider, Input,
@@ -12,29 +12,33 @@ import SearchIcon from "@/components/icons/search";
 import NotePage from "@/components/note/main";
 import { useSelector } from "react-redux";
 import { RootState, store } from "@/store";
-import { UpdateNoteCategoryList, setSelectedNoteId } from "@/store/features/workspace";
-import NoteDropdown from "@/components/dropdown/note";
+import { InsertNewNote, UpdateNoteCategoryList, setSelectedNoteId } from "@/store/features/workspace";
+import NoteDropdown, { NoteDropdownRef } from "@/components/dropdown/note";
 import { notesSelectors } from "@/store/selectors";
 import AIChat, { AIChatRef } from "@/components/aiChat";
 import { useMediaQuery } from 'react-responsive';
 import NotesList from "@/components/list/notes";
 import AIHistoryChats from "@/components/aiHistoryChats";
-import { AIMessage } from "@/features/api/type";
+import { AIMessage, CreateNoteData } from "@/features/api/type";
 import { ClockIcon, FolderIcon, Square2StackIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
 import AvatarMenu from "@/components/avatarMenu";
 import FolderDrawer from "@/components/drower/folderDrower";
 import { DragDropProvider } from "@dnd-kit/react";
+import toast from "react-hot-toast";
+import { responseCode } from "@/features/constant/response";
 
 export default function WorkspaceMain() {
   const [collapsed, setCollapsed] = useState(false);
   var params = useParams();
   const { t } = useLingui();
+  const noteDropdownRef = useRef<NoteDropdownRef>(null);
   const chatRef = useRef<AIChatRef>(null);
   const isDesktop = useMediaQuery({ minWidth: 1024 });
   const { isOpen: isOpenHistoryChats, onOpen: onOpenHistoryChats, onClose: onCloseHistoryChats } = useDisclosure();
   const { isOpen: isOpenFolderDrawer, onOpen: onOpenFolderDrawer, onOpenChange: onOpenChangeFolderDrawer } = useDisclosure();
 
   const [loading, setLoading] = useState(true);
+  const [loadingNote, setLoadingNote] = useState(false);
   // 当前所选的笔记id
   const selectedId = useSelector(
     (state: RootState) => state.workspace.selectedNoteId
@@ -80,7 +84,6 @@ export default function WorkspaceMain() {
     Promise.all([GetNoteCategory(params.id, ''), GetNoteList(params.id, 0, 50)]).then((res) => {
       setLoading(false);
       store.dispatch(UpdateNoteCategoryList(res[0]))
-
     })
   }, [])
 
@@ -98,6 +101,29 @@ export default function WorkspaceMain() {
     });
   }, [selectedId]);
 
+
+  const handleCreateNote = async (data: CreateNoteData) => {
+
+    if (params.id == undefined || data.category_id == undefined) {
+      toast.error(t`Workspace ID is not found`)
+      return
+    }
+
+    setLoadingNote(true)
+    let res = await CreateNote({ ...data, workspace_id: params.id })
+    if (res.code == responseCode.SUCCESS) {
+      toast.success(t`Create note success`)
+      store.dispatch(InsertNewNote(res.data))
+      store.dispatch(setSelectedNoteId(res.data.id))
+      noteDropdownRef.current?.openNewNote()
+    }
+  }
+
+  useEffect(() => {
+    if (note && loadingNote) {
+      setLoadingNote(false)
+    }
+  }, [note])
 
 
   if (loading) {
@@ -117,7 +143,7 @@ export default function WorkspaceMain() {
                 <div className="flex items-center justify-between mb-2 gap-4">
                   <Input size="sm" startContent={<SearchIcon filled={true} className="fill-gray-400" />} placeholder="Search Notes">
                   </Input>
-                  <NoteDropdown></NoteDropdown>
+                  <NoteDropdown ref={noteDropdownRef} onCreate={handleCreateNote}></NoteDropdown>
                 </div>
                 <Divider className="my-4"></Divider>
                 <NotesList />
@@ -128,55 +154,57 @@ export default function WorkspaceMain() {
 
         {!collapsed && <Divider orientation="vertical"></Divider>}
         <div className="flex-1 flex flex-col w-0 ">
-          {selectedId != null ?
-            <DragDropProvider >
-              <NotePage note={note} isCollapsed={collapsed} setCollapsed={setCollapsed} />
-            </DragDropProvider> :
-            (
-              <>
-                <div className='p-2 '>
-                  <div className='flex items-center justify-between'>
-                    <div className='flex'>
-                      {
-                        isDesktop ?
-                          (
-                            <Button isIconOnly radius='full' size='sm' variant="light" onPress={handleCloseCollapse} >
-                              <ViewColumnsIcon className='w-5' />
-                            </Button>
-                          ) : (
-                            <AvatarMenu>
-                            </AvatarMenu>
-                          )
-                      }
+          {
+            loadingNote ? <ChaseLoading text={t`Loading note...`} /> :
+              selectedId != null && note ?
+                <DragDropProvider >
+                  <NotePage note={note} isCollapsed={collapsed} setCollapsed={setCollapsed} />
+                </DragDropProvider> :
+                (
+                  <>
+                    <div className='p-2 '>
+                      <div className='flex items-center justify-between'>
+                        <div className='flex'>
+                          {
+                            isDesktop ?
+                              (
+                                <Button isIconOnly radius='full' size='sm' variant="light" onPress={handleCloseCollapse} >
+                                  <ViewColumnsIcon className='w-5' />
+                                </Button>
+                              ) : (
+                                <AvatarMenu>
+                                </AvatarMenu>
+                              )
+                          }
+                        </div>
+                        <div className='flex'>
+                          <Button className='group gap-px px-2 min-w-0' radius='full' size='sm' variant="light" onPress={emptyMessages}>
+                            <Square2StackIcon className='w-5' />
+                            <span className='max-w-0 opacity-0 group-hover:opacity-100 group-hover:max-w-[300px] transition-all text-xs text-gray-500'>{t`New Chat`}</span>
+                          </Button>
+                          <Button className='group gap-px px-2 min-w-0' radius='full' size='sm' variant="light" onPress={onOpenHistoryChats}>
+                            <ClockIcon className='w-5' />
+                            <span className='max-w-0 opacity-0 group-hover:opacity-100 group-hover:max-w-[300px] transition-all text-xs text-gray-500'>{t`History`}</span>
+                          </Button>
+                          {
+                            isDesktop ? (<></>) : (
+                              <>
+                                <Button className='group gap-px px-2 min-w-0' radius='full' size='sm' variant="light" onPress={onOpenFolderDrawer}>
+                                  <FolderIcon className='w-5' />
+                                  <span className='max-w-0 opacity-0 group-hover:opacity-100 group-hover:max-w-[300px] transition-all text-xs text-gray-500'>{t`Notes`}</span>
+                                </Button>
+                                <FolderDrawer isOpen={isOpenFolderDrawer} onOpenChange={onOpenChangeFolderDrawer}>
+                                </FolderDrawer>
+                              </>
+                            )
+                          }
+                        </div>
+                      </div>
                     </div>
-                    <div className='flex'>
-                      <Button className='group gap-px px-2 min-w-0' radius='full' size='sm' variant="light" onPress={emptyMessages}>
-                        <Square2StackIcon className='w-5' />
-                        <span className='max-w-0 opacity-0 group-hover:opacity-100 group-hover:max-w-[300px] transition-all text-xs text-gray-500'>{t`New Chat`}</span>
-                      </Button>
-                      <Button className='group gap-px px-2 min-w-0' radius='full' size='sm' variant="light" onPress={onOpenHistoryChats}>
-                        <ClockIcon className='w-5' />
-                        <span className='max-w-0 opacity-0 group-hover:opacity-100 group-hover:max-w-[300px] transition-all text-xs text-gray-500'>{t`History`}</span>
-                      </Button>
-                      {
-                        isDesktop ? (<></>) : (
-                          <>
-                            <Button className='group gap-px px-2 min-w-0' radius='full' size='sm' variant="light" onPress={onOpenFolderDrawer}>
-                              <FolderIcon className='w-5' />
-                              <span className='max-w-0 opacity-0 group-hover:opacity-100 group-hover:max-w-[300px] transition-all text-xs text-gray-500'>{t`Notes`}</span>
-                            </Button>
-                            <FolderDrawer isOpen={isOpenFolderDrawer} onOpenChange={onOpenChangeFolderDrawer}>
-                            </FolderDrawer>
-                          </>
-                        )
-                      }
-                    </div>
-                  </div>
-                </div>
-                <AIHistoryChats onSelect={LoadHistoryMessage} isOpen={isOpenHistoryChats} onClose={onCloseHistoryChats} />
-                <AIChat ref={chatRef} isCollapsed={collapsed} setCollapsed={setCollapsed}></AIChat>
-              </>
-            )}
+                    <AIHistoryChats onSelect={LoadHistoryMessage} isOpen={isOpenHistoryChats} onClose={onCloseHistoryChats} />
+                    <AIChat ref={chatRef} isCollapsed={collapsed} setCollapsed={setCollapsed}></AIChat>
+                  </>
+                )}
         </div>
       </div>
     </>

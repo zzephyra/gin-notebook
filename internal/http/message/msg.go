@@ -42,6 +42,8 @@ const (
 	ERROR_NOTE_NOT_EXIST          = 2005
 	ERROR_NOTE_CATEGORY_NOT_EXIST = 2006
 	ERROR_NOTE_NOT_FOUND          = 2007
+	ERROR_INVALID_NOTE_INDEX      = 2008
+	ERROR_NOTE_UPDATE_CONFLICT    = 2009
 	// 分类模块的错误
 	ERROR_CATENAME_USED  = 3001
 	ERROR_CATE_NOT_EXIST = 3002
@@ -143,6 +145,7 @@ const (
 	ERROR_INTEGRATION_ACCOUNT_NOT_FOUND               = 13011 // 集成账号未找到
 	ERROR_INTEGRATION_ACCOUNT_EXPIRED                 = 13012 // 集成账号已过期
 	ERROR_FEISHU_GET_FILE_META_FAILED                 = 13013 // 获取飞书文件元信息失败
+	ERROR_FEISHU_CONVERT_MARKDOWN_FAILED              = 13014 // 飞书Markdown转换失败
 )
 
 var CodeMsg = map[int]string{
@@ -232,4 +235,7 @@ var CodeMsg = map[int]string{
 	ERROR_INTEGRATION_ACCOUNT_EXPIRED:                "集成账号已过期，请重新绑定",
 	ERROR_INTEGRATION_ACCOUNT_NOT_FOUND:              "集成账号未找到",
 	ERROR_FEISHU_GET_FILE_META_FAILED:                "获取飞书文件元信息失败",
+	ERROR_FEISHU_CONVERT_MARKDOWN_FAILED:             "飞书Markdown转换失败",
+	ERROR_INVALID_NOTE_INDEX:                         "无效的笔记索引",
+	ERROR_NOTE_UPDATE_CONFLICT:                       "笔记更新冲突，请刷新页面后重试",
 }

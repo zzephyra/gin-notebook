@@ -1,15 +1,91 @@
 package dto
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
 	"gin-notebook/internal/model"
 	"gin-notebook/pkg/utils/tools"
+	"reflect"
 	"time"
+
+	"gorm.io/datatypes"
 )
+
+type NoteBlockDTO struct {
+	ID       string         `json:"id"`       // 建议前端传稳定ID；没有也可留空，后端生成
+	Type     string         `json:"type"`     // "paragraph" | "heading" | ...
+	Props    BlockPropsDTO  `json:"props"`    // 见下
+	Content  []InlineDTO    `json:"content"`  // 文本 runs
+	Children []NoteBlockDTO `json:"children"` // 允许嵌套
+}
+type BlockPropsDTO struct {
+	BackgroundColor *string `json:"backgroundColor"`        // "default" | "#rrggbb" ...
+	TextColor       *string `json:"textColor"`              // 同上
+	TextAlignment   *string `json:"textAlignment"`          // "left" | "center" | "right"
+	Level           *int    `json:"level,omitempty"`        // 仅 heading 生效
+	IsToggleable    *bool   `json:"isToggleable,omitempty"` // 仅 heading 可折叠
+	Caption         *string `json:"caption,omitempty"`      // 仅 image 生效
+	Name            *string `json:"name,omitempty"`         // 仅 image 生效
+	ShowPreview     *bool   `json:"showPreview,omitempty"`  // 仅 link_preview 生效
+	Url             *string `json:"url,omitempty"`          // 仅 link_preview 生效
+}
+
+func (p *BlockPropsDTO) Update(data *BlockPropsDTO) {
+	if data == nil {
+		return
+	}
+	dv := reflect.ValueOf(p).Elem()
+	pv := reflect.ValueOf(data).Elem()
+
+	for i := 0; i < dv.NumField(); i++ {
+		pf := pv.Field(i)
+		df := dv.Field(i)
+
+		// 仅当 patch 对应字段非 nil 时才更新
+		if pf.Kind() == reflect.Ptr && !pf.IsNil() {
+			df.Set(pf)
+		}
+	}
+}
+
+type InlineDTO struct {
+	Type   string                 `json:"type"`
+	Text   string                 `json:"text"`
+	Styles map[string]interface{} `json:"styles"`
+}
+
+type Blocks []NoteBlockDTO
+
+func (b *Blocks) Scan(value any) error { // db -> Go
+	switch v := value.(type) {
+	case []byte:
+		if len(v) == 0 {
+			*b = nil
+			return nil
+		}
+		return json.Unmarshal(v, b)
+	case string:
+		if v == "" {
+			*b = nil
+			return nil
+		}
+		return json.Unmarshal([]byte(v), b)
+	default:
+		return fmt.Errorf("unsupported Scan type %T for Blocks", value)
+	}
+}
+func (b Blocks) Value() (driver.Value, error) { // Go -> db
+	if b == nil {
+		return []byte("null"), nil
+	}
+	return json.Marshal(b)
+}
 
 type WorkspaceNoteDTO struct {
 	ID           int64     `json:"id,string"`
 	Title        string    `json:"title" validate:"required,min=1,max=100"`
-	Content      string    `json:"content"`
+	Content      Blocks    `json:"content"`
 	WorkspaceID  int64     `json:"workspace_id,string" validate:"required"`
 	CategoryID   int64     `json:"category_id,string" validate:"required"`
 	AllowEdit    bool      `json:"allow_edit"`
@@ -36,19 +112,21 @@ type WorkspaceUpdateNoteCategoryDTO struct {
 }
 
 type UpdateWorkspaceNoteValidator struct {
-	WorkspaceID  int64   `json:"workspace_id,string" validate:"required,gt=0"`
-	OwnerID      int64   `json:"owner_id,string" validate:"required,gt=0"`
-	NoteID       int64   `json:"note_id,string" validate:"required"`
-	Title        *string `json:"title" validate:"omitempty,min=1,max=100"`
-	Content      *string `json:"content"`
-	CategoryID   *int64  `json:"category_id,string"`
-	AllowEdit    *bool   `json:"allow_edit"`
-	AllowComment *bool   `json:"allow_comment"`
-	AllowShare   *bool   `json:"allow_share"`
-	Status       *string `json:"status"`
-	AllowJoin    *bool   `json:"allow_join"`
-	AllowInvite  *bool   `json:"allow_invite"`
-	Cover        *string `json:"cover" validate:"omitempty,url"` // 笔记封面
+	WorkspaceID  int64      `json:"workspace_id,string" validate:"required,gt=0"`
+	OwnerID      int64      `json:"owner_id,string" validate:"required,gt=0"`
+	NoteID       int64      `json:"note_id,string" validate:"required"`
+	Actions      *[]PatchOp `json:"actions" validate:"required,dive"`
+	Title        *string    `json:"title" validate:"omitempty,min=1,max=100"`
+	Content      *Blocks    `json:"content"`
+	CategoryID   *int64     `json:"category_id,string"`
+	AllowEdit    *bool      `json:"allow_edit"`
+	AllowComment *bool      `json:"allow_comment"`
+	AllowShare   *bool      `json:"allow_share"`
+	Status       *string    `json:"status"`
+	AllowJoin    *bool      `json:"allow_join"`
+	AllowInvite  *bool      `json:"allow_invite"`
+	Cover        *string    `json:"cover" validate:"omitempty,url"` // 笔记封面
+	UpdatedAt    string     `json:"updated_at"`                     // 前端传回的更新时间（协作冲突控制）
 }
 
 type CreateWorkspaceNoteDTO struct {
@@ -56,7 +134,7 @@ type CreateWorkspaceNoteDTO struct {
 	WorkspaceID  int64             `json:"workspace_id,string" validate:"required,gt=0"`
 	OwnerID      int64             `json:"owner_id,string" validate:"required,gt=0"`
 	Title        string            `json:"title" validate:"min=1,max=100"`
-	Content      *string           `json:"content"`
+	Content      *Blocks           `json:"content"`
 	CategoryID   int64             `json:"category_id,string" validate:"required,gt=0"`
 	AllowEdit    *bool             `json:"allow_edit"`
 	AllowComment *bool             `json:"allow_comment"`
@@ -68,17 +146,23 @@ type CreateWorkspaceNoteDTO struct {
 
 func (dto *CreateWorkspaceNoteDTO) ToModel(ignoredFields []string) *model.Note {
 	note := &model.Note{}
-	// 使用通用函数复制字段
 	tools.CopyFields(dto, note, append(ignoredFields, "Status"))
-	// 单独处理枚举类型
 	if dto.Status != nil && !tools.Contains(ignoredFields, "Status") {
 		note.Status = model.NoteStatus(*dto.Status)
 	}
+	var contentJSON datatypes.JSON
+	if dto.Content == nil || len(*dto.Content) == 0 {
+		contentJSON = tools.MustJSONBytes(DefaultBlocks())
+	} else {
+		contentJSON = tools.MustJSONBytes(*dto.Content)
+	}
+	note.Content = contentJSON
+
 	return note
 }
 
 func (v *UpdateWorkspaceNoteValidator) ToUpdate() map[string]interface{} {
-	updates := tools.StructToUpdateMap(v, map[string]string{"Status": "status"}, []string{"NoteID"})
+	updates := tools.StructToUpdateMap(v, map[string]string{"Status": "status"}, []string{"NoteID", "Actions", "OwnerID", "UpdatedAt", "WorkspaceID"})
 	if v.Status != nil {
 		updates["status"] = model.NoteStatus(*v.Status)
 	}
@@ -170,7 +254,7 @@ type FavoriteNoteListDTO struct {
 
 type CreateTemplateNoteDTO struct {
 	OwnerID  int64   `validate:"required,gt=0"`
-	Content  string  `json:"content" validate:"required,min=1"`
+	Content  Blocks  `json:"content" validate:"required"`
 	Title    string  `json:"title" validate:"required,min=1,max=100"`
 	IsPublic *bool   `json:"is_public" validate:"omitempty"`
 	Cover    *string `json:"cover" validate:"omitempty,url"`
@@ -179,7 +263,7 @@ type CreateTemplateNoteDTO struct {
 type TemplateNote struct {
 	ID        int64        `json:"id,string"`
 	User      UserBreifDTO `json:"user"`
-	Content   string       `json:"content"`
+	Content   Blocks       `json:"content"`
 	Title     string       `json:"title"`
 	IsPublic  *bool        `json:"is_public"`
 	Cover     *string      `json:"cover"`
@@ -211,4 +295,45 @@ type GetNoteSyncListDTO struct {
 	WorkspaceID int64                      `form:"workspace_id,string" validate:"required,gt=0"`
 	Provider    *model.IntegrationProvider `form:"provider" validate:"omitempty,oneof=notion feishu"`
 	MemberID    int64                      `form:"member_id,string" validate:"omitempty,gt=0"`
+}
+
+type PatchRequest struct {
+	Ops         []PatchOp `json:"ops" binding:"required"`
+	BaseVersion *int      `json:"base_version,omitempty"` // 可选：文档版本
+}
+
+type PatchOp struct {
+	Op string `json:"op" binding:"required,oneof=insert update move delete"`
+
+	// insert
+	Block *NoteBlockDTO `json:"block,omitempty"`
+
+	// update
+	NodeUID string         `json:"node_uid,omitempty"`
+	Patch   *PartialUpdate `json:"patch,omitempty"`
+
+	// move
+	NewParentUID *string `json:"new_parent_uid,omitempty"`
+	AfterID      *string `json:"afterId,omitempty"`
+	BeforeID     *string `json:"beforeId,omitempty"`
+
+	// delete
+	// 使用 NodeUID
+}
+
+type IncomingBlock struct {
+	ID       string         `json:"id"` // BlockNote id → node_uid
+	Type     string         `json:"type"`
+	Props    map[string]any `json:"props"`
+	Content  []InlineDTO    `json:"content"`
+	ParentID string         `json:"parentId"`
+	AfterID  *string        `json:"afterId,omitempty"`
+	BeforeID *string        `json:"beforeId,omitempty"`
+	Depth    *int           `json:"depth,omitempty"` // 仅 heading 用
+}
+
+type PartialUpdate struct {
+	Type    *string        `json:"type,omitempty"`
+	Props   *BlockPropsDTO `json:"props,omitempty"`
+	Content *[]InlineDTO   `json:"content,omitempty"`
 }

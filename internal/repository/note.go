@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
@@ -10,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -88,8 +90,19 @@ func GetNoteCategory(params *dto.NoteCategoryQueryDTO) (*[]dto.WorkspaceUpdateNo
 	return &notesCategory, nil
 }
 
-func UpdateNote(NoteID int64, data map[string]interface{}) (err error) {
-	err = database.DB.Model(&model.Note{}).Where("id = ?", NoteID).Updates(data).Error
+func UpdateNote(db *gorm.DB, NoteID int64, updatedAt string, data map[string]interface{}) (conflict bool, err error) {
+	sql := db.Debug().Model(&model.Note{}).Where("id = ? and updated_at = ?", NoteID, updatedAt).Updates(data)
+
+	if sql.RowsAffected == 0 {
+		conflict = true
+		err = errors.New("update conflict")
+		return
+	}
+
+	if sql.Error != nil {
+		err = sql.Error
+		return
+	}
 	return
 }
 
@@ -267,11 +280,15 @@ func GetTemplateNotes(db *gorm.DB, userID int64, limit *int, offset int) (*[]mod
 	return &templateNotes, count, nil
 }
 
-func GetNoteSyncList(db *gorm.DB, ctx context.Context, memberID int64, provider *model.IntegrationProvider) (*[]model.NoteExternalLink, int64, error) {
+func GetNoteSyncList(db *gorm.DB, ctx context.Context, memberID int64, noteID *int64, provider *model.IntegrationProvider) (*[]model.NoteExternalLink, int64, error) {
 	var syncPolicies []model.NoteExternalLink
 	var count int64
 	query := db.Model(&model.NoteExternalLink{}).
 		Where("member_id = ?", memberID)
+
+	if noteID != nil {
+		query = query.Where("note_id = ?", *noteID)
+	}
 
 	if provider != nil && *provider != "" {
 		query = query.Where("provider = ?", *provider)
@@ -284,4 +301,26 @@ func GetNoteSyncList(db *gorm.DB, ctx context.Context, memberID int64, provider 
 		return nil, 0, err
 	}
 	return &syncPolicies, count, nil
+}
+
+func GetNoteIndexJSON(db gorm.DB, ctx context.Context, noteID int64) (datatypes.JSON, error) {
+	var n model.Note
+	// 假设你的 Note 模型里字段名为 MdAstIndex（datatypes.JSON）
+	if err := db.WithContext(ctx).
+		Select("id, md_index").
+		First(&n, "id = ?", noteID).Error; err != nil {
+		return nil, err
+	}
+	return n.MDIndex, nil
+}
+
+func GetNoteMappingByNoteAndProvider(db *gorm.DB, ctx context.Context, noteID int64, provider model.IntegrationProvider) (*[]model.NoteExternalNodeMapping, error) {
+	var mappings []model.NoteExternalNodeMapping
+	err := db.WithContext(ctx).
+		Where("note_id = ? AND provider = ?", noteID, provider).
+		Find(&mappings).Error
+	if err != nil {
+		return nil, err
+	}
+	return &mappings, nil
 }

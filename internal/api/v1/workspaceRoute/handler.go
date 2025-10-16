@@ -131,9 +131,9 @@ func UpdateWorkspaceNoteApi(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response.Response(message.ERROR_WORKSPACE_NOTE_VALIDATE, nil))
 		return
 	}
-	responseCode, data := noteService.UpdateNote(params)
+	responseCode, data := noteService.UpdateNote(c.Request.Context(), params)
 	if responseCode != message.SUCCESS {
-		c.JSON(http.StatusInternalServerError, response.Response(responseCode, nil))
+		c.JSON(http.StatusInternalServerError, response.Response(responseCode, data))
 		return
 	}
 	c.JSON(http.StatusOK, response.Response(responseCode, data))

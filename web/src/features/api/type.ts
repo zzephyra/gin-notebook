@@ -1,6 +1,7 @@
 import { CommentAttachment, MentionPayload } from "@/components/comment/main/type";
 import { SupportedIntegrationProvider } from "@/types/integration";
 import { SyncConflictPolicy, SyncDirection, SyncMode } from "@/types/sync";
+import { Block } from "@blocknote/core";
 
 export interface ApiResponse<T = any> {
     code: number;
@@ -33,13 +34,15 @@ export type WorkspaceDataType = {
     role: string[];
 }
 
+
+
 export type WorkspaceNoteCreateParams = {
     title: string,
     workspace_id: string,
     category_id: string,
     tags_id?: string,
     status?: string,
-    content?: string,
+    content?: Block[],
     allow_edit?: boolean,
     allow_invite?: boolean;
     allow_join?: boolean;
@@ -179,3 +182,16 @@ export interface SyncPayload {
     conflict_policy: SyncConflictPolicy;
 }
 
+
+export type CreateNoteData = {
+    title: string,
+    category_id: string,
+    tag_id?: string,
+    allow_edit?: boolean,
+    allow_comment?: boolean,
+    allow_share?: boolean,
+    allow_join?: boolean,
+    allow_invite?: boolean,
+    status: "draft" | "published" | "archived",
+    workspace_id: string,
+}
