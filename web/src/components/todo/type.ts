@@ -1,5 +1,7 @@
+import { PatchOp } from "@/types/note";
 import { UserBrief } from "@/types/user";
 import { Edge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/dist/types/types";
+import { Block } from "@blocknote/core";
 
 export type TaksComment = {
     id: string;
@@ -21,7 +23,7 @@ export type TodoTask = {
     priority?: Priority;
     assignee?: UserBrief[];
     deadline?: string | null;
-    description?: string;
+    description?: Block[];
     comments?: TaksComment[];
     user?: UserBrief;
     isEdit?: boolean;
@@ -116,7 +118,8 @@ export type ProjectBoard = ToDoColumn[];
 
 export type TaksPayload = {
     title?: string;
-    description?: string;
+    description?: Block[];
+    actions?: PatchOp[];
     priority?: Priority;
     color?: string;
     assignee_actions?: Partial<AssigneeAction>;
@@ -170,7 +173,7 @@ export type MoveTaskInput = {
 
 export type TaskUpdatePayload = {
     title?: string;
-    description?: string;
+    description?: Block[];
     priority?: Priority;
     assignee?: UserBrief[];
     before_id?: string | null;

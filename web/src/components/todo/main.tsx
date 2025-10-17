@@ -122,6 +122,7 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
                 width={isFullWidth ? getContainer().clientWidth : 520}
                 closable={false}
                 closeOnEsc={!activeOverlay}
+                headerStyle={{ paddingBottom: 0 }}
                 className={`!transition-all ${isFullWidth ? "!shadow-none task-sidesheet" : ""}`}
                 title={
                     <div className="pb-0 px-2 flex justify-between items-center">

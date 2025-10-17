@@ -19,6 +19,12 @@ var (
 		2: "medium",
 		3: "high",
 	}
+	StringToPriority = map[string]uint8{
+		"":       0,
+		"low":    1,
+		"medium": 2,
+		"high":   3,
+	}
 )
 
 func GetProject(params *dto.GetProjectDTO) (responseCode int, data map[string]interface{}) {

@@ -2,7 +2,9 @@ package projectService
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
@@ -26,8 +28,14 @@ func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
 		if params.Payload.HasTaskFieldUpdates() {
+			originModel, err := repository.GetProjectTaskByID(tx, params.TaskID, repository.WithLock())
+			if err != nil {
+				responseCode = database.IsError(err)
+				return err
+			}
+
 			var hasAfterTask, hasBeforeTask bool
-			task = tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt", "AssigneeActions", "BeforeID", "AfterID", "Cover"})
+			task = tools.StructToUpdateMap(params.Payload, nil, []string{"ID", "CreatedAt", "UpdatedAt", "DeletedAt", "AssigneeActions", "BeforeID", "AfterID", "Cover", "Actions"})
 			var taskIDs []int64
 
 			if params.Payload.Cover.Set {
@@ -42,6 +50,22 @@ func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 			if params.Payload.BeforeID != nil {
 				hasBeforeTask = true
 				taskIDs = append(taskIDs, *params.Payload.BeforeID)
+			}
+
+			if params.Payload.Priority != nil {
+				task["priority"] = StringToPriority[*params.Payload.Priority]
+			}
+
+			fmt.Println("Actions is empty:", params.Payload.Actions != nil)
+
+			if params.Payload.Actions != nil && len(*params.Payload.Actions) > 0 {
+				var description dto.Blocks
+				if err := json.Unmarshal(originModel.Description, &description); err != nil {
+					logger.LogError(err, "Unmarshal task description error")
+					responseCode = message.ERROR
+					return err
+				}
+				task["description"] = dto.UpdateBlock(description, *params.Payload.Actions)
 			}
 
 			tasks, err := repository.GetProjectTaskByIDs(tx, taskIDs, repository.WithLock())
@@ -70,11 +94,6 @@ func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 				} else {
 					task["OrderIndex"] = algorithm.RankBetweenBucket(algorithm.RankMin(), lexorank.BucketKey(tasks[0].OrderIndex)).String()
 				}
-			}
-
-			originModel, err = repository.GetProjectTaskByID(tx, params.TaskID, repository.WithLock())
-			if err != nil {
-				return err
 			}
 
 			isDiff := false

@@ -128,39 +128,6 @@ const Column = ({ children, column }: { children: ReactNode; column: ToDoColumn 
         return () => io.disconnect();
     }, [tryLoadMore]);
 
-    // 根据 dropIndex 计算 before/after_task_id，并调用 updateTask
-    // const commitInsert = (sourceTaskId: string, index: number) => {
-    //     const container = innerRef.current;
-    //     if (!container) return;
-
-    //     const nodes = Array.from(container.querySelectorAll<HTMLElement>("[data-task-id]"));
-    //     const ids = nodes.map((n) => n.dataset.taskId!).filter(Boolean);
-
-    //     // 空列
-    //     if (ids.length === 0) {
-    //         updateTask(sourceTaskId, { column_id: column.id } as any);
-    //         return;
-    //     }
-
-    //     // index == 0 => 插到第一个前面
-    //     if (index <= 0) {
-    //         updateTask(sourceTaskId, { column_id: column.id, before_task_id: ids[0] } as any);
-    //         return;
-    //     }
-
-    //     // index == ids.length => 插到最后一个后面
-    //     if (index >= ids.length) {
-    //         updateTask(sourceTaskId, {
-    //             column_id: column.id,
-    //             after_task_id: ids[ids.length - 1],
-    //         } as any);
-    //         return;
-    //     }
-
-    //     // 中间：插到 ids[index] 前面
-    //     updateTask(sourceTaskId, { column_id: column.id, before_task_id: ids[index] } as any);
-    // };
-
     const handleSubmitColumnName = () => {
         if (!columnNameEditable) return;
         moveCaretToStartAndBlur(columnNameRef.current);

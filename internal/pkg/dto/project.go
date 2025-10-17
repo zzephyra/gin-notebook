@@ -12,14 +12,18 @@ type UpdateAssigneeDTO struct {
 	ActionRemove []string `json:"action_remove"` // 任务负责人ID列表
 }
 
+type NoteAction struct {
+	Actions *[]PatchOp `json:"actions" validate:"omitempty"` // 任务描述
+}
+
 type TaskEditableDTO struct {
+	NoteAction
 	Title           *string            `json:"title" validate:"omitempty"`
 	Order           *string            `json:"order" validate:"omitempty"`
 	ColumnID        *int64             `json:"column_id,string" validate:"omitempty"`
 	Creator         *int64             `json:"creator" validate:"omitempty"`
-	Priority        *string            `json:"priority" validate:"omitempty"`    // low, medium, high
-	Status          *string            `json:"status" validate:"omitempty"`      // pending, in_progress, completed
-	Description     *string            `json:"description" validate:"omitempty"` // 任务描述
+	Priority        *string            `json:"priority" validate:"omitempty"` // low, medium, high
+	Status          *string            `json:"status" validate:"omitempty"`   // pending, in_progress, completed
 	Deadline        *Date              `json:"deadline" validate:"omitempty"`
 	AssigneeActions *UpdateAssigneeDTO `json:"assignee_actions" validate:"omitempty"` // 任务负责人变更操作
 	AfterID         *int64             `json:"after_id,string" validate:"omitempty"`
@@ -35,7 +39,7 @@ func (t TaskEditableDTO) HasTaskFieldUpdates() bool {
 		t.Creator != nil ||
 		t.Priority != nil ||
 		t.Status != nil ||
-		t.Description != nil ||
+		t.Actions != nil ||
 		t.Deadline != nil ||
 		t.Cover.Set ||
 		t.Color != nil

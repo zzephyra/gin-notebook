@@ -66,13 +66,6 @@ func UpdateNote(ctx context.Context, params *dto.UpdateWorkspaceNoteValidator) (
 
 		switch {
 		case params.Actions != nil:
-			// —— 部分 patch —— //
-			// 最小读取：仅取本次操作涉及到的 node_uids 与锚点（afterId/beforeId）
-			// 注意：以下调用需要你根据之前我们讨论的方案实现：
-			// - blockRepo.GetByUIDsTx
-			// - blockRepo.GetLastChildTx
-			// - blockRepo.UpsertOneTx / UpdateFieldsTx / SoftDeleteByUIDsTx
-			// - service.insertBatchWithAnchors（“分段+拓扑+锚点”一次性分配 LexoRank）
 			for _, action := range *params.Actions {
 				switch action.Op {
 				case "insert":

@@ -28,6 +28,7 @@ func CreateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 	task.Creator = params.Creator
 	task.ProjectID = params.ProjectID
 	task.ColumnID = params.ColumnID
+	task.Description = tools.MustJSONBytes(dto.DefaultBlocks())
 
 	const maxRetry = 3
 	var latestError error

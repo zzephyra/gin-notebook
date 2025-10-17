@@ -42,6 +42,7 @@ import { debounce } from "lodash";
 import { IconDelete, IconPlus, IconUpload } from '@douyinfe/semi-icons';
 import useTaskActivity from "@/hooks/useActivity";
 import TaskActivity from "../activity";
+import { PatchOp } from "@/types/note";
 
 
 const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: { task: TodoTask, column: ToDoColumn, onScroll?: (e: React.UIEvent<HTMLDivElement>) => void, showBrief?: boolean, onChange?: (taskID: string, columnID: string) => void, onUpload: (taskID: string, file: File) => void }) => {
@@ -143,6 +144,10 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: 
         handleUpdateTask({ deadline: dayjs(dt).format("YYYY-MM-DD") } as any);
         setOpenDeadlinePopover(false);
     };
+
+    const handlerUpdateDescription = debounce((actions: PatchOp[]) => {
+        updateTask(task.id, { actions: actions });
+    }, 500);
 
     const onTitleKeyDown: React.KeyboardEventHandler<HTMLHeadingElement> = (e) => {
         if (e.key === "Escape") {
@@ -441,7 +446,8 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: 
                                 options={{ placeholder: { emptyDocument: t`Write something about the task` } }}
                                 className="task-editor"
                                 noteID={task.id}
-                            // content={}
+                                onChange={handlerUpdateDescription}
+                                content={task.description}
                             />
                         </div>
 
