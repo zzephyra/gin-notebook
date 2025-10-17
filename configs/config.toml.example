@@ -15,7 +15,7 @@ https = true # 需打开
 # 缓存配置
 [cache]
 host = "localhost"
-port = "6380"
+port = "6379"
 db = 0
 
 # 邮件配置
@@ -25,6 +25,12 @@ port = 465
 user = ''
 password = ''
 ssl = true
+
+[worker]
+max_workers = 10
+topic = "gnote"
+brokers = ""
+max_retries = 3
 
 [GeoIP]
 db_path = "" # 数据库文件绝对路径
