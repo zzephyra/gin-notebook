@@ -32,6 +32,8 @@ import { debounce } from "lodash";
 import ChaseLoading from "@/components/loading/Chase/loading";
 import { PatchOp } from "@/types/note";
 import { responseCode } from "@/features/constant/response";
+import { store } from "@/store";
+import { UpdateNoteByID } from "@/store/features/workspace";
 const FavoritesPage = () => {
     const { t } = useLingui();
     const params = useParams();
@@ -206,6 +208,7 @@ const FavoritesPage = () => {
                     };
                     return newData;
                 })
+                store.dispatch(UpdateNoteByID({ id: note.id, changes: { content: res.data.note.content } }))
             }
         });
     }, 500);
