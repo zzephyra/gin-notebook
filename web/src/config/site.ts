@@ -83,7 +83,7 @@ export const getMenuItems = (id: string): MenuItem[] => [
     label: `Favorites`,
     icon: StarIcon,
     key: "favorites",
-    route: `/workspace/${id}/favorites`,
+    route: `/favorites/${id}`,
   },
   {
     label: `Project`,

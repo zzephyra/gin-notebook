@@ -19,7 +19,7 @@ export type TodoTask = {
     id: string;
     order?: string;
     title?: string;
-    column_id?: string;
+    column_id: string;
     priority?: Priority;
     assignee?: UserBrief[];
     deadline?: string | null;
@@ -96,7 +96,7 @@ export type ToDoColumn = {
     color: string;
     total: number;
     process_id: number;
-    summary: Record<Priority, number>;
+    summary?: Record<Priority, number>;
     tasks: TodoTask[];
     has_next?: boolean;
     [key: string]: any;

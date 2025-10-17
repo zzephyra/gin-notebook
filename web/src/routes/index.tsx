@@ -30,7 +30,7 @@ export let router = createBrowserRouter([
       </RequireAuth>
     ),
     children: [
-      { path: "/workspace/:id/favorites", Component: FavoritesPage },
+      { path: "/favorites/:id", Component: FavoritesPage },
       { path: "/workspace/:id", Component: WorkspaceNote },
       {
         path: "/settings/:id",

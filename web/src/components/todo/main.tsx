@@ -149,7 +149,7 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
                     setOpenSideSheet(false);
                 }}
                 disableScroll={false}>
-                {task && column && <TaskDetails onUpload={handleUploadCover} onChange={handleChange} task={task} column={column} onScroll={handleBodyScroll} showBrief={!isFullWidth} />
+                {task && column && <TaskDetails onUpload={handleUploadCover} onChange={handleChange} taskId={task.id} onScroll={handleBodyScroll} showBrief={!isFullWidth} />
                 }
             </SideSheet>
         </>

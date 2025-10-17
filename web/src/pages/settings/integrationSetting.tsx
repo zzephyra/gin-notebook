@@ -12,7 +12,6 @@ import { SupportedIntegrationProvider } from "@/types/integration"
 import { useIntegration } from "@/contexts/IntegrationContext"
 import ChaseLoading from "@/components/loading/Chase/loading";
 import { i18n } from "@lingui/core"
-import { useAppTheme } from "@/contexts/UIThemeContext"
 
 type IntegrationData = {
     providerID: number;
@@ -24,7 +23,6 @@ function IntegrationSetting() {
     const { t } = useLingui()
     const integrationFormRef = useRef<HTMLFormElement | null>(null);
     const [step, setStep] = useState(0);
-    const { theme } = useAppTheme();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [loading, setLoading] = useState(false)
     const { apps, addNewApp, thirdPartyIntegrations, thirdPartyIntegrationsMapping } = useIntegration()
@@ -67,8 +65,6 @@ function IntegrationSetting() {
     }
 
     return <>
-        {theme}
-        {/* <Button onPress={() => setTheme(theme == "light" ? "dark" : "light")}>test</Button> */}
         <SettingsWrapper className="h-full" title={t`Integration Setting`} itemClasses="flex-1">
             {
                 apps.length ?

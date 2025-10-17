@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { PriorityColorMap, TagAttributesMap, TaksPayload, ToDoColumn, TodoTask } from "../type";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { PriorityColorMap, TagAttributesMap, TaksPayload } from "../type";
 import { useTodo } from "@/contexts/TodoContext";
 import { TaskCommentParams } from "@/features/api/type";
 import { WorkspaceMember } from "@/types/workspace";
@@ -43,16 +43,22 @@ import { IconDelete, IconPlus, IconUpload } from '@douyinfe/semi-icons';
 import useTaskActivity from "@/hooks/useActivity";
 import TaskActivity from "../activity";
 import { PatchOp } from "@/types/note";
+import { useProjectColumns, useProjectTask, useProjectTaskColumn } from "@/hooks/useProjectSelectors";
 
 
-const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: { task: TodoTask, column: ToDoColumn, onScroll?: (e: React.UIEvent<HTMLDivElement>) => void, showBrief?: boolean, onChange?: (taskID: string, columnID: string) => void, onUpload: (taskID: string, file: File) => void }) => {
+const TaskDetails = ({ taskId, onScroll, showBrief, onChange, onUpload }: { taskId: string, onScroll?: (e: React.UIEvent<HTMLDivElement>) => void, showBrief?: boolean, onChange?: (taskID: string, columnID: string) => void, onUpload: (taskID: string, file: File) => void }) => {
     const drawerBodyRef = useRef<HTMLDivElement | null>(null);
     const titleRef = useRef<HTMLInputElement>(null);
     const coverRef = useRef<HTMLInputElement>(null);
     const [isEdit, setIsEdit] = useState({ title: false });
     const params = useParams();
-    const { updateTask, setActiveOverlay, columns } = useTodo();
+    const { updateTask, setActiveOverlay, currentProject, todoParams } = useTodo();
     const [searchParams, setSearchParams] = useState({ limit: 10, keywords: "" });
+    const { data: task } = useProjectTask(currentProject?.id || "", todoParams, taskId);
+    const { data: column } = useProjectTaskColumn(currentProject?.id || "", todoParams, taskId);
+    const { data: columns = [] } = useProjectColumns(currentProject?.id || "", todoParams);
+
+    if (!task || !column) return null;
 
     const { data: members, isFetching } = useWorkspaceMembers(params.id || "", searchParams);
     const { activities } = useTaskActivity(task.id, params.id || "");
@@ -61,6 +67,7 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: 
     );
     const { t } = useLingui();
     const composingRef = useRef(false);
+
     const [openDeadlinePopover, setOpenDeadlinePopover] = useState(false);
     const currentUser: WorkspaceMember = useSelector((state: RootState) => {
         return {
@@ -145,9 +152,11 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: 
         setOpenDeadlinePopover(false);
     };
 
-    const handlerUpdateDescription = debounce((actions: PatchOp[]) => {
-        updateTask(task.id, { actions: actions });
-    }, 500);
+    const handlerUpdateDescription = useMemo(() =>
+        debounce((actions: PatchOp[]) => {
+            updateTask(task.id, { actions });
+        }, 500)
+        , [task.id, updateTask]);
 
     const onTitleKeyDown: React.KeyboardEventHandler<HTMLHeadingElement> = (e) => {
         if (e.key === "Escape") {
@@ -168,6 +177,9 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: 
     const onKeywordChange = debounce((value: string) => {
         setSearchParams((prev) => ({ ...prev, keywords: value }));
     }, 500);
+
+
+    useEffect(() => () => handlerUpdateDescription.cancel(), [handlerUpdateDescription]);
 
     return (
         <CommentActionsProvider value={commentsController}>
@@ -268,8 +280,8 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: 
                                             <Popover>
                                                 <PopoverTrigger>
                                                     <Button size="sm" variant="light" className="flex-1 justify-start">
-                                                        <Tag size="large" className={`${ToDoColumnClasses[column.process_id]} !p-2`}>
-                                                            {column.name}
+                                                        <Tag size="large" className={`${ToDoColumnClasses[column?.process_id || 0]} !p-2`}>
+                                                            {column?.name}
                                                         </Tag>
                                                     </Button>
                                                 </PopoverTrigger>
@@ -279,7 +291,7 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: 
                                                             <ListboxItem
                                                                 key={col.id}
                                                                 onClick={() => {
-                                                                    if (col.id !== column.id) {
+                                                                    if (col.id !== task.column_id) {
                                                                         handleUpdateTask({ column_id: col.id });
                                                                         onChange?.(task.id, col.id);
                                                                     };
@@ -375,8 +387,8 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: 
                                         <Popover>
                                             <PopoverTrigger>
                                                 <Button size="sm" variant="light" className="flex-1 justify-start">
-                                                    <Tag size="large" className={`${ToDoColumnClasses[column.process_id]} !p-2`}>
-                                                        {column.name}
+                                                    <Tag size="large" className={`${ToDoColumnClasses[column?.process_id || 0]} !p-2`}>
+                                                        {column?.name}
                                                     </Tag>
                                                 </Button>
                                             </PopoverTrigger>
@@ -386,7 +398,7 @@ const TaskDetails = ({ task, column, onScroll, showBrief, onChange, onUpload }: 
                                                         <ListboxItem
                                                             key={col.id}
                                                             onClick={() => {
-                                                                if (col.id !== column.id) {
+                                                                if (col.id !== column?.id) {
                                                                     handleUpdateTask({ column_id: col.id });
                                                                     onChange?.(task.id, col.id);
                                                                 };

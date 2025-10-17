@@ -1,4 +1,4 @@
-import { ColumnUpdatePayload, CreateTaskInput, Project, SubmitExtraParams, TaskUpdatePayload, TodoTask, UpdateOptions } from '@/components/todo/type'
+import { ColumnUpdatePayload, CreateTaskInput, Project, SubmitExtraParams, TaskUpdatePayload, ToDoColumn, TodoTask, UpdateOptions } from '@/components/todo/type'
 import { cleanColumnTasksRequest, createTaskRequest, getProjectBoardRequest, getProjectsListRequest, getProjectsRequest, updateProjectColumnRequest, updateProjectRequest, updateTaskRequest } from '@/features/api/project'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -18,8 +18,8 @@ export type StartDraftOptions = {
     single?: 'submit' | 'cancel' | 'block'; // 默认 block
 };
 
-const getBoardQueryKey = (projectId: string, params: TodoParamsType) => ['project', 'board', projectId, params] as const;
-const getProjectQueryKey = (projectId: string) => ['project', projectId] as const;
+export const getBoardQueryKey = (projectId: string, params: TodoParamsType) => ['project', 'board', projectId, params] as const;
+export const getProjectQueryKey = (projectId: string) => ['project', projectId] as const;
 
 export type ActiveDraft = { task: TodoTask; columnId: string, colIdx: number } | null;
 
@@ -306,7 +306,7 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
 
         const draftTask: TodoTask = {
             id: tempId,
-            columnId,
+            column_id: columnId,
             title: '',
             priority: undefined,
             deadline: null,
@@ -482,7 +482,7 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
                     ...old,
                     todo: addTaskToColumnStart(old.todo, payload.column_id, {
                         id: payload.client_temp_id,
-                        columnId: payload.column_id,
+                        column_id: payload.column_id,
                         title: payload.payload.title || '',
                         description: payload.payload.description,
                         priority: payload.payload.priority,
@@ -807,6 +807,12 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
         });
     }
 
+    const columnMapping = useMemo(() => {
+        const m = new Map<string, ToDoColumn>();
+        (board || []).forEach((c) => m.set(c.id, c));
+        return m;
+    }, [board]);
+
     return {
         columns: stableColumns,
         isLoadTodo: isLoadingProjectBoard,
@@ -831,7 +837,7 @@ export function useProjectTodo(projectId: string, workspaceId: string, params?: 
         currentProject: currentProject,
         isLoading: isLoadingProjects || isLoadingProject,
         ...rest,
-
+        columnMapping, // columnId -> ToDoColumn
         getTaskViewers, // (taskId) => UserPresence[]
         focusTask,      // (taskId) => void
         blurTask,       // (taskId) => void
