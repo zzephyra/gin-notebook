@@ -63,109 +63,9 @@ func UpdateNote(ctx context.Context, params *dto.UpdateWorkspaceNoteValidator) (
 			responseCode = message.ERROR
 			return err
 		}
-
 		switch {
 		case params.Actions != nil:
-			for _, action := range *params.Actions {
-				switch action.Op {
-				case "insert":
-					if action.Block == nil {
-						continue
-					}
-
-					if action.AfterID == nil {
-						content = append([]dto.NoteBlockDTO{*action.Block}, content...)
-					} else if action.BeforeID == nil {
-						content = append(content, *action.Block)
-					} else {
-						index := -1
-						for i, block := range content {
-							if block.ID == *action.AfterID {
-								index = i
-								break
-							}
-						}
-
-						if index != -1 {
-							content = append(content[:index+1], append([]dto.NoteBlockDTO{*action.Block}, content[index+1:]...)...)
-						} else {
-							content = append(content, *action.Block)
-						}
-					}
-
-				case "update":
-					for i, block := range content {
-						if block.ID == action.NodeUID {
-							if action.Patch.Props != nil {
-								content[i].Props.Update(action.Patch.Props)
-							}
-
-							if action.Patch.Type != nil {
-								content[i].Type = *action.Patch.Type
-							}
-
-							if action.Patch.Content != nil {
-								content[i].Content = *action.Patch.Content
-							}
-						}
-					}
-				case "move":
-					// 1. 先找到要移动的节点，并将其从原位置删除
-					var movingBlock *dto.NoteBlockDTO
-					var movingIndex int
-					for i, block := range content {
-						if block.ID == action.NodeUID {
-							movingBlock = &block
-							movingIndex = i
-							break
-						}
-					}
-
-					if movingBlock == nil {
-						// 没找到要移动的节点，跳过
-						continue
-					}
-
-					// 从原位置删除
-					content = append(content[:movingIndex], content[movingIndex+1:]...)
-
-					// 2. 根据 afterId 和 beforeId 插入到新位置
-					if action.AfterID == nil {
-						// 插入到开头
-						content = append([]dto.NoteBlockDTO{*movingBlock}, content...)
-					} else if action.BeforeID == nil {
-						// 插入到结尾
-						content = append(content, *movingBlock)
-					} else {
-						// 插入到中间
-						index := -1
-						for i, block := range content {
-							if block.ID == *action.AfterID {
-								index = i
-								break
-							}
-						}
-
-						if index != -1 {
-							content = append(content[:index+1], append([]dto.NoteBlockDTO{*movingBlock}, content[index+1:]...)...)
-						} else {
-							// afterId 没找到，插到末尾
-							content = append(content, *movingBlock)
-						}
-					}
-				case "delete":
-					for i, block := range content {
-						if block.ID == action.NodeUID {
-							content = append(content[:i], content[i+1:]...)
-							break
-						}
-					}
-				default:
-					// return errors.New("unknown action op: " + action.Op)
-				}
-			}
-
-			updateData["content"] = content
+			updateData["content"] = dto.UpdateBlock(content, *params.Actions)
 		default:
 			// 只改元数据，什么也不做
 		}
@@ -179,9 +79,11 @@ func UpdateNote(ctx context.Context, params *dto.UpdateWorkspaceNoteValidator) (
 		isConflict, err := repository.UpdateNote(tx, params.NoteID, params.UpdatedAt, updateData)
 		if isConflict {
 			data = map[string]interface{}{
-				"id":          params.NoteID,
-				"is_conflict": true,
-				"updated_at":  updateData["updated_at"],
+				"note": map[string]interface{}{
+					"id":          params.NoteID,
+					"is_conflict": true,
+					"updated_at":  note.UpdatedAt,
+				},
 			}
 			responseCode = message.ERROR_NOTE_UPDATE_CONFLICT
 			return fmt.Errorf("update conflict")

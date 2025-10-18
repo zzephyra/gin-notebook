@@ -5,9 +5,12 @@ import { CheckIcon } from "@heroicons/react/24/outline";
 import { Button, Form, Input, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, SharedSelection } from "@heroui/react";
 import { i18n } from "@lingui/core";
 import { useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { SynchronizationPolicyPayload } from "./type";
+
+const INITIAL: SynchronizationPolicyPayload = { conflict_policy: "latest", mode: "auto", direction: "both" };
+
 
 function NewSyncModal({ isOpen, onOpenChange, workspaceID, onCreate }: { workspaceID?: string, noteID: string, isOpen: boolean, onOpenChange: (open: boolean) => void, onCreate?: (payload: SynchronizationPolicyPayload) => Promise<boolean> }) {
     const { t } = useLingui();
@@ -54,16 +57,31 @@ function NewSyncModal({ isOpen, onOpenChange, workspaceID, onCreate }: { workspa
             }
 
             if (onCreate) {
-                await onCreate(data)
+                let res = await onCreate(data)
+                setLoading(false);
+                if (res) {
+                    toast.success(t`Add synchronization success`);
+                    onOpenChange(false)
+                } else {
+                    return false
+                }
             }
             setLoading(false);
-            onOpenChange(false)
             return true;
         }
     ]
 
+    useEffect(() => {
+        if (isOpen) {
+            setStep(0);
+            setData(INITIAL);
+            setLoading(false);
+        }
+    }, [isOpen]);
+
     return (
         <>
+            {step}
             <Modal onClose={() => setStep(0)} classNames={{ wrapper: "z-[1200]" }} isOpen={isOpen} onOpenChange={onOpenChange} size="2xl" className="new-sync-modal">
                 <ModalContent>
                     <ModalHeader>

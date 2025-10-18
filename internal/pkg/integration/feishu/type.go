@@ -19,29 +19,67 @@ type FeishuBlockConvertResp struct {
 }
 
 type FeishuElement struct {
-	TextRun *struct {
-		Content          string `json:"content"`
-		TextElementStyle struct {
-			Bold          bool `json:"bold"`
-			InlineCode    bool `json:"inline_code"`
-			Italic        bool `json:"italic"`
-			Strikethrough bool `json:"strikethrough"`
-			Underline     bool `json:"underline"`
-		} `json:"text_element_style"`
-	} `json:"text_run"`
+	TextRun *FeishuElementTextRun `json:"text_run"`
+}
+
+type FeishuElementTextRun struct {
+	Content          string                        `json:"content"`
+	TextElementStyle FeishuTextElementTextRunStyle `json:"text_element_style"`
+}
+
+type FeishuTextElementTextRunStyle struct {
+	Bold            bool `json:"bold"`
+	InlineCode      bool `json:"inline_code"`
+	Italic          bool `json:"italic"`
+	Strikethrough   bool `json:"strikethrough"`
+	Underline       bool `json:"underline"`
+	TextColor       int  `json:"text_color"`
+	BackgroundColor int  `json:"background_color"`
+}
+
+type FeishuTextElementStyle struct {
+	Align            int    `json:"align"`
+	Done             bool   `json:"done"`
+	Folded           bool   `json:"folded"`
+	Language         int    `json:"language"`
+	Wrap             bool   `json:"wrap"`
+	BackgroundColor  string `json:"background_color"`
+	IndentationLevel int    `json:"indentation_level"`
+	Sequence         string `json:"sequence"`
+}
+type FeishuGetBlocksResp struct {
+	Code int `json:"code"`
+	Data struct {
+		HasMore bool          `json:"has_more"`
+		Items   []FeishuBlock `json:"items"`
+	} `json:"data"`
+	Msg string `json:"msg"`
+}
+
+type FeishuBlockText struct {
+	Elements []FeishuElement        `json:"elements"`
+	Style    FeishuTextElementStyle `json:"style"`
+}
+
+type FeishuChildrenBlock struct {
+	BlockID   string           `json:"block_id"`
+	BlockType int              `json:"block_type"`
+	ParentID  *string          `json:"parent_id"`
+	Text      *FeishuBlockText `json:"text"`
 }
 
 type FeishuBlock struct {
-	BlockID   string   `json:"block_id"`
+	BlockID   *string  `json:"block_id"`
 	BlockType int      `json:"block_type"`
-	ParentID  string   `json:"parent_id"`
+	ParentID  *string  `json:"parent_id"`
 	Children  []string `json:"children"`
 
-	// 常见容器：paragraph / heading1 / ordered / quote
-	Text *struct {
+	Page *struct {
 		Elements []FeishuElement `json:"elements"`
 		Style    any             `json:"style"`
-	} `json:"text"`
+	}
+	// 常见容器：paragraph / heading1 / ordered / quote
+	Text *FeishuBlockText `json:"text"`
 
 	Heading1 *struct {
 		Elements []FeishuElement `json:"elements"`

@@ -50,9 +50,18 @@ func (p *BlockPropsDTO) Update(data *BlockPropsDTO) {
 }
 
 type InlineDTO struct {
-	Type   string                 `json:"type"`
-	Text   string                 `json:"text"`
-	Styles map[string]interface{} `json:"styles"`
+	Type   string          `json:"type"`
+	Text   string          `json:"text"`
+	Styles InlineStylesDTO `json:"styles"`
+}
+
+type InlineStylesDTO struct {
+	Bold      *bool   `json:"bold,omitempty"`
+	Italic    *bool   `json:"italic,omitempty"`
+	Underline *bool   `json:"underline,omitempty"`
+	Code      *bool   `json:"code,omitempty"`
+	TextColor *string `json:"textColor,omitempty"`
+	Strike    *bool   `json:"strike,omitempty"`
 }
 
 type Blocks []NoteBlockDTO
@@ -115,7 +124,7 @@ type UpdateWorkspaceNoteValidator struct {
 	WorkspaceID  int64      `json:"workspace_id,string" validate:"required,gt=0"`
 	OwnerID      int64      `json:"owner_id,string" validate:"required,gt=0"`
 	NoteID       int64      `json:"note_id,string" validate:"required"`
-	Actions      *[]PatchOp `json:"actions" validate:"required,dive"`
+	Actions      *[]PatchOp `json:"actions" validate:"omitempty"`
 	Title        *string    `json:"title" validate:"omitempty,min=1,max=100"`
 	Content      *Blocks    `json:"content"`
 	CategoryID   *int64     `json:"category_id,string"`
@@ -288,6 +297,7 @@ type AddNoteSyncDTO struct {
 	ConflictPolicy model.ConflictPolicy      `json:"conflict_policy" validate:"required,oneof=latest"`
 	MemberID       int64                     `validate:"required,gt=0"`
 	TargetNoteID   string                    `json:"target_note_id"`
+	UserID         int64                     `validate:"required,gt=0"`
 }
 
 type GetNoteSyncListDTO struct {

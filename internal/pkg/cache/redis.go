@@ -8,6 +8,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/go-redsync/redsync/v4"
+	redsyncredis "github.com/go-redsync/redsync/v4/redis/goredis/v9"
+
 	"github.com/redis/go-redis/v9"
 )
 
@@ -20,6 +23,7 @@ var (
 
 type RedisClient struct {
 	Client *redis.Client
+	Locker *redsync.Redsync
 }
 
 var RedisInstance *RedisClient
@@ -42,9 +46,14 @@ func InitRedisClinet(c configs.Config) error {
 		return fmt.Errorf("failed to close redis connection: %v", err)
 	}
 	logger.LogDebug("redis connect success: ", msg)
+
+	pool := redsyncredis.NewPool(rdb)
+	rs := redsync.New(pool)
 	RedisInstance = &RedisClient{
 		Client: rdb,
+		Locker: rs,
 	}
+
 	return nil
 }
 
@@ -145,4 +154,24 @@ func (r *RedisClient) GetCachedSystemSettings() (map[string]string, error) {
 		return map[string]string{}, err
 	}
 	return val, nil
+}
+
+func (l *RedisClient) Lock(ctx context.Context, key string, ttl time.Duration) (func() error, error) {
+	mutex := l.Locker.NewMutex(
+		key,
+		redsync.WithExpiry(ttl), // 锁自动过期时间
+		redsync.WithTries(1),    // 只尝试一次（不重试）
+		redsync.WithRetryDelay(200*time.Millisecond),
+	)
+
+	if err := mutex.LockContext(ctx); err != nil {
+		return nil, fmt.Errorf("failed to acquire lock: %w", err)
+	}
+
+	unlock := func() error {
+		_, err := mutex.UnlockContext(ctx)
+		return err
+	}
+
+	return unlock, nil
 }

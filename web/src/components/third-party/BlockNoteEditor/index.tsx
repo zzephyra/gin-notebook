@@ -51,6 +51,7 @@ const colors = [
     "#B9F18D",
 ];
 
+
 const getRandomElement = (list: any[]) =>
     list[Math.floor(Math.random() * list.length)];
 export const getRandomColor = () => getRandomElement(colors);

@@ -130,6 +130,7 @@ func GetTemplateNotesApi(c *gin.Context) {
 func AddNoteSyncApi(c *gin.Context) {
 	params := &dto.AddNoteSyncDTO{
 		MemberID: c.MustGet("workspaceMemberID").(int64),
+		UserID:   c.MustGet("userID").(int64),
 	}
 
 	if err := c.ShouldBindJSON(params); err != nil {

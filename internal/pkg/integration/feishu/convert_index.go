@@ -28,7 +28,7 @@ func BuildFeishuIndex(raw []byte) (FeishuIndex, error) {
 	}
 	byID := make(map[string]FeishuBlock, len(resp.Data.Blocks))
 	for _, b := range resp.Data.Blocks {
-		byID[b.BlockID] = b
+		byID[*b.BlockID] = b
 	}
 
 	idx := make(FeishuIndex, len(byID))
@@ -40,7 +40,7 @@ func BuildFeishuIndex(raw []byte) (FeishuIndex, error) {
 			return
 		}
 		item := FeishuIdxItem{
-			BlockID:  b.BlockID,
+			BlockID:  *b.BlockID,
 			Type:     detectFsType(b),
 			Path:     intsToPath(path),
 			TextHash: shortSHA1(normalizeFsText(b)),
@@ -50,10 +50,10 @@ func BuildFeishuIndex(raw []byte) (FeishuIndex, error) {
 		if len(path) > 0 {
 			item.OrderIdx = path[len(path)-1]
 		}
-		idx[b.BlockID] = item
+		idx[*b.BlockID] = item
 
 		for i, cid := range b.Children {
-			dfs(cid, append(path, i), b.BlockID)
+			dfs(cid, append(path, i), *b.BlockID)
 		}
 	}
 

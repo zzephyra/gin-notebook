@@ -58,8 +58,8 @@ export async function UpdateNote(workspace_id: string, note_id: string, data: Ob
     try {
         const res = await axiosClient.put(workspaceNotesApi, { workspace_id, note_id, ...data })
         return res.data
-    } catch (err) {
-        return {
+    } catch (err: any) {
+        return err.response.data || {
             code: 500,
             error: "Update note failed"
         }

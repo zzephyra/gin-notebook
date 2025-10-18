@@ -68,6 +68,22 @@ func (r *integrationRepository) GetIntegrationAccountList(ctx context.Context, p
 	return accounts, nil
 }
 
+func (r *integrationRepository) GetIntegrationAccountByUser(ctx context.Context, provider *model.IntegrationProvider, userID *int64) (*model.IntegrationAccount, error) {
+	var account model.IntegrationAccount
+	query := r.db.WithContext(ctx).Model(&model.IntegrationAccount{})
+	if provider != nil {
+		query = query.Where("provider = ?", *provider)
+	}
+	if userID != nil {
+		query = query.Where("user_id = ?", *userID)
+	}
+
+	if err := query.Find(&account).Error; err != nil {
+		return nil, err
+	}
+	return &account, nil
+}
+
 func (r *integrationRepository) UnlinkIntegrationAccount(ctx context.Context, userID int64, provider model.IntegrationProvider) error {
 	if err := r.db.WithContext(ctx).Unscoped().Where("user_id = ? AND provider = ?", userID, provider).Delete(&model.IntegrationAccount{}).Error; err != nil {
 		return err

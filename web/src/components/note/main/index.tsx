@@ -83,12 +83,14 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
     };
     const updateNoteSetting = async (key: string, value: any) => {
         let res = await UpdateNote(workspaceID, note.id, {
-            [key]: value
+            [key]: value,
+            updated_at: note.updated_at
         })
         if (res.code == responseCode.SUCCESS) {
             toast.success(t`Update successfully`);
-            store.dispatch(UpdateNoteByID({ id: note.id, changes: { [key]: value } }))
+            store.dispatch(UpdateNoteByID({ id: note.id, changes: { [key]: value, updated_at: res.data.note.updated_at } }))
         } else {
+            store.dispatch(UpdateNoteByID({ id: note.id, changes: { updated_at: res.data.note.updated_at } }))
             toast.error(res.error);
 
         }
@@ -131,23 +133,32 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
 
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
+        e.target.value = "";
         if (!file) {
             toast.error(t`Please select a file to upload.`);
             return;
         }
         let controller = UploadFile({ file, accept: "image/*" })
         const { url } = await controller.promise;
-        let res = await UpdateNote(workspaceID, note.id, { cover: url })
+        let res = await UpdateNote(workspaceID, note.id, { cover: url, updated_at: note.updated_at })
         if (res.code == responseCode.SUCCESS) {
-            store.dispatch(UpdateNoteByID({ id: note.id, changes: { cover: url } }))
+            store.dispatch(UpdateNoteByID({ id: note.id, changes: { cover: url, updated_at: res.data.note.updated_at } }))
+        } else {
+            store.dispatch(UpdateNoteByID({ id: note.id, changes: { updated_at: res.data.note.updated_at } }))
         }
     }
+
 
     const onCreatePolicy = async (payload: SynchronizationPolicyPayload) => {
         var res = await createNoteSyncPolicyRequest(note.id, workspaceID, payload as SyncPayload)
         if (res.code == responseCode.SUCCESS) {
             setPolicy([res.data, ...policy])
             return true;
+        } else {
+            console.log(res.code == responseCode.ERROR_FEISHU_GET_FILE_META_FAILED)
+            if (res.code == responseCode.ERROR_FEISHU_GET_FILE_META_FAILED) {
+                toast.error(t`Failed to get file metadata from Feishu. Please ensure the file exists and you have access to it.`);
+            }
         }
         return false
     }
@@ -161,7 +172,7 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                 }
             })
         }
-    }, [integrationEnabled])
+    }, [integrationEnabled, note.id, workspaceID]);
 
     return (
         <Modal classNames={{ base: "z-[1100] !my-auto" }} isOpen={isOpen} onOpenChange={onOpenChange} size="4xl" className="max-h-[715px] share-modal">
@@ -417,9 +428,7 @@ export default function NotePage(props: NoteProps) {
     }
     const handleChangeContent = debounce((newContent: PatchOp[]) => {
         if (params.id == undefined || isTemplateApplying) return;
-        // store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { content: newContent } }))
         if (newContent.length != 0) {
-            // setSaving(true);
             AutoUpdateContent({
                 actions: newContent,
                 workspace_id: params.id,

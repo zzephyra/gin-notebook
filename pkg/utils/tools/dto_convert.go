@@ -153,7 +153,7 @@ func CopyFields(from, to interface{}, ignoredFields []string) {
 	}
 }
 
-func Contains(list []string, v string) bool {
+func Contains[T comparable](list []T, v T) bool {
 	for _, s := range list {
 		if s == v {
 			return true

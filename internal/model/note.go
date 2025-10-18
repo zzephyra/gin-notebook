@@ -66,28 +66,28 @@ type TemplateNote struct {
 }
 
 type NoteExternalLink struct {
-	NoteID int64 `gorm:"not null; uniqueIndex:uidx_note_provider"`
-	// 唯一: (note_id, provider) —— 用迁移SQL建部分唯一索引
-	Provider IntegrationProvider  `gorm:"type:varchar(32); not null; uniqueIndex:uidx_note_provider"`
+	NoteID int64 `gorm:"not null; index"`
+
+	Provider IntegrationProvider  `gorm:"type:varchar(32); not null"`
 	ResType  ExternalResourceType `gorm:"type:varchar(32); not null; default:'page'"`
 
 	TargetNoteID  string  `gorm:"type:varchar(255); not null; index"`
 	TargetNoteURL *string `gorm:"type:text"`
 
-	MemberID int64 `gorm:"not null; index;"`
+	MemberID int64 `gorm:"not null; index"`
 
-	// 同步策略与状态
 	Mode            SyncMode       `gorm:"type:varchar(16); not null; default:'auto'"`
 	Direction       SyncDirection  `gorm:"type:varchar(16); not null; default:'both'"`
 	ConflictPolicy  ConflictPolicy `gorm:"type:varchar(16); not null; default:'latest'"`
 	LastStatus      SyncStatus     `gorm:"type:varchar(16); not null; default:'idle'; index"`
 	LastError       *string        `gorm:"type:text"`
-	IsActive        bool           `gorm:"not null; default:true"`
+	IsActive        bool           `gorm:"not null; default:true; index"`
 	LastSyncedAt    *time.Time
-	ExternalVersion *string        `gorm:"type:varchar(255)"`
-	ExternalETag    *string        `gorm:"type:varchar(255)"`
-	Meta            datatypes.JSON `gorm:"type:jsonb"`              // PG 用 jsonb
-	SyncHash        *string        `gorm:"type:varchar(64); index"` // sha256 等
+	ExternalVersion *string `gorm:"type:varchar(255)"`
+	ExternalETag    *string `gorm:"type:varchar(255)"`
+	Meta            datatypes.JSON
+	SyncHash        *string `gorm:"type:varchar(64); index"`
+
 	BaseModel
 }
 
@@ -115,18 +115,18 @@ func (n *NoteExternalLink) Data() map[string]interface{} {
 type NoteExternalNodeMapping struct {
 	NoteID            int64               `gorm:"uniqueIndex:idx_note_provider_block;not null"`                   // 本地 note
 	Provider          IntegrationProvider `gorm:"type:varchar(16);uniqueIndex:idx_note_provider_block;not null"`  // 平台
-	NodeUID           string              `gorm:"type:varchar(32);not null"`                                      // 本地粘性ID（建议 ≥ 12位）
+	NodeUID           string              `gorm:"type:varchar(36);not null"`                                      // 本地粘性ID（建议 ≥ 12位）
 	ExternalDocID     string              `gorm:"type:varchar(128);index;not null"`                               // 归属外部文档
 	ExternalBlockID   string              `gorm:"type:varchar(128);uniqueIndex:idx_note_provider_block;not null"` // 外部块ID（Feishu block_id / Notion block_id）
 	LocalNodeType     string              `gorm:"type:varchar(32)"`                                               // 本地类型（paragraph/heading/...）
 	ExternalBlockType string              `gorm:"type:varchar(32)"`                                               // 外部类型（heading_1/paragraph/...）
-	ParentUID         string              `gorm:"type:varchar(32);index"`                                         // 本地父节点
-	ExternalParentID  string              `gorm:"type:varchar(128);index"`                                        // 外部父块
+	ParentUID         string              `gorm:"type:varchar(36);index"`                                         // 本地父节点
+	ExternalParentID  string              `gorm:"type:varchar(36);index"`                                         // 外部父块
 	OrderIndex        int                 `gorm:"index"`                                                          // 兄弟序
 	// 同步状态
-	SyncStatus   string    `gorm:"type:varchar(16);default:'synced'"` // synced/pending/error
-	LastError    string    `gorm:"type:text"`
-	LastSyncedAt time.Time `gorm:"index"`
+	SyncStatus   SyncStatus `gorm:"type:varchar(16);default:'synced'"` // synced/pending/error
+	LastError    string     `gorm:"type:text"`
+	LastSyncedAt time.Time  `gorm:"index"`
 	// 平台特有的块属性（如 Notion annotations、Feishu image_token 等）
 	ExtMeta datatypes.JSON `gorm:"type:json"`
 	// 乐观并发（可选）

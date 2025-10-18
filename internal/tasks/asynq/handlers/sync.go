@@ -3,15 +3,22 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"gin-notebook/internal/model"
+	"gin-notebook/internal/pkg/cache"
 	"gin-notebook/internal/pkg/database"
+	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/pkg/integration/feishu"
 	"gin-notebook/internal/repository"
 	"gin-notebook/internal/tasks/asynq/types"
+	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/tools"
 	"time"
 
+	larkdocx "github.com/larksuite/oapi-sdk-go/v3/service/docx/v1"
+
 	"github.com/hibiken/asynq"
+
 	"gorm.io/gorm"
 )
 
@@ -20,171 +27,148 @@ type SyncDeps struct {
 	FeishuClient *feishu.Client
 }
 
-func (d *SyncDeps) HandleSyncNote(ctx context.Context, t *asynq.Task) error {
+func HandleSyncNote(ctx context.Context, t *asynq.Task) error {
 	var p types.SyncNotePayload
 	if err := json.Unmarshal(t.Payload(), &p); err != nil {
 		return err
 	}
 
-	// 1️⃣ 构建新索引
-	newIdx, err := tools.BuildMdIndex([]byte(p.NewContent))
+	integrationRepo := repository.NewIntegrationRepository(database.DB)
+	account, err := integrationRepo.GetIntegrationAccountByUser(ctx, tools.Ptr(model.ProviderFeishu), &p.UserID)
 	if err != nil {
 		return err
 	}
 
-	// 2️⃣ 获取旧索引（payload 或 DB）
-	var oldIdx tools.MDIndex = p.OldIndex
-
-	// 3️⃣ 计算差异
-	diff := diffIndexes(oldIdx, newIdx)
-	if len(diff.Added) == 0 && len(diff.Deleted) == 0 &&
-		len(diff.Updated) == 0 && len(diff.Moved) == 0 {
-		return nil
-	}
-
-	// 4️⃣ 获取映射信息 & Feishu 文档绑定
-	syncRepo := repository.NewSyncRepository(d.DB)
-	provider := model.ProviderFeishu
-	mappings, err := repository.GetNoteMappingByNoteAndProvider(database.DB, ctx, p.NoteID, provider)
+	unlock, err := cache.RedisInstance.Lock(ctx, fmt.Sprintf("sync:feishu:%d", p.NoteID), 5*time.Minute)
 	if err != nil {
 		return err
 	}
-	mapByUID := make(map[string]model.NoteExternalNodeMapping)
-	for _, m := range *mappings {
-		mapByUID[m.NodeUID] = m
+	defer unlock()
+
+	client := feishu.GetClient()
+
+	if client == nil {
+		return fmt.Errorf("Feishu integration not configured")
 	}
 
-	bindings, _, err := repository.GetNoteSyncList(database.DB, ctx, p.MemberID, &p.NoteID, &provider)
-	if err != nil || len(*bindings) == 0 {
+	note, err := repository.GetNoteByID(database.DB, ctx, p.WorkspaceID, p.NoteID)
+
+	if err != nil {
+		logger.LogError(err, "Failed to get local note")
 		return err
 	}
-	binding := (*bindings)[0]
-	docID := binding.TargetNoteID
 
-	// 5️⃣ 应用差异 → 调飞书 API（仅展示流程）
-	// for _, a := range diff.Added {
-	// 	_, err := d.FeishuClient.CreateBlock(ctx, docID, mapByUID[a.NodeUID].ExternalBlockID,
-	// 		0, mapMdTypeToFsType(a.Type, a.Depth), getTextByHash(a.TextHash))
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// }
+	var blocks dto.Blocks
+	if err := json.Unmarshal(note.Content, &blocks); err != nil {
+		logger.LogError(err, "Unmarshal local note content error")
+		return err
+	}
 
-	// for _, u := range diff.Updated {
-	// 	m := mapByUID[u.NodeUID]
-	// 	err := d.FeishuClient.UpdateBlock(ctx, docID, m.ExternalBlockID,
-	// 		mapMdTypeToFsType(u.New.Type, u.New.Depth), getTextByHash(u.New.TextHash))
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// }
+	remoteBlocks, err := client.GetNoteAllBlocks(ctx, account.AccessTokenEnc, p.TargetNoteID, nil)
 
-	// for _, dlt := range diff.Deleted {
-	// 	m := mapByUID[dlt.NodeUID]
-	// 	_ = d.FeishuClient.DeleteBlock(ctx, docID, m.ExternalBlockID)
-	// }
-
-	// for _, mv := range diff.Moved {
-	// 	m := mapByUID[mv.NodeUID]
-	// 	_ = d.FeishuClient.MoveBlock(ctx, docID, m.ExternalBlockID, "", 0)
-	// }
-
-	// 6️⃣ 更新本地索引快照
-	// if err := noteRepo.UpdateNoteIndex(ctx, noteID, newIdx); err != nil {
-	// 	return err
-	// }
-
-	// 7️⃣ 更新映射表（Upsert）
-	now := time.Now()
-	var updates []model.NoteExternalNodeMapping
-	for _, a := range diff.Added {
-		updates = append(updates, model.NoteExternalNodeMapping{
-			NoteID:          p.NoteID,
-			Provider:        model.ProviderFeishu,
-			NodeUID:         a.NodeUID,
-			LocalNodeType:   a.Type,
-			ExternalDocID:   docID,
-			ExternalBlockID: "new-block-id",
-			SyncStatus:      "synced",
-			LastSyncedAt:    now,
+	if err != nil {
+		logger.LogError(err, "Failed to get note blocks from Feishu", map[string]interface{}{
+			"note_id":        p.NoteID,
+			"target_note_id": p.TargetNoteID,
 		})
+		return err
 	}
-	if len(updates) > 0 {
-		_ = syncRepo.UpsertNoteExternalNodeMappings(ctx, &updates)
+
+	var feishuPageUID string
+	for _, block := range remoteBlocks.Items {
+		if *block.BlockType == 1 {
+			feishuPageUID = *block.BlockId
+			break
+		}
+	}
+	feishuBlocks := feishu.ParseBlockToLark(blocks)
+
+	chunks := tools.Chunk(feishuBlocks, 20)
+
+	children := []*larkdocx.Block{}
+	for _, chunk := range chunks {
+		data, err := client.CreateBlocks(ctx, account.AccessTokenEnc, feishuPageUID, feishuPageUID, chunk, 0)
+
+		if err != nil {
+			logger.LogError(err, "Failed to create blocks to Feishu", map[string]interface{}{
+				"note_id":        p.NoteID,
+				"target_note_id": p.TargetNoteID,
+			})
+			return err
+		}
+		children = append(children, data.Children...)
+	}
+
+	if err != nil {
+		logger.LogError(err, "Failed to create blocks to Feishu", map[string]interface{}{
+			"note_id":        p.NoteID,
+			"target_note_id": p.TargetNoteID,
+		})
+		return err
+	}
+
+	err = database.DB.Transaction(func(tx *gorm.DB) error {
+		syncRepo := repository.NewSyncRepository(tx)
+
+		var timestamp = time.Now().UTC()
+		var NodeMappings = []model.NoteExternalNodeMapping{}
+
+		for idx, child := range children {
+			node := model.NoteExternalNodeMapping{
+				NoteID:           p.NoteID,
+				Provider:         model.ProviderFeishu,
+				NodeUID:          blocks[idx].ID,
+				ExternalDocID:    p.TargetNoteID,
+				ExternalBlockID:  *child.BlockId,
+				ExternalParentID: *child.ParentId,
+				SyncStatus:       model.SyncSuccess,
+				LastSyncedAt:     timestamp,
+			}
+
+			NodeMappings = append(NodeMappings, node)
+		}
+
+		if err := syncRepo.UpsertNoteExternalNodeMappings(ctx, &NodeMappings); err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		logger.LogError(err, "创建映射失败")
+		return err
+	}
+
+	remoteBlocksAfter, err := client.GetNoteAllBlocks(ctx, account.AccessTokenEnc, p.TargetNoteID, nil)
+
+	var noChange = false
+
+	if prefixEquals(remoteBlocksAfter.Items, remoteBlocks.Items) {
+		noChange = true
+	}
+
+	if len(remoteBlocks.Items) > 1 && noChange {
+		err = client.DeleteBlocks(ctx, p.TargetNoteID, account.AccessTokenEnc, feishuPageUID, 0, len(remoteBlocks.Items)-1)
+		if err != nil {
+			logger.LogError(err, "Failed to delete old blocks from Feishu", map[string]interface{}{
+				"note_id":        p.NoteID,
+				"target_note_id": p.TargetNoteID,
+			})
+			return err
+		}
 	}
 
 	return nil
 }
 
-type diffResult struct {
-	Added   []tools.MDItem
-	Deleted []tools.MDItem
-	Updated []struct {
-		NodeUID string
-		Old     tools.MDItem
-		New     tools.MDItem
+func prefixEquals(full, prefix []*larkdocx.Block) bool {
+	if len(full) < len(prefix) {
+		return false
 	}
-	Moved []struct {
-		NodeUID string
-		OldPath string
-		NewPath string
-	}
-}
-
-func diffIndexes(oldIdx, newIdx tools.MDIndex) diffResult {
-	var out diffResult
-
-	for uid, n := range newIdx {
-		if o, ok := oldIdx[uid]; !ok {
-			out.Added = append(out.Added, n)
-		} else {
-			contentChanged := o.TextHash != n.TextHash || o.Type != n.Type
-			moved := o.Path != n.Path
-			if contentChanged {
-				out.Updated = append(out.Updated, struct {
-					NodeUID string
-					Old     tools.MDItem
-					New     tools.MDItem
-				}{uid, o, n})
-			} else if moved {
-				out.Moved = append(out.Moved, struct {
-					NodeUID string
-					OldPath string
-					NewPath string
-				}{uid, o.Path, n.Path})
-			}
+	for i := range prefix {
+		if full[i].BlockId != prefix[i].BlockId {
+			return false
 		}
 	}
-
-	for uid, o := range oldIdx {
-		if _, ok := newIdx[uid]; !ok {
-			out.Deleted = append(out.Deleted, o)
-		}
-	}
-	return out
-}
-
-func mapMdTypeToFsType(t string, depth int) string {
-	switch t {
-	case "heading":
-		if depth == 1 {
-			return "heading1"
-		}
-		if depth == 2 {
-			return "heading2"
-		}
-		return "heading3"
-	case "listItem":
-		return "ordered_item"
-	case "blockquote":
-		return "quote"
-	default:
-		return "paragraph"
-	}
-}
-
-func getTextByHash(hash string) string {
-	// 这里你可以从缓存或本地映射表取原文
-	// 暂时直接返回 hash 代表内容
-	return hash
+	return true
 }

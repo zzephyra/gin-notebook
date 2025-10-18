@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"gin-notebook/configs"
+	"gin-notebook/internal/pkg/cache"
 	"gin-notebook/internal/pkg/database"
 	asq "gin-notebook/internal/tasks/asynq"
 	"gin-notebook/pkg/logger"
@@ -23,6 +24,12 @@ func main() {
 	// 连接数据库
 	database.ConnectDB(config, false)
 	logger.LogInfo("Database connect success", nil)
+
+	//初始化redis
+	err := cache.InitRedisClinet(*config)
+	if err != nil {
+		panic(err)
+	}
 
 	// 创建雪花算法实例
 	algorithm.NewSnowflake(1)

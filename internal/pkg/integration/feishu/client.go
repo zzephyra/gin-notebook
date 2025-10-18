@@ -176,7 +176,7 @@ func (c *Client) GetUserAccessToken(ctx context.Context, code string) (*dto.Feis
 	return &wrapper.Data, nil
 }
 
-func (c *Client) GetFileMeta(ctx context.Context, fileToken, fileType, userToken string) (*dto.FeishuFileMeta, error) {
+func (c *Client) GetFileMeta(ctx context.Context, fileToken, fileType, userToken string) (*larkdrive.BatchQueryMetaRespData, error) {
 	if fileType == "" {
 		fileType = "docx"
 	}
@@ -206,15 +206,7 @@ func (c *Client) GetFileMeta(ctx context.Context, fileToken, fileType, userToken
 		return nil, resp.CodeError
 	}
 
-	var wrapper struct {
-		Data dto.FeishuFileMeta `json:"data"`
-	}
-	if err := json.Unmarshal(resp.RawBody, &wrapper); err != nil {
-		logger.LogError(err, "Feishu GetFileMeta json unmarshal error")
-		return nil, err
-	}
-
-	return &wrapper.Data, nil
+	return resp.Data, nil
 }
 
 func (c *Client) RefreshUserAccessToken(ctx context.Context, refreshToken string) (*RefreshUserAccessTokenResponse, error) {
@@ -283,4 +275,89 @@ func (c *Client) TransferMarkdownToBlock(ctx context.Context, userToken, content
 		return nil, err
 	}
 	return &index, nil
+}
+
+func (c *Client) GetNoteAllBlocks(ctx context.Context, userToken, documentID string, pageToken *string) (*larkdocx.ListDocumentBlockRespData, error) {
+	req := larkdocx.NewListDocumentBlockReqBuilder().
+		DocumentId(documentID).
+		PageSize(500).
+		DocumentRevisionId(-1).
+		Build()
+
+	resp, err := c.Client.Docx.V1.DocumentBlock.List(context.Background(), req, larkcore.WithUserAccessToken(userToken))
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	// 服务端错误处理
+	if !resp.Success() {
+		fmt.Printf("logId: %s, error response: \n%s", resp.RequestId(), larkcore.Prettify(resp.CodeError))
+		return nil, err
+	}
+
+	if resp.Data.HasMore != nil && *resp.Data.HasMore && resp.Data.PageToken != nil {
+		moreData, err := c.GetNoteAllBlocks(ctx, userToken, documentID, resp.Data.PageToken)
+		if err == nil {
+			resp.Data.Items = append(resp.Data.Items, moreData.Items...)
+			resp.Data.HasMore = moreData.HasMore
+			resp.Data.PageToken = moreData.PageToken
+		}
+	}
+
+	return resp.Data, nil
+}
+
+func (c *Client) CreateBlocks(ctx context.Context, userToken, documentID, blockID string, blocks []*larkdocx.Block, index int) (*larkdocx.CreateDocumentBlockChildrenRespData, error) {
+	index = min(-1, index) // 确保最小值为-1
+
+	req := larkdocx.NewCreateDocumentBlockChildrenReqBuilder().
+		DocumentId(documentID).
+		BlockId(blockID).
+		DocumentRevisionId(-1).
+		Body(larkdocx.NewCreateDocumentBlockChildrenReqBodyBuilder().
+			Children(blocks).
+			Index(index).
+			Build()).
+		Build()
+	resp, err := c.Client.Docx.V1.DocumentBlockChildren.Create(context.Background(), req, larkcore.WithUserAccessToken(userToken))
+
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	// 服务端错误处理
+	if !resp.Success() {
+		fmt.Printf("logId: %s, error response: \n%s", resp.RequestId(), larkcore.Prettify(resp.CodeError))
+		return nil, resp.CodeError
+	}
+
+	return resp.Data, nil
+}
+
+func (c *Client) DeleteBlocks(ctx context.Context, noteID, userToken, blockID string, startIndex, endIndex int) error {
+	req := larkdocx.NewBatchDeleteDocumentBlockChildrenReqBuilder().
+		DocumentId(noteID).
+		BlockId(blockID).
+		DocumentRevisionId(-1).
+		Body(larkdocx.NewBatchDeleteDocumentBlockChildrenReqBodyBuilder().
+			StartIndex(0).
+			EndIndex(3).
+			Build()).
+		Build()
+
+	resp, err := c.Client.Docx.V1.DocumentBlockChildren.BatchDelete(context.Background(), req, larkcore.WithUserAccessToken(userToken))
+
+	if err != nil {
+		return err
+	}
+
+	// 服务端错误处理
+	if !resp.Success() {
+		fmt.Printf("logId: %s, error response: \n%s", resp.RequestId(), larkcore.Prettify(resp.CodeError))
+		return resp.CodeError
+	}
+
+	return nil
 }

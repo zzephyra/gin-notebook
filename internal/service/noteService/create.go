@@ -10,6 +10,8 @@ import (
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/pkg/integration/feishu"
 	"gin-notebook/internal/repository"
+	"gin-notebook/internal/tasks/asynq/enqueue"
+	"gin-notebook/internal/tasks/asynq/types"
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/tools"
 	"strconv"
@@ -209,28 +211,21 @@ func AddNoteSync(ctx context.Context, params *dto.AddNoteSyncDTO) (responseCode 
 		syncRepo := repository.NewSyncRepository(tx)
 		integrationRepo := repository.NewIntegrationRepository(tx)
 
-		accounts, err := integrationRepo.GetIntegrationAccountList(ctx, &params.Provider, nil)
+		account, err := integrationRepo.GetIntegrationAccountByUser(ctx, &params.Provider, &params.UserID)
 
 		if err != nil {
 			responseCode = database.IsError(err)
 			return err
 		}
 
-		if len(accounts) == 0 {
-			responseCode = message.ERROR_INTEGRATION_ACCOUNT_NOT_FOUND
-			return errors.New("integration account not found")
-		}
-
-		account := accounts[0] // 目前每个用户每个服务只会有一个账号
-
 		if account.IsActive == false || account.AccessTokenExpiry == nil || account.AccessTokenExpiry.Before(time.Now()) {
 			responseCode = message.ERROR_INTEGRATION_ACCOUNT_EXPIRED
 			return errors.New("feishu integration account is expired")
 		}
 
-		_, err = feishu.GetClient().GetFileMeta(ctx, params.TargetNoteID, "docx", account.AccessTokenEnc)
+		meta, err := feishu.GetClient().GetFileMeta(ctx, params.TargetNoteID, "docx", account.AccessTokenEnc)
 
-		if err != nil {
+		if err != nil || len(meta.Metas) == 0 {
 			responseCode = message.ERROR_FEISHU_GET_FILE_META_FAILED
 			return errors.New("failed to get Feishu file metadata")
 		}
@@ -264,61 +259,6 @@ func AddNoteSync(ctx context.Context, params *dto.AddNoteSyncDTO) (responseCode 
 			return err
 		}
 
-		// note, err := repository.GetNoteByID(tx, ctx, params.WorkspaceID, params.NoteID)
-
-		// if err != nil {
-		// 	responseCode = database.IsError(err)
-		// 	return err
-		// }
-
-		// client := feishu.GetClient()
-
-		// convertedContent, err := client.TransferMarkdownToBlock(ctx, account.AccessTokenEnc, note.Content)
-		// if err != nil {
-		// 	responseCode = message.ERROR_FEISHU_CONVERT_MARKDOWN_FAILED
-		// 	return err
-		// }
-
-		// var mdIndex tools.MDIndex
-		// if err = json.Unmarshal(note.MDIndex, &mdIndex); err != nil {
-		// 	logger.LogError(err, "Unmarshal MdIndex error")
-		// 	responseCode = message.ERROR
-		// 	return err
-		// }
-
-		// mdSeq := feishu.MdIndexToSeq(mdIndex)
-		// fsSeq := feishu.FeishuIndexToSeq(*convertedContent)
-
-		// pairsArr, _, _ := feishu.MatchMdToFeishu(mdSeq, fsSeq, 0.80)
-
-		// records := make([]model.NoteExternalNodeMapping, 0, len(pairsArr))
-		// now := time.Now()
-		// for _, pr := range pairsArr {
-		// 	m := mdIndex[pr.NodeUID]
-		// 	f := (*convertedContent)[pr.BlockID]
-		// 	records = append(records, model.NoteExternalNodeMapping{
-		// 		NoteID:   note.ID,
-		// 		Provider: model.ProviderFeishu, // 你的 Provider 常量
-		// 		NodeUID:  pr.NodeUID,
-		// 		// ExternalDocID:     ,
-		// 		ExternalBlockID:   pr.BlockID,
-		// 		LocalNodeType:     m.Type,
-		// 		ExternalBlockType: f.Type,
-		// 		ExternalParentID:  f.ParentID,
-		// 		OrderIndex:        f.OrderIdx,
-		// 		SyncStatus:        "synced",
-		// 		LastSyncedAt:      now,
-		// 	})
-		// }
-
-		// if len(records) > 0 {
-		// 	if err = syncRepo.UpsertNoteExternalNodeMappings(ctx, &records); err != nil {
-		// 		responseCode = database.IsError(err)
-		// 		logger.LogError(err, "UpsertNoteExternalNodeMappings error")
-		// 		return err
-		// 	}
-		// }
-
 		data = map[string]interface{}{
 			"note_id":         strconv.FormatInt(params.NoteID, 10),
 			"provider":        params.Provider,
@@ -338,6 +278,15 @@ func AddNoteSync(ctx context.Context, params *dto.AddNoteSyncDTO) (responseCode 
 	if err != nil {
 		return responseCode, nil
 	}
+
+	payload := types.SyncNotePayload{
+		NoteID:       params.NoteID,
+		MemberID:     params.MemberID,
+		UserID:       params.UserID,
+		WorkspaceID:  params.WorkspaceID,
+		TargetNoteID: params.TargetNoteID,
+	}
+	enqueue.SyncNote(ctx, payload)
 
 	responseCode = message.SUCCESS
 	return
