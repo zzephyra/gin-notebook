@@ -307,6 +307,14 @@ type GetNoteSyncListDTO struct {
 	MemberID    int64                      `form:"member_id,string" validate:"omitempty,gt=0"`
 }
 
+type DeleteNoteSyncDTO struct {
+	SyncID      int64 `json:"sync_id,string" validate:"required,gt=0"`
+	UserID      int64 `validate:"required,gt=0"`
+	MemberID    int64 `validate:"required,gt=0"`
+	WorkspaceID int64 `json:"workspace_id,string" validate:"required,gt=0"`
+	NoteID      int64 `json:"note_id,string" validate:"required,gt=0"`
+}
+
 type PatchRequest struct {
 	Ops         []PatchOp `json:"ops" binding:"required"`
 	BaseVersion *int      `json:"base_version,omitempty"` // 可选：文档版本

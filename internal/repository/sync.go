@@ -64,3 +64,96 @@ func (r *syncRepository) UpsertNoteExternalNodeMappings(ctx context.Context, nod
 		DoUpdates: clause.AssignmentColumns([]string{"updated_at"}),
 	}).Create(nodeMappings).Error
 }
+
+func (r *syncRepository) GetNoteSyncByID(ctx context.Context, syncID int64) (model.NoteExternalLink, error) {
+	var syncModel model.NoteExternalLink
+	err := r.db.WithContext(ctx).First(&syncModel, syncID).Error
+	return syncModel, err
+}
+
+func (r *syncRepository) DeleteSyncByID(ctx context.Context, syncID int64, noteID int64) error {
+	sql := r.db.WithContext(ctx).Where("id = ? AND note_id = ?", syncID, noteID).Unscoped().Delete(&model.NoteExternalLink{})
+
+	if sql.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	if sql.Error != nil {
+		return sql.Error
+	}
+
+	return nil
+}
+
+func (r *syncRepository) DeleteSyncOutbox(ctx context.Context, linkID int64) error {
+	sql := r.db.WithContext(ctx).Where("link_id = ?", linkID).Unscoped().Delete(&model.SyncOutbox{})
+
+	if sql.Error != nil {
+		return sql.Error
+	}
+
+	return nil
+}
+
+func (r *syncRepository) CreateSyncOutboxs(ctx context.Context, outbox *[]model.SyncOutbox) error {
+	sql := r.db.WithContext(ctx).Create(outbox)
+
+	if err := sql.Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *syncRepository) GetBlockMappingByBlockIDs(ctx context.Context, nodeID int64, provider *model.IntegrationProvider, nodeUID *[]string) (*[]model.NoteExternalNodeMapping, error) {
+	var mappings []model.NoteExternalNodeMapping
+	query := r.db.WithContext(ctx).Where("note_id = ?", nodeID)
+	if provider != nil {
+		query = query.Where("provider = ?", *provider)
+	}
+	if nodeUID != nil && len(*nodeUID) > 0 {
+		query = query.Where("node_uid IN ?", *nodeUID)
+	}
+
+	if err := query.Debug().Find(&mappings).Error; err != nil {
+		return nil, err
+	}
+
+	return &mappings, nil
+}
+
+func (r *syncRepository) GetSequenceSynOutbox(ctx context.Context, linkID int64, status *model.SyncStatus, version *int64) (model.SyncOutbox, error) {
+	var outboxs model.SyncOutbox
+	sql := r.db.WithContext(ctx).
+		Where("link_id = ?", linkID).
+		Order("id ASC")
+
+	if status != nil {
+		sql = sql.Where("status = ?", *status)
+	}
+
+	if version != nil {
+		sql = sql.Where("note_version = ?", *version)
+	}
+
+	sql = sql.Take(&outboxs)
+	if err := sql.Error; err != nil {
+		return outboxs, err
+	}
+	return outboxs, nil
+}
+
+func (r *syncRepository) UpdateSyncOutboxByID(ctx context.Context, db *gorm.DB, outboxID int64, status *model.SyncStatus, data map[string]interface{}) error {
+	sql := db.Model(&model.SyncOutbox{}).
+		Where("id = ?", outboxID).Debug()
+
+	if status != nil {
+		sql = sql.Where("status = ?", *status)
+	}
+
+	sql = sql.Updates(data)
+	if sql.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return sql.Error
+}

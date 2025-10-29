@@ -1,5 +1,5 @@
 // blocksSnapshot.ts
-import { PartialUpdate, PatchOp } from "@/types/note";
+import { PatchOp } from "@/types/note";
 import {
   Block,
   InlineContent,
@@ -178,30 +178,6 @@ function deepEqual(a: any, b: any): boolean {
   return Number.isNaN(a) && Number.isNaN(b);
 }
 
-function buildPropsPatch(
-  oldProps: Record<string, any> | undefined,
-  newProps: Record<string, any> | undefined,
-  { encodeDeletionAsNull = true }: { encodeDeletionAsNull?: boolean } = {}
-): Record<string, any> | undefined {
-  const o = oldProps ?? {};
-  const n = newProps ?? {};
-  const patch: Record<string, any> = {};
-  const allKeys = new Set([...Object.keys(o), ...Object.keys(n)]);
-
-  for (const key of allKeys) {
-    const oVal = o[key];
-    const nVal = n[key];
-    if (!deepEqual(oVal, nVal)) {
-      if (key in n) {
-        patch[key] = nVal; // 新值或新增
-      } else if (encodeDeletionAsNull) {
-        patch[key] = null; // 标记删除（如果后端不接受，改成跳过或发 undefined）
-      }
-    }
-  }
-  return Object.keys(patch).length ? patch : undefined;
-}
-
 
 function lcs<T>(a: T[], b: T[]): T[] {
   const n = a.length, m = b.length;
@@ -279,8 +255,8 @@ export function diffSnapshots(oldBlocks: FlatBlock[], newBlocks: FlatBlock[]): P
           type: nb.type,
           props: nb.props,
           parentId: nb.parentId,
-          order: nb.order,        // ← 明确传给后端
-          content: nb.runs,       // 你的 InlineDTO[]
+          order: nb.order,
+          content: nb.runs,
           depth: nb.depth,
         },
         afterId,
@@ -296,13 +272,13 @@ export function diffSnapshots(oldBlocks: FlatBlock[], newBlocks: FlatBlock[]): P
     }
   }
 
-  // 3) move：只判断结构差异（parentId / prevId / nextId）
+  // 3) move：只判断结构差异（parentId / 邻接顺序）
   const movedIds = computeMovedIdsByLCS(oldBlocks, newBlocks);
 
   for (const nb of newBlocks) {
     const ob = oldMap.get(nb.id);
     if (!ob) continue;
-    if (!movedIds.has(nb.id as UID)) continue; // 只给“真正移动”的下发 move
+    if (!movedIds.has(nb.id as UID)) continue;
 
     const siblings = newBlocks
       .filter(b => (b.parentId ?? null) === (nb.parentId ?? null))
@@ -321,38 +297,31 @@ export function diffSnapshots(oldBlocks: FlatBlock[], newBlocks: FlatBlock[]): P
     });
   }
 
-  // 4) update：只判断非结构字段（type/props/content）
-  //    depth 如为派生，建议不发；如必须发，仅当未 move 时发送，避免“move+depth update”二次覆盖
+  // 4) update：非结构字段变化则发送完整 block
   for (const nb of newBlocks) {
     const ob = oldMap.get(nb.id);
     if (!ob) continue;
 
-    const patch: PartialUpdate = {};
-    let changed = false;
+    // 仅检测非结构字段差异：type / props / content(runs)
+    const typeChanged = ob.type !== nb.type;
+    const propsChanged = !deepEqual(ob.props, nb.props);
+    const contentChanged = !deepEqual(ob.runs, nb.runs);
 
-    if (ob.type !== nb.type) {
-      patch.type = nb.type;
-      changed = true;
-    }
-
-    const propsDelta = buildPropsPatch(ob.props, nb.props, { encodeDeletionAsNull: true });
-    if (propsDelta) {
-      patch.props = propsDelta;
-      changed = true;
-    }
-
-    // content：你的 InlineDTO[]（若字段名已改成 content，这里同步调整）
-    if (!deepEqual(ob.runs, nb.runs)) {
-      patch.content = nb.runs as any;
-      changed = true;
-    }
-
-    if (changed) {
+    if (typeChanged || propsChanged || contentChanged) {
+      // 注意：这里按“完整块”发送；如果后端不希望结构字段在 update 中生效，可在后端忽略 parentId/order/depth
       ops.push({
         op: "update",
         node_uid: nb.id,
-        patch,
-      });
+        block: {
+          id: nb.id,
+          type: nb.type,
+          props: nb.props,
+          parentId: nb.parentId,
+          order: nb.order,
+          content: nb.runs,
+          depth: nb.depth,
+        },
+      } as PatchOp);
     }
   }
 

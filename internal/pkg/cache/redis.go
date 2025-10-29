@@ -69,7 +69,7 @@ func (r *RedisClient) SetWithContext(ctx context.Context, key string, value inte
 	return nil
 }
 
-func (r *RedisClient) Set(key string, value interface{}, expiration time.Duration) error {
+func (r *RedisClient) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
 	return r.SetWithContext(context.Background(), key, value, expiration)
 }
 
@@ -87,7 +87,7 @@ func (r *RedisClient) SetCaptcha(key string, value string) error {
 	// 设置验证码，过期时间为 30 分钟
 	// Todo: 需要将时常放置在redis内，以便后续动态调整
 	key = key + "_captcha"
-	if err := r.Set(key, value, 30*time.Minute); err != nil {
+	if err := r.Set(context.Background(), key, value, 30*time.Minute); err != nil {
 		return err
 	}
 	return nil
@@ -101,14 +101,14 @@ func (r *RedisClient) GetCaptcha(key string) (string, error) {
 		logger.LogError(err, "failed to get redis key")
 		return "", err
 	}
-	_, err = r.Del(key)
+	_, err = r.Del(context.Background(), key)
 	if err != nil {
 		return "", err
 	}
 	return val, nil
 }
 
-func (r *RedisClient) Del(key ...string) (int64, error) {
+func (r *RedisClient) Del(ctx context.Context, key ...string) (int64, error) {
 	num, err := r.Client.Del(context.Background(), key...).Result()
 	if err != nil {
 		logger.LogError(err, "failed to delete redis key")

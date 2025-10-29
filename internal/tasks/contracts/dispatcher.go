@@ -1,6 +1,9 @@
 package contracts
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 // JobKey 是任务类型键，如 "email:send"
 type JobKey string
@@ -22,5 +25,5 @@ type EnqueueOptions struct {
 	TimeoutSec int
 	MaxRetry   int
 	DelaySec   int
-	UniqueTTL  int // 秒，窗口内去重
+	UniqueTTL  time.Duration // 秒，窗口内去重
 }

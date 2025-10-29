@@ -141,6 +141,7 @@ func ParseBlockToLark(blocks dto.Blocks) []*larkdocx.Block {
 				Style(style.Build()).
 				Elements(elements).Build(),
 		).Build()
+
 		feishuBlocks = append(feishuBlocks, larkBlock)
 	}
 

@@ -1,19 +1,32 @@
 // components/PolicyRow.tsx
 import { Badge, Tag } from "@douyinfe/semi-ui";
-import { Button } from "@heroui/react";
-import { PlayIcon, StopIcon, EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/react";
+import { PlayIcon, StopIcon, EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useLingui } from "@lingui/react/macro";
 import { useRelativeTime } from "@/hooks/useRelativeTime";
 import useIntegration from "@/hooks/useIntegration";
+import { SyncPolicy } from "@/types/sync";
+import { useState } from "react";
 
 export function NotePolicyCard({
     policy,
+    onDelete,
 }: {
-    policy: any;
+    policy: SyncPolicy;
+    onDelete?: (syncID: string) => Promise<void>;
 }) {
     const { i18n, t } = useLingui();
     const rel = useRelativeTime(policy.updated_at, i18n); // ✅ 子组件内部用 Hook 安全
     const { thirdPartyIntegrationsMapping } = useIntegration()
+    const { isOpen: isOpenDeleteConfirm, onOpen: onOpenDeleteConfirm, onClose: onCloseDeleteConfirm } = useDisclosure();
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const handleDelete = async () => {
+        setDeleteLoading(true);
+
+        onDelete && await onDelete(policy.id);
+        setDeleteLoading(false);
+    }
+
     return (
         <div className="border border-slate-200 rounded-lg p-4 mb-4">
             <div className="flex items-center justify-between">
@@ -34,11 +47,48 @@ export function NotePolicyCard({
                             <StopIcon className="w-4 h-4 text-gray-400" />
                         )}
                     </Button>
-                    <Button isIconOnly className="w-7 h-7 min-w-0 ml-1" variant="light" radius="full">
-                        <EllipsisHorizontalIcon className="w-4 h-4 text-gray-400" />
-                    </Button>
+                    <Dropdown>
+                        <DropdownTrigger>
+                            <Button isIconOnly className="w-7 h-7 min-w-0 ml-1" variant="light" radius="full">
+                                <EllipsisHorizontalIcon className="w-4 h-4 text-gray-400" />
+                            </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu>
+                            <DropdownItem key={"delete"} color="danger" onPress={onOpenDeleteConfirm} startContent={<TrashIcon className="w-4 h-4" />}>
+                                {t`Remove`}
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
                 </div>
             </div>
+
+            <Modal isOpen={isOpenDeleteConfirm} onOpenChange={onCloseDeleteConfirm} >
+                <ModalContent className="bg-red-50 dark:bg-[#191919]">
+                    <ModalHeader className="light:text-red-700">
+                        {t`Confirm Deletion`}
+                    </ModalHeader>
+                    <ModalBody>
+                        <div className="flex items-start gap-3">
+                            {/* <ExclamationTriangleIcon className="w-6 h-6  flex-shrink-0" /> */}
+                            <div className="space-y-1">
+                                <p className="font-semibold light:text-red-700">
+                                    {t`Are you sure you want to delete this synchronization policy?`}
+                                </p>
+                                <p className="text-sm light:text-red-800">
+                                    {t`This action cannot be undone.`}
+                                </p>
+                            </div>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter className="pt-0">
+                        <div className="flex justify-end p-4">
+                            <Button className="mr-2" disabled={deleteLoading} variant="light" size="sm" onPress={onCloseDeleteConfirm} >{i18n._(t`Cancel`)}</Button>
+                            <Button color="danger" isLoading={deleteLoading} size="sm" onPress={handleDelete}>{i18n._(t`Delete`)}</Button>
+                        </div>
+                    </ModalFooter>
+                </ModalContent>
+
+            </Modal>
 
             <div className="flex mt-2 justify-between items-center">
                 <div>

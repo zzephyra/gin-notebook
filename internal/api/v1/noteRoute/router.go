@@ -20,5 +20,6 @@ func RegisterNoteRoutes(r *gin.RouterGroup) {
 		noteGroup.GET("/templates", GetTemplateNotesApi)
 		noteGroup.POST("/sync", AddNoteSyncApi)
 		noteGroup.GET("/sync", GetNoteSyncListApi)
+		noteGroup.DELETE("/sync", DeleteNoteSyncApi)
 	}
 }

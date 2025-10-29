@@ -6,9 +6,10 @@ import (
 	asynqimpl "gin-notebook/internal/tasks/asynq"
 	"gin-notebook/internal/tasks/asynq/types"
 	"gin-notebook/internal/tasks/contracts"
+	"gin-notebook/pkg/logger"
 )
 
-func SyncNote(ctx context.Context, p types.SyncNotePayload, opts ...contracts.Option) (string, error) {
+func SyncInitNote(ctx context.Context, p types.SyncNotePayload, opts ...contracts.Option) (string, error) {
 	defaults := []contracts.Option{
 		asynqimpl.WithQueue("default"),
 		asynqimpl.WithTimeout(30),
@@ -26,6 +27,30 @@ func SyncNote(ctx context.Context, p types.SyncNotePayload, opts ...contracts.Op
 		ctx = context.Background()
 	}
 
-	return asynqimpl.Dispatcher().Enqueue(ctx, types.SyncNoteKey, b, all...)
+	return asynqimpl.Dispatcher().Enqueue(ctx, types.InitSyncNoteKey, b, all...)
+
+}
+
+func SyncDelta(ctx context.Context, p types.SyncDeltaPayload, opts ...contracts.Option) (string, error) {
+	logger.LogInfo("123")
+	defaults := []contracts.Option{
+		asynqimpl.WithQueue("default"),
+		asynqimpl.WithTimeout(300),
+		asynqimpl.WithMaxRetry(3),
+	}
+	all := append(defaults, opts...)
+
+	b, err := json.Marshal(p)
+	if err != nil {
+		logger.LogError(err, "Failed to marshal SyncDeltaPayload", map[string]interface{}{
+			"payload": p,
+		})
+		return "", err
+	}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	return asynqimpl.Dispatcher().Enqueue(ctx, types.SyncDeltaKey, b, all...)
 
 }

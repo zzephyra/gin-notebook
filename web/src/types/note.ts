@@ -30,7 +30,7 @@ export type PartialUpdate = {
 
 export type PatchOp =
     | { op: "insert"; block: IncomingBlock; afterId?: string | null; beforeId?: string | null; }
-    | { op: "update"; node_uid: string; patch: PartialUpdate }
+    | { op: "update"; node_uid: string; block: IncomingBlock }
     | { op: "move"; order: number; node_uid: string; new_parent_uid?: string | null; afterId?: string | null; beforeId?: string | null }
     | { op: "delete"; node_uid: string };
 

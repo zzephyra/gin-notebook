@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -91,7 +90,12 @@ func GetNoteCategory(params *dto.NoteCategoryQueryDTO) (*[]dto.WorkspaceUpdateNo
 }
 
 func UpdateNote(db *gorm.DB, NoteID int64, updatedAt string, data map[string]interface{}) (conflict bool, err error) {
-	sql := db.Debug().Model(&model.Note{}).Where("id = ? and updated_at = ?", NoteID, updatedAt).Updates(data)
+	_, ok := data["version"]
+	if !ok {
+		data["version"] = gorm.Expr("version + 1")
+	}
+
+	sql := db.Model(&model.Note{}).Where("id = ? and updated_at = ?", NoteID, updatedAt).Updates(data)
 
 	if sql.RowsAffected == 0 {
 		conflict = true
@@ -280,11 +284,14 @@ func GetTemplateNotes(db *gorm.DB, userID int64, limit *int, offset int) (*[]mod
 	return &templateNotes, count, nil
 }
 
-func GetNoteSyncList(db *gorm.DB, ctx context.Context, memberID int64, noteID *int64, provider *model.IntegrationProvider) (*[]model.NoteExternalLink, int64, error) {
+func GetNoteSyncList(db *gorm.DB, ctx context.Context, memberID *int64, noteID *int64, provider *model.IntegrationProvider) (*[]model.NoteExternalLink, int64, error) {
 	var syncPolicies []model.NoteExternalLink
 	var count int64
-	query := db.Model(&model.NoteExternalLink{}).
-		Where("member_id = ?", memberID)
+	query := db.Model(&model.NoteExternalLink{})
+
+	if memberID != nil {
+		query = query.Where("member_id = ?", *memberID)
+	}
 
 	if noteID != nil {
 		query = query.Where("note_id = ?", *noteID)
@@ -296,22 +303,45 @@ func GetNoteSyncList(db *gorm.DB, ctx context.Context, memberID int64, noteID *i
 
 	query.Count(&count)
 
-	err := query.Order("created_at DESC").Find(&syncPolicies).Error
+	err := query.Debug().Order("created_at DESC").Find(&syncPolicies).Error
 	if err != nil {
 		return nil, 0, err
 	}
 	return &syncPolicies, count, nil
 }
 
-func GetNoteIndexJSON(db gorm.DB, ctx context.Context, noteID int64) (datatypes.JSON, error) {
-	var n model.Note
-	// 假设你的 Note 模型里字段名为 MdAstIndex（datatypes.JSON）
-	if err := db.WithContext(ctx).
-		Select("id, md_index").
-		First(&n, "id = ?", noteID).Error; err != nil {
+func GetNoteSyncByID(db *gorm.DB, ctx context.Context, linkID int64) (*model.NoteExternalLink, error) {
+	var syncPolicy model.NoteExternalLink
+	err := db.WithContext(ctx).
+		Where("id = ?", linkID).
+		First(&syncPolicy).Error
+	if err != nil {
 		return nil, err
 	}
-	return n.MDIndex, nil
+	return &syncPolicy, nil
+}
+
+func UpdateNoteSync(ctx context.Context, db *gorm.DB, where interface{}, args []interface{}, data map[string]interface{}) error {
+	if data == nil || len(data) == 0 {
+		return fmt.Errorf("update data cannot be empty")
+	}
+
+	query := db.WithContext(ctx).Model(&model.NoteExternalLink{})
+
+	switch cond := where.(type) {
+	case map[string]interface{}:
+		query = query.Where(cond)
+	case string:
+		query = query.Where(cond, args...)
+	default:
+		return fmt.Errorf("unsupported where type: %T", cond)
+	}
+
+	if err := query.Updates(data).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func GetNoteMappingByNoteAndProvider(db *gorm.DB, ctx context.Context, noteID int64, provider model.IntegrationProvider) (*[]model.NoteExternalNodeMapping, error) {
@@ -323,4 +353,17 @@ func GetNoteMappingByNoteAndProvider(db *gorm.DB, ctx context.Context, noteID in
 		return nil, err
 	}
 	return &mappings, nil
+}
+
+func GetNoteExternalLinkContentVersion(ctx context.Context, db *gorm.DB, linkID int64) (int64, error) {
+	var baseVesion int64
+	sql := db.Model(&model.NoteExternalLink{}).
+		Select("content_version").
+		Debug().
+		Where("id = ?", linkID).
+		Scan(&baseVesion)
+	if err := sql.Error; err != nil {
+		return 0, err
+	}
+	return baseVesion, nil
 }

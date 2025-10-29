@@ -52,18 +52,8 @@ func UpdateBlock(blocks Blocks, actions []PatchOp) Blocks {
 
 		case "update":
 			for i, block := range blocks {
-				if block.ID == action.NodeUID {
-					if action.Patch.Props != nil {
-						blocks[i].Props.Update(action.Patch.Props)
-					}
-
-					if action.Patch.Type != nil {
-						blocks[i].Type = *action.Patch.Type
-					}
-
-					if action.Patch.Content != nil {
-						blocks[i].Content = *action.Patch.Content
-					}
+				if block.ID == action.NodeUID && action.Block != nil {
+					blocks[i] = *action.Block
 				}
 			}
 		case "move":

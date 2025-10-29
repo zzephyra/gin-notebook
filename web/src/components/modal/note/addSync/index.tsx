@@ -81,7 +81,6 @@ function NewSyncModal({ isOpen, onOpenChange, workspaceID, onCreate }: { workspa
 
     return (
         <>
-            {step}
             <Modal onClose={() => setStep(0)} classNames={{ wrapper: "z-[1200]" }} isOpen={isOpen} onOpenChange={onOpenChange} size="2xl" className="new-sync-modal">
                 <ModalContent>
                     <ModalHeader>

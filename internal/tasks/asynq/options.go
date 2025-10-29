@@ -44,7 +44,7 @@ func WithMaxRetry(n int) contracts.Option {
 func WithDelay(sec int) contracts.Option {
 	return optFn(func(o *contracts.EnqueueOptions) { o.DelaySec = sec })
 }
-func WithUnique(ttlSec int) contracts.Option {
+func WithUnique(ttlSec time.Duration) contracts.Option {
 	return optFn(func(o *contracts.EnqueueOptions) { o.UniqueTTL = ttlSec })
 }
 

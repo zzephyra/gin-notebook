@@ -38,6 +38,7 @@ import type { User } from "@blocknote/core/comments";
 import { getUserInfoByIDRequest } from "@/features/api/user";
 import { diffSnapshots, flattenDocument } from "@/utils/blocksSnapshot";
 import { PatchOp } from "@/types/note";
+import "./style.css"
 export type MyUserType = User & {
     role: "editor" | "comment";
 };

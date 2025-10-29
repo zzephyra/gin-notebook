@@ -2,7 +2,7 @@ import { NoteProps } from "./script";
 import { useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { debounce } from "lodash";
-import { AutoUpdateContent, createNoteSyncPolicyRequest, createTemplateNoteRequest, getNoteSyncPoliciesRequest, getTemplateListRequest, SetFavoriteNoeRequest, UpdateNote } from "@/features/api/note";
+import { AutoUpdateContent, createNoteSyncPolicyRequest, createTemplateNoteRequest, deleteNoteSyncPolicyRequest, getNoteSyncPoliciesRequest, getTemplateListRequest, SetFavoriteNoeRequest, UpdateNote } from "@/features/api/note";
 import { useParams } from "react-router-dom";
 import { responseCode } from "@/features/constant/response";
 import {
@@ -163,6 +163,14 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
         return false
     }
 
+    const handleOnDelete = async (syncID: string) => {
+        var res = await deleteNoteSyncPolicyRequest(note.id, workspaceID, syncID)
+        if (res.code == responseCode.SUCCESS) {
+            setPolicy(policy.filter((p) => p.id !== syncID))
+            toast.success(t`Delete synchronization policy success`);
+        }
+    }
+
     useEffect(() => {
         if (integrationEnabled) {
             getNoteSyncPoliciesRequest(note.id, workspaceID).then((res) => {
@@ -266,13 +274,13 @@ function NoteSettingModal({ isOpen, onOpenChange, activeKey, note, workspaceID }
                                                     <div className="h-full overflow-y-auto border border-slate-200 rounded-lg p-4">
                                                         {
                                                             policy.length == 0 ? (
-                                                                <div className="flex h-full items-center text-sm text-gray-500 text-center py-10">
+                                                                <div className="flex justify-center h-full items-center text-sm text-gray-500 text-center py-10">
                                                                     {t`No synchronization policies yet. Click the "Add" button to create one.`}
                                                                 </div>
                                                             ) : (
                                                                 <>
                                                                     <div>
-                                                                        {policy.map((p) => <NotePolicyCard policy={p} />)}
+                                                                        {policy.map((p) => <NotePolicyCard policy={p} onDelete={handleOnDelete} />)}
                                                                     </div>
                                                                 </>
                                                             )

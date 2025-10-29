@@ -31,7 +31,7 @@ type Note struct {
 	AllowInvite  *bool          `json:"allow_invite" gorm:"default:true"`
 	Cover        *string        `json:"cover" gorm:"default:NULL; type:text;"`
 	NotionPageID *string        `json:"notion_page_id" gorm:"-"` // 方便前端展示
-	MDIndex      datatypes.JSON `gorm:"type:jsonb" json:"md_ast_index"`
+	Version      int64          `gorm:"type:bigint;not null;default:0"`
 }
 
 type NoteTag struct {
@@ -80,6 +80,7 @@ type NoteExternalLink struct {
 	Direction       SyncDirection  `gorm:"type:varchar(16); not null; default:'both'"`
 	ConflictPolicy  ConflictPolicy `gorm:"type:varchar(16); not null; default:'latest'"`
 	LastStatus      SyncStatus     `gorm:"type:varchar(16); not null; default:'idle'; index"`
+	InitStatus      InitStatus     `gorm:"type:varchar(16); not null; default:'pending'; index"` // ★ 新增字段
 	LastError       *string        `gorm:"type:text"`
 	IsActive        bool           `gorm:"not null; default:true; index"`
 	LastSyncedAt    *time.Time
@@ -87,7 +88,8 @@ type NoteExternalLink struct {
 	ExternalETag    *string `gorm:"type:varchar(255)"`
 	Meta            datatypes.JSON
 	SyncHash        *string `gorm:"type:varchar(64); index"`
-
+	ScheduleTaskID  *int64  `gorm:"index"`
+	ContentVersion  int64   `gorm:"type:bigint;not null;default:0"`
 	BaseModel
 }
 

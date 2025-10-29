@@ -1,5 +1,7 @@
 package feishu
 
+import larkdocx "github.com/larksuite/oapi-sdk-go/v3/service/docx/v1"
+
 type RefreshUserAccessTokenResponse struct {
 	AccessToken      string `json:"access_token"`
 	RefreshToken     string `json:"refresh_token"`
@@ -66,6 +68,21 @@ type FeishuChildrenBlock struct {
 	BlockType int              `json:"block_type"`
 	ParentID  *string          `json:"parent_id"`
 	Text      *FeishuBlockText `json:"text"`
+}
+
+type UpdateFeishuBlock struct {
+	LocalBlockID  string          `json:"block_id"`
+	Block         *larkdocx.Block `json:"block"`
+	TargetBlockID string          `json:"target_block_id"`
+}
+
+type CreateFeishuBlock struct {
+	LocalBlockIDs []string          `json:"local_block_id"`
+	Index         int               `json:"index"`
+	Block         []*larkdocx.Block `json:"block"`
+	TargetBlockID string            `json:"target_block_id"`
+	AfterID       *string           `json:"after_id"`
+	BeforeID      *string           `json:"before_id"`
 }
 
 type FeishuBlock struct {

@@ -265,3 +265,22 @@ export async function getNoteSyncPoliciesRequest(noteID: string, workspaceID: st
         }
     }
 }
+
+export async function deleteNoteSyncPolicyRequest(noteID: string, workspaceID: string, syncID: string) {
+    if (!noteID || !workspaceID || !syncID) {
+        return {
+            code: 500,
+            error: i18n._("Missing valid value")
+        }
+    }
+
+    try {
+        const res = await axiosClient.delete(syncNoteApi, { data: { note_id: noteID, workspace_id: workspaceID, sync_id: syncID } });
+        return res.data;
+    } catch (err) {
+        return {
+            code: 500,
+            error: "Delete note sync policy failed"
+        }
+    }
+}

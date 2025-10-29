@@ -1,0 +1,3 @@
+.bn-container [data-floating-ui-focusable] {
+    z-index: 20 !important;
+}

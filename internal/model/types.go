@@ -41,6 +41,7 @@ const (
 	SyncRunning SyncStatus = "running"
 	SyncSuccess SyncStatus = "success"
 	SyncFailed  SyncStatus = "failed"
+	SyncSkipped SyncStatus = "skipped"
 )
 
 type SyncMode string
@@ -55,4 +56,13 @@ type ConflictPolicy string
 const (
 	ConflictLatest ConflictPolicy = "latest" // 以最新修改时间为准
 	// ...
+)
+
+type InitStatus string
+
+const (
+	InitPending InitStatus = "pending" // 新建后尚未开始初始化
+	InitRunning InitStatus = "running" // 正在初始化
+	InitReady   InitStatus = "ready"   // 初始化完成，可增量同步
+	InitFailed  InitStatus = "failed"  // 初始化失败（可重试）
 )

@@ -5,9 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"gin-notebook/internal/http/message"
+	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/repository"
+	"gin-notebook/internal/tasks/asynq/enqueue"
+	"gin-notebook/internal/tasks/asynq/types"
+	"gin-notebook/pkg/logger"
 	"reflect"
 	"time"
 
@@ -42,11 +46,14 @@ func UpdateNote(ctx context.Context, params *dto.UpdateWorkspaceNoteValidator) (
 		// responseCode = message.ERROR_INVALID_PARAM // 自行定义：不能同时传 actions 与 content
 		return
 	}
-
+	type linkEntry struct {
+		LinkID   int64
+		MemberID int64
+	}
+	linksIDMapping := make(map[int64]int64)
 	// —— 事务 —— //
 	err := db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		note, err := repository.GetNoteByID(db, ctx, params.WorkspaceID, params.NoteID)
-
+		note, err := repository.GetNoteByID(tx, ctx, params.WorkspaceID, params.NoteID)
 		updateData := params.ToUpdate()
 		if err != nil {
 			responseCode = database.IsError(err)
@@ -57,6 +64,9 @@ func UpdateNote(ctx context.Context, params *dto.UpdateWorkspaceNoteValidator) (
 			responseCode = message.ERROR_NOTE_NOT_FOUND
 			return fmt.Errorf("note not found")
 		}
+
+		newVersion := note.Version + 1
+		updateData["version"] = newVersion
 
 		var content dto.Blocks
 		if err := json.Unmarshal(note.Content, &content); err != nil {
@@ -83,6 +93,7 @@ func UpdateNote(ctx context.Context, params *dto.UpdateWorkspaceNoteValidator) (
 					"id":          params.NoteID,
 					"is_conflict": true,
 					"updated_at":  note.UpdatedAt,
+					"version":     note.Version,
 				},
 			}
 			responseCode = message.ERROR_NOTE_UPDATE_CONFLICT
@@ -91,6 +102,53 @@ func UpdateNote(ctx context.Context, params *dto.UpdateWorkspaceNoteValidator) (
 		if err != nil {
 			responseCode = database.IsError(err)
 			return err
+		}
+
+		if params.Actions != nil && len(*params.Actions) > 0 {
+			links, _, err := repository.GetNoteSyncList(tx, ctx, nil, &params.NoteID, nil)
+
+			if err != nil {
+				responseCode = database.IsError(err)
+				return err
+			}
+			logger.LogInfo("Actions length", len(*params.Actions))
+
+			if links != nil && len(*links) > 0 {
+				logger.LogInfo("links length", len(*links))
+
+				syncRepo := repository.NewSyncRepository(tx)
+
+				outboxs := make([]model.SyncOutbox, 0)
+
+				for _, link := range *links {
+					patchJson, err := json.Marshal(params.Actions)
+					if err != nil {
+						logger.LogError(err, "Marshal Action error")
+						continue
+					}
+					_, ok := linksIDMapping[link.ID]
+					if !ok {
+						linksIDMapping[link.ID] = link.MemberID
+					}
+
+					outboxs = append(outboxs, model.SyncOutbox{
+						NoteID:      params.NoteID,
+						LinkID:      link.ID,
+						NoteVersion: newVersion,
+						OpType:      "patch",
+						Status:      model.SyncPending,
+						PatchJSON:   patchJson,
+					})
+
+				}
+
+				err = syncRepo.CreateSyncOutboxs(ctx, &outboxs)
+				if err != nil {
+					logger.LogError(err, "CreateSyncOutboxs error")
+					responseCode = database.IsError(err)
+					return err
+				}
+			}
 		}
 
 		data = map[string]interface{}{
@@ -106,6 +164,19 @@ func UpdateNote(ctx context.Context, params *dto.UpdateWorkspaceNoteValidator) (
 	if err != nil {
 		responseCode = database.IsError(err)
 		return
+	}
+
+	for k, v := range linksIDMapping {
+		payload := types.SyncDeltaPayload{
+			LinkID:      k,
+			NoteID:      params.NoteID,
+			WorkspaceID: params.WorkspaceID,
+			UserID:      params.OwnerID,
+			MemberID:    v,
+		}
+		fmt.Println("Enqueue SyncDeltaPayload for LinkID:", k)
+		// 使用 Unique 防抖：同一 link 短时间多次更新只保留一条排队任务
+		enqueue.SyncDelta(ctx, payload)
 	}
 
 	responseCode = message.SUCCESS

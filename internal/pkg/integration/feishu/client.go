@@ -9,6 +9,7 @@ import (
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/repository"
 	"gin-notebook/pkg/logger"
+	"net/http"
 	"time"
 
 	lark "github.com/larksuite/oapi-sdk-go/v3"
@@ -136,7 +137,7 @@ func (c *Client) GetAppAccessToken(ctx context.Context, cacheToken bool) (string
 				expSec = int64(v) - 300 // 提前 5 分钟过期
 			}
 			expiration := time.Duration(expSec) * time.Second
-			cache.RedisInstance.Set(fmt.Sprintf("feishu_app_access_token_%s", c.appID), token, expiration)
+			cache.RedisInstance.Set(ctx, fmt.Sprintf("feishu_app_access_token_%s", c.appID), token, expiration)
 		}
 		return token, nil
 	}
@@ -308,42 +309,64 @@ func (c *Client) GetNoteAllBlocks(ctx context.Context, userToken, documentID str
 	return resp.Data, nil
 }
 
-func (c *Client) CreateBlocks(ctx context.Context, userToken, documentID, blockID string, blocks []*larkdocx.Block, index int) (*larkdocx.CreateDocumentBlockChildrenRespData, error) {
-	index = min(-1, index) // 确保最小值为-1
+func (c *Client) CreateBlocks(
+	ctx context.Context,
+	userToken, documentID, blockID string,
+	blocks []*larkdocx.Block,
+	index int,
+	header *http.Header,
+) (*larkdocx.CreateDocumentBlockChildrenRespData, error) {
+	index = max(-1, index)
 
 	req := larkdocx.NewCreateDocumentBlockChildrenReqBuilder().
 		DocumentId(documentID).
 		BlockId(blockID).
-		DocumentRevisionId(-1).
-		Body(larkdocx.NewCreateDocumentBlockChildrenReqBodyBuilder().
-			Children(blocks).
-			Index(index).
-			Build()).
-		Build()
-	resp, err := c.Client.Docx.V1.DocumentBlockChildren.Create(context.Background(), req, larkcore.WithUserAccessToken(userToken))
+		DocumentRevisionId(-1). // -1 代表使用最新版本
+		Body(
+			larkdocx.NewCreateDocumentBlockChildrenReqBodyBuilder().
+				Children(blocks).
+				Index(index).
+				Build(),
+		).Build()
 
+	// 合并 Header（浅拷贝，避免共享底层切片）
+	h := http.Header{}
+	if header != nil {
+		for k, vs := range *header {
+			for _, v := range vs {
+				h.Add(k, v)
+			}
+		}
+	}
+
+	// 用调用方的 ctx，不要用 Background()
+	resp, err := c.Client.Docx.V1.DocumentBlockChildren.Create(
+		ctx,
+		req,
+		larkcore.WithUserAccessToken(userToken),
+		larkcore.WithHeaders(h),
+	)
 	if err != nil {
-		fmt.Println(err)
+		logger.LogError(err, "CreateBlocks error")
 		return nil, err
 	}
 
-	// 服务端错误处理
 	if !resp.Success() {
-		fmt.Printf("logId: %s, error response: \n%s", resp.RequestId(), larkcore.Prettify(resp.CodeError))
+		logger.LogError(resp.CodeError, "CreateBlocks response error")
 		return nil, resp.CodeError
 	}
-
 	return resp.Data, nil
 }
 
 func (c *Client) DeleteBlocks(ctx context.Context, noteID, userToken, blockID string, startIndex, endIndex int) error {
+	fmt.Printf("DeleteBlocks noteID: %s, blockID: %s, startIndex: %d, endIndex: %d\n", noteID, blockID, startIndex, endIndex)
 	req := larkdocx.NewBatchDeleteDocumentBlockChildrenReqBuilder().
 		DocumentId(noteID).
 		BlockId(blockID).
 		DocumentRevisionId(-1).
 		Body(larkdocx.NewBatchDeleteDocumentBlockChildrenReqBodyBuilder().
-			StartIndex(0).
-			EndIndex(3).
+			StartIndex(startIndex).
+			EndIndex(endIndex).
 			Build()).
 		Build()
 
@@ -360,4 +383,60 @@ func (c *Client) DeleteBlocks(ctx context.Context, noteID, userToken, blockID st
 	}
 
 	return nil
+}
+
+func (c *Client) BatchUpdateBlocks(ctx context.Context, noteID, userToken string, blocks []*UpdateFeishuBlock, header *http.Header) (*larkdocx.BatchUpdateDocumentBlockRespData, error) {
+
+	updateRequests := []*larkdocx.UpdateBlockRequest{}
+
+	for i, block := range blocks {
+		if block == nil {
+			logger.LogInfo("有一个空的 UpdateFeishuBlock 元素")
+			continue
+		}
+
+		if block.TargetBlockID == "" {
+			continue
+		}
+
+		if block.Block == nil || block.Block.BlockType == nil {
+			logger.LogInfo("skip nil Block/BlockType at idx=%d TargetBlockID=%s", i, block.TargetBlockID)
+			continue
+		}
+		builder := larkdocx.NewUpdateBlockRequestBuilder()
+		if *block.Block.BlockType == 2 {
+			builder = builder.UpdateTextElements(larkdocx.NewUpdateTextElementsRequestBuilder().
+				Elements(block.Block.Text.Elements).
+				Build())
+		}
+
+		builder.BlockId(block.TargetBlockID)
+		updateRequests = append(updateRequests, builder.Build())
+	}
+
+	req := larkdocx.NewBatchUpdateDocumentBlockReqBuilder().
+		DocumentId(noteID).
+		DocumentRevisionId(-1).
+		UserIdType(`user_id`).
+		Body(larkdocx.NewBatchUpdateDocumentBlockReqBodyBuilder().
+			Requests(updateRequests).
+			Build()).
+		Build()
+
+	// 发起请求
+	resp, err := c.Client.Docx.V1.DocumentBlock.BatchUpdate(context.Background(), req, larkcore.WithUserAccessToken(userToken), larkcore.WithHeaders(*header))
+
+	// 处理错误
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	// 服务端错误处理
+	if !resp.Success() {
+		fmt.Printf("logId: %s, error response: \n%s", resp.RequestId(), larkcore.Prettify(resp.CodeError))
+		return nil, resp.CodeError
+	}
+	fmt.Println(resp.Data.ClientToken)
+	return resp.Data, nil
 }

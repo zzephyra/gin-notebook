@@ -176,3 +176,24 @@ func GetNoteSyncListApi(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, response.Response(responseCode, data))
 }
+
+func DeleteNoteSyncApi(c *gin.Context) {
+	params := &dto.DeleteNoteSyncDTO{
+		MemberID: c.MustGet("workspaceMemberID").(int64),
+		UserID:   c.MustGet("userID").(int64),
+	}
+
+	if err := c.ShouldBindJSON(params); err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	if err := validator.ValidateStruct(params); err != nil {
+		logger.LogError(err, "验证失败：")
+		c.JSON(http.StatusOK, response.Response(message.ERROR_INVALID_PARAMS, nil))
+		return
+	}
+
+	responseCode := noteService.DeleteSync(c.Request.Context(), params)
+	c.JSON(http.StatusOK, response.Response(responseCode, nil))
+}

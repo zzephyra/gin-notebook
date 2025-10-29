@@ -44,6 +44,7 @@ const (
 	ERROR_NOTE_NOT_FOUND          = 2007
 	ERROR_INVALID_NOTE_INDEX      = 2008
 	ERROR_NOTE_UPDATE_CONFLICT    = 2009
+	ERROR_NOTE_SYNC_NOT_FOUND     = 2010
 	// 分类模块的错误
 	ERROR_CATENAME_USED  = 3001
 	ERROR_CATE_NOT_EXIST = 3002
@@ -238,4 +239,5 @@ var CodeMsg = map[int]string{
 	ERROR_FEISHU_CONVERT_MARKDOWN_FAILED:             "飞书Markdown转换失败",
 	ERROR_INVALID_NOTE_INDEX:                         "无效的笔记索引",
 	ERROR_NOTE_UPDATE_CONFLICT:                       "笔记更新冲突，请刷新页面后重试",
+	ERROR_NOTE_SYNC_NOT_FOUND:                        "笔记同步配置未找到",
 }

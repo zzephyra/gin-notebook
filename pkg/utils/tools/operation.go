@@ -128,3 +128,16 @@ func Chunk[T any](items []T, size int) [][]T {
 	}
 	return chunks
 }
+
+func Unique[T comparable](list []T) []T {
+	seen := make(map[T]struct{})
+	result := make([]T, 0, len(list))
+
+	for _, v := range list {
+		if _, ok := seen[v]; !ok {
+			seen[v] = struct{}{}
+			result = append(result, v)
+		}
+	}
+	return result
+}

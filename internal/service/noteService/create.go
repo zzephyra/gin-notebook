@@ -3,7 +3,6 @@ package noteService
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"gin-notebook/internal/http/message"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
@@ -196,82 +195,82 @@ func GetTemplateNotes(params *dto.GetTemplateNotesDTO) (responseCode int, data *
 }
 
 func AddNoteSync(ctx context.Context, params *dto.AddNoteSyncDTO) (responseCode int, data map[string]interface{}) {
-	err := database.DB.Transaction(func(tx *gorm.DB) error {
+	// 0) 事务外校验（可选但推荐，避免长事务）
+	//    - 校验集成账号有效
+	//    - 如果前置要求必须是已存在的 Feishu 文档，校验 meta（否则可以把 meta 校验挪到 init 任务里做）
+	account, err := repository.NewIntegrationRepository(database.DB).
+		GetIntegrationAccountByUser(ctx, &params.Provider, &params.UserID)
+	if err != nil {
+		return database.IsError(err), nil
+	}
+	if account.IsActive == false || account.AccessTokenExpiry == nil || account.AccessTokenExpiry.Before(time.Now()) {
+		return message.ERROR_INTEGRATION_ACCOUNT_EXPIRED, nil
+	}
+
+	// （可选）若需要在创建策略前就确认远端 doc 存在：
+	meta, err := feishu.GetClient().GetFileMeta(ctx, params.TargetNoteID, "docx", account.AccessTokenEnc)
+	if err != nil || len(meta.Metas) == 0 {
+		return message.ERROR_FEISHU_GET_FILE_META_FAILED, nil
+	}
+
+	var syncID int64
+	var updatedAt time.Time
+
+	err = database.DB.Transaction(func(tx *gorm.DB) error {
+		tx = tx.WithContext(ctx)
+
+		// 1) 用 tx 读取 note（确保和后续写入在同一事务/快照里）
+		note, err := repository.GetNoteByID(tx, ctx, params.WorkspaceID, params.NoteID)
+		if err != nil {
+			logger.LogError(err, "GetNoteByID error")
+			responseCode = database.IsError(err)
+			return err
+		}
+
 		syncPolicy := &model.NoteExternalLink{
 			MemberID:       params.MemberID,
 			NoteID:         params.NoteID,
 			Provider:       params.Provider,
 			Mode:           params.Mode,
 			Direction:      params.Direction,
-			TargetNoteID:   params.TargetNoteID,
+			TargetNoteID:   params.TargetNoteID, // 若允许「绑定已存在的 Feishu 文档」
 			ConflictPolicy: params.ConflictPolicy,
+			ContentVersion: note.Version, // baseVersion
 			ResType:        "docx",
+			LastStatus:     model.SyncPending, // ★ 新增：初始化状态
+			IsActive:       true,              // 建议默认为启用
 		}
 
 		syncRepo := repository.NewSyncRepository(tx)
-		integrationRepo := repository.NewIntegrationRepository(tx)
-
-		account, err := integrationRepo.GetIntegrationAccountByUser(ctx, &params.Provider, &params.UserID)
-
-		if err != nil {
-			responseCode = database.IsError(err)
-			return err
-		}
-
-		if account.IsActive == false || account.AccessTokenExpiry == nil || account.AccessTokenExpiry.Before(time.Now()) {
-			responseCode = message.ERROR_INTEGRATION_ACCOUNT_EXPIRED
-			return errors.New("feishu integration account is expired")
-		}
-
-		meta, err := feishu.GetClient().GetFileMeta(ctx, params.TargetNoteID, "docx", account.AccessTokenEnc)
-
-		if err != nil || len(meta.Metas) == 0 {
-			responseCode = message.ERROR_FEISHU_GET_FILE_META_FAILED
-			return errors.New("failed to get Feishu file metadata")
-		}
 
 		err = syncRepo.CreateOrUpdateNoteSyncPolicy(ctx, syncPolicy)
 		if err != nil {
+			logger.LogError(err, "CreateOrUpdateNoteSyncPolicy error")
 			responseCode = database.IsError(err)
 			return err
 		}
 
-		payload, _ := json.Marshal(map[string]interface{}{
-			"note_id":         params.NoteID,
-			"member_id":       params.MemberID,
-			"provider":        params.Provider,
-			"mode":            params.Mode,
-			"direction":       params.Direction,
-			"target_note_id":  params.TargetNoteID,
-			"conflict_policy": params.ConflictPolicy,
-		})
+		// 如果你此阶段不打算启用 OutboxEvent，建议先不写：
+		// event := model.OutboxEvent{...}
+		// if err := syncRepo.CreateOutboxEvent(ctx, &event); err != nil { ... }
 
-		event := model.OutboxEvent{
-			Topic:     "note.updated",
-			Key:       string(params.NoteID),
-			Payload:   payload,
-			CreatedAt: time.Now(),
-		}
+		syncID = syncPolicy.ID
+		updatedAt = syncPolicy.UpdatedAt
 
-		err = syncRepo.CreateOutboxEvent(ctx, &event)
-		if err != nil {
-			responseCode = database.IsError(err)
-			return err
-		}
-
+		// 返回给前端的数据
 		data = map[string]interface{}{
+			"id":              strconv.FormatInt(syncPolicy.ID, 10),
 			"note_id":         strconv.FormatInt(params.NoteID, 10),
 			"provider":        params.Provider,
 			"mode":            params.Mode,
 			"direction":       params.Direction,
 			"target_note_id":  params.TargetNoteID,
 			"conflict_policy": params.ConflictPolicy,
-			"updated_at":      syncPolicy.UpdatedAt,
-			"id":              strconv.FormatInt(syncPolicy.ID, 10),
 			"res_type":        syncPolicy.ResType,
 			"is_active":       syncPolicy.IsActive,
+			"status":          syncPolicy.LastStatus,
+			"updated_at":      updatedAt,
 		}
-
 		return nil
 	})
 
@@ -279,15 +278,16 @@ func AddNoteSync(ctx context.Context, params *dto.AddNoteSyncDTO) (responseCode 
 		return responseCode, nil
 	}
 
+	// 4) 事务提交后再入队初始化任务（避免悬挂任务）
 	payload := types.SyncNotePayload{
 		NoteID:       params.NoteID,
 		MemberID:     params.MemberID,
 		UserID:       params.UserID,
 		WorkspaceID:  params.WorkspaceID,
 		TargetNoteID: params.TargetNoteID,
+		LinkID:       syncID, // ★ 建议带上 link_id，方便 worker 精确定位
 	}
-	enqueue.SyncNote(ctx, payload)
+	enqueue.SyncInitNote(ctx, payload)
 
-	responseCode = message.SUCCESS
-	return
+	return message.SUCCESS, data
 }
