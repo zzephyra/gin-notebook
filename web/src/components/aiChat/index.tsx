@@ -14,7 +14,7 @@ import { useLingui } from '@lingui/react/macro';
 import AIChatToolset from '../aiChatToolset';
 import { responseCode } from '@/features/constant/response';
 import { AIMessage } from '@/features/api/type';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const SourceCard = (props: any) => {
@@ -142,6 +142,8 @@ export type AIChatRef = {
 const AIChat = forwardRef<AIChatRef, AIChatProps>((props, ref) => {
     var user = useSelector((state: RootState) => state.user);
     var { t } = useLingui();
+    var param = useParams();
+    var workspace_id = param.id || '';
     var [chatMessages, setChatMessages] = useState<Message[]>([]);
     var controller = useRef(new AbortController());
     const [sessionID, setSessionID] = useState<string | undefined>();  // 会话ID
@@ -189,7 +191,7 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((props, ref) => {
         const sessionIDFromUrl = searchParams.get("sessionID");
         if (sessionIDFromUrl) {
             setSessionID(sessionIDFromUrl);
-            getAIChatSessionRequest(sessionIDFromUrl).then((res) => {
+            getAIChatSessionRequest(sessionIDFromUrl, workspace_id).then((res) => {
                 if (res?.code == responseCode.SUCCESS) {
                     setChatMessages(res.data.messages.map(
                         (msg: AIMessage) => ({
@@ -235,7 +237,7 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((props, ref) => {
                     createAt: new Date().getTime(),
                     content: userMessage,
                 }
-            ], controller, { isSearchInternet });
+            ], workspace_id, controller, { isSearchInternet, session_id: sessionID });
             if (resp.data.code && resp.data.code !== responseCode.SUCCESS) {
                 onError();
                 return;
@@ -290,7 +292,7 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((props, ref) => {
 
     const onMessageSend = async (content: string) => {
         controller.current = new AbortController();
-        const res = await createAIMessage(content, sessionID ? "insert" : "init", "complete", "user", sessionID);
+        const res = await createAIMessage(content, sessionID ? "insert" : "init", "complete", "user", workspace_id, sessionID);
         const tempSessionID = res.data.session_id;
         setSessionID(tempSessionID);
         const parentID = res.data.message_id;
@@ -325,7 +327,7 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((props, ref) => {
                 setChatMessages(prev => {
                     const latestMessage = prev[prev.length - 1]; // 这里获取的是最新的消息
                     createAIMessage(
-                        msg, "insert", latestMessage?.status || "complete", "assistant", tempSessionID, parentID
+                        msg, "insert", latestMessage?.status || "complete", "assistant", workspace_id, tempSessionID, parentID
                     ).then((result) => {
                         if (result.code === responseCode.SUCCESS) {
                             updateLastMessage({ id: result.data.message_id })
@@ -337,7 +339,7 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((props, ref) => {
             },
             onError: async () => {
                 await createAIMessage(
-                    'Oops, something went wrong!', "insert", "error", "assistant", tempSessionID, parentID
+                    'Oops, something went wrong!', "insert", "error", "assistant", workspace_id, tempSessionID, parentID
                 );
                 updateLastMessage({
                     content: t`Oops, something went wrong!`,
@@ -443,7 +445,7 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((props, ref) => {
             onFinish: async (msg) => {
                 // 完成后创建 AI 消息
                 let latestMessage = chatMessages[chatMessages.length - 1];
-                await updateAIMessage(msg, "reset", latestMessage?.status || "complete", "assistant", message?.id, sessionID);
+                await updateAIMessage(msg, "reset", latestMessage?.status || "complete", "assistant", message?.id, workspace_id, sessionID);
             },
             onError: () => {
                 setChatMessages(prev => {

@@ -3,8 +3,10 @@ package tools
 import (
 	"encoding/json"
 	"math"
+	"net/url"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -140,4 +142,25 @@ func Unique[T comparable](list []T) []T {
 		}
 	}
 	return result
+}
+
+func IsValidURL(str string) bool {
+	u, err := url.Parse(str)
+	if err != nil {
+		return false
+	}
+	if u.Scheme == "" || u.Host == "" {
+		return false
+	}
+	// 可选：只允许 http 或 https
+	if !strings.HasPrefix(u.Scheme, "http") {
+		return false
+	}
+	return true
+}
+
+func Reverse[T any](s []T) {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
 }

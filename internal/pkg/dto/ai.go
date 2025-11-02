@@ -7,24 +7,32 @@ type Tool struct {
 }
 
 type AIRequestDTO struct {
-	Messages         []map[string]any          `json:"messages" validate:"required"`
+	Messages         []AIMessageDTO            `json:"messages" validate:"required"`
 	IsSearchInternet bool                      `json:"isSearchInternet"`
 	ToolChoice       *map[string]interface{}   `json:"tool_choice" validate:"omitempty"` // "auto" 或 "block_operations"
 	Tools            *[]map[string]interface{} `json:"tools" validate:"omitempty"`
+	WorkspaceID      int64                     `json:"workspace_id,string" validate:"omitempty"`
+	// Creator          int64                     `validate:"required"`
+	SessionID *int64 `json:"session_id,string" validate:"omitempty"`
+	MemberID  int64  `json:"member_id" validate:"required"`
 }
 
 type AIHttpRequestDTO struct {
-	Messages   []map[string]any          `json:"messages"`
+	Messages   []AIMessageDTO            `json:"messages"`
 	Stream     bool                      `json:"stream"`
+	MaxTokens  int                       `json:"max_tokens,omitempty"`
 	Model      string                    `json:"model"`
 	Tools      *[]map[string]interface{} `json:"tools" validate:"omitempty"`
 	ToolChoice *map[string]interface{}   `json:"tool_choice" validate:"omitempty"` // "auto" 或 "block_operations"
 }
 
 type AISettingsDTO struct {
-	Model  string `json:"ai_model"`
-	ApiKey string `json:"ai_api_key"`
-	ApiUrl string `json:"ai_api_url"`
+	Model             string `json:"ai_model"`
+	ApiKey            string `json:"ai_api_key"`
+	ApiUrl            string `json:"ai_api_url"`
+	AiProvider        string `json:"ai_provider"`
+	AIInputMaxTokens  int64  `json:"ai_input_max_tokens"`
+	AIOutputMaxTokens int64  `json:"ai_output_max_tokens"`
 }
 
 type AIMessageParamsDTO struct {
@@ -32,10 +40,10 @@ type AIMessageParamsDTO struct {
 	Content   string  `json:"content" validate:"required"`
 	Role      string  `json:"role" validate:"required,oneof=user assistant"`
 	Status    string  `json:"status" validate:"required,oneof=complete loading error incomplete"` // 状态: complete, loading, error
-	UserID    int64   `json:"-" validate:"required"`                                              // 用户 ID
 	Title     *string `json:"title" validate:"omitempty,min=1,max=50"`                            // 会话标题
 	Action    string  `json:"action" validate:"required,oneof=init insert reset"`                 // 操作类型
 	ParentID  int64   `json:"parentID,string" validate:"omitempty"`
+	MemberID  int64   `validate:"required"` // 成员 ID
 }
 
 type AIMessageResponseDTO struct {
@@ -44,14 +52,14 @@ type AIMessageResponseDTO struct {
 }
 
 type AIHistoryChatParamsDTO struct {
-	UserID int64 `json:"-" validate:"required"`            // 用户 ID
-	Offset int   `form:"offset" validate:"omitempty,gt=0"` // 偏移量
+	MemberID int64 `json:"-" validate:"required"`            // 成员 ID
+	Offset   int   `form:"offset" validate:"omitempty,gt=0"` // 偏移量
 	// Limit  int64 `json:"limit" validate:"omitempty,gt=0,lte=30"` // 限制条数，默认 20，最大 30
 }
 
 type AIHistoryDeleteParamsDTO struct {
 	SessionID string `form:"id,string" validate:"required"` // 会话 ID
-	UserID    int64  `json:"-" validate:"required"`         // 用户 ID
+	MemberID  int64  `json:"-" validate:"required"`         // 成员 ID
 }
 
 type AIMessageDTO struct {
@@ -77,13 +85,13 @@ type AIHistoryChatResponseDTO struct {
 
 type AIHistoryUpdateParamsDTO struct {
 	SessionID int64   `json:"-" validate:"required"`                   // 会话 ID
-	UserID    int64   `json:"-" validate:"required"`                   // 用户 ID
+	MemberID  int64   `json:"-" validate:"required"`                   // 用户 ID
 	Title     *string `json:"title" validate:"omitempty,min=1,max=50"` // 会话标题
 }
 
 type AISessionParamsDTO struct {
 	SessionID int64 `validate:"omitempty"` // 会话 ID
-	UserID    int64 `validate:"required"`  // 用户 ID
+	MemberID  int64 `validate:"required"`  // 用户 ID
 }
 
 type AISessionResponseDTO struct {
@@ -96,6 +104,20 @@ type AIMessageUpdateParamsDTO struct {
 	Content   string `json:"content" validate:"required"`
 	Role      string `json:"role" validate:"required,oneof=assistant"`
 	Status    string `json:"status" validate:"required,oneof=complete loading error incomplete"` // 状态: complete, loading, error
-	UserID    int64  `json:"user_id" validate:"required"`                                        // 用户 ID
+	MemberID  int64  ` validate:"required"`                                                      // 用户 ID
 	Action    string `json:"action" validate:"required,oneof=init insert reset"`                 // 操作类型
+}
+
+type AICreateTodoDTO struct {
+	Status  string   `json:"status"`
+	Notes   string   `json:"notes"`
+	Missing []string `json:"missing"`
+	Slots   struct {
+		Title       *string `json:"title"`
+		Deadline    *string `json:"deadline"`
+		Priority    *int    `json:"priority"`   // 0/1/2/3 或 null
+		ProcessID   *int    `json:"process_id"` // 0/1/2 或 null
+		ProjectName *string `json:"project_id"`
+		ColumnID    *int64  `json:"column_id"`
+	} `json:"slots"`
 }

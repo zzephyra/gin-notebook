@@ -14,6 +14,7 @@ import InviteWorkspacePage from "@/pages/workspace/invite";
 import FavoritesPage from "@/pages/workspace/favorites";
 import TasksPage from "@/pages/workspace/tasks";
 import ProjectPage from "@/pages/workspace/project";
+import AISettings from "@/pages/settings/aiSettings";
 
 const SettingsLayout = lazy(() => import("@/layouts/SettingsLayout"));
 const AccountSettings = lazy(() => import("@/pages/settings/accountSettings"));
@@ -61,6 +62,12 @@ export let router = createBrowserRouter([
               <IntegrationSetting />
             ),
           },
+          {
+            path: "ai",
+            element: (
+              <AISettings />
+            )
+          }
         ],
       },
 

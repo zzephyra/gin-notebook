@@ -43,7 +43,7 @@ func GetNextIndex(tx *gorm.DB, ctx context.Context, sessionID int64) (int64, err
 func GetAISessionsByID(param dto.AIHistoryChatParamsDTO) (data []dto.AIHistoryChatDTO, err error) {
 	limit := 15 // 默认限制
 	fmt.Println("Offset:", param.Offset)
-	result := database.DB.Model(&model.AISession{}).Select("id", "title").Where("user_id = ?", param.UserID).Offset(param.Offset).Limit(limit).Order("created_at DESC").Find(&data)
+	result := database.DB.Model(&model.AISession{}).Select("id", "title").Where("member_id = ?", param.MemberID).Offset(param.Offset).Limit(limit).Order("created_at DESC").Find(&data)
 	if result.Error != nil {
 		err = result.Error
 		return
@@ -51,8 +51,8 @@ func GetAISessionsByID(param dto.AIHistoryChatParamsDTO) (data []dto.AIHistoryCh
 	return
 }
 
-func GetAISessionCount(userID int64) (count int64, err error) {
-	result := database.DB.Model(&model.AISession{}).Where("user_id = ?", userID).Count(&count)
+func GetAISessionCount(memberID int64) (count int64, err error) {
+	result := database.DB.Model(&model.AISession{}).Where("member_id = ?", memberID).Count(&count)
 	if result.Error != nil {
 		err = result.Error
 		return
@@ -60,9 +60,9 @@ func GetAISessionCount(userID int64) (count int64, err error) {
 	return
 }
 
-func DeleteAISessionByID(sessionID string, userID int64) error {
+func DeleteAISessionByID(sessionID string, memberID int64) error {
 	result := database.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where("id = ? AND user_id = ?", sessionID, userID).Delete(&model.AISession{}).Error; err != nil {
+		if err := tx.Where("id = ? AND member_id = ?", sessionID, memberID).Delete(&model.AISession{}).Error; err != nil {
 			return err
 		}
 		if err := tx.Where("session_id = ?", sessionID).Delete(&model.AIMessage{}).Error; err != nil {
@@ -73,8 +73,8 @@ func DeleteAISessionByID(sessionID string, userID int64) error {
 	return result
 }
 
-func UpdateAISession(tx *gorm.DB, sessionID int64, userID int64, updateData map[string]interface{}) error {
-	result := tx.Model(&model.AISession{}).Where("id = ? AND user_id = ?", sessionID, userID).Updates(updateData)
+func UpdateAISession(tx *gorm.DB, sessionID int64, memberID int64, updateData map[string]interface{}) error {
+	result := tx.Model(&model.AISession{}).Where("id = ? AND member_id = ?", sessionID, memberID).Updates(updateData)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -86,9 +86,9 @@ func UpdateAISession(tx *gorm.DB, sessionID int64, userID int64, updateData map[
 	return nil
 }
 
-func GetAISessionByID(sessionID int64, userID int64) (data *model.AISession, err error) {
+func GetAISessionByID(sessionID int64, memberID int64) (data *model.AISession, err error) {
 	session := &model.AISession{}
-	result := database.DB.Model(session).Where("id = ? AND user_id = ?", sessionID, userID).First(session)
+	result := database.DB.Model(session).Where("id = ? AND member_id = ?", sessionID, memberID).First(session)
 	if result.Error != nil {
 		err = result.Error
 		return
@@ -97,10 +97,10 @@ func GetAISessionByID(sessionID int64, userID int64) (data *model.AISession, err
 	return
 }
 
-func GetAIMessageBySessionID(sessionID int64, userID int64) (messages []dto.AIMessageDTO, err error) {
+func GetAIMessageBySessionID(sessionID int64, memberID int64) (messages []dto.AIMessageDTO, err error) {
 	result := database.DB.Model(&model.AIMessage{}).
 		Select("content", "role", "index", "created_at", "status", "id", "parent_id").
-		Where("session_id = ? AND user_id = ?", sessionID, userID).
+		Where("session_id = ? AND member_id = ?", sessionID, memberID).
 		Order("index ASC").
 		Scan(&messages)
 
@@ -111,8 +111,8 @@ func GetAIMessageBySessionID(sessionID int64, userID int64) (messages []dto.AIMe
 	return
 }
 
-func UpdateAIMessage(tx *gorm.DB, messageID int64, userID int64, updateData map[string]interface{}) error {
-	result := tx.Model(&model.AIMessage{}).Where("id = ? AND user_id = ?", messageID, userID).Updates(updateData)
+func UpdateAIMessage(tx *gorm.DB, messageID int64, memberID int64, updateData map[string]interface{}) error {
+	result := tx.Model(&model.AIMessage{}).Where("id = ? AND member_id = ?", messageID, memberID).Updates(updateData)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -122,4 +122,10 @@ func UpdateAIMessage(tx *gorm.DB, messageID int64, userID int64, updateData map[
 	}
 
 	return nil
+}
+
+func GetAIPromptByIntent(intent string) (prompt model.AiPrompt, err error) {
+	query := database.DB.Model(&model.AiPrompt{}).Where("intent = ?", intent)
+	err = query.First(&prompt).Error
+	return
 }

@@ -81,7 +81,7 @@ func CreateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 	if latestError == nil {
 		responseCode = message.SUCCESS
 		data = tools.StructToUpdateMap(&task, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
-		data["priority"] = PriorityMap[task.Priority]
+		data["priority"] = model.PriorityMap[task.Priority]
 	}
 
 	isSuccess := latestError == nil

@@ -104,6 +104,7 @@ const (
 	ERROR_AI_MESSAGE_INDEX     = 10007 // AI 消息索引错误
 	ERROR_AI_MESSAGE_NOT_FOUND = 10008 // AI 消息未找到
 	ERROR_AI_MESSAGE_UPDATE    = 10009 // AI 消息更新失败
+	ERROR_AI_EMBEDDING         = 10010 // AI 消息嵌入失败
 
 	// Event模块的错误
 	ERROR_EVENT_CREATE                  = 11001 // 创建事件失败
@@ -240,4 +241,5 @@ var CodeMsg = map[int]string{
 	ERROR_INVALID_NOTE_INDEX:                         "无效的笔记索引",
 	ERROR_NOTE_UPDATE_CONFLICT:                       "笔记更新冲突，请刷新页面后重试",
 	ERROR_NOTE_SYNC_NOT_FOUND:                        "笔记同步配置未找到",
+	ERROR_AI_EMBEDDING:                               "AI 消息嵌入失败",
 }

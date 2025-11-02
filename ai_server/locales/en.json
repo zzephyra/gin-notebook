@@ -1,0 +1,9 @@
+{
+    "ERR.GET_INTENT": "Failed to get intent",
+    "ERR.GENERATE_EMBEDDING": "Failed to generate embedding vector",
+    "ERR.MODEL_NOT_FOUND": "Specified model not found",
+    "ERR.LOAD_CONFIG": "Failed to load configuration file",
+    "ERR.INIT_SERVICE": "Service initialization failed",
+    "ERR.INVALID_REQUEST": "Invalid request parameters",
+    "ERR.INTERNAL": "Internal server error"
+}

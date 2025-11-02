@@ -6,7 +6,6 @@ import (
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/service/settingsService"
 	"gin-notebook/pkg/utils/validator"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,7 +15,6 @@ func updateSystemSettings(c *gin.Context) {
 	params := &dto.UpdateSystemSettingsDTO{}
 
 	if err := c.ShouldBindJSON(params); err != nil {
-		log.Printf("params %s", err)
 		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return
 	}
@@ -34,7 +32,6 @@ func getSettings(c *gin.Context) {
 	roles := c.MustGet("role").([]string)
 	params := &dto.GetSettingsDTO{}
 	if err := c.ShouldBindQuery(params); err != nil {
-		log.Printf("params %s", err)
 		c.JSON(http.StatusInternalServerError, response.Response(message.ERROR_INVALID_PARAMS, nil))
 		return
 	}

@@ -3,6 +3,7 @@ package projectService
 import (
 	"context"
 	"gin-notebook/internal/http/message"
+	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 	"gin-notebook/internal/pkg/realtime/bus"
@@ -10,21 +11,6 @@ import (
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/tools"
 	"strconv"
-)
-
-var (
-	PriorityMap = map[uint8]string{
-		0: "",
-		1: "low",
-		2: "medium",
-		3: "high",
-	}
-	StringToPriority = map[string]uint8{
-		"":       0,
-		"low":    1,
-		"medium": 2,
-		"high":   3,
-	}
 )
 
 func GetProject(params *dto.GetProjectDTO) (responseCode int, data map[string]interface{}) {
@@ -166,7 +152,7 @@ func GetProjectBoard(ctx context.Context, params *dto.GetProjectBoardDTO) (respo
 		bound.FID = &task.ID
 		bounds[task.ColumnID] = bound
 
-		parseTaks["priority"] = PriorityMap[task.Priority]
+		parseTaks["priority"] = model.PriorityMap[task.Priority]
 		parseTaks["assignee"] = assigneesMap[task.ID] // 初始化分配人
 		(*column)["tasks"] = append((*column)["tasks"].([]map[string]interface{}), parseTaks)
 		(*column)["total"] = pageInfo[task.ColumnID].Total

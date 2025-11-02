@@ -32,3 +32,6 @@ bin/*
 web/.env.*
 tmp/*
 web/src/config/ai.ts
+
+**/__pycache__/*
+*.py[cod]

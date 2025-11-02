@@ -12,7 +12,7 @@ import (
 
 func UpdateAIMessage(ctx context.Context, params *dto.AIMessageUpdateParamsDTO) (responseCode int) {
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
-		if err := repository.UpdateAIMessage(tx, params.MessageID, params.UserID, map[string]interface{}{
+		if err := repository.UpdateAIMessage(tx, params.MessageID, params.MemberID, map[string]interface{}{
 			"content": params.Content,
 			"status":  params.Status,
 		}); err != nil {

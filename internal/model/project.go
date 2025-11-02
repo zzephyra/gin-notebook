@@ -15,6 +15,7 @@ type Project struct {
 	OwnerID     int64   `json:"owner_id,string" gorm:"not null; index:idx_owner_id"`
 	WorkspaceID int64   `json:"workspace_id,string" gorm:"not null; index:idx_workspace_id"`
 	Status      string  `json:"status" gorm:"default:'active'; index:idx_status"` // active, archived, completed
+	IsDefault   bool    `json:"is_default" gorm:"not null;default:false"`
 }
 
 func (p *Project) AfterCreate(tx *gorm.DB) (err error) {

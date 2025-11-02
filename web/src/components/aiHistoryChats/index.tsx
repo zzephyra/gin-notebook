@@ -16,9 +16,12 @@ import { responseCode } from "@/features/constant/response";
 import React from "react";
 import { useLingui } from "@lingui/react/macro";
 import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
 const AIHistoryChats = ({ isOpen, onClose, onSelect }: { isOpen: boolean, onClose: () => void, onSelect?: (messages: AIMessage[], sessionID: string) => void }) => {
     const [chats, setChats] = useState<AISession[]>([]);
     const { t } = useLingui();
+    var param = useParams();
+    var workspace_id = param.id || '';
     const inputRef = useRef<HTMLInputElement>(null);
     const [loadingChats, setLoadingChats] = useState<string[]>([]);
     const [total, setTotal] = useState(0);
@@ -32,7 +35,7 @@ const AIHistoryChats = ({ isOpen, onClose, onSelect }: { isOpen: boolean, onClos
             setLoadingChats([]);
             return;
         };
-        getAIHistorySessionsRequest().then((res) => {
+        getAIHistorySessionsRequest(workspace_id).then((res) => {
             setChats(res.sessions || []);
             setTotal(res.total || 0);
         })
@@ -41,7 +44,7 @@ const AIHistoryChats = ({ isOpen, onClose, onSelect }: { isOpen: boolean, onClos
     async function handleDeleteSession(e: React.MouseEvent<SVGSVGElement, MouseEvent>, sessionId: string) {
         e.stopPropagation();
         setLoadingChats([...loadingChats, sessionId]);
-        let res = await deleteAIHistorySessionRequest(sessionId)
+        let res = await deleteAIHistorySessionRequest(sessionId, workspace_id)
         if (res.code == responseCode.SUCCESS) {
             toast.success(t`Session deleted successfully`);
             setChats(chats.filter(chat => chat.id !== sessionId));
@@ -55,7 +58,7 @@ const AIHistoryChats = ({ isOpen, onClose, onSelect }: { isOpen: boolean, onClos
 
     async function loadSessions() {
         setLoading(true);
-        let res = await getAIHistorySessionsRequest(chats.length)
+        let res = await getAIHistorySessionsRequest(workspace_id, chats.length)
         setChats([...chats, ...(res.sessions || [])]);
         setTotal(res.total || total);
         setLoading(false);
@@ -77,7 +80,7 @@ const AIHistoryChats = ({ isOpen, onClose, onSelect }: { isOpen: boolean, onClos
 
     const blurInput = (id: string) => {
         const title = newSessionTitle.trim();
-        updateAIHistorySessionRequest(id, { title: title }).then((res) => {
+        updateAIHistorySessionRequest(id, workspace_id, { title: title }).then((res) => {
             if (res.code == responseCode.SUCCESS) {
                 setChats(chats.map(chat => chat.id === id ? { ...chat, title: title } : chat));
                 toast.success(t`Session updated successfully`);
@@ -87,7 +90,7 @@ const AIHistoryChats = ({ isOpen, onClose, onSelect }: { isOpen: boolean, onClos
     }
 
     const handleSelectSession = async (sessionId: string) => {
-        var res = await getAIChatSessionRequest(sessionId)
+        var res = await getAIChatSessionRequest(sessionId, workspace_id)
         if (res.code == responseCode.SUCCESS) {
             onClose();
             if (onSelect) {

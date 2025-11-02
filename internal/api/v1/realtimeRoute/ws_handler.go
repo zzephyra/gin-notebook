@@ -10,6 +10,7 @@ import (
 	"gin-notebook/internal/pkg/realtime/presence"
 	"gin-notebook/internal/pkg/realtime/protocol"
 	"gin-notebook/internal/service/realtimeService"
+	"gin-notebook/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -48,6 +49,7 @@ func (h *WsHandler) ServeWS(c *gin.Context) {
 	}
 	conn, err := h.Upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
+		logger.LogError(err, "websocket 连接升级失败")
 		c.Status(http.StatusInternalServerError)
 		return
 	}

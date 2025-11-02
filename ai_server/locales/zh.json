@@ -1,0 +1,9 @@
+{
+    "ERR.GET_INTENT": "获取意图失败",
+    "ERR.GENERATE_EMBEDDING": "生成向量嵌入失败",
+    "ERR.MODEL_NOT_FOUND": "未找到指定模型",
+    "ERR.LOAD_CONFIG": "配置文件加载失败",
+    "ERR.INIT_SERVICE": "服务初始化失败",
+    "ERR.INVALID_REQUEST": "请求参数不合法",
+    "ERR.INTERNAL": "服务器内部错误"
+}

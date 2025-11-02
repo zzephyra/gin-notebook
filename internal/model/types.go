@@ -66,3 +66,27 @@ const (
 	InitReady   InitStatus = "ready"   // 初始化完成，可增量同步
 	InitFailed  InitStatus = "failed"  // 初始化失败（可重试）
 )
+
+type PromptType string
+
+const (
+	PromptTypeSystem    PromptType = "system"
+	PromptTypeUser      PromptType = "user"
+	PromptTypeAssistant PromptType = "assistant"
+	PromptTypeFewShot   PromptType = "fewshot"
+)
+
+var (
+	PriorityMap = map[uint8]string{
+		0: "",
+		1: "low",
+		2: "medium",
+		3: "high",
+	}
+	StringToPriority = map[string]uint8{
+		"":       0,
+		"low":    1,
+		"medium": 2,
+		"high":   3,
+	}
+)

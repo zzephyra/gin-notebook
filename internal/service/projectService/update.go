@@ -53,7 +53,7 @@ func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 			}
 
 			if params.Payload.Priority != nil {
-				task["priority"] = StringToPriority[*params.Payload.Priority]
+				task["priority"] = model.StringToPriority[*params.Payload.Priority]
 			}
 
 			fmt.Println("Actions is empty:", params.Payload.Actions != nil)
@@ -121,7 +121,7 @@ func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 
 				if taskModel != nil {
 					taskData := tools.StructToUpdateMap(*taskModel, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
-					taskData["priority"] = PriorityMap[taskModel.Priority]
+					taskData["priority"] = model.PriorityMap[taskModel.Priority]
 					data["task"] = taskData
 				}
 
@@ -139,7 +139,7 @@ func UpdateProjectTask(ctx context.Context, params *dto.ProjectTaskDTO) (respons
 				}
 			} else {
 				taskMap := tools.StructToUpdateMap(*originModel, nil, []string{"DeletedAt", "CreatedAt", "Creator"})
-				taskMap["priority"] = PriorityMap[originModel.Priority]
+				taskMap["priority"] = model.PriorityMap[originModel.Priority]
 				data["task"] = taskMap
 			}
 

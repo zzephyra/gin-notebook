@@ -10,6 +10,7 @@ func RegisterAiRoutes(r *gin.RouterGroup) {
 	aiGroup := r.Group("/ai")
 	aiGroup.Use(middleware.JWTAuth())
 	aiGroup.Use(middleware.RBACMiddleware())
+	aiGroup.Use(middleware.RequireWorkspaceAccess())
 	{
 		aiGroup.POST("/chat", AIChatApi)
 		aiGroup.POST("/message", AIMessageApi)

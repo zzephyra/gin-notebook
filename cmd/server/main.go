@@ -4,6 +4,7 @@ import (
 	"gin-notebook/cmd/startup"
 	"gin-notebook/configs"
 	"gin-notebook/internal/api"
+	appi18n "gin-notebook/internal/i18n"
 	"gin-notebook/internal/pkg/cache"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/geoip"
@@ -12,9 +13,12 @@ import (
 	"gin-notebook/internal/pkg/rbac"
 	"gin-notebook/internal/pkg/realtime/bus"
 	asynqimpl "gin-notebook/internal/tasks/asynq"
+	"gin-notebook/internal/thirdparty/aiServer"
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/algorithm"
 	"gin-notebook/pkg/utils/validator"
+
+	"golang.org/x/text/language"
 )
 
 func Stop() {
@@ -27,6 +31,9 @@ func main() {
 	var err error
 	config := configs.Load()
 	defer Stop()
+	// 初始化多语言
+	appi18n.Init(language.English)
+
 	// 初始化日志
 	logger.InitLogger(*config)
 	logger.LogInfo("logger init success", nil)
@@ -83,6 +90,9 @@ func main() {
 	// websocket 初始化
 	wsPub := bus.NewRedisWsPublisher(cache.RedisInstance.Client)
 	bus.UseWsPublisher(wsPub)
+
+	// 初始化AI服务地址
+	aiServer.Init(config.AIServer.Url)
 
 	// 设置路由
 	var router = api.SetRouter()

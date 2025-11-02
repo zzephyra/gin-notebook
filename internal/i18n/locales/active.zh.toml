@@ -1,0 +1,37 @@
+[todo.create.fail_parse]
+other = "抱歉，创建待办任务失败，无法解析您的请求内容。"
+
+[todo.create.fail_internal]
+other = "抱歉，创建待办任务失败，系统内部错误。"
+
+[todo.created.title]
+other = "已识别为创建待办任务："
+
+[todo.field.title]
+other = "标题"
+
+[todo.field.priority]
+other = "优先级"
+
+[todo.field.deadline]
+other = "截止日期"
+
+[todo.field.project]
+other = "项目"
+
+[todo.success.suffix]
+other = "—— 任务已成功创建 ✅"
+
+[priority.0]
+other = "未设置"
+[priority.1]
+other = "低"
+[priority.2]
+other = "中"
+[priority.3]
+other = "高"
+
+[chat.lang.zh]
+other = "请始终使用简体中文回复。"
+[chat.lang.en]
+other = "Always reply in English."

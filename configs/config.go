@@ -44,6 +44,9 @@ type Config struct {
 	Google struct {
 		ClientID string `toml:"client_id"`
 	}
+	AIServer struct {
+		Url string `toml:"url"`
+	}
 }
 
 var Configs *Config

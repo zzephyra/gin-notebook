@@ -1,0 +1,37 @@
+[todo.create.fail_parse]
+other = "Sorry, failed to create the to-do because the request could not be parsed."
+
+[todo.create.fail_internal]
+other = "Sorry, failed to create the to-do due to an internal error."
+
+[todo.created.title]
+other = "Identified as creating a to-do:"
+
+[todo.field.title]
+other = "Title"
+
+[todo.field.priority]
+other = "Priority"
+
+[todo.field.deadline]
+other = "Deadline"
+
+[todo.field.project]
+other = "Project"
+
+[todo.success.suffix]
+other = "— Task created successfully ✅"
+
+[priority.0]
+other = "Unset"
+[priority.1]
+other = "Low"
+[priority.2]
+other = "Medium"
+[priority.3]
+other = "High"
+
+[chat.lang.zh]
+other = "Please always reply in Simplified Chinese."
+[chat.lang.en]
+other = "Always reply in English."

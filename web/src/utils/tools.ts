@@ -171,3 +171,14 @@ export function RruleTypes(index: string | undefined, date: Date) {
 export function capitalizeWord(word: string): string {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
+
+export function diffObjects(objA: Record<string, unknown>, objB: Record<string, unknown>): Record<string, unknown> {
+    const result: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(objA)) {
+        if (!(key in objB) || !_.isEqual(objB[key], value)) {
+            result[key] = value;
+        }
+    }
+    return result;
+}
+

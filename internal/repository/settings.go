@@ -59,16 +59,29 @@ func GetAISettings() (data *dto.AISettingsDTO, err error) {
 
 	cachedSettings, err := cache.RedisInstance.GetCachedSystemSettings()
 	if err == nil {
+		inputMaxTokens, ok := tools.ToInt64(cachedSettings["ai_input_max_tokens"])
+		if !ok {
+			inputMaxTokens = 8000
+		}
+
+		outMaxTokens, ok := tools.ToInt64(cachedSettings["ai_output_max_tokens"])
+		if !ok {
+			outMaxTokens = 4000
+		}
+
 		return &dto.AISettingsDTO{
-			Model:  cachedSettings["ai_model"],
-			ApiKey: cachedSettings["ai_api_key"],
-			ApiUrl: cachedSettings["ai_api_url"],
+			Model:             cachedSettings["ai_model"],
+			ApiKey:            cachedSettings["ai_api_key"],
+			ApiUrl:            cachedSettings["ai_api_url"],
+			AiProvider:        cachedSettings["ai_provider"],
+			AIInputMaxTokens:  inputMaxTokens,
+			AIOutputMaxTokens: outMaxTokens,
 		}, nil
 	}
 
 	settings := &dto.AISettingsDTO{}
 
-	result := database.DB.Select("ai_model", "ai_api_key", "ai_api_url").First(settings)
+	result := database.DB.Select("ai_model", "ai_api_key", "ai_api_url", "ai_provider", "ai_input_max_tokens", "ai_output_max_tokens").First(settings)
 	if result.RowsAffected > 0 {
 		data = settings
 		return

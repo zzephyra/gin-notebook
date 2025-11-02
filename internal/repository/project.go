@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"gin-notebook/internal/model"
 	"gin-notebook/internal/pkg/database"
@@ -428,6 +430,35 @@ func GetTasksByColumnsBounded(
 	return rows, page, nil
 }
 
+func GetFirstOrderIndexInColumn(ctx context.Context, db *gorm.DB, columnID int64) (string, error) {
+	var orderIndex string
+
+	q := db.Model(&model.ToDoTask{}).
+		Select("order_index").
+		Where("column_id = ?", columnID).
+		Limit(1)
+
+	switch db.Dialector.Name() {
+	case "postgres":
+		// 用纯字节序排序
+		q = q.Order(clause.Expr{SQL: `order_index COLLATE "C" ASC`})
+	case "mysql":
+		// 二进制排序，大小写敏感
+		q = q.Order(clause.Expr{SQL: "order_index COLLATE utf8mb4_bin ASC"})
+	default:
+		// 兜底：仍然显式 ASC，但建议从根上设置正确 collation
+		q = q.Order("order_index ASC")
+	}
+
+	if err := q.Scan(&orderIndex).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return "", nil
+		}
+		return "", err
+	}
+	return orderIndex, nil
+}
+
 func ternary[T any](cond bool, a, b T) T {
 	if cond {
 		return a
@@ -449,6 +480,38 @@ func GetProjectColumnsByProjectID(db *gorm.DB, projectID int64, columnIDs *[]int
 		return nil, err
 	}
 	return columns, nil
+}
+
+func GetProjectColumnsByProjectName(db *gorm.DB, projectName string, workspaceID int64, columnIDs *[]int64) ([]model.ToDoColumn, error) {
+	var columns []model.ToDoColumn
+	sql := db.Where(
+		"project_id = (?)",
+		db.Model(&model.Project{}).Where(
+			"workspace_id = ? AND (name = ? OR (is_default = TRUE AND NOT EXISTS (?)))",
+			workspaceID, projectName,
+			db.Model(
+				&model.Project{}).Select("1").Where("workspace_id = ? and name = ?", workspaceID, projectName),
+		).Select("id").Limit(1),
+	)
+
+	if columnIDs != nil && len(*columnIDs) > 0 {
+		sql = sql.Where("id IN ?", *columnIDs)
+	}
+
+	sql = sql.Find(&columns)
+	if err := sql.Error; err != nil {
+		return nil, err
+	}
+	return columns, nil
+}
+
+func GetDefaultProjectByWorkspaceID(db *gorm.DB, workspaceID int64) (*model.Project, error) {
+	var project model.Project
+	sql := db.Where("workspace_id = ? AND is_default = ?", workspaceID, true).First(&project)
+	if err := sql.Error; err != nil {
+		return nil, err
+	}
+	return &project, nil
 }
 
 // 按列分页：每个 column_id 各自取 [offset, offset+limit) 这段

@@ -1,6 +1,6 @@
 FROM golang:1.24.3
 ENV GOPROXY https://goproxy.cn,direct
-RUN go install github.com/air-verse/air@1.61.7
+RUN go install github.com/air-verse/air@v1.61.7
 COPY . /gnote-server
 WORKDIR /gnote-server
 RUN go mod download

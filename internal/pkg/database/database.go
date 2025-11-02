@@ -55,6 +55,8 @@ func Migrate(db *gorm.DB) {
 		&model.NoteExternalNodeMapping{},
 		&model.ScheduledTask{},
 		&model.SyncOutbox{},
+		&model.AiPrompt{},
+		&model.AiPromptVersion{},
 	)
 }
 
@@ -80,6 +82,32 @@ func ConnectDB(c *configs.Config, migrateDB bool) {
 
 	if migrateDB {
 		Migrate(conn)
+	}
+
+	var exists bool
+
+	err = conn.Raw(`
+        SELECT EXISTS (
+            SELECT 1
+            FROM pg_indexes
+            WHERE schemaname = 'public'
+              AND indexname = 'uniq_default_project_per_workspace'
+        );
+    `).Scan(&exists).Error
+	if err != nil {
+		return
+	}
+
+	// 如果不存在则创建
+	if !exists {
+		err = conn.Exec(`
+            CREATE UNIQUE INDEX uniq_default_project_per_workspace
+            ON public.projects (workspace_id)
+            WHERE is_default = true AND deleted_at IS NULL;
+        `).Error
+		if err != nil {
+			return
+		}
 	}
 
 	DB = conn
