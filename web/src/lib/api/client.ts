@@ -38,7 +38,9 @@ axiosClient.interceptors.response.use(
     });
 
     if (!isPublicPath) {
-      if (error.response.data.code == responseCode.ERROR_NO_PERMISSION_TO_UPDATE_AND_VIEW_WORKSPACE) {
+      if (error.response == undefined) {
+        toast.error(i18n._('Network error, please check your connection.'));
+      } else if (error.response.data.code == responseCode.ERROR_NO_PERMISSION_TO_UPDATE_AND_VIEW_WORKSPACE) {
         router.navigate('/select');
         toast.error(i18n._("You don't have permission to view or update this workspace."));
       } else if (error.response?.status === 401) {

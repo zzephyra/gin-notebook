@@ -22,7 +22,7 @@ const IntegrationAccount = lazy(() => import("@/pages/settings/integrationAccoun
 const WorkspaceSettings = lazy(() => import("@/pages/settings/workspaceSettings"));
 const StorageSettings = lazy(() => import("@/pages/settings/storageSettings"));
 const IntegrationSetting = lazy(() => import("@/pages/settings/integrationSetting"));
-
+const PromptsSettings = lazy(() => import("@/pages/settings/promptSettings"));
 export let router = createBrowserRouter([
   {
     element: (
@@ -54,6 +54,12 @@ export let router = createBrowserRouter([
             path: "storage",
             element: (
               <StorageSettings />
+            ),
+          },
+          {
+            path: "prompts",
+            element: (
+              <PromptsSettings />
             ),
           },
           {

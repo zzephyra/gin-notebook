@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -8,8 +9,10 @@ import (
 )
 
 func CORSMiddleware() gin.HandlerFunc {
+	fmt.Println("CORS middleware start")
+
 	config := cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "http://172.20.10.5:5173", "http://172.20.10.2:5173", "http://127.0.0.1:5173"},
+		AllowOrigins:     []string{"http://localhost:5173", "http://172.20.10.5:5173", "http://172.20.10.2:5173", "http://127.0.0.1:5173", "http://127.0.0.1:5173/"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Content-Type", "Authorization", "Idempotency-Key"},
 		AllowCredentials: true,

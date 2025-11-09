@@ -18,7 +18,7 @@ const (
 type Note struct {
 	BaseModel
 	Title        string         `json:"title" gorm:"not null; type:varchar(255); index:idx_title"`
-	Content      datatypes.JSON `json:"content" gorm:"type:jsonb;not null;default:'[]'::jsonb;index:idx_content"`
+	Content      datatypes.JSON `json:"content" gorm:"type:jsonb;not null;default:'[]'::jsonb"`
 	WorkspaceID  int64          `json:"workspace_id" gorm:"not null; index:idx_workspace_id"`
 	TagsID       int64          `json:"tags_id" gorm:"default:NULL; index:idx_tags_id"`
 	CategoryID   int64          `json:"category_id" gorm:"default:NULL; index:idx_category_id"`

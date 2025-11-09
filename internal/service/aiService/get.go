@@ -9,6 +9,7 @@ import (
 	appi18n "gin-notebook/internal/i18n"
 	lctx "gin-notebook/internal/locale"
 	"gin-notebook/internal/model"
+	"gin-notebook/internal/pkg/cache"
 	"gin-notebook/internal/pkg/database"
 	"gin-notebook/internal/pkg/dto"
 	httpClient "gin-notebook/internal/pkg/http"
@@ -22,6 +23,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"math/rand/v2"
 
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
@@ -67,7 +70,7 @@ func GetAIChatResponse(ctx context.Context, params *dto.AIRequestDTO) (*http.Res
 	intent := resp.Intent
 	logger.LogInfo("识别到的意图：", intent)
 	// 4) 拉取 Prompt 模板（结构化场景保持“仅 JSON 输出”）
-	promptModel, err := repository.GetAIPromptByIntent(intent)
+	promptModel, err := repository.GetAIPromptByIntent(ctx, database.DB, intent)
 
 	finalSystemPrompt := ""
 	if err == nil {
@@ -411,4 +414,259 @@ func GetAISession(params *dto.AISessionParamsDTO) (responseCode int, data *dto.A
 		Messages: messages,
 	}
 	return message.SUCCESS, data
+}
+
+func GetAIChatActions(ctx context.Context) (responseCode int, data map[string]interface{}) {
+	var actions = []model.AIActionExposure{}
+	var ttl = 24 * time.Hour
+	jitter := time.Duration(rand.Int64N(int64(ttl / 10)))
+	if data == nil {
+		data = map[string]interface{}{}
+	}
+
+	hit, err := cache.RedisInstance.GetAndUnmarshal(ctx, cache.PromptListKey, &actions)
+
+	if err != nil {
+		logger.LogError(err, "读取 AI Prompt 缓存失败，将尝试回源")
+	}
+
+	if hit {
+		actionsData := []map[string]interface{}{}
+
+		for _, action := range actions {
+			actionsData = append(actionsData, action.Serialization())
+		}
+		responseCode = message.SUCCESS
+		data["actions"] = actionsData
+		return
+	}
+
+	if !hit {
+		// 获取分布式锁
+		unlock, lockErr := cache.RedisInstance.Lock(ctx, cache.PromptListKey+":lock", 1*time.Minute)
+		if lockErr != nil {
+			time.Sleep(30 * time.Millisecond)
+		}
+
+		hit2, err2 := cache.RedisInstance.GetAndUnmarshal(ctx, cache.PromptListKey, &actions)
+
+		if hit2 && err2 == nil {
+			actionsData := []map[string]interface{}{}
+
+			for _, action := range actions {
+				actionsData = append(actionsData, action.Serialization())
+			}
+			responseCode = message.SUCCESS
+			data["actions"] = actionsData
+			return
+		}
+
+		if lockErr != nil {
+			// 两次缓存未击中
+			responseCode = message.SUCCESS
+			data["actions"] = []map[string]interface{}{}
+			return
+		}
+
+		defer func() {
+			if unlock != nil {
+				unlock()
+			}
+		}()
+
+		actions, err = repository.GetAllActionActions(ctx, database.DB)
+
+		if err != nil {
+			logger.LogError(err, "获取 AI Prompt 列表失败")
+			responseCode = message.ERROR_INTERNAL_SERVER
+			return
+		}
+
+		cacheErr := cache.RedisInstance.MarshalAndSet(ctx, cache.PromptListKey, actions, ttl+jitter)
+
+		if cacheErr != nil {
+			logger.LogError(err, "缓存action出错")
+		}
+	}
+
+	actionsData := []map[string]interface{}{}
+
+	for _, action := range actions {
+		actionsData = append(actionsData, action.Serialization())
+	}
+
+	data["actions"] = actionsData
+
+	responseCode = message.SUCCESS
+	return
+}
+
+func GetOrRecachePrompts(ctx context.Context, intents []string) []map[string]string {
+	if len(intents) == 0 {
+		return nil
+	}
+
+	now := time.Now()
+	ttl := 10 * time.Minute
+	out := make([]map[string]string, 0, len(intents))
+
+	for _, intent := range intents {
+		key := cache.PromptPrefix + intent
+
+		// 1) 先读缓存（不加锁）
+		prompt, err := cache.RedisInstance.GetPromptByIntent(ctx, intent)
+		if err == nil && len(prompt) > 0 {
+			// 检查逻辑过期
+			if expStr, ok := prompt["expired_at"]; ok && expStr != "" {
+				if exp, e := time.Parse(time.RFC3339, expStr); e == nil && now.Before(exp) {
+					out = append(out, prompt) // 命中直接返回
+					continue
+				}
+			}
+		}
+
+		// 2) miss/过期 → 尝试单飞锁
+		lockKey := key + ":lock"
+		unlock, lerr := cache.RedisInstance.Lock(ctx, lockKey, 30*time.Second)
+		if lerr != nil || unlock == nil {
+			// 没拿到锁：说明有人在回源。稍等再读一次（双检），拿到就用；拿不到就跳过/降级
+			time.Sleep(80 * time.Millisecond)
+			p2, _ := cache.RedisInstance.GetPromptByIntent(ctx, intent)
+			if len(p2) > 0 {
+				if expStr, ok := p2["expired_at"]; ok && expStr != "" {
+					if exp, e := time.Parse(time.RFC3339, expStr); e == nil && now.Before(exp) {
+						out = append(out, p2) // 只在仍然“未过期”时返回
+						continue
+					}
+				}
+			}
+			continue
+		}
+
+		// 3) 拿到锁后双检
+		func() {
+			defer unlock()
+
+			p3, _ := cache.RedisInstance.GetPromptByIntent(ctx, intent)
+			if len(p3) > 0 {
+				// 仍需检查是否已被他人刷新
+				if expStr, ok := p3["expired_at"]; ok && expStr != "" {
+					if exp, e := time.Parse(time.RFC3339, expStr); e == nil && now.Before(exp) {
+						out = append(out, p3)
+						return
+					}
+				}
+			}
+
+			// 4) 真正回源 DB（单个 intent）
+			rows, dbErr := repository.GetAIPromptByIntents(ctx, database.DB, []string{intent})
+			if dbErr != nil || len(rows) == 0 {
+				// 回源失败：不影响其它 intent，记录日志即可
+				if dbErr != nil {
+					logger.LogWarn(dbErr, "GetAIPromptByIntents failed", "intent", intent)
+				} else {
+					logger.LogWarn("prompt not found in DB", "intent", intent)
+				}
+				return
+			}
+			pm := rows[0]
+
+			// 5) 回填缓存（带逻辑过期）
+			cacheMap := tools.StructToUpdateMap(pm, nil, []string{"DeletedAt"})
+			cacheMap["expired_at"] = now.Add(ttl).Format(time.RFC3339)
+			cacheMap["prompt_type"] = string(pm.PromptType)
+			if err := cache.RedisInstance.Client.HSet(ctx, key, cacheMap).Err(); err != nil {
+				logger.LogWarn(err, "HMSet prompt cache failed", "intent", intent)
+			}
+
+			// 6) 组织返回
+			item := map[string]string{
+				"id":         fmt.Sprintf("%d", pm.ID),
+				"intent":     pm.Intent,
+				"template":   pm.Template,
+				"is_active":  fmt.Sprintf("%t", pm.IsActive),
+				"updated_at": pm.UpdatedAt.Format(time.RFC3339),
+				"expired_at": cacheMap["expired_at"].(string),
+			}
+			if pm.Description != nil {
+				item["description"] = *pm.Description
+			}
+			out = append(out, item)
+		}()
+	}
+
+	return out
+}
+
+func GetAIChatPrompts(ctx context.Context) (responseCode int, data map[string]interface{}) {
+	// 先获取缓存的intents数据
+	intents, err := cache.RedisInstance.GetAllIntents(ctx)
+	if err != nil || len(intents) == 0 {
+		// 如果报错，意味着没有对应的缓存，则进行数据回填
+		// 先加分布式锁保证并发请求
+		unlock, err := cache.RedisInstance.Lock(ctx, cache.IntentListKey+":lock", 1*time.Minute)
+		defer func() {
+			if unlock != nil {
+				unlock()
+			}
+		}()
+		if err != nil {
+			// 阻塞并发请求，延迟请求
+			time.Sleep(300 * time.Millisecond)
+			intents, secondErr := cache.RedisInstance.GetAllIntents(ctx)
+			if secondErr != nil {
+				logger.LogError(secondErr, "获取 AI Prompt 意图列表失败")
+				responseCode = message.SUCCESS
+				data = map[string]interface{}{
+					"prompts": []map[string]string{},
+				}
+				return
+			} else {
+				prompts := GetOrRecachePrompts(ctx, intents)
+				data = map[string]interface{}{
+					"prompts": prompts,
+				}
+				responseCode = message.SUCCESS
+				return
+			}
+		}
+
+		intents, err = repository.GetAllIntents(ctx, database.DB)
+
+		if err != nil {
+			logger.LogError(err, "获取 AI Prompt 意图列表失败")
+			responseCode = message.SUCCESS
+			data = map[string]interface{}{
+				"prompts": []map[string]string{},
+			}
+			return
+		}
+
+		var cacheData = make([]interface{}, len(intents))
+		for i, v := range intents {
+			cacheData[i] = v
+		}
+		// 回填缓存
+		if len(cacheData) > 0 {
+			cacheErr := cache.RedisInstance.Client.SAdd(ctx, cache.IntentListKey, cacheData...).Err()
+			if cacheErr != nil {
+				responseCode = message.ERROR_AI_INTENTS_CACHE_FAIL
+				data = map[string]interface{}{
+					"prompts": []map[string]string{},
+				}
+				return
+			}
+		}
+	}
+	prompts := GetOrRecachePrompts(ctx, intents)
+
+	if prompts == nil {
+		prompts = []map[string]string{}
+	}
+
+	data = map[string]interface{}{
+		"prompts": prompts,
+	}
+	responseCode = message.SUCCESS
+	return
 }

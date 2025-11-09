@@ -11,7 +11,7 @@ import {
 } from "@heroui/react";
 import { AIMessage, AISession } from "@/features/api/type";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
-import ChaseLoading from "../loading/Chase/loading";
+import ChaseLoading from "../../loading/Chase/loading";
 import { responseCode } from "@/features/constant/response";
 import React from "react";
 import { useLingui } from "@lingui/react/macro";

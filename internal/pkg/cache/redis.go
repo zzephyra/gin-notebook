@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"gin-notebook/configs"
 	"gin-notebook/pkg/logger"
@@ -19,6 +20,9 @@ import (
 var (
 	GategoryMapKey    = "note_category"
 	SystemSettingsKey = "system_settings:global"
+	PromptListKey     = "ai_chat:prompts"
+	IntentListKey     = "ai:prompt:intents"
+	PromptPrefix      = "ai:prompt:"
 )
 
 type RedisClient struct {
@@ -138,7 +142,7 @@ func (r *RedisClient) GetNoteCategoryMap(CategoryID int64) (string, error) {
 
 func (r *RedisClient) SaveSystemSettings(key map[string]interface{}) error {
 	ctx := context.Background()
-	err := r.Client.HMSet(ctx, SystemSettingsKey, key).Err()
+	err := r.Client.HSet(ctx, SystemSettingsKey, key).Err()
 	if err != nil {
 		logger.LogError(err, "failed to get redis key")
 		return err
@@ -156,6 +160,35 @@ func (r *RedisClient) GetCachedSystemSettings() (map[string]string, error) {
 	return val, nil
 }
 
+func (r *RedisClient) GetAndUnmarshal(ctx context.Context, key string, dst any) (hit bool, err error) {
+	val, err := r.Client.Get(ctx, key).Result()
+
+	if err != nil {
+		logger.LogError(err, "failed to get redis key")
+		return false, err
+	}
+	err = json.Unmarshal([]byte(val), dst)
+	if err != nil {
+		logger.LogError(err, "failed to unmarshal redis value")
+		return true, err
+	}
+
+	return true, nil
+}
+
+func (r *RedisClient) MarshalAndSet(ctx context.Context, key string, value any, ttl time.Duration) error {
+	bytesData, err := json.Marshal(value)
+	if err != nil {
+		return err
+	}
+
+	err = r.Set(ctx, PromptListKey, string(bytesData), ttl)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (l *RedisClient) Lock(ctx context.Context, key string, ttl time.Duration) (func() error, error) {
 	mutex := l.Locker.NewMutex(
 		key,
@@ -168,10 +201,59 @@ func (l *RedisClient) Lock(ctx context.Context, key string, ttl time.Duration) (
 		return nil, fmt.Errorf("failed to acquire lock: %w", err)
 	}
 
+	interval := ttl / 3
+	if interval < 200*time.Millisecond {
+		interval = 200 * time.Millisecond
+	}
+	t := time.NewTicker(interval)
+	done := make(chan struct{})
+
+	go func() {
+		defer t.Stop()
+		for {
+			select {
+			case <-t.C:
+				isOk, err := mutex.ExtendContext(ctx)
+				if err != nil {
+					// 续期失败：可能 Redis 波动或锁已被删除
+					_ = err
+					continue
+				}
+
+				if !isOk {
+					return // 续期失败：锁已被删除
+				}
+			case <-done:
+				return // 解锁时关闭 done 通道，协程退出
+			case <-ctx.Done():
+				return // 上下文取消时退出
+			}
+		}
+	}()
+
 	unlock := func() error {
+		close(done)
 		_, err := mutex.UnlockContext(ctx)
 		return err
 	}
 
 	return unlock, nil
+}
+
+func (r *RedisClient) GetAllIntents(ctx context.Context) ([]string, error) {
+	val, err := r.Client.SMembers(ctx, IntentListKey).Result()
+	if err != nil {
+		logger.LogError(err, "failed to get redis key")
+		return []string{}, err
+	}
+	return val, nil
+}
+
+func (r *RedisClient) GetPromptByIntent(ctx context.Context, intent string) (map[string]string, error) {
+	val, err := r.Client.HGetAll(ctx, PromptPrefix+intent).Result()
+	if err != nil {
+		logger.LogError(err, "failed to get redis key")
+		return map[string]string{}, err
+	}
+	return val, nil
 }

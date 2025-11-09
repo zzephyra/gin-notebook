@@ -19,5 +19,6 @@ func RegisterAiRoutes(r *gin.RouterGroup) {
 		aiGroup.PUT("/session/:id", UpdateAISessionChatApi)
 		aiGroup.GET("/session/:id", GetAISessionChatApi)
 		aiGroup.PUT("/message/:id", UpdateAIMessageApi)
+		aiGroup.GET("/action", GetAIChatActionsApi)
 	}
 }

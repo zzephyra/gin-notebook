@@ -48,42 +48,42 @@ function AISettings() {
     const [errors, setErrors] = useState({});
 
     const draftSystemSetting = useSelector((s: RootState) => s.settings.system)
-    const SupportedModal = [
-        {
-            provider: "openai",
-            value: "gpt-3.5-turbo",
-            label: "GPT-3.5 Turbo",
-            contextWindow: 16385, maxOutputTokens: 4096, minInput: 8000, maxInput: 200000, minOutput: 4000, maxOutput: 16000,
-        },
-        {
-            provider: "openai",
-            value: "gpt-4",
-            label: "GPT-4",
-            maxInputTokens: 8192,
-            maxOutputTokens: 4096,
-        },
-        {
-            provider: "anthropic",
-            value: "claude-2",
-            label: "Claude 2",
-            maxInputTokens: 100000,
-            maxOutputTokens: 4096,
-        },
-        {
-            provider: "deepseek",
-            value: "deepseek-reasoner",
-            label: "DeepSeek AI",
-            maxInputTokens: 32000,
-            maxOutputTokens: 8000,
-        },
-        {
-            provider: "custom",
-            value: "custom",
-            label: "Custom Model",
-            maxInputTokens: 8000,
-            maxOutputTokens: 8000,
-        }
-    ];
+    // const SupportedModal = [
+    //     {
+    //         provider: "openai",
+    //         value: "gpt-3.5-turbo",
+    //         label: "GPT-3.5 Turbo",
+    //         contextWindow: 16385, maxOutputTokens: 4096, minInput: 8000, maxInput: 200000, minOutput: 4000, maxOutput: 16000,
+    //     },
+    //     {
+    //         provider: "openai",
+    //         value: "gpt-4",
+    //         label: "GPT-4",
+    //         maxInputTokens: 8192,
+    //         maxOutputTokens: 4096,
+    //     },
+    //     {
+    //         provider: "anthropic",
+    //         value: "claude-2",
+    //         label: "Claude 2",
+    //         maxInputTokens: 100000,
+    //         maxOutputTokens: 4096,
+    //     },
+    //     {
+    //         provider: "deepseek",
+    //         value: "deepseek-reasoner",
+    //         label: "DeepSeek AI",
+    //         maxInputTokens: 32000,
+    //         maxOutputTokens: 8000,
+    //     },
+    //     {
+    //         provider: "custom",
+    //         value: "custom",
+    //         label: "Custom Model",
+    //         maxInputTokens: 8000,
+    //         maxOutputTokens: 8000,
+    //     }
+    // ];
     const getModelMeta = (provider?: string, model?: string) =>
         MODEL_TABLE.find(m => m.provider === provider && m.model === model);
 

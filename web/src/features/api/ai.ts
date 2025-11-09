@@ -1,9 +1,10 @@
 import axiosClient from "@/lib/api/client";
-import { aiChatApi, aiChatMessageApi, aiChatHistoryApi, aiChatSessionApi } from "./routes";
+import { aiChatApi, aiChatMessageApi, aiChatHistoryApi, aiChatSessionApi, aiChatActionsApi, aiPromptsApi, aiPromptApi } from "./routes";
 import { Message } from "@douyinfe/semi-ui/lib/es/chat/interface";
 import toast from "react-hot-toast";
 import { i18n } from "@lingui/core";
 import { UpdateSession } from "./type";
+import { responseCode } from "../constant/response";
 
 type AIChatApiProps = {
     isSearchInternet?: boolean;
@@ -125,5 +126,58 @@ export async function getAIChatSessionRequest(session_id: string, workspace_id: 
     } catch (err) {
         toast.error(i18n._("Failed to fetch AI chat session"));
         return {};
+    }
+}
+
+export async function getAIChatActionsRequest(workspace_id: string) {
+    try {
+        const res = await axiosClient.get(aiChatActionsApi, { params: { workspace_id } });
+        console.log("AI Chat Actions Response:", res);
+        return res.data;
+    } catch (err) {
+        console.error("Error in getAIChatActionsRequest:", err);
+        toast.error(i18n._("Failed to fetch AI chat actions"));
+        return {
+            code: responseCode.ERROR,
+            data: {
+                actions: []
+            }
+        };
+    }
+}
+
+export async function getAIPromptRequest() {
+    try {
+        var res = await axiosClient.get(aiPromptsApi, {})
+        return res.data
+    } catch (err) {
+        return {
+            code: responseCode.ERROR,
+            prompts: []
+        }
+    }
+}
+
+export async function deleteAIPromptRequest(promptID: string) {
+    try {
+        var res = await axiosClient.delete(aiPromptApi, { data: { prompt_id: promptID } })
+        return res.data
+    } catch (err) {
+        return {
+            code: responseCode.ERROR,
+            error: "Delete AI prompt failed"
+        }
+    }
+}
+
+export async function updateAIPromptRequest(promptID: string, data: Partial<Prompt>) {
+    try {
+        var res = await axiosClient.put(aiPromptApi, { prompt_id: promptID, ...data })
+        return res.data
+    } catch (err) {
+        return {
+            code: responseCode.ERROR,
+            error: "Update AI prompt failed"
+        }
     }
 }

@@ -24,7 +24,7 @@ export const setupResponseInterceptors = () => {
       if (response) {
         switch (response.status) {
           case 401:
-            window.location.href = '/auth/login';
+            // window.location.href = '/auth/login';
             break;
           case 403:
             alert('无权访问此资源');

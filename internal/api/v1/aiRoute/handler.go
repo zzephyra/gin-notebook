@@ -191,3 +191,8 @@ func UpdateAIMessageApi(c *gin.Context) {
 	responseCode := aiService.UpdateAIMessage(c.Request.Context(), params)
 	c.JSON(http.StatusOK, response.Response(responseCode, nil))
 }
+
+func GetAIChatActionsApi(c *gin.Context) {
+	responseCode, data := aiService.GetAIChatActions(c.Request.Context())
+	c.JSON(http.StatusOK, response.Response(responseCode, data))
+}

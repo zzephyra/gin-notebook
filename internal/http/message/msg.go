@@ -2,6 +2,7 @@ package message
 
 const (
 	SUCCESS                  = 200
+	ERROR_UNAUTHORIZED       = 401
 	ERROR_FORBIDDEN          = 403
 	ERROR                    = 500
 	ERROR_INVALID_PARAMS     = 501
@@ -95,16 +96,21 @@ const (
 	ERROR_GOOGLE_OAUTH    = 9002 // Google OAuth 认证失败
 
 	// AI 模块的错误
-	ERROR_AI_SESSION_CREATE    = 10001
-	ERROR_AI_SESSION_NOT_EXIST = 10002
-	ERROR_AI_MESSAGE_CREATE    = 10003
-	ERROR_AI_MESSAGE_NOT_EXIST = 10004
-	ERROR_AI_SESSION_UPDATE    = 10005
-	ERROR_AI_SESSION_DELETE    = 10006
-	ERROR_AI_MESSAGE_INDEX     = 10007 // AI 消息索引错误
-	ERROR_AI_MESSAGE_NOT_FOUND = 10008 // AI 消息未找到
-	ERROR_AI_MESSAGE_UPDATE    = 10009 // AI 消息更新失败
-	ERROR_AI_EMBEDDING         = 10010 // AI 消息嵌入失败
+	ERROR_AI_SESSION_CREATE     = 10001
+	ERROR_AI_SESSION_NOT_EXIST  = 10002
+	ERROR_AI_MESSAGE_CREATE     = 10003
+	ERROR_AI_MESSAGE_NOT_EXIST  = 10004
+	ERROR_AI_SESSION_UPDATE     = 10005
+	ERROR_AI_SESSION_DELETE     = 10006
+	ERROR_AI_MESSAGE_INDEX      = 10007 // AI 消息索引错误
+	ERROR_AI_MESSAGE_NOT_FOUND  = 10008 // AI 消息未找到
+	ERROR_AI_MESSAGE_UPDATE     = 10009 // AI 消息更新失败
+	ERROR_AI_EMBEDDING          = 10010 // AI 消息嵌入失败
+	ERROR_AI_ACTION_NOT_FOUND   = 10011 // AI 对话prompt选项未找到
+	ERROR_AI_PROMPT_EXIST       = 10012 // AI 对话prompt已存在
+	ERROR_AI_PROMPT_CREATE_FAIL = 10013 // AI 对话prompt创建失败
+	ERROR_AI_INTENTS_CACHE_FAIL = 10014 // AI 意图缓存失败
+	ERROR_AI_PROMPT_NOT_FOUND   = 10015 // AI 对话prompt未找到
 
 	// Event模块的错误
 	ERROR_EVENT_CREATE                  = 11001 // 创建事件失败
@@ -148,6 +154,9 @@ const (
 	ERROR_INTEGRATION_ACCOUNT_EXPIRED                 = 13012 // 集成账号已过期
 	ERROR_FEISHU_GET_FILE_META_FAILED                 = 13013 // 获取飞书文件元信息失败
 	ERROR_FEISHU_CONVERT_MARKDOWN_FAILED              = 13014 // 飞书Markdown转换失败
+
+	// redis 错误
+	ERROR_STORAGE_VALUE = 14001 //存储错误
 )
 
 var CodeMsg = map[int]string{
@@ -242,4 +251,10 @@ var CodeMsg = map[int]string{
 	ERROR_NOTE_UPDATE_CONFLICT:                       "笔记更新冲突，请刷新页面后重试",
 	ERROR_NOTE_SYNC_NOT_FOUND:                        "笔记同步配置未找到",
 	ERROR_AI_EMBEDDING:                               "AI 消息嵌入失败",
+	ERROR_STORAGE_VALUE:                              "缓存错误",
+	ERROR_AI_ACTION_NOT_FOUND:                        "AI 对话prompt选项未找到",
+	ERROR_AI_PROMPT_EXIST:                            "AI 对话prompt已存在",
+	ERROR_AI_PROMPT_CREATE_FAIL:                      "AI 对话prompt创建失败",
+	ERROR_AI_INTENTS_CACHE_FAIL:                      "AI 意图缓存失败",
+	ERROR_AI_PROMPT_NOT_FOUND:                        "AI 对话prompt未找到",
 }

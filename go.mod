@@ -118,6 +118,7 @@ require (
 	github.com/wneessen/go-mail v0.6.2
 	golang.org/x/arch v0.15.0 // indirect
 	golang.org/x/crypto v0.38.0
+	golang.org/x/exp v0.0.0-20251023183803-a4bb9ffd2546
 	golang.org/x/net v0.40.0 // indirect
 	golang.org/x/sync v0.17.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect

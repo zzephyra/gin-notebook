@@ -1,5 +1,10 @@
 package dto
 
+import (
+	"gin-notebook/internal/model"
+	"time"
+)
+
 type Tool struct {
 	Name        string                 `json:"name"`
 	Description string                 `json:"description"`
@@ -120,4 +125,34 @@ type AICreateTodoDTO struct {
 		ProjectName *string `json:"project_id"`
 		ColumnID    *int64  `json:"column_id"`
 	} `json:"slots"`
+}
+
+type AIChatPromptCreateParamsDTO struct {
+	WorkspaceID int64   `json:"workspace_id,string"` // nil 表示全局可用
+	Template    string  `json:"template" validate:"required"`
+	Intent      string  `json:"intent" validate:"required,one_of=role_play story_write summary translate brainstorm idea_generate create_todo create_note character_build"`
+	Description *string `json:"description" validate:"omitempty"`
+}
+
+type AIChatPromptDTO struct {
+	ID          int64            `json:"id,string"`
+	Template    string           `json:"template"`
+	Intent      string           `json:"intent"`
+	Description *string          `json:"description"`
+	Version     int              `json:"version"`
+	PromptType  model.PromptType `json:"prompt_type"`
+	IsActive    bool             `json:"is_active"`
+	UpdatedAt   time.Time        `json:"updated_at"`
+}
+
+type DeleteAIChatPromptParamsDTO struct {
+	ID          int64 `json:"prompt_id,string" validate:"required"`
+	WorkspaceID int64 `json:"workspace_id,string"` // nil 表示全局可用
+}
+
+type UpdateAIChatPromptParamsDTO struct {
+	ID          int64   `json:"prompt_id,string" validate:"required"`
+	Template    *string `json:"template" validate:"omitempty,min=1"`
+	Description *string `json:"description" validate:"omitempty,min=1,max=255"`
+	IsActive    *bool   `json:"is_active" validate:"omitempty"`
 }

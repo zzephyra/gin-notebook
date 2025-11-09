@@ -14,6 +14,16 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
+#: src/lib/api/client.ts:42
+msgid "Network error, please check your connection."
+msgstr "网络错误，请检查您的连接。"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:139
+msgid "Failed to fetch AI chat actions"
+msgstr "获取 AI 聊天操作失败"
+
+#. js-lingui-explicit-id
 #: src/utils/timeAgo.ts:27
 msgid "just now"
 msgstr "刚刚"
@@ -44,6 +54,18 @@ msgid "30 days ago"
 msgstr "30天以前"
 
 #. js-lingui-explicit-id
+#: src/components/modal/event/add/index.tsx:152
+#: src/pages/workspace/tasks.tsx:147
+msgid "Monthly on the {day}th"
+msgstr "每月的第 {day} 天"
+
+#. js-lingui-explicit-id
+#: src/components/modal/event/add/index.tsx:155
+#: src/pages/workspace/tasks.tsx:150
+msgid "Last {byDay} of the Month"
+msgstr "每月的最后一个 {byDay}"
+
+#. js-lingui-explicit-id
 #: src/locales/dynamicKeys.ts:3
 msgid "task.update"
 msgstr "更新了{field}：<from>{from}</from> → <to>{to}</to>"
@@ -64,6 +86,41 @@ msgid "task name"
 msgstr "任务名"
 
 #. js-lingui-explicit-id
+#: src/locales/dynamicKeys.ts:7
+msgid "prompt.translator.label"
+msgstr "翻译"
+
+#. js-lingui-explicit-id
+#: src/locales/dynamicKeys.ts:8
+msgid "prompt.translator.description"
+msgstr "中英文互译"
+
+#. js-lingui-explicit-id
+#: src/pages/settings/aiSettings.tsx:183
+msgid "Input tokens cannot be less than {minInput} for {model}"
+msgstr "输入的 tokens 数量不能少于 {minInput}（适用于模型 {model}）"
+
+#. js-lingui-explicit-id
+#: src/pages/settings/aiSettings.tsx:184
+msgid "Input tokens cannot exceed {maxInput} for {model}"
+msgstr "输入的 tokens 数量不能超过 {maxInput}（适用于模型 {model}）"
+
+#. js-lingui-explicit-id
+#: src/pages/settings/aiSettings.tsx:185
+msgid "Output tokens cannot be less than {minOutput} for {model}"
+msgstr "输出的 tokens 数量不能少于 {minOutput}（适用于模型 {model}）"
+
+#. js-lingui-explicit-id
+#: src/pages/settings/aiSettings.tsx:186
+msgid "Output tokens cannot exceed {maxOutput} for {model}"
+msgstr "输出的 tokens 数量不能超过 {maxOutput}（适用于模型 {model}）"
+
+#. js-lingui-explicit-id
+#: src/pages/settings/aiSettings.tsx:191
+msgid "The sum of Input and Output tokens cannot exceed the context window of {contextWindow} for {model}"
+msgstr "输入和输出 tokens 的总数不能超过模型 {model} 的上下文窗口大小 {contextWindow}"
+
+#. js-lingui-explicit-id
 #: src/pages/settings/integrationAccount.tsx:103
 msgid "Are you sure you want to unlink {provider} account?"
 msgstr "你确定要解除与 {provider} 账户的绑定吗？"
@@ -72,33 +129,6 @@ msgstr "你确定要解除与 {provider} 账户的绑定吗？"
 #: src/pages/settings/integrationAccount.tsx:108
 msgid "This action cannot be undone."
 msgstr "此操作无法撤销。"
-
-#. js-lingui-explicit-id
-#: src/components/modal/event/add/index.tsx:152
-#: src/pages/workspace/tasks.tsx:147
-msgid "Monthly on the {day}th"
-msgstr "每月的第 {day} 天"
-
-#. js-lingui-explicit-id
-#: src/components/modal/event/add/index.tsx:155
-#: src/pages/workspace/tasks.tsx:150
-msgid "Last {byDay} of the Month"
-msgstr "每月的最后一个 {byDay}"
-
-#. js-lingui-explicit-id
-#: src/lib/api/client.ts:25
-msgid "Sorry, something went wrong"
-msgstr "出错了，请稍后再试"
-
-#. js-lingui-explicit-id
-#: src/lib/api/client.ts:43
-msgid "You don't have permission to view or update this workspace."
-msgstr "权限不足，无法查看或更新工作区"
-
-#. js-lingui-explicit-id
-#: src/lib/api/client.ts:46
-msgid "Please log in to continue."
-msgstr "请登录以继续操作"
 
 #. js-lingui-explicit-id
 #: src/lib/upload/index.ts:41
@@ -111,42 +141,58 @@ msgid "File type {type} is not accepted"
 msgstr "不接受的文件类型：{type}"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:13
-#: src/features/api/note.ts:34
-#: src/features/api/note.ts:233
-#: src/features/api/note.ts:252
-msgid "Missing valid value"
-msgstr "缺少有效值"
+#: src/lib/api/client.ts:25
+msgid "Sorry, something went wrong"
+msgstr "出错了，请稍后再试"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:86
-msgid "Add new note failed"
-msgstr "添加新笔记失败"
+#: src/lib/api/client.ts:45
+msgid "You don't have permission to view or update this workspace."
+msgstr "权限不足，无法查看或更新工作区"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:103
-msgid "Add new category failed"
-msgstr "添加新类别失败"
+#: src/lib/api/client.ts:48
+msgid "Please log in to continue."
+msgstr "请登录以继续操作"
 
 #. js-lingui-explicit-id
-#: src/features/api/note.ts:124
-msgid "Delete note failed"
-msgstr "删除笔记失败"
-
-#. js-lingui-explicit-id
-#: src/features/api/note.ts:214
-msgid "Content cannot be empty"
-msgstr "内容不允许为空"
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:65
+#: src/features/api/ai.ts:68
 msgid "Message ID is required for update action"
 msgstr "更新操作需要提供消息 ID"
 
 #. js-lingui-explicit-id
-#: src/features/api/ai.ts:123
+#: src/features/api/ai.ts:127
 msgid "Failed to fetch AI chat session"
 msgstr "无法获取 AI 聊天会话"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:15
+#: src/features/api/note.ts:36
+#: src/features/api/note.ts:235
+#: src/features/api/note.ts:254
+#: src/features/api/note.ts:273
+msgid "Missing valid value"
+msgstr "缺少有效值"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:88
+msgid "Add new note failed"
+msgstr "添加新笔记失败"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:105
+msgid "Add new category failed"
+msgstr "添加新类别失败"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:126
+msgid "Delete note failed"
+msgstr "删除笔记失败"
+
+#. js-lingui-explicit-id
+#: src/features/api/note.ts:216
+msgid "Content cannot be empty"
+msgstr "内容不允许为空"
 
 #. js-lingui-explicit-id
 #: src/components/list/notes/index.tsx:126
@@ -154,7 +200,7 @@ msgid "Would you like to move the file to the \"{total}\" folder?"
 msgstr "是否要将文件移动到\"{total}\\”文件夹？"
 
 #. js-lingui-explicit-id
-#: src/components/aiChatInput/index.tsx:101
+#: src/components/ai/input/index.tsx:101
 msgid "Please enter a message before sending."
 msgstr "请在输入需要发送的信息"
 
@@ -168,14 +214,18 @@ msgstr "请在输入需要发送的信息"
 #~ msgid "File size exceeds the limit of {size} bytes"
 #~ msgstr "文件大小超过限制：{size} 字节"
 
-#: src/pages/settings/integrationSetting.tsx:215
-#: src/pages/settings/integrationSetting.tsx:223
+#: src/pages/settings/integrationSetting.tsx:211
+#: src/pages/settings/integrationSetting.tsx:219
 msgid " (optional)"
 msgstr " (可选)"
 
-#: src/components/modal/note/addSync/index.tsx:147
+#: src/components/modal/note/addSync/index.tsx:165
 msgid " Next"
 msgstr "下一步"
+
+#: src/pages/settings/aiSettings.tsx:128
+msgid "\"Please select a valid AI provider\""
+msgstr "请选择有效的 AI 提供商"
 
 #. placeholder {0}: FilterMapping[props.filter?.order_by || "create"]
 #. placeholder {0}: item.label
@@ -183,8 +233,8 @@ msgstr "下一步"
 #: src/components/avatarMenu/index.tsx:80
 #: src/components/comment/main/index.tsx:190
 #: src/components/todo/task/index.tsx:305
-#: src/components/todo/taskDetails/index.tsx:250
-#: src/components/todo/taskDetails/index.tsx:357
+#: src/components/todo/taskDetails/index.tsx:267
+#: src/components/todo/taskDetails/index.tsx:374
 msgid "{0}"
 msgstr "{0}"
 
@@ -208,7 +258,7 @@ msgstr "7天"
 msgid "Access Key"
 msgstr "访问密钥"
 
-#: src/layouts/SettingsLayout.tsx:33
+#: src/layouts/SettingsLayout.tsx:38
 msgid "Account"
 msgstr "账户"
 
@@ -220,22 +270,22 @@ msgstr "账户设置"
 msgid "Action"
 msgstr "行动"
 
-#: src/components/card/notePolicy/index.tsx:54
-#: src/pages/settings/integrationSetting.tsx:91
+#: src/components/card/notePolicy/index.tsx:104
+#: src/pages/settings/integrationSetting.tsx:87
 #: src/pages/settings/workspaceSettings.tsx:82
 msgid "Active"
 msgstr "有效"
 
-#: src/components/todo/taskDetails/index.tsx:463
+#: src/components/todo/taskDetails/index.tsx:481
 msgid "Activity"
 msgstr "活动"
 
-#: src/components/note/main/index.tsx:256
+#: src/components/note/main/index.tsx:273
 msgid "Add"
 msgstr "添加"
 
 #: src/components/todo/task/index.tsx:358
-#: src/components/todo/taskDetails/index.tsx:195
+#: src/components/todo/taskDetails/index.tsx:212
 msgid "Add Cover"
 msgstr "添加封面"
 
@@ -243,7 +293,7 @@ msgstr "添加封面"
 msgid "Add Invite Link"
 msgstr "添加邀请链接"
 
-#: src/components/dropdown/note/index.tsx:98
+#: src/components/dropdown/note/index.tsx:106
 msgid "Add New Category"
 msgstr "添加新类别"
 
@@ -251,47 +301,68 @@ msgstr "添加新类别"
 msgid "Add new Invite Link"
 msgstr "添加新的邀请链接"
 
-#: src/components/dropdown/note/index.tsx:122
+#: src/components/dropdown/note/index.tsx:124
 msgid "Add New Note"
 msgstr "添加新笔记"
 
-#: src/components/modal/note/addSync/index.tsx:69
+#: src/components/modal/note/addSync/index.tsx:87
 msgid "Add Synchronization"
 msgstr "添加同步策略"
+
+#: src/components/modal/note/addSync/index.tsx:63
+msgid "Add synchronization success"
+msgstr "添加同步成功"
 
 #: src/components/note/categoryItem/index.tsx:60
 msgid "Add to Favorites"
 msgstr "添加到收藏夹"
 
+#: src/components/dropdown/note/index.tsx:178
+msgid "Advanced Collaboration Settings"
+msgstr "高级协作设置"
+
+#: src/pages/settings/aiSettings.tsx:228
+msgid "After selecting a model, some settings will be generated automatically. If you choose a custom model, you’ll need to manually complete the remaining parameters."
+msgstr "选择模型后，部分设置将自动生成。如果选择自定义模型，则需要手动填写剩余参数。"
+
+#: src/layouts/SettingsLayout.tsx:56
+#: src/pages/settings/aiSettings.tsx:227
+msgid "AI Settings"
+msgstr "AI设置"
+
+#: src/pages/settings/aiSettings.tsx:216
+msgid "AI Settings updated successfully"
+msgstr "AI设置更新成功"
+
 #: src/components/modal/event/add/index.tsx:121
 msgid "All Day"
 msgstr "全天"
 
-#: src/components/dropdown/note/index.tsx:151
+#: src/components/dropdown/note/index.tsx:164
 msgid "Allow commenting"
 msgstr "允许评论"
 
-#: src/components/dropdown/note/index.tsx:146
+#: src/components/dropdown/note/index.tsx:161
 msgid "Allow editing"
 msgstr "允许编辑"
 
-#: src/components/note/main/index.tsx:217
+#: src/components/note/main/index.tsx:234
 msgid "Allow editing this note."
 msgstr "允许编辑此笔记。"
 
-#: src/components/dropdown/note/index.tsx:186
+#: src/components/dropdown/note/index.tsx:195
 msgid "Allow inviting"
 msgstr "允许邀请"
 
-#: src/components/dropdown/note/index.tsx:181
+#: src/components/dropdown/note/index.tsx:192
 msgid "Allow joining"
 msgstr "允许加入"
 
-#: src/components/dropdown/note/index.tsx:156
+#: src/components/dropdown/note/index.tsx:167
 msgid "Allow sharing"
 msgstr "允许共享"
 
-#: src/components/note/main/index.tsx:214
+#: src/components/note/main/index.tsx:231
 msgid "Allow sharing this note with others or third-party applications."
 msgstr "允许与其他人或第三方应用程序共享此笔记。"
 
@@ -299,23 +370,27 @@ msgstr "允许与其他人或第三方应用程序共享此笔记。"
 msgid "Already have an account?"
 msgstr "已经有账户？"
 
-#: src/pages/settings/integrationSetting.tsx:199
+#: src/pages/settings/aiSettings.tsx:153
+msgid "API Key is required for custom provider"
+msgstr "自定义提供商需要提供 API Key"
+
+#: src/pages/settings/integrationSetting.tsx:195
 msgid "App ID"
 msgstr "应用ID(app id)"
 
-#: src/pages/settings/integrationSetting.tsx:191
+#: src/pages/settings/integrationSetting.tsx:187
 msgid "App Name"
 msgstr "应用名称"
 
-#: src/pages/settings/integrationSetting.tsx:207
+#: src/pages/settings/integrationSetting.tsx:203
 msgid "App Secret"
 msgstr "应用密钥(app secret)"
 
-#: src/components/todo/column/index.tsx:372
+#: src/components/todo/column/index.tsx:339
 msgid "Appearance"
 msgstr "外观"
 
-#: src/components/note/main/index.tsx:572
+#: src/components/note/main/index.tsx:590
 msgid "Applying the template..."
 msgstr "正在应用模板…"
 
@@ -323,7 +398,7 @@ msgstr "正在应用模板…"
 #~ msgid "Are you sure you want to clean all tasks in this column?"
 #~ msgstr ""
 
-#: src/components/todo/column/index.tsx:411
+#: src/components/todo/column/index.tsx:378
 msgid "Are you sure you want to clear all tasks in this column?"
 msgstr "您确定要清空此列中的所有任务吗？"
 
@@ -335,12 +410,20 @@ msgstr "您确定要删除此邀请链接吗？"
 msgid "Are you sure you want to delete this note? This action cannot be undone."
 msgstr "是否确实要删除此便笺？此操作无法撤消。"
 
+#: src/components/ai/promptItem/index.tsx:79
+msgid "Are you sure you want to delete this prompt? This action cannot be undone."
+msgstr "您确定要删除此提示词吗？此操作无法撤销。"
+
+#: src/components/card/notePolicy/index.tsx:75
+msgid "Are you sure you want to delete this synchronization policy?"
+msgstr "确定要删除此同步策略吗？"
+
 #: src/pages/workspace/project.tsx:117
 msgid "Ascending"
 msgstr "升序"
 
-#: src/components/todo/taskDetails/index.tsx:317
-#: src/components/todo/taskDetails/index.tsx:423
+#: src/components/todo/taskDetails/index.tsx:334
+#: src/components/todo/taskDetails/index.tsx:440
 msgid "Assignee"
 msgstr "负责人"
 
@@ -348,8 +431,8 @@ msgstr "负责人"
 msgid "Auto save failed, please try again later."
 msgstr "自动保存失败，请稍后重试"
 
-#: src/components/card/notePolicy/index.tsx:46
-#: src/components/modal/note/addSync/index.tsx:111
+#: src/components/card/notePolicy/index.tsx:96
+#: src/components/modal/note/addSync/index.tsx:129
 msgid "Auto Sync"
 msgstr "自动同步"
 
@@ -358,11 +441,11 @@ msgstr "自动同步"
 msgid "Back"
 msgstr "返回"
 
-#: src/components/note/main/index.tsx:189
+#: src/components/note/main/index.tsx:206
 msgid "Basic Information"
 msgstr "基本信息"
 
-#: src/layouts/SettingsLayout.tsx:34
+#: src/layouts/SettingsLayout.tsx:39
 msgid "Bind Integration Account"
 msgstr "绑定第三方账户"
 
@@ -370,20 +453,23 @@ msgstr "绑定第三方账户"
 msgid "Bucket Name"
 msgstr "桶名称"
 
-#: src/components/dropdown/note/index.tsx:104
-#: src/components/dropdown/note/index.tsx:203
+#: src/components/ai/promptItem/index.tsx:83
+#: src/components/ai/promptItem/index.tsx:111
+#: src/components/card/notePolicy/index.tsx:85
+#: src/components/dropdown/note/index.tsx:111
+#: src/components/dropdown/note/index.tsx:219
 #: src/components/list/notes/index.tsx:134
 #: src/components/modal/event/add/index.tsx:162
 #: src/components/modal/note/deleteModal/index.tsx:42
 #: src/components/modal/note/selectCategory/index.tsx:113
 #: src/components/modal/user/modifyPassword/index.tsx:58
-#: src/components/note/main/index.tsx:499
+#: src/components/note/main/index.tsx:514
 #: src/pages/settings/integrationAccount.tsx:115
 #: src/pages/settings/workspaceSettings.tsx:194
 msgid "Cancel"
 msgstr "取消"
 
-#: src/components/aiChat/index.tsx:405
+#: src/components/ai/chat/index.tsx:409
 msgid "Cannot reload message that has a parent message."
 msgstr "无法重新加载已有父消息的内容。"
 
@@ -391,25 +477,25 @@ msgstr "无法重新加载已有父消息的内容。"
 msgid "Card Preview"
 msgstr "卡片预览"
 
-#: src/components/note/main/index.tsx:193
+#: src/components/note/main/index.tsx:210
 msgid "Categorize the note by selecting an existing note category."
 msgstr "通过选择现有笔记类别对笔记进行分类。"
 
-#: src/components/note/main/index.tsx:193
+#: src/components/note/main/index.tsx:210
 msgid "Category"
 msgstr "类别"
 
-#: src/components/dropdown/note/index.tsx:100
+#: src/components/dropdown/note/index.tsx:108
 msgid "Category Name"
 msgstr "类别名称"
 
-#: src/components/dropdown/note/index.tsx:37
-#: src/components/dropdown/note/index.tsx:100
+#: src/components/dropdown/note/index.tsx:49
+#: src/components/dropdown/note/index.tsx:108
 msgid "Category name is required"
 msgstr "类别名称是必需的"
 
 #: src/components/todo/task/index.tsx:358
-#: src/components/todo/taskDetails/index.tsx:183
+#: src/components/todo/taskDetails/index.tsx:200
 msgid "Change Cover"
 msgstr "更新封面"
 
@@ -436,7 +522,7 @@ msgstr "清除"
 #~ msgid "Clean Tasks"
 #~ msgstr "清除所有任务"
 
-#: src/components/todo/column/index.tsx:394
+#: src/components/todo/column/index.tsx:361
 msgid "Clear Tasks"
 msgstr "清除所有任务"
 
@@ -460,13 +546,17 @@ msgstr "评论提交成功"
 msgid "Comment updated successfully"
 msgstr "评论更新成功"
 
-#: src/components/todo/taskDetails/index.tsx:455
+#: src/components/todo/taskDetails/index.tsx:473
 msgid "Comments"
 msgstr "评论"
 
-#: src/components/note/main/index.tsx:502
+#: src/components/note/main/index.tsx:517
 msgid "Confirm"
 msgstr "确认"
+
+#: src/components/card/notePolicy/index.tsx:68
+msgid "Confirm Deletion"
+msgstr "确认删除"
 
 #: src/components/modal/user/modifyPassword/index.tsx:51
 msgid "Confirm Password"
@@ -476,7 +566,7 @@ msgstr "确认密码"
 msgid "Confirm your new password"
 msgstr "确认您的新密码"
 
-#: src/components/modal/note/addSync/index.tsx:128
+#: src/components/modal/note/addSync/index.tsx:146
 msgid "Conflict Policy"
 msgstr "冲突策略"
 
@@ -488,16 +578,16 @@ msgstr "复制链接"
 msgid "Copy successfully"
 msgstr "复制成功"
 
-#: src/components/note/main/index.tsx:200
+#: src/components/note/main/index.tsx:217
 #: src/pages/workspace/project.tsx:144
 #: src/pages/workspace/project.tsx:422
 msgid "Cover"
 msgstr "封面"
 
-#: src/components/dropdown/note/index.tsx:107
-#: src/components/dropdown/note/index.tsx:206
+#: src/components/dropdown/note/index.tsx:112
+#: src/components/dropdown/note/index.tsx:220
 #: src/components/modal/event/add/index.tsx:165
-#: src/components/todo/column/index.tsx:446
+#: src/components/todo/column/index.tsx:413
 msgid "Create"
 msgstr "创建"
 
@@ -509,13 +599,17 @@ msgstr "创建一个新的工作区"
 msgid "Create event successfully"
 msgstr "事件创建成功"
 
-#: src/pages/settings/integrationSetting.tsx:119
+#: src/pages/settings/integrationSetting.tsx:115
 msgid "Create Integration"
 msgstr "创建集成"
 
-#: src/components/dropdown/note/index.tsx:70
+#: src/pages/workspace/note.tsx:115
 msgid "Create note success"
 msgstr "创建笔记成功"
+
+#: src/pages/settings/promptSettings.tsx:69
+msgid "Create Prompt"
+msgstr "创建提示词"
 
 #: src/components/step/workspace/main.tsx:135
 msgid "Create Workspace"
@@ -534,11 +628,11 @@ msgid "Created by:"
 msgstr "创建人："
 
 #: src/components/comment/main/index.tsx:195
-#: src/pages/workspace/favorites.tsx:266
+#: src/pages/workspace/favorites.tsx:275
 msgid "Created Time"
 msgstr "创建时间"
 
-#: src/pages/settings/integrationSetting.tsx:156
+#: src/pages/settings/integrationSetting.tsx:152
 msgid "Creating the app, please wait patiently…"
 msgstr "正在创建应用，请耐心等待…"
 
@@ -550,12 +644,20 @@ msgstr "正在创建工作区..."
 msgid "Current device"
 msgstr "当前设备"
 
-#: src/components/note/main/index.tsx:221
+#: src/pages/settings/aiSettings.tsx:231
+msgid "Custom Model"
+msgstr "自定义模型"
+
+#: src/pages/settings/aiSettings.tsx:240
+msgid "Custom Model Endpoint"
+msgstr "自定义模型端点"
+
+#: src/components/note/main/index.tsx:238
 msgid "Danger Zone"
 msgstr "危险区"
 
-#: src/components/todo/taskDetails/index.tsx:294
-#: src/components/todo/taskDetails/index.tsx:401
+#: src/components/todo/taskDetails/index.tsx:311
+#: src/components/todo/taskDetails/index.tsx:418
 msgid "Deadline"
 msgstr "截止日期"
 
@@ -567,12 +669,14 @@ msgstr "截止日期"
 msgid "Default Sort"
 msgstr "默认排序"
 
+#: src/components/ai/promptItem/index.tsx:86
+#: src/components/card/notePolicy/index.tsx:86
 #: src/components/comment/box/index.tsx:148
 #: src/components/modal/note/deleteModal/index.tsx:29
 #: src/components/modal/note/deleteModal/index.tsx:43
-#: src/components/note/noteList/index.tsx:77
+#: src/components/note/noteList/index.tsx:78
 #: src/components/todo/task/index.tsx:378
-#: src/pages/settings/integrationSetting.tsx:100
+#: src/pages/settings/integrationSetting.tsx:96
 #: src/pages/settings/workspaceSettings.tsx:195
 msgid "Delete"
 msgstr "删除"
@@ -585,26 +689,34 @@ msgstr "删除失败"
 msgid "Delete Invite Link"
 msgstr "删除邀请链接"
 
-#: src/components/note/main/index.tsx:222
-#: src/components/note/main/index.tsx:224
+#: src/components/note/main/index.tsx:239
+#: src/components/note/main/index.tsx:241
 msgid "Delete Note"
 msgstr "删除笔记"
 
 #. placeholder {0}: res.error || "Unknown error"
-#: src/components/note/noteList/index.tsx:36
+#: src/components/note/noteList/index.tsx:37
 msgid "Delete note failed: {0}"
 msgstr "删除笔记失败：{0}"
+
+#: src/components/ai/promptItem/index.tsx:76
+msgid "Delete Prompt"
+msgstr "删除提示词"
 
 #: src/components/modal/note/deleteModal/index.tsx:17
 #: src/pages/settings/workspaceSettings.tsx:63
 msgid "Delete successfully"
 msgstr "删除成功"
 
+#: src/components/note/main/index.tsx:170
+msgid "Delete synchronization policy success"
+msgstr "删除同步策略成功"
+
 #: src/components/todo/main.tsx:84
 msgid "Delete task failed"
 msgstr "删除任务失败"
 
-#: src/components/note/main/index.tsx:222
+#: src/components/note/main/index.tsx:239
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "删除此项目是永久性操作，无法撤消。请谨慎操作。"
 
@@ -625,7 +737,7 @@ msgstr "点踩评论"
 msgid "Domain Url"
 msgstr "域Url"
 
-#: src/components/todo/column/index.tsx:421
+#: src/components/todo/column/index.tsx:388
 msgid "Don’t clear"
 msgstr "不要清空"
 
@@ -633,7 +745,7 @@ msgstr "不要清空"
 msgid "Don't have an account yet?"
 msgstr "还没有帐户？"
 
-#: src/pages/settings/integrationSetting.tsx:258
+#: src/pages/settings/integrationSetting.tsx:254
 msgid "Done"
 msgstr "完成"
 
@@ -645,13 +757,17 @@ msgstr "下载二维码"
 msgid "Download Qrcode"
 msgstr "下载二维码"
 
-#: src/pages/settings/integrationSetting.tsx:200
+#: src/pages/settings/integrationSetting.tsx:196
 msgid "e.g., cli_xxx"
 msgstr "例如：cli_xxx"
 
 #: src/components/comment/box/index.tsx:159
 #~ msgid "Edit"
 #~ msgstr "编辑"
+
+#: src/components/ai/promptItem/index.tsx:99
+msgid "Edit Prompt"
+msgstr "编辑提示词"
 
 #: src/pages/settings/accountSettings.tsx:89
 msgid "Email"
@@ -665,25 +781,33 @@ msgstr "电子邮件"
 msgid "Emails go here → one@example.com, two@example.com"
 msgstr "电子邮件地址：one@example.com，two@example.com"
 
-#: src/components/note/main/index.tsx:217
+#: src/components/note/main/index.tsx:234
 msgid "Enable Edit"
 msgstr "启用编辑"
 
-#: src/components/note/main/index.tsx:214
+#: src/components/note/main/index.tsx:231
 msgid "Enable Share"
 msgstr "Enable Share"
 
-#: src/pages/settings/integrationSetting.tsx:223
+#: src/pages/settings/integrationSetting.tsx:219
 msgid "Encrypt Key"
 msgstr "加密密钥"
 
-#: src/pages/settings/integrationSetting.tsx:192
+#: src/pages/settings/integrationSetting.tsx:188
 msgid "Enter a recognizable name for your app"
 msgstr "输入一个容易识别的应用名称"
 
-#: src/pages/settings/integrationSetting.tsx:208
+#: src/components/ai/promptItem/index.tsx:103
+msgid "Enter a short description of what this prompt does (e.g., create a new todo item)."
+msgstr "请输入此提示词的简短描述（例如：创建一个新的待办事项）。"
+
+#: src/pages/settings/integrationSetting.tsx:204
 msgid "Enter the secret key provided by the platform"
 msgstr "输入平台提供的应用密钥"
+
+#: src/pages/settings/aiSettings.tsx:241
+msgid "Enter your custom model API endpoint here"
+msgstr "在此输入自定义模型的 API 端点"
 
 #: src/components/modal/user/changeEmail/index.tsx:28
 msgid "Enter your new email"
@@ -721,7 +845,7 @@ msgstr "每个工作日"
 msgid "Everyday"
 msgstr "每天"
 
-#: src/components/note/main/index.tsx:494
+#: src/components/note/main/index.tsx:509
 msgid "Existing content detected. Importing the template will overwrite it. Continue?"
 msgstr "检测到已有内容。导入模板将覆盖现有内容，是否继续？"
 
@@ -733,17 +857,21 @@ msgstr "到期"
 msgid "Expired"
 msgstr "已过期"
 
-#: src/components/note/noteList/index.tsx:75
+#: src/components/note/noteList/index.tsx:76
 msgid "Export As PDF"
 msgstr "导出为PDF"
 
-#: src/components/note/noteList/index.tsx:76
+#: src/components/note/noteList/index.tsx:77
 msgid "Export As Word"
 msgstr "导出为Word"
 
 #: src/components/modal/workspace/link/index.tsx:57
 msgid "Failed to generate invite link"
 msgstr "无法生成邀请链接"
+
+#: src/components/note/main/index.tsx:160
+msgid "Failed to get file metadata from Feishu. Please ensure the file exists and you have access to it."
+msgstr "从飞书获取文件元数据失败。请确认文件存在且您具有访问权限。"
 
 #: src/components/aiChat/index.tsx:247
 #~ msgid "Failed to get response from AI"
@@ -753,7 +881,7 @@ msgstr "无法生成邀请链接"
 msgid "Failed to link: {error}"
 msgstr "绑定失败：{error}"
 
-#: src/components/aiChat/index.tsx:206
+#: src/components/ai/chat/index.tsx:210
 msgid "Failed to load chat history"
 msgstr "加载聊天记录失败"
 
@@ -771,12 +899,16 @@ msgstr "提交评论失败：{0}"
 msgid "Failed to unlink"
 msgstr "绑定失败"
 
+#: src/pages/settings/aiSettings.tsx:219
+msgid "Failed to update AI Settings"
+msgstr "更新AI配置失败"
+
 #. placeholder {0}: res.message
 #: src/components/comment/main/index.tsx:106
 msgid "Failed to update comment: {0}"
 msgstr "更新评论失败: {0}"
 
-#: src/pages/workspace/favorites.tsx:240
+#: src/pages/workspace/favorites.tsx:249
 msgid "Favorites"
 msgstr "收藏夹"
 
@@ -793,7 +925,7 @@ msgstr "飞书是一体化的协作与沟通平台，集成了聊天、会议、
 msgid "File movement"
 msgstr "文件移动"
 
-#: src/components/modal/note/addSync/index.tsx:147
+#: src/components/modal/note/addSync/index.tsx:165
 msgid "Finish"
 msgstr "完成"
 
@@ -801,7 +933,7 @@ msgstr "完成"
 msgid "Frequent Used"
 msgstr "经常使用"
 
-#: src/components/note/main/index.tsx:177
+#: src/components/note/main/index.tsx:194
 msgid "General"
 msgstr "一般"
 
@@ -834,15 +966,15 @@ msgstr "转至工作空间"
 msgid "Has attachments"
 msgstr "含附件"
 
-#: src/components/aiChatInput/index.tsx:18
+#: src/components/ai/input/index.tsx:18
 msgid "Hello, {username}, how's your day going today?"
 msgstr "你好，{username}，你今天过得怎么样？"
 
-#: src/components/aiChatInput/index.tsx:24
+#: src/components/ai/input/index.tsx:24
 msgid "Hey {username}, what brilliant ideas are we exploring today?"
 msgstr "嗨，{username}，今天我们要探索哪些精彩的点子呢？"
 
-#: src/components/aiChatInput/index.tsx:21
+#: src/components/ai/input/index.tsx:21
 msgid "Hi {username}, what can I assist you with today?"
 msgstr "你好，{username}，今天我能帮你做些什么呢？"
 
@@ -854,15 +986,15 @@ msgstr "嗨！欢迎来到Mameos！"
 #~ msgid "Hide Column"
 #~ msgstr ""
 
-#: src/pages/workspace/note.tsx:159
+#: src/pages/workspace/note.tsx:187
 msgid "History"
 msgstr "历史"
 
-#: src/components/aiHistoryChats/index.tsx:110
+#: src/components/ai/history/index.tsx:113
 msgid "History Chats"
 msgstr "历史聊天"
 
-#: src/components/todo/column/index.tsx:431
+#: src/components/todo/column/index.tsx:398
 msgid "I'm sure"
 msgstr "我确定"
 
@@ -874,24 +1006,24 @@ msgstr "如果你要带一位客人，请随意在下面添加他们的电子邮
 msgid "Ignore this prompt for this login"
 msgstr "忽略此登录的提示"
 
-#: src/components/card/notePolicy/index.tsx:54
-#: src/pages/settings/integrationSetting.tsx:91
+#: src/components/card/notePolicy/index.tsx:104
+#: src/pages/settings/integrationSetting.tsx:87
 msgid "Inactive"
 msgstr "未激活"
 
-#: src/components/modal/note/addSync/index.tsx:136
+#: src/components/modal/note/addSync/index.tsx:154
 msgid "Input note id"
 msgstr "输入笔记ID"
 
-#: src/layouts/SettingsLayout.tsx:51
+#: src/layouts/SettingsLayout.tsx:58
 msgid "Integration"
 msgstr "集成"
 
-#: src/pages/settings/integrationSetting.tsx:72
+#: src/pages/settings/integrationSetting.tsx:68
 msgid "Integration Setting"
 msgstr "集成设置"
 
-#: src/pages/settings/integrationSetting.tsx:232
+#: src/pages/settings/integrationSetting.tsx:228
 msgid "Integration setup is complete! You can now manage your integration apps in the settings."
 msgstr "集成设置已完成！您现在可以在设置中管理您的集成应用。"
 
@@ -899,7 +1031,7 @@ msgstr "集成设置已完成！您现在可以在设置中管理您的集成应
 msgid "Invite link"
 msgstr "邀请链接"
 
-#: src/components/note/main/index.tsx:182
+#: src/components/note/main/index.tsx:199
 msgid "Invite Link"
 msgstr "邀请链接"
 
@@ -943,11 +1075,11 @@ msgstr "语言"
 msgid "Last Active"
 msgstr "最后活跃时间"
 
-#: src/components/card/notePolicy/index.tsx:49
+#: src/components/card/notePolicy/index.tsx:99
 msgid "Last Run"
 msgstr "最后运行于"
 
-#: src/components/modal/note/addSync/index.tsx:130
+#: src/components/modal/note/addSync/index.tsx:148
 msgid "Latest Modified Wins"
 msgstr "以最新修改为准"
 
@@ -975,7 +1107,11 @@ msgstr "正在加载成员数据..."
 msgid "Loading more comments..."
 msgstr "正在加载更多评论..."
 
-#: src/pages/workspace/note.tsx:104
+#: src/pages/workspace/note.tsx:158
+msgid "Loading note..."
+msgstr "加载笔记中..."
+
+#: src/pages/workspace/note.tsx:130
 msgid "Loading notes..."
 msgstr "正在加载笔记..."
 
@@ -987,7 +1123,7 @@ msgstr "正在加载项目数据..."
 msgid "Loading Workspace..."
 msgstr "正在加载工作区..."
 
-#: src/layouts/SettingsLayout.tsx:99
+#: src/layouts/SettingsLayout.tsx:112
 msgid "Loading..."
 msgstr "加载中..."
 
@@ -1017,22 +1153,54 @@ msgstr "登录失败，请检查您的电子邮件和密码"
 msgid "Look up a person..."
 msgstr "搜一搜"
 
-#: src/components/aiChat/index.tsx:468
+#: src/components/ai/chat/index.tsx:472
 msgid "Mameos Robot"
 msgstr "Mameos小机器人"
 
-#: src/pages/settings/integrationSetting.tsx:98
+#: src/pages/settings/integrationSetting.tsx:94
 msgid "Manage"
 msgstr "管理"
 
-#: src/components/note/main/index.tsx:178
+#: src/components/note/main/index.tsx:195
 msgid "Management"
 msgstr "管理"
 
-#: src/components/card/notePolicy/index.tsx:46
-#: src/components/modal/note/addSync/index.tsx:114
+#: src/components/card/notePolicy/index.tsx:96
+#: src/components/modal/note/addSync/index.tsx:132
 msgid "Manual Sync"
 msgstr "手动同步"
+
+#: src/pages/settings/aiSettings.tsx:245
+msgid "Max Input Tokens"
+msgstr "最大输入 Tokens"
+
+#: src/pages/settings/aiSettings.tsx:173
+msgid "Max Input Tokens cannot be less than 8000"
+msgstr "最大输入 Tokens 不能少于 8000"
+
+#: src/pages/settings/aiSettings.tsx:172
+msgid "Max Input Tokens cannot exceed 200000"
+msgstr "最大输入 Tokens 不能超过 200000"
+
+#: src/pages/settings/aiSettings.tsx:141
+msgid "Max Input Tokens must be a positive integer"
+msgstr "最大输入 Tokens 必须是正整数"
+
+#: src/pages/settings/aiSettings.tsx:258
+msgid "Max Output Tokens"
+msgstr "最大输出 Tokens"
+
+#: src/pages/settings/aiSettings.tsx:177
+msgid "Max Output Tokens cannot be less than 4000"
+msgstr "最大输出 Tokens 不能少于 4000"
+
+#: src/pages/settings/aiSettings.tsx:176
+msgid "Max Output Tokens cannot exceed 16000"
+msgstr "最大输出 Tokens 不能超过 16000"
+
+#: src/pages/settings/aiSettings.tsx:145
+msgid "Max Output Tokens must be a positive integer"
+msgstr "最大输出 Tokens 必须是正整数"
 
 #: src/components/menu/sidebar.tsx:75
 msgid "member"
@@ -1043,7 +1211,7 @@ msgid "members"
 msgstr "成员"
 
 #: src/components/comment/content/index.tsx:362
-#: src/layouts/SettingsLayout.tsx:42
+#: src/layouts/SettingsLayout.tsx:47
 msgid "Members"
 msgstr "成员列表"
 
@@ -1051,9 +1219,17 @@ msgstr "成员列表"
 msgid "Mention me"
 msgstr "提到我"
 
-#: src/pages/workspace/favorites.tsx:316
+#: src/pages/workspace/favorites.tsx:325
 msgid "Meow~ No favorite notes here yet. Time to star the ones you love!"
 msgstr "喵~这里还没有你喜欢的笔记，快去标星吧!"
+
+#: src/pages/settings/aiSettings.tsx:271
+msgid "Model API key"
+msgstr "模型API密钥"
+
+#: src/pages/settings/aiSettings.tsx:276
+msgid "Model API URL"
+msgstr "模型API地址"
 
 #: src/components/list/notes/index.tsx:137
 msgid "Move"
@@ -1080,7 +1256,7 @@ msgstr "成功移动到类别"
 msgid "Move to trash"
 msgstr "移到垃圾桶"
 
-#: src/pages/workspace/note.tsx:155
+#: src/pages/workspace/note.tsx:183
 msgid "New Chat"
 msgstr "新对话"
 
@@ -1088,11 +1264,11 @@ msgstr "新对话"
 msgid "New Event"
 msgstr "新事件"
 
-#: src/components/dropdown/note/index.tsx:88
+#: src/components/dropdown/note/index.tsx:93
 msgid "New file"
 msgstr "新文件"
 
-#: src/components/dropdown/note/index.tsx:89
+#: src/components/dropdown/note/index.tsx:96
 msgid "New folder"
 msgstr "新文件夹"
 
@@ -1106,19 +1282,19 @@ msgstr "新建项目"
 
 #: src/components/todo/task/index.tsx:324
 #: src/components/todo/task/index.tsx:452
-#: src/components/todo/taskDetails/index.tsx:218
+#: src/components/todo/taskDetails/index.tsx:235
 msgid "New Task"
 msgstr "新建任务"
 
-#: src/components/note/main/index.tsx:342
+#: src/components/note/main/index.tsx:359
 msgid "New Template"
 msgstr "新建模版"
 
-#: src/pages/settings/integrationSetting.tsx:251
+#: src/pages/settings/integrationSetting.tsx:247
 msgid "Next"
 msgstr "下一步"
 
-#: src/components/note/noteList/index.tsx:73
+#: src/components/note/noteList/index.tsx:74
 msgid "Next Note"
 msgstr "下一条笔记"
 
@@ -1126,16 +1302,24 @@ msgstr "下一条笔记"
 #~ msgid "No"
 #~ msgstr "不"
 
-#: src/components/note/main/index.tsx:196
+#: src/components/note/main/index.tsx:213
 msgid "No Category"
 msgstr "无类别"
+
+#: src/pages/settings/aiSettings.tsx:210
+msgid "No changes detected in AI Settings"
+msgstr "未检测到配置变化"
+
+#: src/components/ai/promptItem/index.tsx:46
+msgid "No changes made"
+msgstr "未进行任何更改"
 
 #: src/components/comment/main/index.tsx:29
 msgid "No comments yet"
 msgstr "暂无评论"
 
-#: src/components/todo/taskDetails/index.tsx:299
-#: src/components/todo/taskDetails/index.tsx:406
+#: src/components/todo/taskDetails/index.tsx:316
+#: src/components/todo/taskDetails/index.tsx:423
 msgid "No Deadline"
 msgstr "无截止日期"
 
@@ -1143,11 +1327,11 @@ msgstr "无截止日期"
 msgid "No expiration"
 msgstr "没有到期"
 
-#: src/components/modal/note/addSync/index.tsx:102
+#: src/components/modal/note/addSync/index.tsx:120
 msgid "No integration apps available. Please add an integration app first."
 msgstr "还未添加任何集成应用，请先添加后再继续。"
 
-#: src/pages/settings/integrationSetting.tsx:115
+#: src/pages/settings/integrationSetting.tsx:111
 msgid "No integration available."
 msgstr "无可用集成"
 
@@ -1155,21 +1339,25 @@ msgstr "无可用集成"
 msgid "No more comments"
 msgstr "没有更多评论"
 
-#: src/components/note/main/index.tsx:383
+#: src/components/note/main/index.tsx:400
 msgid "No more templates to load."
 msgstr "已全部加载完模板"
 
-#: src/components/todo/taskDetails/index.tsx:238
-#: src/components/todo/taskDetails/index.tsx:345
+#: src/components/todo/taskDetails/index.tsx:255
+#: src/components/todo/taskDetails/index.tsx:362
 msgid "No Priority"
 msgstr "无优先级"
+
+#: src/pages/settings/promptSettings.tsx:58
+msgid "No Prompts Yet"
+msgstr "还没有提示词"
 
 #: src/components/modal/event/add/index.tsx:137
 #: src/pages/workspace/tasks.tsx:132
 msgid "No Repeat"
 msgstr "不重复"
 
-#: src/components/note/main/index.tsx:261
+#: src/components/note/main/index.tsx:278
 msgid "No synchronization policies yet. Click the \"Add\" button to create one."
 msgstr "当前没有任何同步策略，请点击“添加”按钮进行创建。"
 
@@ -1189,32 +1377,32 @@ msgstr "无"
 msgid "None"
 msgstr "无"
 
-#: src/components/note/main/index.tsx:190
+#: src/components/note/main/index.tsx:207
 msgid "Note ID"
 msgstr "笔记ID"
 
-#: src/components/dropdown/note/index.tsx:124
+#: src/components/dropdown/note/index.tsx:131
 msgid "Note Name"
 msgstr "笔记名称"
 
-#: src/components/note/main/index.tsx:213
+#: src/components/note/main/index.tsx:230
 msgid "Note Settings"
 msgstr "笔记设置"
 
-#: src/components/note/main/index.tsx:233
-#: src/components/note/main/index.tsx:239
+#: src/components/note/main/index.tsx:250
+#: src/components/note/main/index.tsx:256
 msgid "Note Status"
 msgstr "笔记状态"
 
-#: src/components/dropdown/note/index.tsx:124
+#: src/components/dropdown/note/index.tsx:128
 msgid "Note title is required"
 msgstr "标题为必填项"
 
-#: src/components/modal/note/addSync/index.tsx:136
+#: src/components/modal/note/addSync/index.tsx:154
 msgid "Notebook ID"
 msgstr "笔记ID"
 
-#: src/pages/workspace/note.tsx:166
+#: src/pages/workspace/note.tsx:194
 msgid "Notes"
 msgstr "笔记"
 
@@ -1234,8 +1422,8 @@ msgstr "Notion 是一款功能强大的笔记与知识管理工具，将文档�
 msgid "Now"
 msgstr "现在"
 
-#: src/components/aiChat/index.tsx:343
-#: src/components/aiChat/index.tsx:454
+#: src/components/ai/chat/index.tsx:347
+#: src/components/ai/chat/index.tsx:458
 msgid "Oops, something went wrong!"
 msgstr "糟糕，出了点问题！"
 
@@ -1247,19 +1435,19 @@ msgstr "此邀请链接已过期。"
 msgid "Or"
 msgstr "或"
 
-#: src/pages/workspace/favorites.tsx:256
+#: src/pages/workspace/favorites.tsx:265
 msgid "Ordering"
 msgstr "排序"
 
-#: src/components/note/main/index.tsx:489
+#: src/components/note/main/index.tsx:504
 msgid "Overwrite Note"
 msgstr "覆盖笔记"
 
-#: src/pages/workspace/favorites.tsx:305
+#: src/pages/workspace/favorites.tsx:314
 msgid "Owner"
 msgstr "所有者"
 
-#: src/components/aiChat/index.tsx:415
+#: src/components/ai/chat/index.tsx:419
 msgid "Parent message not found."
 msgstr "未找到父消息"
 
@@ -1281,12 +1469,12 @@ msgstr "每两周"
 msgid "Per Week"
 msgstr "每周"
 
-#: src/components/note/main/index.tsx:179
-#: src/components/note/main/index.tsx:232
+#: src/components/note/main/index.tsx:196
+#: src/components/note/main/index.tsx:249
 msgid "Permission"
 msgstr "许可"
 
-#: src/components/dropdown/note/index.tsx:142
+#: src/components/dropdown/note/index.tsx:158
 msgid "Permission Setting"
 msgstr "权限设置"
 
@@ -1298,7 +1486,7 @@ msgstr "个性化"
 msgid "Please check your email."
 msgstr "请检查您的电子邮件。"
 
-#: src/components/modal/note/addSync/index.tsx:34
+#: src/components/modal/note/addSync/index.tsx:37
 msgid "Please complete the strategy"
 msgstr "请补充完整策略内容"
 
@@ -1314,7 +1502,7 @@ msgstr "请输入您的电子邮件地址。"
 msgid "Please enter your password."
 msgstr "请输入密码"
 
-#: src/components/modal/note/addSync/index.tsx:46
+#: src/components/modal/note/addSync/index.tsx:50
 msgid "Please input target note id"
 msgstr "请输入目标笔记 ID"
 
@@ -1322,39 +1510,56 @@ msgstr "请输入目标笔记 ID"
 #~ msgid "Please login first!"
 #~ msgstr "请先登录！"
 
+#: src/pages/settings/aiSettings.tsx:152
+msgid "Please provide a valid API URL"
+msgstr "请提供一个有效的API地址"
+
+#: src/pages/settings/aiSettings.tsx:240
+msgid "Please provide the API endpoint for your custom AI model."
+msgstr "请提供自定义 AI 模型的 API 接口地址。"
+
+#: src/pages/settings/aiSettings.tsx:271
+msgid "Please provide the API key for your selected AI model."
+msgstr "请提供所选 AI 模型的 API 密钥。"
+
 #: src/components/modal/note/selectCategory/index.tsx:50
 msgid "Please select a category"
 msgstr "请选择类别"
 
-#: src/components/note/main/index.tsx:137
+#: src/components/note/main/index.tsx:138
 msgid "Please select a file to upload."
 msgstr "请选择要上传的文件"
 
-#: src/components/modal/note/addSync/index.tsx:27
-#: src/pages/settings/integrationSetting.tsx:36
+#: src/components/modal/note/addSync/index.tsx:30
+#: src/pages/settings/integrationSetting.tsx:34
 msgid "Please select a provider"
 msgstr "请选择服务提供方"
+
+#: src/pages/settings/aiSettings.tsx:132
+#: src/pages/settings/aiSettings.tsx:154
+msgid "Please select a valid AI model"
+msgstr "请选择有效的 AI 模型"
 
 #: src/components/comment/input/index.tsx:46
 msgid "Please wait for attachments to finish uploading."
 msgstr "附件正在上传，请稍候"
 
-#: src/components/modal/note/addSync/index.tsx:144
-#: src/pages/settings/integrationSetting.tsx:244
+#: src/components/modal/note/addSync/index.tsx:162
+#: src/pages/settings/integrationSetting.tsx:240
 msgid "Previous"
 msgstr "上一步"
 
-#: src/components/note/noteList/index.tsx:72
+#: src/components/note/noteList/index.tsx:73
 msgid "Previous Note"
 msgstr "上一条笔记"
 
-#: src/components/todo/taskDetails/index.tsx:228
-#: src/components/todo/taskDetails/index.tsx:335
+#: src/components/todo/taskDetails/index.tsx:245
+#: src/components/todo/taskDetails/index.tsx:352
 #: src/pages/workspace/project.tsx:150
 msgid "Priority"
 msgstr "优先级"
 
-#: src/components/note/main/index.tsx:236
+#: src/components/note/main/index.tsx:253
 msgid "Private"
 msgstr "私有"
 
@@ -1366,19 +1571,43 @@ msgstr "私有"
 msgid "Project Icon"
 msgstr "项目图标"
 
-#: src/components/modal/note/addSync/index.tsx:51
+#: src/components/ai/promptItem/index.tsx:103
+msgid "Prompt Description"
+msgstr "提示词描述"
+
+#: src/components/ai/promptItem/index.tsx:37
+msgid "Prompt description cannot be empty"
+msgstr "提示词描述不能为空"
+
+#: src/pages/settings/promptSettings.tsx:42
+msgid "Prompt Settings"
+msgstr "提示词设置"
+
+#: src/components/ai/promptItem/index.tsx:107
+msgid "Prompt Template"
+msgstr "提示词模版"
+
+#: src/components/ai/promptItem/index.tsx:23
+msgid "Prompt template cannot be empty"
+msgstr "提示词模版不能为空"
+
+#: src/layouts/SettingsLayout.tsx:57
+msgid "Prompts"
+msgstr "提示词"
+
+#: src/components/modal/note/addSync/index.tsx:55
 msgid "Provider is not selected"
 msgstr "尚未选择服务提供商"
 
-#: src/components/note/main/index.tsx:235
+#: src/components/note/main/index.tsx:252
 msgid "Public"
 msgstr "公共"
 
-#: src/components/modal/note/addSync/index.tsx:122
+#: src/components/modal/note/addSync/index.tsx:140
 msgid "Pull Only"
 msgstr "仅拉取"
 
-#: src/components/modal/note/addSync/index.tsx:119
+#: src/components/modal/note/addSync/index.tsx:137
 msgid "Push Only"
 msgstr "仅推送"
 
@@ -1435,7 +1664,8 @@ msgstr "注册成功，请检查您的电子邮件"
 msgid "Remember me"
 msgstr "记得我"
 
-#: src/components/todo/taskDetails/index.tsx:187
+#: src/components/card/notePolicy/index.tsx:58
+#: src/components/todo/taskDetails/index.tsx:204
 msgid "Remove"
 msgstr "移除"
 
@@ -1443,7 +1673,7 @@ msgstr "移除"
 msgid "Remove from Favorites"
 msgstr "从收藏夹中删除"
 
-#: src/components/todo/column/index.tsx:368
+#: src/components/todo/column/index.tsx:335
 msgid "Rename"
 msgstr "重命名"
 
@@ -1451,13 +1681,14 @@ msgstr "重命名"
 #~ msgid "Rename Column"
 #~ msgstr "重命名列"
 
+#: src/components/ai/promptItem/index.tsx:114
 #: src/components/modal/user/modifyPassword/index.tsx:59
 #: src/pages/settings/storageSettings.tsx:104
 msgid "Save"
 msgstr "保存"
 
-#: src/components/aiChatToolset/index.tsx:21
-#: src/components/aiChatToolset/index.tsx:41
+#: src/components/ai/toolset/index.tsx:21
+#: src/components/ai/toolset/index.tsx:41
 msgid "Save to Note"
 msgstr "存入笔记"
 
@@ -1465,7 +1696,7 @@ msgstr "存入笔记"
 msgid "Schedules"
 msgstr "计划表"
 
-#: src/components/aiChatInput/index.tsx:82
+#: src/components/ai/input/index.tsx:82
 msgid "Search"
 msgstr "搜索"
 
@@ -1491,16 +1722,20 @@ msgstr "选择"
 msgid "Select a workspace to start using Mameos"
 msgstr "选择一个工作区开始使用备忘录"
 
+#: src/pages/settings/aiSettings.tsx:228
+msgid "Select AI Model"
+msgstr "选择AI模型"
+
 #: src/components/dropdown/member/index.tsx:48
 msgid "Select Assignee"
 msgstr "选择负责人"
 
-#: src/components/dropdown/note/index.tsx:126
-#: src/components/dropdown/note/index.tsx:133
+#: src/components/dropdown/note/index.tsx:139
+#: src/components/dropdown/note/index.tsx:150
 msgid "Select Category"
 msgstr "选择类别"
 
-#: src/components/dropdown/note/index.tsx:194
+#: src/components/dropdown/note/index.tsx:207
 msgid "Select note status"
 msgstr "选择笔记状态"
 
@@ -1508,17 +1743,21 @@ msgstr "选择笔记状态"
 msgid "Select Priority"
 msgstr "选择优先级"
 
-#: src/pages/settings/integrationSetting.tsx:130
+#: src/pages/settings/integrationSetting.tsx:126
 msgid "Select Provider"
 msgstr "选择服务提供方"
 
-#: src/pages/workspace/favorites.tsx:258
+#: src/pages/workspace/favorites.tsx:267
 msgid "Select sorting field"
 msgstr "选择排序字段"
 
 #: src/pages/workspace/select.tsx:66
 msgid "Select your workspace"
 msgstr "选择您的工作区"
+
+#: src/pages/settings/aiSettings.tsx:134
+msgid "Selected model is not supported by the chosen provider"
+msgstr "所选模型不受当前提供商支持"
 
 #: src/components/form/register/form.tsx:89
 msgid "Send Code"
@@ -1528,25 +1767,33 @@ msgstr "发送验证码"
 msgid "Sent"
 msgstr "发送"
 
-#: src/components/aiHistoryChats/index.tsx:46
+#: src/components/ai/history/index.tsx:49
 msgid "Session deleted successfully"
 msgstr "会话删除成功"
 
-#: src/components/aiHistoryChats/index.tsx:83
+#: src/components/ai/history/index.tsx:86
 msgid "Session updated successfully"
 msgstr "会话更新成功"
 
-#: src/components/note/main/index.tsx:233
-#: src/components/note/main/index.tsx:239
+#: src/components/note/main/index.tsx:250
+#: src/components/note/main/index.tsx:256
 msgid "Set the current note's status. When set to private, it will be invisible to others."
 msgstr "设置当前便笺的状态。当设置为私有时，其他人将看不到该便笺。"
+
+#: src/pages/settings/aiSettings.tsx:245
+msgid "Set the maximum number of input tokens for the selected AI model. The maximum allowed value is 200000."
+msgstr "为所选 AI 模型设置最大输入 Tokens 数量。允许的最大值为 200000。"
+
+#: src/pages/settings/aiSettings.tsx:258
+msgid "Set the maximum number of output tokens for the selected AI model. The maximum allowed value is 16000."
+msgstr "为所选 AI 模型设置最大输出 Tokens 数量。允许的最大值为 16000。"
 
 #: src/layouts/backstage.tsx:44
 #~ msgid "Settings"
 #~ msgstr "设置"
 
-#: src/components/note/main/index.tsx:181
-#: src/components/note/noteList/index.tsx:63
+#: src/components/note/main/index.tsx:198
+#: src/components/note/noteList/index.tsx:64
 msgid "Share"
 msgstr "分享"
 
@@ -1570,7 +1817,7 @@ msgstr "登录"
 msgid "Sort by"
 msgstr "排序"
 
-#: src/components/aiChat/index.tsx:87
+#: src/components/ai/chat/index.tsx:88
 msgid "Source"
 msgstr "来源"
 
@@ -1578,14 +1825,14 @@ msgstr "来源"
 msgid "Start a conversation below"
 msgstr "在下方开始对话"
 
-#: src/components/dropdown/note/index.tsx:194
-#: src/components/todo/taskDetails/index.tsx:261
-#: src/components/todo/taskDetails/index.tsx:368
+#: src/components/dropdown/note/index.tsx:206
+#: src/components/todo/taskDetails/index.tsx:278
+#: src/components/todo/taskDetails/index.tsx:385
 #: src/pages/settings/workspaceSettings.tsx:139
 msgid "Status"
 msgstr "状态"
 
-#: src/layouts/SettingsLayout.tsx:50
+#: src/layouts/SettingsLayout.tsx:55
 msgid "Storage"
 msgstr "存储"
 
@@ -1602,10 +1849,11 @@ msgid "Storage Path"
 msgstr "存储路径"
 
 #: src/components/step/workspace/main.tsx:185
+#: src/pages/settings/aiSettings.tsx:284
 msgid "Submit"
 msgstr "提交"
 
-#: src/pages/settings/integrationSetting.tsx:132
+#: src/pages/settings/integrationSetting.tsx:128
 msgid "Success"
 msgstr "成功"
 
@@ -1625,32 +1873,36 @@ msgstr "切换"
 msgid "Switch Workspace"
 msgstr "更换工作区"
 
-#: src/components/modal/note/addSync/index.tsx:117
+#: src/components/modal/note/addSync/index.tsx:135
 msgid "Sync Direction"
 msgstr "同步方向"
 
-#: src/components/modal/note/addSync/index.tsx:109
+#: src/components/modal/note/addSync/index.tsx:127
 msgid "Sync Mode"
 msgstr "同步模式"
 
-#: src/components/note/main/index.tsx:183
-#: src/components/note/main/index.tsx:256
+#: src/components/note/main/index.tsx:200
+#: src/components/note/main/index.tsx:273
 msgid "Synchronization"
 msgstr "同步"
 
-#: src/layouts/SettingsLayout.tsx:48
+#: src/layouts/SettingsLayout.tsx:53
 msgid "System"
 msgstr "系统"
 
-#: src/components/note/main/index.tsx:368
+#: src/components/note/main/index.tsx:385
 msgid "Templates"
 msgstr "模版"
 
-#: src/components/note/main/index.tsx:201
+#: src/pages/settings/aiSettings.tsx:276
+msgid "The base URL of the model API. Required if you are using a custom model or self-hosted service."
+msgstr "模型 API 的基础 URL。如果使用自定义模型或自托管服务，则此项为必填。"
+
+#: src/components/note/main/index.tsx:218
 msgid "The cover image is displayed at the top of the note and in the template thumbnail. Leave it blank to use the first image in the note."
 msgstr "封面图片将显示在笔记顶部以及模板缩略图中。如留空，则默认使用笔记中的第一张图片。"
 
-#: src/components/dropdown/note/index.tsx:124
+#: src/components/dropdown/note/index.tsx:133
 msgid "The note title is required and must not exceed 100 characters in length."
 msgstr "备注标题为必填项，长度不得超过100个字符。"
 
@@ -1658,7 +1910,7 @@ msgstr "备注标题为必填项，长度不得超过100个字符。"
 msgid "The number of members who have joined the workspace using this link"
 msgstr "使用此链接加入工作区的成员数"
 
-#: src/components/note/main/index.tsx:190
+#: src/components/note/main/index.tsx:207
 msgid "The unique ID of the note."
 msgstr "笔记的唯一ID。"
 
@@ -1666,11 +1918,15 @@ msgstr "笔记的唯一ID。"
 msgid "The workspace name contains illegal characters"
 msgstr "工作区名称包含非法字符"
 
+#: src/components/card/notePolicy/index.tsx:78
+msgid "This action cannot be undone."
+msgstr "此操作无法撤销"
+
 #: src/pages/workspace/invite.tsx:141
 msgid "This invitation link does not exist."
 msgstr "此邀请链接不存在。"
 
-#: src/components/todo/column/index.tsx:415
+#: src/components/todo/column/index.tsx:382
 msgid "This is a very dangerous action. Once confirmed, the data cannot be recovered."
 msgstr "这是一个非常危险的操作，确认删除后数据将无法恢复"
 
@@ -1678,8 +1934,8 @@ msgstr "这是一个非常危险的操作，确认删除后数据将无法恢复
 msgid "This link is expired"
 msgstr "此链接已过期"
 
-#: src/pages/workspace/favorites.tsx:260
-#: src/pages/workspace/favorites.tsx:303
+#: src/pages/workspace/favorites.tsx:269
+#: src/pages/workspace/favorites.tsx:312
 msgid "Title"
 msgstr "标题"
 
@@ -1687,7 +1943,7 @@ msgstr "标题"
 msgid "To ensure compatibility, please avoid special characters in the name."
 msgstr "为确保兼容性，请避免在名称中使用特殊字符。"
 
-#: src/components/modal/note/addSync/index.tsx:125
+#: src/components/modal/note/addSync/index.tsx:143
 msgid "Two-way Sync"
 msgstr "双向同步"
 
@@ -1709,11 +1965,11 @@ msgstr "解除关联"
 msgid "Unlink Account"
 msgstr "解除关联账号"
 
-#: src/pages/workspace/favorites.tsx:157
+#: src/pages/workspace/favorites.tsx:161
 msgid "Untitled Note"
 msgstr "无题笔记"
 
-#: src/components/aiHistoryChats/index.tsx:136
+#: src/components/ai/history/index.tsx:139
 msgid "Untitled Session"
 msgstr "未命名会话"
 
@@ -1735,23 +1991,23 @@ msgstr "昵称更新成功"
 msgid "Update password successfully"
 msgstr "更新密码成功"
 
-#: src/components/note/main/index.tsx:91
+#: src/components/note/main/index.tsx:90
 #: src/components/note/main/index.tsx:128
 #: src/pages/settings/storageSettings.tsx:55
 msgid "Update successfully"
 msgstr "更新成功"
 
-#: src/pages/workspace/favorites.tsx:306
+#: src/pages/workspace/favorites.tsx:315
 msgid "Updated At"
 msgstr "更新于"
 
 #: src/components/comment/main/index.tsx:198
-#: src/pages/workspace/favorites.tsx:263
+#: src/pages/workspace/favorites.tsx:272
 #: src/pages/workspace/project.tsx:149
 msgid "Updated Time"
 msgstr "更新时间"
 
-#: src/components/note/main/index.tsx:203
+#: src/components/note/main/index.tsx:220
 #: src/pages/settings/accountSettings.tsx:77
 msgid "Upload"
 msgstr "上传"
@@ -1772,15 +2028,15 @@ msgstr "上传失败"
 msgid "Upload File"
 msgstr "上传文件"
 
-#: src/pages/settings/integrationSetting.tsx:216
+#: src/pages/settings/integrationSetting.tsx:212
 msgid "Used for validating requests (if required)"
 msgstr "用于验证请求（如需要）"
 
-#: src/pages/settings/integrationSetting.tsx:224
+#: src/pages/settings/integrationSetting.tsx:220
 msgid "Used to decrypt event payloads (if applicable)"
 msgstr "用于解密事件内容（如适用）"
 
-#: src/layouts/SettingsLayout.tsx:31
+#: src/layouts/SettingsLayout.tsx:36
 msgid "User"
 msgstr "用户"
 
@@ -1792,7 +2048,7 @@ msgstr "验证码发送失败。"
 msgid "Verification code has been sent."
 msgstr "验证码已发送。"
 
-#: src/pages/settings/integrationSetting.tsx:215
+#: src/pages/settings/integrationSetting.tsx:211
 msgid "Verification Token"
 msgstr "验证令牌"
 
@@ -1800,15 +2056,16 @@ msgstr "验证令牌"
 msgid "We are glad to have you here."
 msgstr "我们很高兴你能来。"
 
-#: src/components/aiChatInput/index.tsx:28
+#: src/components/ai/input/index.tsx:28
 msgid "Welcome back, {username}! Glad to be working with you again today."
 msgstr "欢迎回来，{username}！很高兴今天又能与你共事。"
 
-#: src/layouts/SettingsLayout.tsx:41
+#: src/layouts/SettingsLayout.tsx:46
 msgid "Workspace"
 msgstr "工作区"
 
-#: src/components/modal/note/addSync/index.tsx:41
+#: src/components/modal/note/addSync/index.tsx:45
+#: src/pages/workspace/note.tsx:108
 msgid "Workspace ID is not found"
 msgstr "工作区 ID 不存在"
 
@@ -1820,9 +2077,13 @@ msgstr "工作区名称"
 msgid "Workspace: "
 msgstr "工作区："
 
-#: src/components/todo/taskDetails/index.tsx:441
+#: src/components/todo/taskDetails/index.tsx:458
 msgid "Write something about the task"
 msgstr "写点和任务相关的东西吧"
+
+#: src/components/ai/promptItem/index.tsx:106
+msgid "Write your prompt template here. You can use variables like {title}, {content}, etc."
+msgstr "在此编写您的提示词模板。您可以使用变量，例如 {title}、{content} 等。"
 
 #: src/pages/workspace/invite.tsx:128
 msgid "You are not allowed to join this workspace."
@@ -1831,3 +2092,7 @@ msgstr "不允许您加入此工作区。"
 #: src/pages/workspace/invite.tsx:102
 msgid "You have already joined this workspace!"
 msgstr "您已加入此工作区！"
+
+#: src/pages/settings/promptSettings.tsx:61
+msgid "You haven’t added any prompts. Click below to create one."
+msgstr "您还没有添加任何提示词。点击下方按钮创建一个吧。"

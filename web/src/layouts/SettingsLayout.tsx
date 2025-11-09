@@ -54,6 +54,7 @@ export default function SettingsLayout() {
                 children: [
                     { key: "storage", title: t`Storage`, path: `${base}/storage` },
                     { key: "ai", title: t`AI Settings`, path: `${base}/ai` },
+                    { key: "prompts", title: t`Prompts`, path: `${base}/prompts` },
                     { key: "integration", title: t`Integration`, path: `${base}/integration` },
                 ],
             });

@@ -1,9 +1,11 @@
 package logger
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -26,6 +28,50 @@ func LogDebug(message string, fields map[string]interface{}) {
 	logEvent.Msg(message)
 }
 
+func LogWarn(fields ...any) {
+	event := log.Warn().Time("time", time.Now())
+
+	if len(fields) == 0 {
+		event.Msg("(no fields)")
+		return
+	}
+
+	for i := 0; i < len(fields); i++ {
+		v := fields[i]
+
+		switch val := v.(type) {
+
+		case string:
+			// 如果是 key-value 形式，例如 LogWarn("intent", "create_todo")
+			if i+1 < len(fields) {
+				event.Interface(val, fields[i+1])
+				i++
+			} else {
+				event.Str("msg", val)
+			}
+
+		case error:
+			event.Err(val)
+
+		case map[string]any:
+			for k, v := range val {
+				event.Interface(k, v)
+			}
+
+		default:
+			rv := reflect.ValueOf(val)
+			switch rv.Kind() {
+			case reflect.Struct, reflect.Map, reflect.Slice, reflect.Array:
+				jsonBytes, _ := json.Marshal(val)
+				event.RawJSON("data", jsonBytes)
+			default:
+				event.Interface(fmt.Sprintf("field_%d", i), val)
+			}
+		}
+	}
+
+	event.Msg("") // 统一输出
+}
 func LogInfo(message string, fields ...any) {
 	e := log.Info()
 

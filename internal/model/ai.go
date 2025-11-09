@@ -1,11 +1,11 @@
 package model
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/pgvector/pgvector-go"
 	"gorm.io/datatypes"
-	"gorm.io/gorm"
 )
 
 type AISession struct {
@@ -36,9 +36,7 @@ type AIMessage struct {
 }
 
 type AiPrompt struct {
-	ID          int64          `json:"id" gorm:"primaryKey"`
-	WorkspaceID *int64         `json:"workspace_id" gorm:"index"` // nil 表示全局可用
-	Intent      string         `json:"intent" gorm:"type:varchar(64);not null;index:idx_ws_intent,priority:2"`
+	Intent      string         `json:"intent" gorm:"type:varchar(64);not null;uniqueIndex:idx_intent"`
 	PromptName  *string        `json:"prompt_name" gorm:"type:varchar(128)"`
 	Template    string         `json:"template" gorm:"type:text;not null"`
 	Language    string         `json:"language" gorm:"type:varchar(8);not null;default:zh;index"`
@@ -49,9 +47,7 @@ type AiPrompt struct {
 	IsActive    bool           `json:"is_active" gorm:"not null;default:true;index"`
 	Description *string        `json:"description" gorm:"type:text"`
 	Metadata    datatypes.JSON `json:"metadata" gorm:"type:jsonb"`
-	CreatedAt   time.Time      `json:"created_at" gorm:"not null;default:now()"`
-	UpdatedAt   time.Time      `json:"updated_at" gorm:"not null;default:now()"`
-	DeletedAt   gorm.DeletedAt `json:"deleted_at" gorm:"index"`
+	BaseModel
 }
 
 func (AiPrompt) TableName() string { return "ai_prompts" }
@@ -68,3 +64,31 @@ type AiPromptVersion struct {
 }
 
 func (AiPromptVersion) TableName() string { return "ai_prompt_versions" }
+
+type AIActionExposure struct {
+	ActionKey            string  `gorm:"type:varchar(64);not null;index:idx_expo_action_key" json:"action_key"`    // 动作标识，与前端注册表对应
+	IsDiscoverable       bool    `gorm:"not null;default:true;index:idx_expo_discoverable" json:"is_discoverable"` // 是否在前端显示
+	AllowExplicitTrigger bool    `gorm:"not null;default:true" json:"allow_explicit_trigger"`                      // 是否允许显式触发（按钮点击）
+	OrderIndex           *string `gorm:"type:varchar(32);index:idx_expo_order" json:"order_index"`                 // 排序字段，LexoRank 格式
+	Category             *string `gorm:"type:varchar(64);index:idx_expo_category" json:"category"`                 // 按钮分组类别
+	PromptID             *uint64 `gorm:"index:idx_expo_prompt_id" json:"prompt_id"`                                // 绑定的提示词 ID
+	TrackLatest          bool    `gorm:"not null;default:true" json:"track_latest"`                                // 是否跟随最新激活版本
+	PinnedVersion        *int64  `json:"pinned_version"`                                                           // 固定使用的提示词版本
+	UserID               *uint64 `json:"created_by"`                                                               // 创建人 ID
+	BaseModel
+}
+
+func (AIActionExposure) TableName() string {
+	return "ai_action_exposures"
+}
+
+func (a *AIActionExposure) Serialization() map[string]interface{} {
+	return map[string]interface{}{
+		"id":              strconv.FormatInt(a.ID, 10),
+		"is_discoverable": a.IsDiscoverable,
+		"updated_at":      a.UpdatedAt,
+		"category":        a.Category,
+		"order_index":     a.OrderIndex,
+		"action_key":      a.ActionKey,
+	}
+}

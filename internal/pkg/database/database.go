@@ -57,6 +57,7 @@ func Migrate(db *gorm.DB) {
 		&model.SyncOutbox{},
 		&model.AiPrompt{},
 		&model.AiPromptVersion{},
+		&model.AIActionExposure{},
 	)
 }
 

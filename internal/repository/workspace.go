@@ -85,7 +85,6 @@ func GetWorkspaceByID(workspaceID any, OwnerID int64) (*dto.WorkspaceDTO, error)
 }
 
 func UpdateWorkspace(workspaceID any, workspace map[string]interface{}) error {
-	fmt.Print(workspace)
 	result := database.DB.Model(&model.Workspace{}).Where("id = ?", workspaceID).Updates(workspace)
 	if result.Error != nil {
 		return result.Error

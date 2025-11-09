@@ -43,7 +43,7 @@ import BlockNoteEditor from "@/components/third-party/BlockNoteEditor";
 import { Tabs, Tab } from "@heroui/tabs";
 import { useMediaQuery } from "react-responsive";
 import AvatarMenu from "@/components/avatarMenu";
-import AIChat from "@/components/aiChat";
+import AIChat from "@/components/ai/chat";
 import { PanelGroup, Panel, PanelResizeHandle } from "react-resizable-panels";
 import { UploadFile } from "@/lib/upload";
 import TemplateCard from "@/components/template/card";

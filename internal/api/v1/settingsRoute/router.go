@@ -7,11 +7,17 @@ import (
 )
 
 func RegisterSettingsRoutes(r *gin.RouterGroup) {
-	authGroup := r.Group("/settings")
-	authGroup.Use(middleware.JWTAuth())
-	authGroup.Use(middleware.RBACMiddleware())
+	settingsGroup := r.Group("/settings")
+	settingsGroup.Use(middleware.JWTAuth())
+	settingsGroup.GET("", middleware.RBACMiddleware(middleware.AllowRoles(middleware.RoleUser, middleware.RoleAdmin)), getSettings)
+
+	settingsGroup.Use(middleware.RBACMiddleware(middleware.OnlyAdmin))
 	{
-		authGroup.POST("/system", updateSystemSettings)
-		authGroup.GET("", getSettings)
+		settingsGroup.POST("/system", updateSystemSettings)
+		// settingsGroup.GET("", getSettings)
+		settingsGroup.POST("/ai/prompt", CreateAIChatPromptApi)
+		settingsGroup.GET("/ai/prompts", GetAIChatPromptsApi)
+		settingsGroup.DELETE("/ai/prompt", DeleteAIChatPromptsApi)
+		settingsGroup.PUT("/ai/prompt", UpdateAIChatPromptApi)
 	}
 }

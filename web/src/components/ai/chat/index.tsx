@@ -5,17 +5,18 @@ import { useCallback, useMemo, useState, useRef, useEffect, forwardRef, useImper
 import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { Message, RenderActionProps, RenderContentProps } from '@douyinfe/semi-ui/lib/es/chat/interface';
-import { createAIMessage, getAIChatApi, getAIChatSessionRequest, updateAIMessage } from '@/features/api/ai';
-import AIChatInput from '../aiChatInput';
+import { createAIMessage, getAIChatActionsRequest, getAIChatApi, getAIChatSessionRequest, updateAIMessage } from '@/features/api/ai';
+import AIChatInput from '../input';
 import {
     Avatar, AvatarGroup,
 } from '@heroui/react';
 import { useLingui } from '@lingui/react/macro';
-import AIChatToolset from '../aiChatToolset';
+import AIChatToolset from '../toolset';
 import { responseCode } from '@/features/constant/response';
 import { AIMessage } from '@/features/api/type';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import AIChatPrompt from '../prompt';
 
 const SourceCard = (props: any) => {
     const [open, setOpen] = useState(true);
@@ -143,6 +144,7 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((props, ref) => {
     var user = useSelector((state: RootState) => state.user);
     var { t } = useLingui();
     var param = useParams();
+    var [actions, setActions] = useState<Prompt[]>([]);
     var workspace_id = param.id || '';
     var [chatMessages, setChatMessages] = useState<Message[]>([]);
     var controller = useRef(new AbortController());
@@ -476,6 +478,12 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((props, ref) => {
         }
     }
 
+    useEffect(() => {
+        getAIChatActionsRequest(workspace_id).then((res) => {
+            setActions(res.data.actions || []);
+        })
+    }, []);
+
     return (
         <>
             <Chat
@@ -485,7 +493,13 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>((props, ref) => {
                 className={`w-full !max-w-full ai-chat ${props.className} ${showChat ? "" : 'hide-chat'}`}
                 // uploadProps={uploadProps}
                 renderInputArea={
-                    (inputProps) => <AIChatInput prologues={props.prologues} onStop={onStopGenerator} onSeachChange={setIsSearchInternet} isProcessing={isProcessing} hidePrologue={!showChat} user={user} props={inputProps} />
+                    (inputProps) => <>
+                        <AIChatInput prologues={props.prologues} onStop={onStopGenerator} onSeachChange={setIsSearchInternet} isProcessing={isProcessing} hidePrologue={!showChat} user={user} props={inputProps}
+                            endComponent={
+                                <AIChatPrompt prompts={actions}></AIChatPrompt>
+                            }
+                        />
+                    </>
                 }
                 chatBoxRenderConfig={{
                     renderChatBoxAction: chatToolset,

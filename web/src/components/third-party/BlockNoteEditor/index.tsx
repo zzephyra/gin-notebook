@@ -206,6 +206,7 @@ const BlockNoteEditorInner = ({ noteID, content, onChange, options, className }:
             <BlockNoteView editor={editor}
                 className={`h-full w-full ${className || ""}`}
                 onChange={handleOnChange}
+                onSelectionChange={() => { console.log(editor.getSelection()) }}
                 formattingToolbar={false}
                 editable={options?.editable !== false}
             >
@@ -247,7 +248,7 @@ const BlockNoteEditorInner = ({ noteID, content, onChange, options, className }:
                         )
                     }
                 />
-            </BlockNoteView>
+            </BlockNoteView >
         </>
     )
 }
