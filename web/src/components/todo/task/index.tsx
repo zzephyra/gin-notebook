@@ -46,6 +46,7 @@ import {
     extractClosestEdge,
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { getCardData, getCardDropTargetData, isCardData } from "../script";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 const idle: TaskState = { type: "idle" };
 const avatarVariants = {
@@ -70,8 +71,8 @@ function Task({ task, column, onClick, onUpload, onDelete, onUpdate, classNames 
     const { t } = useLingui();
     const [searchParams, setSearchParams] = useState({ limit: 10, keywords: "" });
     const { data: members, isFetching } = useWorkspaceMembers(params.id || "", searchParams);
-
-    const { submitTask, updateTask, onlineMap, columns, currentProject, clearDraft } = useTodo();
+    const { onlineMap } = useWorkspace()
+    const { submitTask, updateTask, columns, currentProject, clearDraft } = useTodo();
     // 被拖拽的实际元素（必须是 draggable 绑定的盒子）
     const taskRootRef = useRef<HTMLDivElement | null>(null);
     const assigneeRef = useRef<HTMLDivElement | null>(null);
@@ -246,7 +247,6 @@ function Task({ task, column, onClick, onUpload, onDelete, onUpdate, classNames 
     const draggingClass = state.type === "is-dragging" ? "opacity-40" : "";
     return (
         <>
-            {/* wrapper：作为 drop target 容器 */}
             <div
                 ref={wrapperRef}
                 data-task-id={task.id}

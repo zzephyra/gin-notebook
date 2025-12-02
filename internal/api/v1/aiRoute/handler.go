@@ -26,6 +26,7 @@ func AIChatApi(c *gin.Context) {
 
 	upRes, err := aiService.GetAIChatResponse(c.Request.Context(), &req)
 	if err != nil {
+		logger.LogError(err, "创建AI对话错误")
 		c.Writer.Write([]byte("data: " + "upstream failed\n\n"))
 		c.Writer.Flush()
 		return

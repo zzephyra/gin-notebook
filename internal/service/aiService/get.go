@@ -60,7 +60,6 @@ func GetAIChatResponse(ctx context.Context, params *dto.AIRequestDTO) (*http.Res
 	if strings.TrimSpace(latest_message.Content) == "" {
 		return nil, fmt.Errorf("no user message to process") // 或返回一个 i18n 友好提示
 	}
-
 	// 3) 意图识别
 	resp, err := aiServer.GetInstance().GetIntent(ctx, latest_message.Content)
 	if err != nil {
@@ -95,7 +94,7 @@ func GetAIChatResponse(ctx context.Context, params *dto.AIRequestDTO) (*http.Res
 }
 仅输出一个 JSON 对象。`
 		} else {
-			finalSystemPrompt = "你是一个有用且简洁的助手，请用清晰直截了当的方式回答。"
+			finalSystemPrompt = "你是一个富有情感的助手，请用情感丰富的表达方式。"
 		}
 	}
 
@@ -190,7 +189,10 @@ func GetAIChatResponse(ctx context.Context, params *dto.AIRequestDTO) (*http.Res
 			MaxTokens: outputBudget,
 		}
 		body, _ := json.Marshal(payload)
-		upReq, _ := http.NewRequestWithContext(ctx, "POST", aiSettings.ApiUrl, bytes.NewReader(body))
+		upReq, err := http.NewRequestWithContext(ctx, "POST", aiSettings.ApiUrl, bytes.NewReader(body))
+		if err != nil {
+			logger.LogError(err, "创建待办任务请求错误：")
+		}
 		upReq.Header.Set("Authorization", "Bearer "+aiSettings.ApiKey)
 		upReq.Header.Set("Content-Type", "application/json")
 
@@ -271,6 +273,7 @@ func GetAIChatResponse(ctx context.Context, params *dto.AIRequestDTO) (*http.Res
 		found := false
 
 		for _, col := range columns {
+			fmt.Println(slot.ProcessID, col.ProcessID)
 			if col.ProcessID == uint8(*slot.ProcessID) {
 				task.ColumnID = col.ID
 				task.ProjectID = col.ProjectID

@@ -3,7 +3,7 @@ package enqueue
 import (
 	"context"
 	"encoding/json"
-	asynqimpl "gin-notebook/internal/tasks/asynq"
+	asynqSingleton "gin-notebook/internal/tasks/asynq/singleton"
 	"gin-notebook/internal/tasks/asynq/types"
 	"gin-notebook/internal/tasks/contracts"
 )
@@ -29,9 +29,9 @@ func SendEmail(ctx context.Context,
 func EnqueueEmail(ctx context.Context, p types.EmailPayload, opts ...contracts.Option) (string, error) {
 	// 默认策略放在前面；调用方传入的 opts 追加在后面，"后者覆盖前者"
 	defaults := []contracts.Option{
-		asynqimpl.WithQueue("default"),
-		asynqimpl.WithTimeout(30),
-		asynqimpl.WithMaxRetry(3),
+		contracts.WithQueue("default"),
+		contracts.WithTimeout(30),
+		contracts.WithMaxRetry(3),
 		// WithUnique(300), // 如果你常需要去重，打开这一行；否则按需在调用处传
 	}
 	all := append(defaults, opts...)
@@ -44,5 +44,5 @@ func EnqueueEmail(ctx context.Context, p types.EmailPayload, opts ...contracts.O
 	if ctx == nil {
 		ctx = context.Background()
 	}
-	return asynqimpl.Dispatcher().Enqueue(ctx, types.TypeEmailSend, b, all...)
+	return asynqSingleton.Dispatcher().Enqueue(ctx, types.TypeEmailSend, b, all...)
 }

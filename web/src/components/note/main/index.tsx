@@ -446,7 +446,7 @@ export default function NotePage(props: NoteProps) {
                 if (res.code == responseCode.SUCCESS) {
                     store.dispatch(UpdateNoteByID({ id: props.note.id, changes: res.data.note }))
                 } else {
-                    store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { updated_at: res.data.updated_at } }))
+                    store.dispatch(UpdateNoteByID({ id: props.note.id, changes: { updated_at: res?.data?.updated_at } }))
                 }
             })
         }

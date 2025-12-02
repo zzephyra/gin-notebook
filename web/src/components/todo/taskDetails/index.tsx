@@ -54,9 +54,9 @@ const TaskDetails = ({ taskId, onScroll, showBrief, onChange, onUpload }: { task
     const params = useParams();
     const { updateTask, setActiveOverlay, currentProject, todoParams } = useTodo();
     const [searchParams, setSearchParams] = useState({ limit: 10, keywords: "" });
-    const { data: task } = useProjectTask(currentProject?.id || "", todoParams, taskId);
-    const { data: column } = useProjectTaskColumn(currentProject?.id || "", todoParams, taskId);
-    const { data: columns = [] } = useProjectColumns(currentProject?.id || "", todoParams);
+    const { data: task } = useProjectTask(currentProject?.id || "", todoParams, taskId, params.id || "");
+    const { data: column } = useProjectTaskColumn(currentProject?.id || "", todoParams, taskId, params.id || "");
+    const { data: columns = [] } = useProjectColumns(currentProject?.id || "", todoParams, params.id || "");
 
     if (!task || !column) return null;
 

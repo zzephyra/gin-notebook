@@ -92,3 +92,56 @@ func (a *AIActionExposure) Serialization() map[string]interface{} {
 		"action_key":      a.ActionKey,
 	}
 }
+
+type Document struct {
+	BaseModel
+	WorkspaceID int64      `gorm:"uniqueIndex:uidx_doc_ws_hash,priority:1;not null"`
+	ProjectID   *int64     `gorm:"index"`
+	OwnerUserID int64      `gorm:"index;not null"`
+	Visibility  Visibility `gorm:"type:text;not null;default:private;index"`
+	Source      string     `gorm:"not null;default:local"`
+	ExternalID  string     `gorm:"index"` // 相对路径
+	Title       string
+	Metadata    datatypes.JSON
+	ContentHash string `gorm:"not null;uniqueIndex:uidx_doc_ws_hash:priority:2"`
+	IsActive    bool   `gorm:"default:true"`
+}
+
+func (Document) TableName() string {
+	return "rag_documents"
+}
+
+type Chunk struct {
+	ImmutableBaseModel
+	DocumentID   int64            `gorm:"uniqueIndex:uidx_chunk_doc_idx,priority:1;not null;"`
+	WorkspaceID  int64            `gorm:"index;not null"`
+	ProjectID    *int64           `gorm:"index"`
+	OwnerUserID  int64            `gorm:"index;not null"`
+	Visibility   Visibility       `gorm:"type:text;not null;default:private;index"`
+	Idx          int              `gorm:"uniqueIndex:uidx_chunk_doc_idx,priority:2;not null"`
+	Text         string           `gorm:"type:text;not null"`
+	Embedding    *pgvector.Vector `gorm:"type:vector(512)"`
+	Metadata     datatypes.JSON
+	DocTitle     string     `gorm:"column:doc_title"`
+	DocIsActive  *bool      `gorm:"column:doc_is_active"`
+	DocDeletedAt *time.Time `gorm:"column:doc_deleted_at"`
+}
+
+func (Chunk) TableName() string {
+	return "rag_chunks"
+}
+
+type Outbox struct {
+	BaseModel
+	EventType   string         `gorm:"index;not null"` // DocumentDeleted / DocumentIngested / Reembed
+	Status      string         `gorm:"index;not null;default:pending"`
+	WorkspaceID int64          `gorm:"index;not null"`
+	OwnerUserID int64          `gorm:"index"`
+	DocumentID  string         `gorm:"index;type:text"`
+	Payload     datatypes.JSON `gorm:"type:jsonb"`
+	RetryCount  int            `gorm:"not null;default:0"`
+}
+
+func (Outbox) TableName() string {
+	return "rag_outbox"
+}

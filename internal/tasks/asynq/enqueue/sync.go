@@ -3,7 +3,7 @@ package enqueue
 import (
 	"context"
 	"encoding/json"
-	asynqimpl "gin-notebook/internal/tasks/asynq"
+	asynqSingleton "gin-notebook/internal/tasks/asynq/singleton"
 	"gin-notebook/internal/tasks/asynq/types"
 	"gin-notebook/internal/tasks/contracts"
 	"gin-notebook/pkg/logger"
@@ -11,9 +11,9 @@ import (
 
 func SyncInitNote(ctx context.Context, p types.SyncNotePayload, opts ...contracts.Option) (string, error) {
 	defaults := []contracts.Option{
-		asynqimpl.WithQueue("default"),
-		asynqimpl.WithTimeout(30),
-		asynqimpl.WithMaxRetry(3),
+		contracts.WithQueue("default"),
+		contracts.WithTimeout(30),
+		contracts.WithMaxRetry(3),
 		// WithUnique(300), // 如果你常需要去重，打开这一行；否则按需在调用处传
 	}
 	all := append(defaults, opts...)
@@ -27,16 +27,16 @@ func SyncInitNote(ctx context.Context, p types.SyncNotePayload, opts ...contract
 		ctx = context.Background()
 	}
 
-	return asynqimpl.Dispatcher().Enqueue(ctx, types.InitSyncNoteKey, b, all...)
+	return asynqSingleton.Dispatcher().Enqueue(ctx, types.InitSyncNoteKey, b, all...)
 
 }
 
 func SyncDelta(ctx context.Context, p types.SyncDeltaPayload, opts ...contracts.Option) (string, error) {
 	logger.LogInfo("123")
 	defaults := []contracts.Option{
-		asynqimpl.WithQueue("default"),
-		asynqimpl.WithTimeout(300),
-		asynqimpl.WithMaxRetry(3),
+		contracts.WithQueue("default"),
+		contracts.WithTimeout(300),
+		contracts.WithMaxRetry(3),
 	}
 	all := append(defaults, opts...)
 
@@ -51,6 +51,6 @@ func SyncDelta(ctx context.Context, p types.SyncDeltaPayload, opts ...contracts.
 		ctx = context.Background()
 	}
 
-	return asynqimpl.Dispatcher().Enqueue(ctx, types.SyncDeltaKey, b, all...)
+	return asynqSingleton.Dispatcher().Enqueue(ctx, types.SyncDeltaKey, b, all...)
 
 }

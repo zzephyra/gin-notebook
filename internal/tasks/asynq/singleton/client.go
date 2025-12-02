@@ -1,4 +1,4 @@
-package asynqimpl
+package asynqSingleton
 
 import (
 	"context"
@@ -31,7 +31,7 @@ func (c *Client) Enqueue(ctx context.Context, key contracts.JobKey, payload []by
 	// 如果配置了 Unique，但你还想更强的幂等，可把哈希加入任务名或 payload
 	_ = sha256.Sum256(payload) // 可按需使用
 
-	info, err := c.cli.EnqueueContext(ctx, task, toAsynqOpts(opt)...)
+	info, err := c.cli.EnqueueContext(ctx, task, contracts.ToAsynqOpts(opt)...)
 	if err != nil {
 		return "", err
 	}

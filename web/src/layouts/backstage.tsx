@@ -6,11 +6,13 @@ import { useParams } from "react-router-dom";
 import { UpdateCurrentWorkspace } from "@/store/features/workspace";
 import { store } from "@/store";
 import { useMediaQuery } from 'react-responsive';
+import WorkspaceContext from "@/contexts/WorkspaceContext";
+import useWorkspacePresence from "@/hooks/useWorkspacePresence";
 
 export default function BaseLayout() {
   let params = useParams();
   const isDesktop = useMediaQuery({ minWidth: 1024 });
-
+  const value = useWorkspacePresence(params.id || "");
   let navigate = useNavigate();
   async function getWorkspaceData() {
     const res = await GetWorkspace({ workspace_id: params.id });
@@ -28,10 +30,12 @@ export default function BaseLayout() {
   }, []);
 
   return (
-    <div className="flex h-full">
-      {isDesktop && <SiderBar ></SiderBar>}
+    <WorkspaceContext.Provider value={value}>
+      <div className="flex h-full">
+        {isDesktop && <SiderBar ></SiderBar>}
 
-      <Outlet />
-    </div>
+        <Outlet />
+      </div>
+    </WorkspaceContext.Provider>
   );
 }

@@ -1,7 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { ProjectBoard, Project, SubmitExtraParams, TaksPayload, UpdateOptions, TodoTask, ToDoColumn } from '@/components/todo/type';
 import type { ActiveDraft, StartDraftOptions } from "@/hooks/useTodoTask"
-import { UserPresence } from '@/lib/realtime';
 import { ProjectBoardType, ProjectType, TodoParamsType } from '@/types/project';
 import { ProjectSettingsPayload } from '@/features/api/type';
 export type TodoContextValue = {
@@ -27,9 +26,6 @@ export type TodoContextValue = {
     cleanColumnTasks: (columnId: string) => void;
     deleteTask: (taskId: string, columnId: string) => Promise<void>;
     updateColumn: (columnId: string, patch: Partial<{ name: string; color: string; }>) => Promise<void>;
-    onlineMap?: Record<string, UserPresence[]>;
-    blurTask?: (taskId: string) => void;
-    focusTask?: (taskId: string) => void;
     columnMapping: Map<string, ToDoColumn>;
 };
 

@@ -2,6 +2,7 @@ package aiRoute
 
 import (
 	"gin-notebook/internal/http/middleware"
+	"gin-notebook/internal/pkg/database"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +12,9 @@ func RegisterAiRoutes(r *gin.RouterGroup) {
 	aiGroup.Use(middleware.JWTAuth())
 	aiGroup.Use(middleware.RBACMiddleware())
 	aiGroup.Use(middleware.RequireWorkspaceAccess())
+
+	dbWithRLS := &middleware.DBWithRLS{DB: database.DB}
+	aiGroup.Use(dbWithRLS.WithRLS())
 	{
 		aiGroup.POST("/chat", AIChatApi)
 		aiGroup.POST("/message", AIMessageApi)

@@ -13,6 +13,7 @@ import (
 	"gin-notebook/internal/pkg/rbac"
 	"gin-notebook/internal/pkg/realtime/bus"
 	asynqimpl "gin-notebook/internal/tasks/asynq"
+	asynqSingleton "gin-notebook/internal/tasks/asynq/singleton"
 	"gin-notebook/internal/thirdparty/aiServer"
 	"gin-notebook/pkg/logger"
 	"gin-notebook/pkg/utils/algorithm"
@@ -71,7 +72,7 @@ func main() {
 	geoip.InitGeoIP(config.GeoIP.DBPath)
 
 	// 初始化asynq
-	asynqimpl.InitGlobal(config.Cache.Host, config.Cache.Port, config.Cache.Password, config.Cache.DB)
+	asynqSingleton.InitGlobal(config.Cache.Host, config.Cache.Port, config.Cache.Password, config.Cache.DB)
 	_, err = asynqimpl.RunScheduler(config.Cache.Host, config.Cache.Port, config.Cache.Password, config.Cache.DB)
 
 	if err != nil {

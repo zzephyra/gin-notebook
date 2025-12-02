@@ -14,5 +14,7 @@ func NewMux() *asynq.ServeMux {
 	mux.HandleFunc(types.TypeFeishuRefreshAllUserTokens, handlers.HandleFeishuRefreshAllUserTokens)
 	mux.HandleFunc(types.InitSyncNoteKey, handlers.HandleInitSyncNote)
 	mux.HandleFunc(types.SyncDeltaKey, handlers.HandleSyncDelta)
+	mux.HandleFunc(types.IngestNoteKey, handlers.HandleIngestNote)
+	mux.HandleFunc(types.EmbedChunkKey, handlers.HandleEmbedChunk)
 	return mux
 }

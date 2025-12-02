@@ -13,6 +13,7 @@ import { useLingui } from "@lingui/react/macro";
 import { deleteProjectTaskRequest } from "@/features/api/project";
 import { useParams } from "react-router-dom";
 import { responseCode } from "@/features/constant/response";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 export interface TodoListProps {
     columns: ToDoColumn[]
@@ -29,22 +30,25 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
     const [activeColumnID, setActiveColumnID] = useState<string>();
     const [showBackTop, setShowBackTop] = useState(false);
     const drawerBodyRef = useRef<HTMLDivElement | null>(null);
-    const { activeOverlay, updateTask, focusTask, blurTask, deleteTask } = useTodo();
+    const { focusTask, blurTask } = useWorkspace();
+    const { activeOverlay, updateTask, deleteTask, currentProject } = useTodo();
     const column = props.columns.find(c => c.id === activeColumnID);
     const task = column?.tasks.find(t => t.id === activeTaskID);
     const { t } = useLingui();
     const params = useParams();
 
     const handleClick = (newTask: TodoTask, column: ToDoColumn) => {
-        if (task) {
-            blurTask && blurTask(task.id);
+        if (task && currentProject?.id) {
+            blurTask && blurTask(currentProject.id, task.id);
         }
 
         if (newTask.isEdit) return;
         setActiveTaskID(newTask.id);
         setActiveColumnID(column.id);
         setOpenSideSheet(true);
-        focusTask && focusTask(newTask.id);
+        if (currentProject?.id) {
+            focusTask && focusTask(currentProject.id, newTask.id);
+        }
     };
 
     const scrollDrawerToTop = useCallback(() => {
@@ -93,8 +97,8 @@ const TodoList = forwardRef<TodoListRef, TodoListProps>((props, _) => {
 
     useEffect(() => {
         if (!openSideSheet && task) {
-            if (task) {
-                blurTask && blurTask(task.id);
+            if (task && currentProject?.id) {
+                blurTask && blurTask(currentProject.id, task.id);
             }
             setActiveTaskID(undefined);
             setActiveColumnID(undefined);

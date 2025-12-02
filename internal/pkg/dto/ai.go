@@ -68,10 +68,10 @@ type AIHistoryDeleteParamsDTO struct {
 }
 
 type AIMessageDTO struct {
-	Content string `json:"content"`   // 消息内容
-	Role    string `json:"role"`      // 角色: user 或 assistant
-	Index   int64  `json:"index"`     // 顺序号
-	ID      int64  `json:"id,string"` // 消息 ID
+	Content string `json:"content"` // 消息内容
+	Role    string `json:"role"`    // 角色: user 或 assistant
+	Index   int64  `json:"index"`   // 顺序号
+	ID      string `json:"id"`      // 消息 ID
 	// SessionID int64  `json:"session_id,string"` // 会话 ID
 	CreatedAt string `json:"created_at"`       // 消息创建时间
 	Status    string `json:"status"`           // 状态: complete, loading 等

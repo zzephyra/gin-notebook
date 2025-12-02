@@ -90,3 +90,12 @@ var (
 		"high":   3,
 	}
 )
+
+type Visibility string
+type PGVector []float32
+
+const (
+	VisPrivate   Visibility = "private"
+	VisWorkspace Visibility = "workspace"
+	VisPublic    Visibility = "public"
+)

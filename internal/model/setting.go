@@ -12,7 +12,7 @@ type SystemSetting struct {
 	QiniuRegion       *string `json:"qiniu_region" gorm:"default:NULL"`
 	AiModel           *string `json:"ai_model" gorm:"not null;default:'deepseek-v3';index:idx_ai_model"`
 	AiApiKey          *string `json:"ai_api_key" gorm:"not null;default:'';index:idx_ai_api_key"`
-	AiApiUrl          *string `json:"ai_api_url" gorm:"not null;';index:idx_ai_api_url"`
+	AiApiUrl          *string `json:"ai_api_url" gorm:"not null;default:'';index:idx_ai_api_url"`
 	AiProvider        *string `json:"ai_provider" gorm:"not null;default:'custom';index:idx_ai_provider"`
 	AIInputMaxTokens  int64   `json:"ai_input_max_tokens" gorm:"default:8000"`
 	AIOutputMaxTokens int64   `json:"ai_output_max_tokens" gorm:"default:1000"`

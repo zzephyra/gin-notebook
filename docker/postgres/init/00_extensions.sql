@@ -1,0 +1,14 @@
+-- 只在首次初始化数据库时执行
+CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE EXTENSION IF NOT EXISTS unaccent;
+CREATE EXTENSION IF NOT EXISTS zhparser;
+
+-- 中文分词配置（zhparser）
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_ts_config WHERE cfgname='zh') THEN
+    CREATE TEXT SEARCH CONFIGURATION zh (PARSER = zhparser);
+    ALTER TEXT SEARCH CONFIGURATION zh ADD MAPPING FOR n, v, a, i, e, l WITH simple;
+  END IF;
+END $$;

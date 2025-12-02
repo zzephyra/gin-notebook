@@ -58,6 +58,9 @@ func Migrate(db *gorm.DB) {
 		&model.AiPrompt{},
 		&model.AiPromptVersion{},
 		&model.AIActionExposure{},
+		&model.Document{},
+		&model.Chunk{},
+		&model.Outbox{},
 	)
 }
 

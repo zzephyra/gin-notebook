@@ -1,4 +1,4 @@
-package asynqimpl
+package asynqSingleton
 
 import (
 	"fmt"
