@@ -182,3 +182,8 @@ export function diffObjects(objA: Record<string, unknown>, objB: Record<string, 
     return result;
 }
 
+
+export function formatK(num: number): string {
+    if (num < 1000) return String(num);
+    return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+}

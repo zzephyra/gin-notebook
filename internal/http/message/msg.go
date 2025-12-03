@@ -11,6 +11,7 @@ const (
 	ERROR_REQUEST_BODY       = 504
 	ERROR_ASSERT_TYPE_FAILED = 600
 	ERROR_IP_NOT_FOUND       = 601
+	ERROR_REDIS              = 602
 
 	// 用户模块的错误
 	ERROR_USERNAME_USED           = 1001
@@ -157,6 +158,11 @@ const (
 
 	// redis 错误
 	ERROR_STORAGE_VALUE = 14001 //存储错误
+
+	// Github 错误
+	ERROR_GITHUB_ERROR            = 15001 // Github 通用错误
+	ERROR_GITHUB_API_RATE_LIMITED = 15002 // Github API 请求超出限制
+
 )
 
 var CodeMsg = map[int]string{

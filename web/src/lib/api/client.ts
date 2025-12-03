@@ -28,7 +28,7 @@ axiosClient.interceptors.response.use(
   },
   (error) => {
     const location = window.location.pathname;
-    const publicPaths = ['/auth'];
+    const publicPaths = ['/auth', "/"];
 
     const isPublicPath = publicPaths.some(path => {
       if (path === '/' || path === '') {

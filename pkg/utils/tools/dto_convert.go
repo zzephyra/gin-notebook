@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -309,4 +310,12 @@ func GetField(obj any, fieldName string) (any, error) {
 	default:
 		return nil, fmt.Errorf("unsupported type: %s", v.Kind())
 	}
+}
+
+func MapToStruct(m map[string]string, v interface{}) error {
+	bs, err := json.Marshal(m)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(bs, v)
 }

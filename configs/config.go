@@ -47,6 +47,11 @@ type Config struct {
 	AIServer struct {
 		Url string `toml:"url"`
 	}
+	Github struct {
+		Token string `toml:"token"`
+		Repo  string `toml:"repo"`
+		Owner string `toml:"owner"`
+	}
 }
 
 var Configs *Config

@@ -23,6 +23,8 @@ const WorkspaceSettings = lazy(() => import("@/pages/settings/workspaceSettings"
 const StorageSettings = lazy(() => import("@/pages/settings/storageSettings"));
 const IntegrationSetting = lazy(() => import("@/pages/settings/integrationSetting"));
 const PromptsSettings = lazy(() => import("@/pages/settings/promptSettings"));
+const HomePage = lazy(() => import("@/pages/exterior/main"));
+
 export let router = createBrowserRouter([
   {
     element: (
@@ -104,6 +106,12 @@ export let router = createBrowserRouter([
       { path: "register", Component: RegisterPage },
     ],
   },
+  {
+    path: "",
+    children: [
+      { index: true, path: "/", element: <HomePage /> },
+    ]
+  }
 ]);
 
 function AppRouter() {

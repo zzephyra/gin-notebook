@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"gin-notebook/configs"
 	"gin-notebook/pkg/logger"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/go-redsync/redsync/v4"
 	redsyncredis "github.com/go-redsync/redsync/v4/redis/goredis/v9"
+	"github.com/google/go-github/v79/github"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -23,6 +25,7 @@ var (
 	PromptListKey     = "ai_chat:prompts"
 	IntentListKey     = "ai:prompt:intents"
 	PromptPrefix      = "ai:prompt:"
+	GithubRepoDataKey = "github:data"
 )
 
 type RedisClient struct {
@@ -256,4 +259,36 @@ func (r *RedisClient) GetPromptByIntent(ctx context.Context, intent string) (map
 		return map[string]string{}, err
 	}
 	return val, nil
+}
+
+func (r *RedisClient) SetGithubRepoData(ctx context.Context, data *github.Repository) error {
+	b, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+
+	if err := r.Client.Set(ctx, GithubRepoDataKey, b, 10*time.Minute).Err(); err != nil {
+		logger.LogError(err, "failed to set github data")
+		return err
+	}
+
+	return nil
+}
+
+func (r *RedisClient) GetGithubRepoData(ctx context.Context) (*github.Repository, error) {
+	val, err := r.Client.Get(ctx, GithubRepoDataKey).Bytes()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return nil, redis.Nil
+		}
+		logger.LogError(err, "failed to get github data")
+		return nil, err
+	}
+
+	data := &github.Repository{}
+	if err := json.Unmarshal(val, data); err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }

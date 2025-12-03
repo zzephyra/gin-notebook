@@ -14,14 +14,9 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/lib/api/client.ts:42
-msgid "Network error, please check your connection."
-msgstr "网络错误，请检查您的连接。"
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:139
-msgid "Failed to fetch AI chat actions"
-msgstr "获取 AI 聊天操作失败"
+#: src/components/exterior/hero/main.tsx:98
+msgid "{count} online"
+msgstr "{count} 在线"
 
 #. js-lingui-explicit-id
 #: src/utils/timeAgo.ts:27
@@ -52,6 +47,16 @@ msgstr "{count}天前"
 #: src/utils/timeAgo.ts:64
 msgid "30 days ago"
 msgstr "30天以前"
+
+#. js-lingui-explicit-id
+#: src/pages/settings/integrationAccount.tsx:103
+msgid "Are you sure you want to unlink {provider} account?"
+msgstr "你确定要解除与 {provider} 账户的绑定吗？"
+
+#. js-lingui-explicit-id
+#: src/pages/settings/integrationAccount.tsx:108
+msgid "This action cannot be undone."
+msgstr "此操作无法撤销。"
 
 #. js-lingui-explicit-id
 #: src/components/modal/event/add/index.tsx:152
@@ -121,16 +126,6 @@ msgid "The sum of Input and Output tokens cannot exceed the context window of {c
 msgstr "输入和输出 tokens 的总数不能超过模型 {model} 的上下文窗口大小 {contextWindow}"
 
 #. js-lingui-explicit-id
-#: src/pages/settings/integrationAccount.tsx:103
-msgid "Are you sure you want to unlink {provider} account?"
-msgstr "你确定要解除与 {provider} 账户的绑定吗？"
-
-#. js-lingui-explicit-id
-#: src/pages/settings/integrationAccount.tsx:108
-msgid "This action cannot be undone."
-msgstr "此操作无法撤销。"
-
-#. js-lingui-explicit-id
 #: src/lib/upload/index.ts:41
 msgid "File size exceeds the limit of {size} MB"
 msgstr "上传失败：文件大小不能超过 {size} MB"
@@ -146,6 +141,11 @@ msgid "Sorry, something went wrong"
 msgstr "出错了，请稍后再试"
 
 #. js-lingui-explicit-id
+#: src/lib/api/client.ts:42
+msgid "Network error, please check your connection."
+msgstr "网络错误，请检查您的连接。"
+
+#. js-lingui-explicit-id
 #: src/lib/api/client.ts:45
 msgid "You don't have permission to view or update this workspace."
 msgstr "权限不足，无法查看或更新工作区"
@@ -154,16 +154,6 @@ msgstr "权限不足，无法查看或更新工作区"
 #: src/lib/api/client.ts:48
 msgid "Please log in to continue."
 msgstr "请登录以继续操作"
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:68
-msgid "Message ID is required for update action"
-msgstr "更新操作需要提供消息 ID"
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:127
-msgid "Failed to fetch AI chat session"
-msgstr "无法获取 AI 聊天会话"
 
 #. js-lingui-explicit-id
 #: src/features/api/note.ts:15
@@ -193,6 +183,21 @@ msgstr "删除笔记失败"
 #: src/features/api/note.ts:216
 msgid "Content cannot be empty"
 msgstr "内容不允许为空"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:68
+msgid "Message ID is required for update action"
+msgstr "更新操作需要提供消息 ID"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:127
+msgid "Failed to fetch AI chat session"
+msgstr "无法获取 AI 聊天会话"
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:139
+msgid "Failed to fetch AI chat actions"
+msgstr "获取 AI 聊天操作失败"
 
 #. js-lingui-explicit-id
 #: src/components/list/notes/index.tsx:126
@@ -250,9 +255,29 @@ msgstr "14天"
 msgid "30 days"
 msgstr "30天"
 
+#: src/components/exterior/collaborate/main.tsx:65
+msgid "4 team members are collaborating"
+msgstr "4 位团队成员正在协作"
+
 #: src/components/step/workspace/main.tsx:39
 msgid "7 days"
 msgstr "7天"
+
+#: src/components/exterior/ai-section/main.tsx:84
+msgid "A built-in intelligent AI assistant that supports your work anytime. From content generation to task management—everything happens through conversation."
+msgstr "内置智能 AI 助手，随时为你的工作提供支持。从内容生成到任务管理，一切尽在对话之间。"
+
+#: src/components/exterior/feature/main.tsx:46
+msgid "A collaboration tool built for modern teams"
+msgstr "为现代团队打造的协作工具"
+
+#: src/components/exterior/footer/main.tsx:11
+msgid "About"
+msgstr "关于"
+
+#: src/components/exterior/footer/main.tsx:11
+msgid "About Us"
+msgstr "关于我们"
 
 #: src/pages/settings/storageSettings.tsx:76
 msgid "Access Key"
@@ -325,6 +350,16 @@ msgstr "高级协作设置"
 msgid "After selecting a model, some settings will be generated automatically. If you choose a custom model, you’ll need to manually complete the remaining parameters."
 msgstr "选择模型后，部分设置将自动生成。如果选择自定义模型，则需要手动填写剩余参数。"
 
+#: src/components/exterior/ai-section/main.tsx:17
+#: src/components/exterior/ai-section/main.tsx:74
+#: src/components/exterior/hero/main.tsx:105
+msgid "AI Assistant"
+msgstr "AI助手"
+
+#: src/components/exterior/feature/main.tsx:9
+msgid "AI Chat Assistant"
+msgstr "AI聊天助手"
+
 #: src/layouts/SettingsLayout.tsx:56
 #: src/pages/settings/aiSettings.tsx:227
 msgid "AI Settings"
@@ -334,9 +369,17 @@ msgstr "AI设置"
 msgid "AI Settings updated successfully"
 msgstr "AI设置更新成功"
 
+#: src/components/exterior/hero/main.tsx:32
+msgid "AI-enhanced writing, real-time collaborative editing, and Kanban-style task management."
+msgstr "AI 助力写作与协作，实时多人编辑，看板任务管理。"
+
 #: src/components/modal/event/add/index.tsx:121
 msgid "All Day"
 msgstr "全天"
+
+#: src/components/exterior/feature/main.tsx:48
+msgid "All your notes, documents, and tasks unified—supercharged by AI."
+msgstr "集笔记、文档、任务管理于一体，AI 加持提升效率"
 
 #: src/components/dropdown/note/index.tsx:164
 msgid "Allow commenting"
@@ -370,9 +413,29 @@ msgstr "允许与其他人或第三方应用程序共享此笔记。"
 msgid "Already have an account?"
 msgstr "已经有账户？"
 
+#: src/components/exterior/ai-section/main.tsx:31
+msgid "Alright, I've summarized the three action items from today's meeting:"
+msgstr "好的，我已整理出今天会议的 3 个行动项："
+
+#: src/components/exterior/ai-section/main.tsx:44
+msgid "Alright, please add them to the “This Week’s Tasks” Kanban board."
+msgstr "好的，请添加到"本周任务"看板"
+
+#: src/components/exterior/hero/main.tsx:110
+msgid "Alright, this document mainly covers the following three key points…"
+msgstr "好的，这份文档主要包含以下 3 个核心要点..."
+
+#: src/components/exterior/footer/main.tsx:27
+msgid "An open-source collaborative note-taking and knowledge space. AI-powered writing, real-time collaboration, and self-hosted data control."
+msgstr "开源的多人协作笔记与知识空间。AI 助力写作，实时协作，自托管可控。"
+
 #: src/pages/settings/aiSettings.tsx:153
 msgid "API Key is required for custom provider"
 msgstr "自定义提供商需要提供 API Key"
+
+#: src/components/exterior/footer/main.tsx:9
+msgid "API Reference"
+msgstr "API 参考"
 
 #: src/pages/settings/integrationSetting.tsx:195
 msgid "App ID"
@@ -449,6 +512,10 @@ msgstr "基本信息"
 msgid "Bind Integration Account"
 msgstr "绑定第三方账户"
 
+#: src/components/exterior/footer/main.tsx:9
+msgid "Blog"
+msgstr "博客"
+
 #: src/pages/settings/storageSettings.tsx:82
 msgid "Bucket Name"
 msgstr "桶名称"
@@ -514,6 +581,10 @@ msgstr "更改密码"
 msgid "Change your password"
 msgstr "更改密码"
 
+#: src/components/exterior/footer/main.tsx:8
+msgid "Changelog"
+msgstr "更新日志"
+
 #: src/components/emojiPicker/index.tsx:16
 msgid "Clean"
 msgstr "清除"
@@ -550,6 +621,19 @@ msgstr "评论更新成功"
 msgid "Comments"
 msgstr "评论"
 
+#: src/components/exterior/footer/main.tsx:10
+#: src/components/exterior/navbar/main.tsx:23
+msgid "Community"
+msgstr "社区"
+
+#: src/components/exterior/open-source.tsx/main.tsx:25
+msgid "Community-driven"
+msgstr "社区驱动"
+
+#: src/components/exterior/ai-section/main.tsx:33
+msgid "Complete the product prototype design — @Zhang — before Friday"
+msgstr "完成产品原型设计 - @张 - 周五前"
+
 #: src/components/note/main/index.tsx:517
 msgid "Confirm"
 msgstr "确认"
@@ -569,6 +653,18 @@ msgstr "确认您的新密码"
 #: src/components/modal/note/addSync/index.tsx:146
 msgid "Conflict Policy"
 msgstr "冲突策略"
+
+#: src/components/exterior/footer/main.tsx:11
+msgid "Contact"
+msgstr "联系"
+
+#: src/components/exterior/footer/main.tsx:10
+msgid "Contribution Guide"
+msgstr "贡献指南"
+
+#: src/components/exterior/open-source.tsx/main.tsx:54
+msgid "Contributors"
+msgstr "贡献者"
 
 #: src/components/modal/workspace/link/index.tsx:116
 msgid "Copy Link"
@@ -656,6 +752,10 @@ msgstr "自定义模型端点"
 msgid "Danger Zone"
 msgstr "危险区"
 
+#: src/components/exterior/collaborate/main.tsx:27
+msgid "Database optimization"
+msgstr "数据库优化"
+
 #: src/components/todo/taskDetails/index.tsx:311
 #: src/components/todo/taskDetails/index.tsx:418
 msgid "Deadline"
@@ -712,7 +812,7 @@ msgstr "删除成功"
 msgid "Delete synchronization policy success"
 msgstr "删除同步策略成功"
 
-#: src/components/todo/main.tsx:84
+#: src/components/todo/main.tsx:88
 msgid "Delete task failed"
 msgstr "删除任务失败"
 
@@ -720,9 +820,23 @@ msgstr "删除任务失败"
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "删除此项目是永久性操作，无法撤消。请谨慎操作。"
 
+#: src/components/exterior/open-source.tsx/main.tsx:43
+msgid "Deployment Documentation"
+msgstr "部署文档"
+
 #: src/pages/workspace/project.tsx:119
 msgid "Descending"
 msgstr "降序"
+
+#: src/components/exterior/collaborate/main.tsx:18
+msgid "Design"
+msgstr "设计"
+
+#: src/components/exterior/collaborate/main.tsx:26
+#: src/components/exterior/collaborate/main.tsx:27
+#: src/components/exterior/collaborate/main.tsx:34
+msgid "Develop"
+msgstr "开发"
 
 #: src/components/table/device/index.tsx:60
 #: src/pages/settings/accountSettings.tsx:97
@@ -732,6 +846,18 @@ msgstr "设备"
 #: src/components/comment/main/index.tsx:119
 msgid "Disliked the comment"
 msgstr "点踩评论"
+
+#: src/components/exterior/collaborate/main.tsx:19
+msgid "Document"
+msgstr "文档"
+
+#: src/components/exterior/footer/main.tsx:9
+msgid "Documentation"
+msgstr "文档"
+
+#: src/components/exterior/navbar/main.tsx:21
+msgid "Documents"
+msgstr "文档"
 
 #: src/pages/settings/storageSettings.tsx:85
 msgid "Domain Url"
@@ -757,6 +883,10 @@ msgstr "下载二维码"
 msgid "Download Qrcode"
 msgstr "下载二维码"
 
+#: src/components/exterior/feature/main.tsx:26
+msgid "Drag tasks between columns, customize views, and see project progress at a glance."
+msgstr "任务卡片拖拽流转，列视图自定义，项目进度一目了然。"
+
 #: src/pages/settings/integrationSetting.tsx:196
 msgid "e.g., cli_xxx"
 msgstr "例如：cli_xxx"
@@ -768,6 +898,10 @@ msgstr "例如：cli_xxx"
 #: src/components/ai/promptItem/index.tsx:99
 msgid "Edit Prompt"
 msgstr "编辑提示词"
+
+#: src/components/exterior/collaborate/main.tsx:45
+msgid "efficient and transparent"
+msgstr "高效透明"
 
 #: src/pages/settings/accountSettings.tsx:89
 msgid "Email"
@@ -845,6 +979,10 @@ msgstr "每个工作日"
 msgid "Everyday"
 msgstr "每天"
 
+#: src/components/exterior/footer/main.tsx:9
+msgid "Example Projects"
+msgstr "示例项目"
+
 #: src/components/note/main/index.tsx:509
 msgid "Existing content detected. Importing the template will overwrite it. Continue?"
 msgstr "检测到已有内容。导入模板将覆盖现有内容，是否继续？"
@@ -908,9 +1046,18 @@ msgstr "更新AI配置失败"
 msgid "Failed to update comment: {0}"
 msgstr "更新评论失败: {0}"
 
+#: src/components/exterior/ai-section/main.tsx:91
+msgid "Fast Q&A powered by your knowledge base"
+msgstr "快速问答，基于知识库智能回复"
+
 #: src/pages/workspace/favorites.tsx:249
 msgid "Favorites"
 msgstr "收藏夹"
+
+#: src/components/exterior/footer/main.tsx:8
+#: src/components/exterior/navbar/main.tsx:20
+msgid "Features"
+msgstr "功能介绍"
 
 #: src/hooks/useIntegration.ts:88
 #: src/pages/settings/integrationAccount.tsx:40
@@ -929,6 +1076,14 @@ msgstr "文件移动"
 msgid "Finish"
 msgstr "完成"
 
+#: src/components/exterior/feature/main.tsx:33
+msgid "Flexible Knowledge Organization"
+msgstr "灵活知识组织"
+
+#: src/components/exterior/hero/main.tsx:28
+msgid "for shared knowledge spaces"
+msgstr "与知识空间"
+
 #: src/components/modal/note/selectCategory/index.tsx:92
 msgid "Frequent Used"
 msgstr "经常使用"
@@ -941,6 +1096,10 @@ msgstr "一般"
 msgid "Generate Link"
 msgstr "生成链路"
 
+#: src/components/exterior/ai-section/main.tsx:90
+msgid "Generate to-dos and add them to your Kanban board instantly"
+msgstr "生成待办事项，一键添加到看板"
+
 #: src/components/modal/workspace/link/index.tsx:89
 msgid "Generating invite link"
 msgstr "正在生成邀请链接"
@@ -948,6 +1107,10 @@ msgstr "正在生成邀请链接"
 #: src/components/step/workspace/main.tsx:101
 msgid "Get Started"
 msgstr "开始"
+
+#: src/components/exterior/hero/main.tsx:44
+msgid "GitHub Repository"
+msgstr "GitHub 仓库"
 
 #: src/pages/workspace/invite.tsx:117
 msgid "Go to selct other Workspace"
@@ -969,6 +1132,14 @@ msgstr "含附件"
 #: src/components/ai/input/index.tsx:18
 msgid "Hello, {username}, how's your day going today?"
 msgstr "你好，{username}，你今天过得怎么样？"
+
+#: src/components/exterior/ai-section/main.tsx:24
+msgid "Help me organize today’s meeting notes and extract the action items."
+msgstr "帮我整理一下今天的会议记录，提取出行动项"
+
+#: src/components/exterior/hero/main.tsx:108
+msgid "Help me summarize the key points of this document."
+msgstr "帮我总结这份文档的要点"
 
 #: src/components/ai/input/index.tsx:24
 msgid "Hey {username}, what brilliant ideas are we exploring today?"
@@ -994,9 +1165,17 @@ msgstr "历史"
 msgid "History Chats"
 msgstr "历史聊天"
 
+#: src/components/exterior/collaborate/main.tsx:18
+msgid "Homepage prototype design"
+msgstr "用作标题"
+
 #: src/components/todo/column/index.tsx:398
 msgid "I'm sure"
 msgstr "我确定"
+
+#: src/components/exterior/ai-section/main.tsx:51
+msgid "I’ve added the three tasks to the “This Week’s Tasks” Kanban board and notified the relevant members."
+msgstr "已将 3 个任务添加到"本周任务"看板，并已通知相关成员。"
 
 #: src/components/step/workspace/main.tsx:147
 msgid "If you're bringing a guest, feel free to add their email below—or simply copy and share the invite link with them!"
@@ -1005,6 +1184,10 @@ msgstr "如果你要带一位客人，请随意在下面添加他们的电子邮
 #: src/components/list/notes/index.tsx:129
 msgid "Ignore this prompt for this login"
 msgstr "忽略此登录的提示"
+
+#: src/components/exterior/collaborate/main.tsx:26
+msgid "Implement user authentication"
+msgstr "实现用户认证"
 
 #: src/components/card/notePolicy/index.tsx:104
 #: src/pages/settings/integrationSetting.tsx:87
@@ -1055,6 +1238,10 @@ msgstr "邀请到您的工作区"
 msgid "Invited Members"
 msgstr "已邀请数"
 
+#: src/components/exterior/open-source.tsx/main.tsx:68
+msgid "Join the Community"
+msgstr "加入社区"
+
 #: src/pages/workspace/invite.tsx:92
 msgid "Join Workspace"
 msgstr "加入工作区"
@@ -1062,6 +1249,14 @@ msgstr "加入工作区"
 #: src/pages/workspace/invite.tsx:63
 msgid "Join workspace successfully!"
 msgstr "加入工作区成功！"
+
+#: src/components/exterior/feature/main.tsx:25
+msgid "Kanban Task Management"
+msgstr "看板任务管理"
+
+#: src/components/exterior/hero/main.tsx:119
+msgid "Kanban View"
+msgstr "看板视图"
 
 #: src/pages/settings/workspaceSettings.tsx:138
 msgid "Key"
@@ -1082,6 +1277,14 @@ msgstr "最后运行于"
 #: src/components/modal/note/addSync/index.tsx:148
 msgid "Latest Modified Wins"
 msgstr "以最新修改为准"
+
+#: src/components/exterior/ai-section/main.tsx:78
+msgid "Let AI become your"
+msgstr "让AI成为你的"
+
+#: src/components/exterior/collaborate/main.tsx:80
+msgid "Li"
+msgstr "李"
 
 #: src/components/comment/main/index.tsx:119
 msgid "Liked the comment"
@@ -1139,6 +1342,11 @@ msgstr "定位"
 #: src/components/menu/sidebar.tsx:92
 msgid "Log out"
 msgstr "退出登录"
+
+#: src/components/exterior/navbar/main.tsx:59
+#: src/components/exterior/navbar/main.tsx:92
+msgid "Login"
+msgstr "登陆"
 
 #: src/pages/auth/login.tsx:38
 #: src/pages/auth/login.tsx:45
@@ -1202,6 +1410,10 @@ msgstr "最大输出 Tokens 不能超过 16000"
 msgid "Max Output Tokens must be a positive integer"
 msgstr "最大输出 Tokens 必须是正整数"
 
+#: src/components/exterior/hero/main.tsx:73
+msgid "Meeting Notes"
+msgstr "会议笔记"
+
 #: src/components/menu/sidebar.tsx:75
 msgid "member"
 msgstr "成员"
@@ -1230,6 +1442,10 @@ msgstr "模型API密钥"
 #: src/pages/settings/aiSettings.tsx:276
 msgid "Model API URL"
 msgstr "模型API地址"
+
+#: src/components/exterior/collaborate/main.tsx:82
+msgid "More details need to be added here."
+msgstr "这里需要补充更多细节"
 
 #: src/components/list/notes/index.tsx:137
 msgid "Move"
@@ -1402,6 +1618,7 @@ msgstr "标题为必填项"
 msgid "Notebook ID"
 msgstr "笔记ID"
 
+#: src/components/exterior/hero/main.tsx:71
 #: src/pages/workspace/note.tsx:194
 msgid "Notes"
 msgstr "笔记"
@@ -1431,6 +1648,26 @@ msgstr "糟糕，出了点问题！"
 msgid "Oops, This invitation link has expired."
 msgstr "此邀请链接已过期。"
 
+#: src/components/exterior/open-source.tsx/main.tsx:19
+msgid "Open Source"
+msgstr "开源"
+
+#: src/components/exterior/hero/main.tsx:23
+msgid "Open-source & free · Self-hosted deployment"
+msgstr "开源免费 · 自托管部署"
+
+#: src/components/exterior/open-source.tsx/main.tsx:23
+msgid "Open-source and transparent"
+msgstr "开源透明，"
+
+#: src/components/exterior/hero/main.tsx:27
+msgid "Open-source collaborative notes"
+msgstr "开源的多人协作笔记"
+
+#: src/components/exterior/footer/main.tsx:61
+msgid "Open-sourced under the MIT License."
+msgstr "基于 MIT 协议开源"
+
 #: src/pages/auth/login.tsx:84
 msgid "Or"
 msgstr "或"
@@ -1438,6 +1675,10 @@ msgstr "或"
 #: src/pages/workspace/favorites.tsx:265
 msgid "Ordering"
 msgstr "排序"
+
+#: src/components/exterior/ai-section/main.tsx:89
+msgid "Organize meeting notes and automatically extract key information"
+msgstr "整理会议记录，自动提取关键信息"
 
 #: src/components/note/main/index.tsx:504
 msgid "Overwrite Note"
@@ -1481,6 +1722,10 @@ msgstr "权限设置"
 #: src/pages/workspace/project.tsx:394
 msgid "Personalization"
 msgstr "个性化"
+
+#: src/components/exterior/collaborate/main.tsx:35
+msgid "Planning"
+msgstr "规划"
 
 #: src/components/form/register/form.tsx:69
 msgid "Please check your email."
@@ -1544,6 +1789,10 @@ msgstr "请选择有效的 AI 模型"
 msgid "Please wait for attachments to finish uploading."
 msgstr "附件正在上传，请稍候"
 
+#: src/components/exterior/ai-section/main.tsx:34
+msgid "Prepare the client demo materials — @Li — next Monday"
+msgstr "准备客户演示材料 - @李 - 下周一"
+
 #: src/components/modal/note/addSync/index.tsx:162
 #: src/pages/settings/integrationSetting.tsx:240
 msgid "Previous"
@@ -1553,15 +1802,36 @@ msgstr "上一步"
 msgid "Previous Note"
 msgstr "上一条笔记"
 
+#: src/components/exterior/footer/main.tsx:8
+msgid "Pricing"
+msgstr "定价"
+
 #: src/components/todo/taskDetails/index.tsx:245
 #: src/components/todo/taskDetails/index.tsx:352
 #: src/pages/workspace/project.tsx:150
 msgid "Priority"
 msgstr "优先级"
 
+#: src/components/exterior/footer/main.tsx:11
+#: src/components/exterior/footer/main.tsx:65
+msgid "Privacy Policy"
+msgstr "隐私策略"
+
 #: src/components/note/main/index.tsx:253
 msgid "Private"
 msgstr "私有"
+
+#: src/components/exterior/footer/main.tsx:8
+msgid "Product"
+msgstr "产品"
+
+#: src/components/exterior/hero/main.tsx:73
+msgid "Product Documentation"
+msgstr "产品文档"
+
+#: src/components/exterior/collaborate/main.tsx:70
+msgid "Product Requirements Document v2.0"
+msgstr "产品需求文档 v2.0"
 
 #: src/pages/workspace/project.tsx:212
 #~ msgid "Progress"
@@ -1570,6 +1840,19 @@ msgstr "私有"
 #: src/pages/workspace/project.tsx:434
 msgid "Project Icon"
 msgstr "项目图标"
+
+#: src/components/exterior/collaborate/main.tsx:34
+msgid "Project initialization"
+msgstr "项目初始化"
+
+#: src/components/exterior/collaborate/main.tsx:98
+msgid "Project Kanban Board"
+msgstr "项目看板"
+
+#: src/components/exterior/hero/main.tsx:73
+#: src/components/exterior/hero/main.tsx:87
+msgid "Project Planning"
+msgstr "项目规划"
 
 #: src/components/ai/promptItem/index.tsx:103
 msgid "Prompt Description"
@@ -1635,6 +1918,18 @@ msgstr "七牛云密钥"
 msgid "QR Code"
 msgstr "二维码"
 
+#: src/components/exterior/feature/main.tsx:17
+msgid "Real-time collaboration"
+msgstr "实时协作编辑"
+
+#: src/components/exterior/feature/main.tsx:18
+msgid "Real-time multi-user editing with comments and @mentions to streamline team collaboration."
+msgstr "多人在线协作编辑，实时同步更新，评论与@提及，提升团队协作效率。"
+
+#: src/components/exterior/collaborate/main.tsx:48
+msgid "Real-time multi-user editing, comments and discussions, and Kanban management to streamline team collaboration."
+msgstr "多人实时编辑，评论讨论，看板管理，让团队协作更顺畅"
+
 #: src/components/modal/note/selectCategory/index.tsx:101
 msgid "Recent Created"
 msgstr "最近创建"
@@ -1680,6 +1975,18 @@ msgstr "重命名"
 #: src/components/todo/column/index.tsx:195
 #~ msgid "Rename Column"
 #~ msgstr "重命名列"
+
+#: src/components/exterior/collaborate/main.tsx:35
+msgid "Requirement analysis"
+msgstr "需求分析"
+
+#: src/components/exterior/footer/main.tsx:9
+msgid "Resources"
+msgstr "资源"
+
+#: src/components/exterior/footer/main.tsx:8
+msgid "Roadmap"
+msgstr "路线图"
 
 #: src/components/ai/promptItem/index.tsx:114
 #: src/components/modal/user/modifyPassword/index.tsx:59
@@ -1759,6 +2066,10 @@ msgstr "选择您的工作区"
 msgid "Selected model is not supported by the chosen provider"
 msgstr "所选模型不受当前提供商支持"
 
+#: src/components/exterior/hero/main.tsx:34
+msgid "Self-hosted, data-secure, and fully open-source."
+msgstr "自托管可控数据，完全开源透明"
+
 #: src/components/form/register/form.tsx:89
 msgid "Send Code"
 msgstr "发送验证码"
@@ -1821,6 +2132,11 @@ msgstr "排序"
 msgid "Source"
 msgstr "来源"
 
+#: src/components/exterior/navbar/main.tsx:65
+#: src/components/exterior/navbar/main.tsx:96
+msgid "Star on GitHub"
+msgstr "在 GitHub 上标星"
+
 #: src/components/comment/main/index.tsx:30
 msgid "Start a conversation below"
 msgstr "在下方开始对话"
@@ -1853,6 +2169,10 @@ msgstr "存储路径"
 msgid "Submit"
 msgstr "提交"
 
+#: src/components/exterior/open-source.tsx/main.tsx:84
+msgid "Submit Issue"
+msgstr "提交问题"
+
 #: src/pages/settings/integrationSetting.tsx:128
 msgid "Success"
 msgstr "成功"
@@ -1864,6 +2184,10 @@ msgstr "关联成功"
 #: src/pages/settings/integrationAccount.tsx:122
 msgid "Successfully unlinked"
 msgstr "解除关联成功"
+
+#: src/components/exterior/feature/main.tsx:10
+msgid "Summarize notes, generate outlines, and answer knowledge-base questions—making writing effortless."
+msgstr "智能总结笔记内容，自动生成文档大纲，回答知识库问题，让写作更高效。"
 
 #: src/components/menu/sidebar.tsx:85
 msgid "Switch"
@@ -1890,9 +2214,18 @@ msgstr "同步"
 msgid "System"
 msgstr "系统"
 
+#: src/components/exterior/collaborate/main.tsx:45
+msgid "Team collaboration"
+msgstr "团队协作"
+
 #: src/components/note/main/index.tsx:385
 msgid "Templates"
 msgstr "模版"
+
+#: src/components/exterior/footer/main.tsx:11
+#: src/components/exterior/footer/main.tsx:68
+msgid "Terms of Service"
+msgstr "服务条款"
 
 #: src/pages/settings/aiSettings.tsx:276
 msgid "The base URL of the model API. Required if you are using a custom model or self-hosted service."
@@ -1943,9 +2276,17 @@ msgstr "标题"
 msgid "To ensure compatibility, please avoid special characters in the name."
 msgstr "为确保兼容性，请避免在名称中使用特殊字符。"
 
+#: src/components/exterior/hero/main.tsx:39
+msgid "Try Now"
+msgstr "开始尝试"
+
 #: src/components/modal/note/addSync/index.tsx:143
 msgid "Two-way Sync"
 msgstr "双向同步"
+
+#: src/components/exterior/ai-section/main.tsx:59
+msgid "Type your message..."
+msgstr "输入消息…"
 
 #: src/pages/workspace/project.tsx:370
 msgid "Typing for search..."
@@ -1954,6 +2295,10 @@ msgstr "输入以搜索…"
 #: src/components/table/device/index.tsx:49
 msgid "Unknow"
 msgstr "未知"
+
+#: src/components/exterior/feature/main.tsx:34
+msgid "Unlimited page hierarchy, tags, and full-text search—build the knowledge system that works for you."
+msgstr "无限层级页面，标签分类，全文搜索，构建属于你的知识体系。"
 
 #: src/pages/settings/integrationAccount.tsx:81
 #: src/pages/settings/integrationAccount.tsx:124
@@ -1997,6 +2342,10 @@ msgstr "更新密码成功"
 msgid "Update successfully"
 msgstr "更新成功"
 
+#: src/components/exterior/ai-section/main.tsx:35
+msgid "Update the project timeline — @Wang — today"
+msgstr "更新项目进度表 - @王 - 今天"
+
 #: src/pages/workspace/favorites.tsx:315
 msgid "Updated At"
 msgstr "更新于"
@@ -2020,7 +2369,7 @@ msgstr "上传头像"
 msgid "Upload avatar failed"
 msgstr "上传头像失败"
 
-#: src/components/todo/main.tsx:72
+#: src/components/todo/main.tsx:76
 msgid "Upload failed"
 msgstr "上传失败"
 
@@ -2052,14 +2401,31 @@ msgstr "验证码已发送。"
 msgid "Verification Token"
 msgstr "验证令牌"
 
+#: src/components/exterior/collaborate/main.tsx:91
+msgid "Version 12 · Last updated 2 minutes ago"
+msgstr "版本 12 · 上次编辑于 2 分钟前"
+
+#: src/components/exterior/open-source.tsx/main.tsx:35
+msgid "View Source"
+msgstr "查看源码"
+
 #: src/components/step/workspace/main.tsx:96
 msgid "We are glad to have you here."
 msgstr "我们很高兴你能来。"
+
+#: src/components/exterior/open-source.tsx/main.tsx:29
+msgid "We believe in the power of open source. Mameos is licensed under MIT licensed under the MIT license, allowing you to use, modify, and distribute it freely. With self-hosting support, your data remains fully under your control."
+msgstr "我们相信开源的力量。NoteSpace 采用 MIT 协议开源，你可以自由使用、修改和分发。支持自托管部署，数据完全由你掌控。"
+
+#: src/components/exterior/hero/main.tsx:73
+msgid "Weekly Team Report"
+msgstr "每周团队报告"
 
 #: src/components/ai/input/index.tsx:28
 msgid "Welcome back, {username}! Glad to be working with you again today."
 msgstr "欢迎回来，{username}！很高兴今天又能与你共事。"
 
+#: src/components/exterior/navbar/main.tsx:54
 #: src/layouts/SettingsLayout.tsx:46
 msgid "Workspace"
 msgstr "工作区"
@@ -2077,6 +2443,14 @@ msgstr "工作区名称"
 msgid "Workspace: "
 msgstr "工作区："
 
+#: src/components/exterior/ai-section/main.tsx:37
+msgid "Would you like me to add these to the Kanban board?"
+msgstr "需要我将这些添加到看板吗？"
+
+#: src/components/exterior/collaborate/main.tsx:19
+msgid "Write API documentation"
+msgstr "编写API文档"
+
 #: src/components/todo/taskDetails/index.tsx:458
 msgid "Write something about the task"
 msgstr "写点和任务相关的东西吧"
@@ -2084,6 +2458,10 @@ msgstr "写点和任务相关的东西吧"
 #: src/components/ai/promptItem/index.tsx:106
 msgid "Write your prompt template here. You can use variables like {title}, {content}, etc."
 msgstr "在此编写您的提示词模板。您可以使用变量，例如 {title}、{content} 等。"
+
+#: src/components/exterior/ai-section/main.tsx:80
+msgid "writing and collaboration partner"
+msgstr "写作与协作伙伴"
 
 #: src/pages/workspace/invite.tsx:128
 msgid "You are not allowed to join this workspace."

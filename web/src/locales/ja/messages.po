@@ -14,13 +14,8 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/lib/api/client.ts:42
-msgid "Network error, please check your connection."
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:139
-msgid "Failed to fetch AI chat actions"
+#: src/components/exterior/hero/main.tsx:98
+msgid "{count} online"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -51,6 +46,16 @@ msgstr ""
 #. js-lingui-explicit-id
 #: src/utils/timeAgo.ts:64
 msgid "30 days ago"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/pages/settings/integrationAccount.tsx:103
+msgid "Are you sure you want to unlink {provider} account?"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/pages/settings/integrationAccount.tsx:108
+msgid "This action cannot be undone."
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -121,16 +126,6 @@ msgid "The sum of Input and Output tokens cannot exceed the context window of {c
 msgstr ""
 
 #. js-lingui-explicit-id
-#: src/pages/settings/integrationAccount.tsx:103
-msgid "Are you sure you want to unlink {provider} account?"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/pages/settings/integrationAccount.tsx:108
-msgid "This action cannot be undone."
-msgstr ""
-
-#. js-lingui-explicit-id
 #: src/lib/upload/index.ts:41
 msgid "File size exceeds the limit of {size} MB"
 msgstr ""
@@ -146,6 +141,11 @@ msgid "Sorry, something went wrong"
 msgstr ""
 
 #. js-lingui-explicit-id
+#: src/lib/api/client.ts:42
+msgid "Network error, please check your connection."
+msgstr ""
+
+#. js-lingui-explicit-id
 #: src/lib/api/client.ts:45
 msgid "You don't have permission to view or update this workspace."
 msgstr ""
@@ -153,16 +153,6 @@ msgstr ""
 #. js-lingui-explicit-id
 #: src/lib/api/client.ts:48
 msgid "Please log in to continue."
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:68
-msgid "Message ID is required for update action"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/features/api/ai.ts:127
-msgid "Failed to fetch AI chat session"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -192,6 +182,21 @@ msgstr "ノートの削除失敗"
 #. js-lingui-explicit-id
 #: src/features/api/note.ts:216
 msgid "Content cannot be empty"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:68
+msgid "Message ID is required for update action"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:127
+msgid "Failed to fetch AI chat session"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/features/api/ai.ts:139
+msgid "Failed to fetch AI chat actions"
 msgstr ""
 
 #. js-lingui-explicit-id
@@ -250,9 +255,29 @@ msgstr "14日間"
 msgid "30 days"
 msgstr "30日"
 
+#: src/components/exterior/collaborate/main.tsx:65
+msgid "4 team members are collaborating"
+msgstr ""
+
 #: src/components/step/workspace/main.tsx:39
 msgid "7 days"
 msgstr "7日間"
+
+#: src/components/exterior/ai-section/main.tsx:84
+msgid "A built-in intelligent AI assistant that supports your work anytime. From content generation to task management—everything happens through conversation."
+msgstr ""
+
+#: src/components/exterior/feature/main.tsx:46
+msgid "A collaboration tool built for modern teams"
+msgstr ""
+
+#: src/components/exterior/footer/main.tsx:11
+msgid "About"
+msgstr ""
+
+#: src/components/exterior/footer/main.tsx:11
+msgid "About Us"
+msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:76
 msgid "Access Key"
@@ -325,6 +350,16 @@ msgstr ""
 msgid "After selecting a model, some settings will be generated automatically. If you choose a custom model, you’ll need to manually complete the remaining parameters."
 msgstr ""
 
+#: src/components/exterior/ai-section/main.tsx:17
+#: src/components/exterior/ai-section/main.tsx:74
+#: src/components/exterior/hero/main.tsx:105
+msgid "AI Assistant"
+msgstr ""
+
+#: src/components/exterior/feature/main.tsx:9
+msgid "AI Chat Assistant"
+msgstr ""
+
 #: src/layouts/SettingsLayout.tsx:56
 #: src/pages/settings/aiSettings.tsx:227
 msgid "AI Settings"
@@ -334,8 +369,16 @@ msgstr ""
 msgid "AI Settings updated successfully"
 msgstr ""
 
+#: src/components/exterior/hero/main.tsx:32
+msgid "AI-enhanced writing, real-time collaborative editing, and Kanban-style task management."
+msgstr ""
+
 #: src/components/modal/event/add/index.tsx:121
 msgid "All Day"
+msgstr ""
+
+#: src/components/exterior/feature/main.tsx:48
+msgid "All your notes, documents, and tasks unified—supercharged by AI."
 msgstr ""
 
 #: src/components/dropdown/note/index.tsx:164
@@ -370,8 +413,28 @@ msgstr "このノートを他のアプリケーションやサードパーティ
 msgid "Already have an account?"
 msgstr "アカウントをお持ちですか？"
 
+#: src/components/exterior/ai-section/main.tsx:31
+msgid "Alright, I've summarized the three action items from today's meeting:"
+msgstr ""
+
+#: src/components/exterior/ai-section/main.tsx:44
+msgid "Alright, please add them to the “This Week’s Tasks” Kanban board."
+msgstr ""
+
+#: src/components/exterior/hero/main.tsx:110
+msgid "Alright, this document mainly covers the following three key points…"
+msgstr ""
+
+#: src/components/exterior/footer/main.tsx:27
+msgid "An open-source collaborative note-taking and knowledge space. AI-powered writing, real-time collaboration, and self-hosted data control."
+msgstr ""
+
 #: src/pages/settings/aiSettings.tsx:153
 msgid "API Key is required for custom provider"
+msgstr ""
+
+#: src/components/exterior/footer/main.tsx:9
+msgid "API Reference"
 msgstr ""
 
 #: src/pages/settings/integrationSetting.tsx:195
@@ -449,6 +512,10 @@ msgstr "基本情報"
 msgid "Bind Integration Account"
 msgstr ""
 
+#: src/components/exterior/footer/main.tsx:9
+msgid "Blog"
+msgstr ""
+
 #: src/pages/settings/storageSettings.tsx:82
 msgid "Bucket Name"
 msgstr "バケット名"
@@ -514,6 +581,10 @@ msgstr "パスワード変更"
 msgid "Change your password"
 msgstr "パスワード変更"
 
+#: src/components/exterior/footer/main.tsx:8
+msgid "Changelog"
+msgstr ""
+
 #: src/components/emojiPicker/index.tsx:16
 msgid "Clean"
 msgstr ""
@@ -550,6 +621,19 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
+#: src/components/exterior/footer/main.tsx:10
+#: src/components/exterior/navbar/main.tsx:23
+msgid "Community"
+msgstr ""
+
+#: src/components/exterior/open-source.tsx/main.tsx:25
+msgid "Community-driven"
+msgstr ""
+
+#: src/components/exterior/ai-section/main.tsx:33
+msgid "Complete the product prototype design — @Zhang — before Friday"
+msgstr ""
+
 #: src/components/note/main/index.tsx:517
 msgid "Confirm"
 msgstr ""
@@ -568,6 +652,18 @@ msgstr "新しいパスワードを確認する"
 
 #: src/components/modal/note/addSync/index.tsx:146
 msgid "Conflict Policy"
+msgstr ""
+
+#: src/components/exterior/footer/main.tsx:11
+msgid "Contact"
+msgstr ""
+
+#: src/components/exterior/footer/main.tsx:10
+msgid "Contribution Guide"
+msgstr ""
+
+#: src/components/exterior/open-source.tsx/main.tsx:54
+msgid "Contributors"
 msgstr ""
 
 #: src/components/modal/workspace/link/index.tsx:116
@@ -656,6 +752,10 @@ msgstr ""
 msgid "Danger Zone"
 msgstr "危険地帯"
 
+#: src/components/exterior/collaborate/main.tsx:27
+msgid "Database optimization"
+msgstr ""
+
 #: src/components/todo/taskDetails/index.tsx:311
 #: src/components/todo/taskDetails/index.tsx:418
 msgid "Deadline"
@@ -712,7 +812,7 @@ msgstr "正常に削除"
 msgid "Delete synchronization policy success"
 msgstr ""
 
-#: src/components/todo/main.tsx:84
+#: src/components/todo/main.tsx:88
 msgid "Delete task failed"
 msgstr ""
 
@@ -720,8 +820,22 @@ msgstr ""
 msgid "Deleting this item is a permanent action and cannot be reversed. Proceed with caution."
 msgstr "この項目の削除は永続的なアクションであり、元に戻すことはできません。"
 
+#: src/components/exterior/open-source.tsx/main.tsx:43
+msgid "Deployment Documentation"
+msgstr ""
+
 #: src/pages/workspace/project.tsx:119
 msgid "Descending"
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:18
+msgid "Design"
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:26
+#: src/components/exterior/collaborate/main.tsx:27
+#: src/components/exterior/collaborate/main.tsx:34
+msgid "Develop"
 msgstr ""
 
 #: src/components/table/device/index.tsx:60
@@ -731,6 +845,18 @@ msgstr ""
 
 #: src/components/comment/main/index.tsx:119
 msgid "Disliked the comment"
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:19
+msgid "Document"
+msgstr ""
+
+#: src/components/exterior/footer/main.tsx:9
+msgid "Documentation"
+msgstr ""
+
+#: src/components/exterior/navbar/main.tsx:21
+msgid "Documents"
 msgstr ""
 
 #: src/pages/settings/storageSettings.tsx:85
@@ -757,6 +883,10 @@ msgstr "QRコードをダウンロード"
 msgid "Download Qrcode"
 msgstr "ダウンロードQrcode"
 
+#: src/components/exterior/feature/main.tsx:26
+msgid "Drag tasks between columns, customize views, and see project progress at a glance."
+msgstr ""
+
 #: src/pages/settings/integrationSetting.tsx:196
 msgid "e.g., cli_xxx"
 msgstr ""
@@ -767,6 +897,10 @@ msgstr ""
 
 #: src/components/ai/promptItem/index.tsx:99
 msgid "Edit Prompt"
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:45
+msgid "efficient and transparent"
 msgstr ""
 
 #: src/pages/settings/accountSettings.tsx:89
@@ -845,6 +979,10 @@ msgstr ""
 msgid "Everyday"
 msgstr ""
 
+#: src/components/exterior/footer/main.tsx:9
+msgid "Example Projects"
+msgstr ""
+
 #: src/components/note/main/index.tsx:509
 msgid "Existing content detected. Importing the template will overwrite it. Continue?"
 msgstr ""
@@ -908,9 +1046,18 @@ msgstr ""
 msgid "Failed to update comment: {0}"
 msgstr ""
 
+#: src/components/exterior/ai-section/main.tsx:91
+msgid "Fast Q&A powered by your knowledge base"
+msgstr ""
+
 #: src/pages/workspace/favorites.tsx:249
 msgid "Favorites"
 msgstr "アーカイブ"
+
+#: src/components/exterior/footer/main.tsx:8
+#: src/components/exterior/navbar/main.tsx:20
+msgid "Features"
+msgstr ""
 
 #: src/hooks/useIntegration.ts:88
 #: src/pages/settings/integrationAccount.tsx:40
@@ -929,6 +1076,14 @@ msgstr "ファイル移動"
 msgid "Finish"
 msgstr ""
 
+#: src/components/exterior/feature/main.tsx:33
+msgid "Flexible Knowledge Organization"
+msgstr ""
+
+#: src/components/exterior/hero/main.tsx:28
+msgid "for shared knowledge spaces"
+msgstr ""
+
 #: src/components/modal/note/selectCategory/index.tsx:92
 msgid "Frequent Used"
 msgstr "よく使われる"
@@ -941,6 +1096,10 @@ msgstr "全般"
 msgid "Generate Link"
 msgstr "リンクを生成"
 
+#: src/components/exterior/ai-section/main.tsx:90
+msgid "Generate to-dos and add them to your Kanban board instantly"
+msgstr ""
+
 #: src/components/modal/workspace/link/index.tsx:89
 msgid "Generating invite link"
 msgstr "招待リンクの生成"
@@ -948,6 +1107,10 @@ msgstr "招待リンクの生成"
 #: src/components/step/workspace/main.tsx:101
 msgid "Get Started"
 msgstr "はじめに"
+
+#: src/components/exterior/hero/main.tsx:44
+msgid "GitHub Repository"
+msgstr ""
 
 #: src/pages/workspace/invite.tsx:117
 msgid "Go to selct other Workspace"
@@ -968,6 +1131,14 @@ msgstr ""
 
 #: src/components/ai/input/index.tsx:18
 msgid "Hello, {username}, how's your day going today?"
+msgstr ""
+
+#: src/components/exterior/ai-section/main.tsx:24
+msgid "Help me organize today’s meeting notes and extract the action items."
+msgstr ""
+
+#: src/components/exterior/hero/main.tsx:108
+msgid "Help me summarize the key points of this document."
 msgstr ""
 
 #: src/components/ai/input/index.tsx:24
@@ -994,8 +1165,16 @@ msgstr ""
 msgid "History Chats"
 msgstr ""
 
+#: src/components/exterior/collaborate/main.tsx:18
+msgid "Homepage prototype design"
+msgstr ""
+
 #: src/components/todo/column/index.tsx:398
 msgid "I'm sure"
+msgstr ""
+
+#: src/components/exterior/ai-section/main.tsx:51
+msgid "I’ve added the three tasks to the “This Week’s Tasks” Kanban board and notified the relevant members."
 msgstr ""
 
 #: src/components/step/workspace/main.tsx:147
@@ -1005,6 +1184,10 @@ msgstr "ゲストを連れてくる場合は、以下のメールアドレスを
 #: src/components/list/notes/index.tsx:129
 msgid "Ignore this prompt for this login"
 msgstr "このログインのプロンプトを無視する"
+
+#: src/components/exterior/collaborate/main.tsx:26
+msgid "Implement user authentication"
+msgstr ""
 
 #: src/components/card/notePolicy/index.tsx:104
 #: src/pages/settings/integrationSetting.tsx:87
@@ -1055,6 +1238,10 @@ msgstr "ワークスペースに招待する"
 msgid "Invited Members"
 msgstr "招待会員"
 
+#: src/components/exterior/open-source.tsx/main.tsx:68
+msgid "Join the Community"
+msgstr ""
+
 #: src/pages/workspace/invite.tsx:92
 msgid "Join Workspace"
 msgstr "ワークスペースに参加"
@@ -1062,6 +1249,14 @@ msgstr "ワークスペースに参加"
 #: src/pages/workspace/invite.tsx:63
 msgid "Join workspace successfully!"
 msgstr "ワークスペースに参加！"
+
+#: src/components/exterior/feature/main.tsx:25
+msgid "Kanban Task Management"
+msgstr ""
+
+#: src/components/exterior/hero/main.tsx:119
+msgid "Kanban View"
+msgstr ""
 
 #: src/pages/settings/workspaceSettings.tsx:138
 msgid "Key"
@@ -1081,6 +1276,14 @@ msgstr ""
 
 #: src/components/modal/note/addSync/index.tsx:148
 msgid "Latest Modified Wins"
+msgstr ""
+
+#: src/components/exterior/ai-section/main.tsx:78
+msgid "Let AI become your"
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:80
+msgid "Li"
 msgstr ""
 
 #: src/components/comment/main/index.tsx:119
@@ -1139,6 +1342,11 @@ msgstr ""
 #: src/components/menu/sidebar.tsx:92
 msgid "Log out"
 msgstr "ログインする"
+
+#: src/components/exterior/navbar/main.tsx:59
+#: src/components/exterior/navbar/main.tsx:92
+msgid "Login"
+msgstr ""
 
 #: src/pages/auth/login.tsx:38
 #: src/pages/auth/login.tsx:45
@@ -1202,6 +1410,10 @@ msgstr ""
 msgid "Max Output Tokens must be a positive integer"
 msgstr ""
 
+#: src/components/exterior/hero/main.tsx:73
+msgid "Meeting Notes"
+msgstr ""
+
 #: src/components/menu/sidebar.tsx:75
 msgid "member"
 msgstr "メンバー"
@@ -1229,6 +1441,10 @@ msgstr ""
 
 #: src/pages/settings/aiSettings.tsx:276
 msgid "Model API URL"
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:82
+msgid "More details need to be added here."
 msgstr ""
 
 #: src/components/list/notes/index.tsx:137
@@ -1402,6 +1618,7 @@ msgstr "Note title必須"
 msgid "Notebook ID"
 msgstr ""
 
+#: src/components/exterior/hero/main.tsx:71
 #: src/pages/workspace/note.tsx:194
 msgid "Notes"
 msgstr "備考"
@@ -1431,6 +1648,26 @@ msgstr ""
 msgid "Oops, This invitation link has expired."
 msgstr "おっと、この招待リンクは切れました。"
 
+#: src/components/exterior/open-source.tsx/main.tsx:19
+msgid "Open Source"
+msgstr ""
+
+#: src/components/exterior/hero/main.tsx:23
+msgid "Open-source & free · Self-hosted deployment"
+msgstr ""
+
+#: src/components/exterior/open-source.tsx/main.tsx:23
+msgid "Open-source and transparent"
+msgstr ""
+
+#: src/components/exterior/hero/main.tsx:27
+msgid "Open-source collaborative notes"
+msgstr ""
+
+#: src/components/exterior/footer/main.tsx:61
+msgid "Open-sourced under the MIT License."
+msgstr ""
+
 #: src/pages/auth/login.tsx:84
 msgid "Or"
 msgstr "OR"
@@ -1438,6 +1675,10 @@ msgstr "OR"
 #: src/pages/workspace/favorites.tsx:265
 msgid "Ordering"
 msgstr "ソート"
+
+#: src/components/exterior/ai-section/main.tsx:89
+msgid "Organize meeting notes and automatically extract key information"
+msgstr ""
 
 #: src/components/note/main/index.tsx:504
 msgid "Overwrite Note"
@@ -1480,6 +1721,10 @@ msgstr "権限設定"
 
 #: src/pages/workspace/project.tsx:394
 msgid "Personalization"
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:35
+msgid "Planning"
 msgstr ""
 
 #: src/components/form/register/form.tsx:69
@@ -1544,6 +1789,10 @@ msgstr ""
 msgid "Please wait for attachments to finish uploading."
 msgstr ""
 
+#: src/components/exterior/ai-section/main.tsx:34
+msgid "Prepare the client demo materials — @Li — next Monday"
+msgstr ""
+
 #: src/components/modal/note/addSync/index.tsx:162
 #: src/pages/settings/integrationSetting.tsx:240
 msgid "Previous"
@@ -1553,15 +1802,36 @@ msgstr ""
 msgid "Previous Note"
 msgstr ""
 
+#: src/components/exterior/footer/main.tsx:8
+msgid "Pricing"
+msgstr ""
+
 #: src/components/todo/taskDetails/index.tsx:245
 #: src/components/todo/taskDetails/index.tsx:352
 #: src/pages/workspace/project.tsx:150
 msgid "Priority"
 msgstr ""
 
+#: src/components/exterior/footer/main.tsx:11
+#: src/components/exterior/footer/main.tsx:65
+msgid "Privacy Policy"
+msgstr ""
+
 #: src/components/note/main/index.tsx:253
 msgid "Private"
 msgstr "プライベート"
+
+#: src/components/exterior/footer/main.tsx:8
+msgid "Product"
+msgstr ""
+
+#: src/components/exterior/hero/main.tsx:73
+msgid "Product Documentation"
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:70
+msgid "Product Requirements Document v2.0"
+msgstr ""
 
 #: src/pages/workspace/project.tsx:212
 #~ msgid "Progress"
@@ -1569,6 +1839,19 @@ msgstr "プライベート"
 
 #: src/pages/workspace/project.tsx:434
 msgid "Project Icon"
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:34
+msgid "Project initialization"
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:98
+msgid "Project Kanban Board"
+msgstr ""
+
+#: src/components/exterior/hero/main.tsx:73
+#: src/components/exterior/hero/main.tsx:87
+msgid "Project Planning"
 msgstr ""
 
 #: src/components/ai/promptItem/index.tsx:103
@@ -1635,6 +1918,18 @@ msgstr "Qi Niu雲秘密鍵"
 msgid "QR Code"
 msgstr "QRコード"
 
+#: src/components/exterior/feature/main.tsx:17
+msgid "Real-time collaboration"
+msgstr ""
+
+#: src/components/exterior/feature/main.tsx:18
+msgid "Real-time multi-user editing with comments and @mentions to streamline team collaboration."
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:48
+msgid "Real-time multi-user editing, comments and discussions, and Kanban management to streamline team collaboration."
+msgstr ""
+
 #: src/components/modal/note/selectCategory/index.tsx:101
 msgid "Recent Created"
 msgstr "最近作成"
@@ -1680,6 +1975,18 @@ msgstr ""
 #: src/components/todo/column/index.tsx:195
 #~ msgid "Rename Column"
 #~ msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:35
+msgid "Requirement analysis"
+msgstr ""
+
+#: src/components/exterior/footer/main.tsx:9
+msgid "Resources"
+msgstr ""
+
+#: src/components/exterior/footer/main.tsx:8
+msgid "Roadmap"
+msgstr ""
 
 #: src/components/ai/promptItem/index.tsx:114
 #: src/components/modal/user/modifyPassword/index.tsx:59
@@ -1759,6 +2066,10 @@ msgstr "ワークスペースを選択"
 msgid "Selected model is not supported by the chosen provider"
 msgstr ""
 
+#: src/components/exterior/hero/main.tsx:34
+msgid "Self-hosted, data-secure, and fully open-source."
+msgstr ""
+
 #: src/components/form/register/form.tsx:89
 msgid "Send Code"
 msgstr "コードを送信"
@@ -1821,6 +2132,11 @@ msgstr ""
 msgid "Source"
 msgstr ""
 
+#: src/components/exterior/navbar/main.tsx:65
+#: src/components/exterior/navbar/main.tsx:96
+msgid "Star on GitHub"
+msgstr ""
+
 #: src/components/comment/main/index.tsx:30
 msgid "Start a conversation below"
 msgstr ""
@@ -1853,6 +2169,10 @@ msgstr "ストレージパス"
 msgid "Submit"
 msgstr "コンテンツ"
 
+#: src/components/exterior/open-source.tsx/main.tsx:84
+msgid "Submit Issue"
+msgstr ""
+
 #: src/pages/settings/integrationSetting.tsx:128
 msgid "Success"
 msgstr ""
@@ -1863,6 +2183,10 @@ msgstr ""
 
 #: src/pages/settings/integrationAccount.tsx:122
 msgid "Successfully unlinked"
+msgstr ""
+
+#: src/components/exterior/feature/main.tsx:10
+msgid "Summarize notes, generate outlines, and answer knowledge-base questions—making writing effortless."
 msgstr ""
 
 #: src/components/menu/sidebar.tsx:85
@@ -1890,8 +2214,17 @@ msgstr ""
 msgid "System"
 msgstr ""
 
+#: src/components/exterior/collaborate/main.tsx:45
+msgid "Team collaboration"
+msgstr ""
+
 #: src/components/note/main/index.tsx:385
 msgid "Templates"
+msgstr ""
+
+#: src/components/exterior/footer/main.tsx:11
+#: src/components/exterior/footer/main.tsx:68
+msgid "Terms of Service"
 msgstr ""
 
 #: src/pages/settings/aiSettings.tsx:276
@@ -1943,8 +2276,16 @@ msgstr ""
 msgid "To ensure compatibility, please avoid special characters in the name."
 msgstr "互換性を確保するため、名前に特殊文字を使用しないでください。"
 
+#: src/components/exterior/hero/main.tsx:39
+msgid "Try Now"
+msgstr ""
+
 #: src/components/modal/note/addSync/index.tsx:143
 msgid "Two-way Sync"
+msgstr ""
+
+#: src/components/exterior/ai-section/main.tsx:59
+msgid "Type your message..."
 msgstr ""
 
 #: src/pages/workspace/project.tsx:370
@@ -1954,6 +2295,10 @@ msgstr ""
 #: src/components/table/device/index.tsx:49
 msgid "Unknow"
 msgstr "アンノウ"
+
+#: src/components/exterior/feature/main.tsx:34
+msgid "Unlimited page hierarchy, tags, and full-text search—build the knowledge system that works for you."
+msgstr ""
 
 #: src/pages/settings/integrationAccount.tsx:81
 #: src/pages/settings/integrationAccount.tsx:124
@@ -1997,6 +2342,10 @@ msgstr "パスワードの更新"
 msgid "Update successfully"
 msgstr "更新成功"
 
+#: src/components/exterior/ai-section/main.tsx:35
+msgid "Update the project timeline — @Wang — today"
+msgstr ""
+
 #: src/pages/workspace/favorites.tsx:315
 msgid "Updated At"
 msgstr ""
@@ -2020,7 +2369,7 @@ msgstr "アバターをアップロード"
 msgid "Upload avatar failed"
 msgstr "アバターのアップロード失敗"
 
-#: src/components/todo/main.tsx:72
+#: src/components/todo/main.tsx:76
 msgid "Upload failed"
 msgstr ""
 
@@ -2052,6 +2401,14 @@ msgstr "認証コードが送信されました。"
 msgid "Verification Token"
 msgstr ""
 
+#: src/components/exterior/collaborate/main.tsx:91
+msgid "Version 12 · Last updated 2 minutes ago"
+msgstr ""
+
+#: src/components/exterior/open-source.tsx/main.tsx:35
+msgid "View Source"
+msgstr ""
+
 #: src/components/todo/task/index.tsx:515
 #~ msgid "W"
 #~ msgstr ""
@@ -2060,10 +2417,19 @@ msgstr ""
 msgid "We are glad to have you here."
 msgstr "皆様のご来場をお待ちしております。"
 
+#: src/components/exterior/open-source.tsx/main.tsx:29
+msgid "We believe in the power of open source. Mameos is licensed under MIT licensed under the MIT license, allowing you to use, modify, and distribute it freely. With self-hosting support, your data remains fully under your control."
+msgstr ""
+
+#: src/components/exterior/hero/main.tsx:73
+msgid "Weekly Team Report"
+msgstr ""
+
 #: src/components/ai/input/index.tsx:28
 msgid "Welcome back, {username}! Glad to be working with you again today."
 msgstr ""
 
+#: src/components/exterior/navbar/main.tsx:54
 #: src/layouts/SettingsLayout.tsx:46
 msgid "Workspace"
 msgstr ""
@@ -2081,12 +2447,24 @@ msgstr "ワークスペース名"
 msgid "Workspace: "
 msgstr "ワークスペース"
 
+#: src/components/exterior/ai-section/main.tsx:37
+msgid "Would you like me to add these to the Kanban board?"
+msgstr ""
+
+#: src/components/exterior/collaborate/main.tsx:19
+msgid "Write API documentation"
+msgstr ""
+
 #: src/components/todo/taskDetails/index.tsx:458
 msgid "Write something about the task"
 msgstr ""
 
 #: src/components/ai/promptItem/index.tsx:106
 msgid "Write your prompt template here. You can use variables like {title}, {content}, etc."
+msgstr ""
+
+#: src/components/exterior/ai-section/main.tsx:80
+msgid "writing and collaboration partner"
 msgstr ""
 
 #: src/pages/workspace/invite.tsx:128

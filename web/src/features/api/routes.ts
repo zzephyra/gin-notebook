@@ -56,3 +56,4 @@ export const integrationAppApi = "/integration/app";
 export const integrationAccountsApi = "/integration/accounts";
 export const integrationAccountApi = "/integration/account";
 export const feishuCallbackApi = "/integration/feishu/callback";
+export const githubMetricApi = "/metrics/github";
